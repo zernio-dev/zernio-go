@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.353.0
+API version: 1.354.0
 Contact: support@zernio.com
 */
 
@@ -5510,14 +5510,15 @@ ad's `creative_list`. TikTok leaves out of that list the creatives it added on i
 carousel under its own material id, so those entries come back with the review verdict and
 null descriptive fields. TikTok returns no review timestamp; `readAt` is when Zernio read it.
 
-TikTok's review endpoint has a strict quota of its own, which behaves per advertiser. One TikTok call reads the
+TikTok's review endpoint has a strict quota of its own (TikTok documents neither the quota nor its scope). One TikTok call reads the
 review of the live Smart+ ads of the ad group up to 50 creatives in total (TikTok refuses more),
-and each review is cached for 10 minutes per connection, advertiser and Smart+ ad, so sibling ads
-are answered from the cache and `readAt` can be up to 10 minutes old. Read reviews when you need
+and each review is stored per connection, advertiser and Smart+ ad. This read serves a review read
+in the last 10 minutes from the store, so sibling ads are answered without a TikTok call and `readAt`
+can be up to 10 minutes old; an older one is read again. Read reviews when you need
 them instead of sweeping every ad on a loop. When TikTok answers over quota, Zernio returns 429
-and answers 429 for that advertiser and connection without calling TikTok for 60 seconds, then
-120, then 240 while TikTok keeps refusing (back to 60 after a successful call), with the time left
-as `Retry-After`; cached reviews are still served.
+and answers 429 for that advertiser and connection without calling TikTok for about 60 seconds, then
+120, then 240 while TikTok keeps refusing (one step down after a successful call, each with up to 10%
+of random jitter), with the time left as `Retry-After`; reviews read in the last 10 minutes are still served.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Zernio ad id (24-char hex) or the TikTok ad id: the Smart+ ad id or the ad id of one of its creatives.
@@ -8193,6 +8194,7 @@ type AdCampaignsAPIListTikTokSmartPlusReviewsRequest struct {
 	accountId      *string
 	adAccountId    *string
 	includeDeleted *bool
+	maxAgeSeconds  *int32
 	page           *int32
 	pageSize       *int32
 }
@@ -8215,6 +8217,12 @@ func (r AdCampaignsAPIListTikTokSmartPlusReviewsRequest) IncludeDeleted(includeD
 	return r
 }
 
+// Freshness window in seconds. Reviews, refusals and the listing read within it are served without calling TikTok; older ones are still returned but read again, oldest first.
+func (r AdCampaignsAPIListTikTokSmartPlusReviewsRequest) MaxAgeSeconds(maxAgeSeconds int32) AdCampaignsAPIListTikTokSmartPlusReviewsRequest {
+	r.maxAgeSeconds = &maxAgeSeconds
+	return r
+}
+
 func (r AdCampaignsAPIListTikTokSmartPlusReviewsRequest) Page(page int32) AdCampaignsAPIListTikTokSmartPlusReviewsRequest {
 	r.page = &page
 	return r
@@ -8234,13 +8242,17 @@ ListTikTokSmartPlusReviews Review status of every TikTok Smart+ ad of an adverti
 
 Returns the review verdict of every Upgraded Smart+ ad of one TikTok advertiser, with each creative's verdict, in one paginated read. Use it to refresh reviews periodically: one call (plus its pages) per advertiser per refresh, instead of `GET /v1/ads/{adId}/tiktok-smart-plus-review` per ad.
 
-Zernio lists the advertiser's Smart+ ads with `/smart_plus/ad/get/` (deleted ones only with `includeDeleted=true`; the listing is cached for 10 minutes) and reads `/smart_plus/ad/review_info/` for Smart+ ads holding up to 50 creatives in total per call (TikTok refuses more; a Smart+ ad with more than 50 creatives is read alone), across ad groups, one call after another. A full refresh of N Smart+ ads with C creatives in total costs about `ceil(N / 100)` listing calls and `ceil(C / 50)` review calls on TikTok. When TikTok still refuses a call for its creative count, Zernio lowers the creative cap for that advertiser and reads the same ads again in smaller calls, never resending the refused size. Each review is cached for 10 minutes per connection, advertiser and Smart+ ad, shared with the single-ad read, so cached reviews are served without calling TikTok and `readAt` can be up to 10 minutes old.
+Zernio lists the advertiser's Smart+ ads with `/smart_plus/ad/get/` (deleted ones only with `includeDeleted=true`) and reads `/smart_plus/ad/review_info/` for Smart+ ads holding up to 50 creatives in total per call (TikTok refuses more; a Smart+ ad with more than 50 creatives is read alone), across ad groups, one call after another. A full refresh of N Smart+ ads with C creatives in total costs about `ceil(N / 100)` listing calls and `ceil(C / 50)` review calls on TikTok. When TikTok still refuses a call for its creative count, Zernio lowers the creative cap for that advertiser and reads the same ads again in smaller calls, never resending the refused size.
 
-TikTok's review endpoint has a strict quota of its own, which behaves per advertiser. When it is over quota (or Zernio is holding review reads for this advertiser and connection after an overage: 60 seconds, then 120, then 240 while TikTok keeps refusing, back to 60 after a successful call), Zernio stops calling TikTok and answers 200 with the reviews it has: `incomplete: true`, the Smart+ ads still to read in `pendingSmartPlusAdIds`, and `retryAfterSeconds` (also in the `Retry-After` header). Every Smart+ ad of the page is in `items`, `failedSmartPlusAds` or `pendingSmartPlusAdIds`. Wait `retryAfterSeconds` and read the same page again: only the pending ads reach TikTok.
+Stale while refreshing: every review is stored for 24 hours per connection, advertiser and Smart+ ad (shared with the single-ad read), and `readAt` is always the time TikTok answered, never rewritten when served from the store. `maxAgeSeconds` (default 3600) is the freshness window: a review read within it is fresh and costs no TikTok call; an older one is still returned in `items` but is read again, and so is a Smart+ ad never read. Each request first reads every Smart+ ad of the page never read (live, then deleted with `includeDeleted=true`) and only then refreshes stale ones, oldest `readAt` first, so a quota pause cannot leave never-read ads behind stale ones, progress carries over between requests and an ad already read never goes back to pending. A stored review is replaced only by a successful read. `counts` splits the Smart+ ads on this page into `fresh`, `stale`, `pending` and `failed`, and `oldestReadAt` is the oldest `readAt` of `items`. `incomplete` is true only while some Smart+ ad of the page has never been read (`pending > 0`). Staleness is reported apart: `allFresh` is true when every item and refusal of the page is within `maxAgeSeconds` and nothing is pending. A page with stale items and nothing pending is complete (`incomplete: false`, no `Retry-After`): move on, and a later read refreshes it oldest first. On 2026-10-25 TikTok's quota allowed about 130 to 230 Smart+ ads per advertiser per hour (about 11.5 ads and 4 creatives per successful call), so a larger advertiser cannot be fully refreshed within one hour and its pages stay complete but not `allFresh`.
 
-A Smart+ ad whose review TikTok refuses on its own (for example one deleted on TikTok since the listing was cached) is returned in `failedSmartPlusAds` with TikTok's error, and the rest of the page is still read. Zernio finds it by splitting the refused batch in halves, at most 16 extra TikTok calls per page; ads still unresolved after that come back in `failedSmartPlusAds` with the batch error. A refusal of a single ad is remembered for 10 minutes. When both halves of a refused batch are refused with the same TikTok error (for example a permission error), the whole request fails with that error instead.
+The listing is stored with the time it was read (`listing.readAt`) and listed again when it is older than `maxAgeSeconds`, so it can be up to `maxAgeSeconds` old: a Smart+ ad created on TikTok appears after at most that long (one hour by default). If that relisting fails, Zernio serves the stored listing with `listing.source: fallback` and the relist error in `listing.error`, instead of failing the request; `listing.source: fresh` means the listing was read within `maxAgeSeconds`. Only when no listing was ever stored does the listing error fail the request.
 
-Items are sorted by `adGroupId`, then `smartPlusAdId`, so pages are stable. Keep one page in flight per advertiser and read its pages one after another: parallel pages of one advertiser spend its review quota at the same time and come back incomplete. The quota behaves per advertiser (observed, not documented by TikTok), so different advertisers can be read in parallel.
+TikTok's review endpoint has a strict quota of its own (TikTok documents neither the quota nor its scope). When it is over quota (or Zernio is holding review reads for this advertiser and connection after an overage: about 60 seconds, then 120, then 240 while TikTok keeps refusing, one step down after a successful call, each with up to 10% of random jitter), Zernio stops calling TikTok and answers 200 with the reviews it has: stale reviews in `items`, the Smart+ ads never read in `pendingSmartPlusAdIds` and, when any are pending, `incomplete: true` with `retryAfterSeconds` (also in the `Retry-After` header). Every Smart+ ad of the page is in `items`, `failedSmartPlusAds` or `pendingSmartPlusAdIds`. Wait `retryAfterSeconds` and read the same page again: only the stale and pending ads reach TikTok.
+
+A Smart+ ad whose review TikTok refuses on its own (for example one deleted on TikTok since the listing was read) is returned in `failedSmartPlusAds` with TikTok's error and `refusedAt`, and the rest of the page is still read. Zernio finds it by splitting the refused batch in halves, at most 16 extra TikTok calls per page; ads still unresolved after that keep their stored review, or stay in `pendingSmartPlusAdIds` when they have none, and are read first by the next request. A refusal of a single ad is stored for 24 hours and read again once it is older than `maxAgeSeconds`; when an ad has both a stored review and a stored refusal, the more recent one is returned. When both halves of a refused batch are refused with the same TikTok error (for example a permission error), Zernio stops calling TikTok for that page: when every Smart+ ad of the page has a stored review or refusal, it serves them and returns the refusal in `reviewError`; when some ad was never read, the whole request fails with that error.
+
+Items are sorted by `adGroupId`, then `smartPlusAdId`, so pages are stable. Keep one page in flight per advertiser and read its pages one after another: parallel pages of one advertiser spend its review quota at the same time and come back incomplete. Production logs suggest the quota is counted per advertiser (not confirmed by TikTok), so different advertisers have been read in parallel without throttling each other.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIListTikTokSmartPlusReviewsRequest
@@ -8288,6 +8300,13 @@ func (a *AdCampaignsAPIService) ListTikTokSmartPlusReviewsExecute(r AdCampaignsA
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "includeDeleted", defaultValue, "form", "")
 		r.includeDeleted = &defaultValue
+	}
+	if r.maxAgeSeconds != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "maxAgeSeconds", r.maxAgeSeconds, "form", "")
+	} else {
+		var defaultValue int32 = 3600
+		parameterAddToHeaderOrQuery(localVarQueryParams, "maxAgeSeconds", defaultValue, "form", "")
+		r.maxAgeSeconds = &defaultValue
 	}
 	if r.page != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")

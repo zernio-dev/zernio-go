@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.353.0
+API version: 1.354.0
 Contact: support@zernio.com
 */
 
@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the ListTikTokSmartPlusReviews200Response type satisfies the MappedNullable interface at compile time
@@ -22,19 +23,28 @@ var _ MappedNullable = &ListTikTokSmartPlusReviews200Response{}
 type ListTikTokSmartPlusReviews200Response struct {
 	AdAccountId    *string `json:"adAccountId,omitempty"`
 	IncludeDeleted *bool   `json:"includeDeleted,omitempty"`
-	Page           *int32  `json:"page,omitempty"`
-	PageSize       *int32  `json:"pageSize,omitempty"`
-	TotalPages     *int32  `json:"totalPages,omitempty"`
+	// The freshness window this page was read with.
+	MaxAgeSeconds *int32 `json:"maxAgeSeconds,omitempty"`
+	Page          *int32 `json:"page,omitempty"`
+	PageSize      *int32 `json:"pageSize,omitempty"`
+	TotalPages    *int32 `json:"totalPages,omitempty"`
 	// Smart+ ads of the advertiser across all pages.
-	TotalSmartPlusAds *int32                                            `json:"totalSmartPlusAds,omitempty"`
-	Items             []ListTikTokSmartPlusReviews200ResponseItemsInner `json:"items,omitempty"`
-	// Smart+ ads of this page whose review TikTok refused on its own (for example an ad deleted on TikTok since the listing was cached). Zernio splits a refused batch in halves (at most 16 extra calls per page), so the other ads of the batch are still read; ads left unresolved by that cap carry the batch error. Empty when none.
+	TotalSmartPlusAds *int32                                             `json:"totalSmartPlusAds,omitempty"`
+	Listing           *ListTikTokSmartPlusReviews200ResponseListing      `json:"listing,omitempty"`
+	ReviewError       *ListTikTokSmartPlusReviews200ResponseListingError `json:"reviewError,omitempty"`
+	Counts            *ListTikTokSmartPlusReviews200ResponseCounts       `json:"counts,omitempty"`
+	// The oldest `readAt` in `items`. Null when `items` is empty.
+	OldestReadAt NullableTime                                      `json:"oldestReadAt,omitempty"`
+	Items        []ListTikTokSmartPlusReviews200ResponseItemsInner `json:"items,omitempty"`
+	// Smart+ ads of this page whose review TikTok refused on its own (for example an ad deleted on TikTok since the listing was read). Zernio splits a refused batch in halves (at most 16 extra calls per page), so the other ads of the batch are still read; ads left unresolved by that cap stay in `items` with their stored review or in `pendingSmartPlusAdIds`. Empty when none.
 	FailedSmartPlusAds []ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner `json:"failedSmartPlusAds,omitempty"`
-	// True when some Smart+ ads of this page could not be read because of TikTok's review quota.
+	// True while some Smart+ ads of this page were never read (`counts.pending > 0`). Stale items alone keep it false.
 	Incomplete *bool `json:"incomplete,omitempty"`
-	// Smart+ ads of this page still to read. Empty when complete.
+	// True when every item and refusal of this page was read within `maxAgeSeconds` and nothing is pending. False with `incomplete: false` means the page is complete but some reviews are older than the window; a later read refreshes them oldest first.
+	AllFresh *bool `json:"allFresh,omitempty"`
+	// Smart+ ads of this page never read. Empty when every ad has a stored review or refusal.
 	PendingSmartPlusAdIds []string `json:"pendingSmartPlusAdIds,omitempty"`
-	// Seconds to wait before reading this page again. Null when complete.
+	// Seconds to wait before reading this page again, set only while `incomplete` is true and review reads are paused. Null when complete (stale items included), or when the page is incomplete without a quota pause (read it again right away).
 	RetryAfterSeconds NullableInt32 `json:"retryAfterSeconds,omitempty"`
 }
 
@@ -117,6 +127,38 @@ func (o *ListTikTokSmartPlusReviews200Response) HasIncludeDeleted() bool {
 // SetIncludeDeleted gets a reference to the given bool and assigns it to the IncludeDeleted field.
 func (o *ListTikTokSmartPlusReviews200Response) SetIncludeDeleted(v bool) {
 	o.IncludeDeleted = &v
+}
+
+// GetMaxAgeSeconds returns the MaxAgeSeconds field value if set, zero value otherwise.
+func (o *ListTikTokSmartPlusReviews200Response) GetMaxAgeSeconds() int32 {
+	if o == nil || IsNil(o.MaxAgeSeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxAgeSeconds
+}
+
+// GetMaxAgeSecondsOk returns a tuple with the MaxAgeSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListTikTokSmartPlusReviews200Response) GetMaxAgeSecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxAgeSeconds) {
+		return nil, false
+	}
+	return o.MaxAgeSeconds, true
+}
+
+// HasMaxAgeSeconds returns a boolean if a field has been set.
+func (o *ListTikTokSmartPlusReviews200Response) HasMaxAgeSeconds() bool {
+	if o != nil && !IsNil(o.MaxAgeSeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxAgeSeconds gets a reference to the given int32 and assigns it to the MaxAgeSeconds field.
+func (o *ListTikTokSmartPlusReviews200Response) SetMaxAgeSeconds(v int32) {
+	o.MaxAgeSeconds = &v
 }
 
 // GetPage returns the Page field value if set, zero value otherwise.
@@ -247,6 +289,145 @@ func (o *ListTikTokSmartPlusReviews200Response) SetTotalSmartPlusAds(v int32) {
 	o.TotalSmartPlusAds = &v
 }
 
+// GetListing returns the Listing field value if set, zero value otherwise.
+func (o *ListTikTokSmartPlusReviews200Response) GetListing() ListTikTokSmartPlusReviews200ResponseListing {
+	if o == nil || IsNil(o.Listing) {
+		var ret ListTikTokSmartPlusReviews200ResponseListing
+		return ret
+	}
+	return *o.Listing
+}
+
+// GetListingOk returns a tuple with the Listing field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListTikTokSmartPlusReviews200Response) GetListingOk() (*ListTikTokSmartPlusReviews200ResponseListing, bool) {
+	if o == nil || IsNil(o.Listing) {
+		return nil, false
+	}
+	return o.Listing, true
+}
+
+// HasListing returns a boolean if a field has been set.
+func (o *ListTikTokSmartPlusReviews200Response) HasListing() bool {
+	if o != nil && !IsNil(o.Listing) {
+		return true
+	}
+
+	return false
+}
+
+// SetListing gets a reference to the given ListTikTokSmartPlusReviews200ResponseListing and assigns it to the Listing field.
+func (o *ListTikTokSmartPlusReviews200Response) SetListing(v ListTikTokSmartPlusReviews200ResponseListing) {
+	o.Listing = &v
+}
+
+// GetReviewError returns the ReviewError field value if set, zero value otherwise.
+func (o *ListTikTokSmartPlusReviews200Response) GetReviewError() ListTikTokSmartPlusReviews200ResponseListingError {
+	if o == nil || IsNil(o.ReviewError) {
+		var ret ListTikTokSmartPlusReviews200ResponseListingError
+		return ret
+	}
+	return *o.ReviewError
+}
+
+// GetReviewErrorOk returns a tuple with the ReviewError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListTikTokSmartPlusReviews200Response) GetReviewErrorOk() (*ListTikTokSmartPlusReviews200ResponseListingError, bool) {
+	if o == nil || IsNil(o.ReviewError) {
+		return nil, false
+	}
+	return o.ReviewError, true
+}
+
+// HasReviewError returns a boolean if a field has been set.
+func (o *ListTikTokSmartPlusReviews200Response) HasReviewError() bool {
+	if o != nil && !IsNil(o.ReviewError) {
+		return true
+	}
+
+	return false
+}
+
+// SetReviewError gets a reference to the given ListTikTokSmartPlusReviews200ResponseListingError and assigns it to the ReviewError field.
+func (o *ListTikTokSmartPlusReviews200Response) SetReviewError(v ListTikTokSmartPlusReviews200ResponseListingError) {
+	o.ReviewError = &v
+}
+
+// GetCounts returns the Counts field value if set, zero value otherwise.
+func (o *ListTikTokSmartPlusReviews200Response) GetCounts() ListTikTokSmartPlusReviews200ResponseCounts {
+	if o == nil || IsNil(o.Counts) {
+		var ret ListTikTokSmartPlusReviews200ResponseCounts
+		return ret
+	}
+	return *o.Counts
+}
+
+// GetCountsOk returns a tuple with the Counts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListTikTokSmartPlusReviews200Response) GetCountsOk() (*ListTikTokSmartPlusReviews200ResponseCounts, bool) {
+	if o == nil || IsNil(o.Counts) {
+		return nil, false
+	}
+	return o.Counts, true
+}
+
+// HasCounts returns a boolean if a field has been set.
+func (o *ListTikTokSmartPlusReviews200Response) HasCounts() bool {
+	if o != nil && !IsNil(o.Counts) {
+		return true
+	}
+
+	return false
+}
+
+// SetCounts gets a reference to the given ListTikTokSmartPlusReviews200ResponseCounts and assigns it to the Counts field.
+func (o *ListTikTokSmartPlusReviews200Response) SetCounts(v ListTikTokSmartPlusReviews200ResponseCounts) {
+	o.Counts = &v
+}
+
+// GetOldestReadAt returns the OldestReadAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListTikTokSmartPlusReviews200Response) GetOldestReadAt() time.Time {
+	if o == nil || IsNil(o.OldestReadAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.OldestReadAt.Get()
+}
+
+// GetOldestReadAtOk returns a tuple with the OldestReadAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListTikTokSmartPlusReviews200Response) GetOldestReadAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.OldestReadAt.Get(), o.OldestReadAt.IsSet()
+}
+
+// HasOldestReadAt returns a boolean if a field has been set.
+func (o *ListTikTokSmartPlusReviews200Response) HasOldestReadAt() bool {
+	if o != nil && o.OldestReadAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetOldestReadAt gets a reference to the given NullableTime and assigns it to the OldestReadAt field.
+func (o *ListTikTokSmartPlusReviews200Response) SetOldestReadAt(v time.Time) {
+	o.OldestReadAt.Set(&v)
+}
+
+// SetOldestReadAtNil sets the value for OldestReadAt to be an explicit nil
+func (o *ListTikTokSmartPlusReviews200Response) SetOldestReadAtNil() {
+	o.OldestReadAt.Set(nil)
+}
+
+// UnsetOldestReadAt ensures that no value is present for OldestReadAt, not even an explicit nil
+func (o *ListTikTokSmartPlusReviews200Response) UnsetOldestReadAt() {
+	o.OldestReadAt.Unset()
+}
+
 // GetItems returns the Items field value if set, zero value otherwise.
 func (o *ListTikTokSmartPlusReviews200Response) GetItems() []ListTikTokSmartPlusReviews200ResponseItemsInner {
 	if o == nil || IsNil(o.Items) {
@@ -343,6 +524,38 @@ func (o *ListTikTokSmartPlusReviews200Response) SetIncomplete(v bool) {
 	o.Incomplete = &v
 }
 
+// GetAllFresh returns the AllFresh field value if set, zero value otherwise.
+func (o *ListTikTokSmartPlusReviews200Response) GetAllFresh() bool {
+	if o == nil || IsNil(o.AllFresh) {
+		var ret bool
+		return ret
+	}
+	return *o.AllFresh
+}
+
+// GetAllFreshOk returns a tuple with the AllFresh field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListTikTokSmartPlusReviews200Response) GetAllFreshOk() (*bool, bool) {
+	if o == nil || IsNil(o.AllFresh) {
+		return nil, false
+	}
+	return o.AllFresh, true
+}
+
+// HasAllFresh returns a boolean if a field has been set.
+func (o *ListTikTokSmartPlusReviews200Response) HasAllFresh() bool {
+	if o != nil && !IsNil(o.AllFresh) {
+		return true
+	}
+
+	return false
+}
+
+// SetAllFresh gets a reference to the given bool and assigns it to the AllFresh field.
+func (o *ListTikTokSmartPlusReviews200Response) SetAllFresh(v bool) {
+	o.AllFresh = &v
+}
+
 // GetPendingSmartPlusAdIds returns the PendingSmartPlusAdIds field value if set, zero value otherwise.
 func (o *ListTikTokSmartPlusReviews200Response) GetPendingSmartPlusAdIds() []string {
 	if o == nil || IsNil(o.PendingSmartPlusAdIds) {
@@ -434,6 +647,9 @@ func (o ListTikTokSmartPlusReviews200Response) ToMap() (map[string]interface{}, 
 	if !IsNil(o.IncludeDeleted) {
 		toSerialize["includeDeleted"] = o.IncludeDeleted
 	}
+	if !IsNil(o.MaxAgeSeconds) {
+		toSerialize["maxAgeSeconds"] = o.MaxAgeSeconds
+	}
 	if !IsNil(o.Page) {
 		toSerialize["page"] = o.Page
 	}
@@ -446,6 +662,18 @@ func (o ListTikTokSmartPlusReviews200Response) ToMap() (map[string]interface{}, 
 	if !IsNil(o.TotalSmartPlusAds) {
 		toSerialize["totalSmartPlusAds"] = o.TotalSmartPlusAds
 	}
+	if !IsNil(o.Listing) {
+		toSerialize["listing"] = o.Listing
+	}
+	if !IsNil(o.ReviewError) {
+		toSerialize["reviewError"] = o.ReviewError
+	}
+	if !IsNil(o.Counts) {
+		toSerialize["counts"] = o.Counts
+	}
+	if o.OldestReadAt.IsSet() {
+		toSerialize["oldestReadAt"] = o.OldestReadAt.Get()
+	}
 	if !IsNil(o.Items) {
 		toSerialize["items"] = o.Items
 	}
@@ -454,6 +682,9 @@ func (o ListTikTokSmartPlusReviews200Response) ToMap() (map[string]interface{}, 
 	}
 	if !IsNil(o.Incomplete) {
 		toSerialize["incomplete"] = o.Incomplete
+	}
+	if !IsNil(o.AllFresh) {
+		toSerialize["allFresh"] = o.AllFresh
 	}
 	if !IsNil(o.PendingSmartPlusAdIds) {
 		toSerialize["pendingSmartPlusAdIds"] = o.PendingSmartPlusAdIds

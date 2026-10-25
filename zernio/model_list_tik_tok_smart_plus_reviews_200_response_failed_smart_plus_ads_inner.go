@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.353.0
+API version: 1.354.0
 Contact: support@zernio.com
 */
 
@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner type satisfies the MappedNullable interface at compile time
@@ -24,6 +25,8 @@ type ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner struct {
 	AdGroupId     NullableString                                                     `json:"adGroupId,omitempty"`
 	CampaignId    NullableString                                                     `json:"campaignId,omitempty"`
 	Error         *ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInnerError `json:"error,omitempty"`
+	// When TikTok refused this ad. Null for a refusal stored before this field existed.
+	RefusedAt NullableTime `json:"refusedAt,omitempty"`
 }
 
 // NewListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner instantiates a new ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner object
@@ -193,6 +196,49 @@ func (o *ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner) SetError(
 	o.Error = &v
 }
 
+// GetRefusedAt returns the RefusedAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner) GetRefusedAt() time.Time {
+	if o == nil || IsNil(o.RefusedAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.RefusedAt.Get()
+}
+
+// GetRefusedAtOk returns a tuple with the RefusedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner) GetRefusedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RefusedAt.Get(), o.RefusedAt.IsSet()
+}
+
+// HasRefusedAt returns a boolean if a field has been set.
+func (o *ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner) HasRefusedAt() bool {
+	if o != nil && o.RefusedAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRefusedAt gets a reference to the given NullableTime and assigns it to the RefusedAt field.
+func (o *ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner) SetRefusedAt(v time.Time) {
+	o.RefusedAt.Set(&v)
+}
+
+// SetRefusedAtNil sets the value for RefusedAt to be an explicit nil
+func (o *ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner) SetRefusedAtNil() {
+	o.RefusedAt.Set(nil)
+}
+
+// UnsetRefusedAt ensures that no value is present for RefusedAt, not even an explicit nil
+func (o *ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner) UnsetRefusedAt() {
+	o.RefusedAt.Unset()
+}
+
 func (o ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -214,6 +260,9 @@ func (o ListTikTokSmartPlusReviews200ResponseFailedSmartPlusAdsInner) ToMap() (m
 	}
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
+	}
+	if o.RefusedAt.IsSet() {
+		toSerialize["refusedAt"] = o.RefusedAt.Get()
 	}
 	return toSerialize, nil
 }
