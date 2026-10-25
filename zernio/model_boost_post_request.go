@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.354.0
+API version: 1.355.0
 Contact: support@zernio.com
 */
 
@@ -130,8 +130,10 @@ type BoostPostRequest struct {
 	// Meta only. Extra primary-text options Meta rotates on the boosted post (asset_feed_spec.bodies with DEGREES_OF_FREEDOM); the post keeps its own text as one of the options. Works for Facebook posts and Instagram media. Under a conversions or traffic goal Meta also wants a website URL on the options, taken from `linkUrl` (send it with a `callToAction`); engagement boosts need none.
 	Bodies         []string                          `json:"bodies,omitempty"`
 	SmartTargeting *UpdateAdSetRequestSmartTargeting `json:"smartTargeting,omitempty"`
-	// Meta, or TikTok with `goal: video_views`. TikTok: ENGAGED_VIEW (6-second Focused View, the default) or ENGAGED_VIEW_FIFTEEN (15-second views), both billed per view (CPV); any other value is a 400. Meta: explicit ad-set `optimization_goal` override. When omitted, defaults to the value derived from `goal`. Messaging boosts always use CONVERSATIONS and reject another optimizationGoal. Otherwise the value must be compatible with the objective Meta derives from `goal`, not with the objective used by `POST /v1/ads/create` for the same `goal` name: boost maps `goal: \"engagement\"` to objective `OUTCOME_AWARENESS`, which accepts `REACH`, `IMPRESSIONS`, `AD_RECALL_LIFT`, or THRUPLAY-class values, and rejects `POST_ENGAGEMENT` (that value is only valid under `OUTCOME_ENGAGEMENT`, which create uses for the same goal name).
+	// Meta, or TikTok with `goal: video_views`. TikTok: ENGAGED_VIEW (6-second Focused View, the default) or ENGAGED_VIEW_FIFTEEN (15-second views), both billed per view (CPV); any other value is a 400. Meta: explicit ad-set `optimization_goal` override. When omitted, defaults to the value derived from `goal`. Messaging boosts always use CONVERSATIONS and reject another optimizationGoal. Otherwise the value must be compatible with the objective Meta derives from `goal`, not with the objective used by `POST /v1/ads/create` for the same `goal` name: boost maps `goal: \"engagement\"` to objective `OUTCOME_AWARENESS`, which accepts `REACH`, `IMPRESSIONS`, `AD_RECALL_LIFT`, or THRUPLAY-class values, and rejects `POST_ENGAGEMENT` (that value is only valid under `OUTCOME_ENGAGEMENT`, which create uses for the same goal name, and which `metaObjective` selects on a boost).
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
+	// Meta only, with `goal: engagement` and without `adSetId` (400 otherwise). `OUTCOME_ENGAGEMENT` creates the campaign with objective `OUTCOME_ENGAGEMENT` and the ad set with `optimization_goal` `POST_ENGAGEMENT` (unless `optimizationGoal` is set) and `destination_type` `ON_POST` (unless `destinationType` is set), the shape Ads Manager uses to boost an existing post. When omitted, an engagement boost keeps `OUTCOME_AWARENESS` with `REACH`. Returns 400 with `leadGenFormId` or with a `callToAction` whose objective is not `OUTCOME_ENGAGEMENT` (`CALL_NOW`); messaging CTAs keep their own `CONVERSATIONS` ad set. Verified against Meta on Facebook posts; Instagram posts are accepted but not yet verified.
+	MetaObjective *string `json:"metaObjective,omitempty"`
 }
 
 type _BoostPostRequest BoostPostRequest
@@ -1932,6 +1934,38 @@ func (o *BoostPostRequest) SetOptimizationGoal(v string) {
 	o.OptimizationGoal = &v
 }
 
+// GetMetaObjective returns the MetaObjective field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetMetaObjective() string {
+	if o == nil || IsNil(o.MetaObjective) {
+		var ret string
+		return ret
+	}
+	return *o.MetaObjective
+}
+
+// GetMetaObjectiveOk returns a tuple with the MetaObjective field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetMetaObjectiveOk() (*string, bool) {
+	if o == nil || IsNil(o.MetaObjective) {
+		return nil, false
+	}
+	return o.MetaObjective, true
+}
+
+// HasMetaObjective returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasMetaObjective() bool {
+	if o != nil && !IsNil(o.MetaObjective) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetaObjective gets a reference to the given string and assigns it to the MetaObjective field.
+func (o *BoostPostRequest) SetMetaObjective(v string) {
+	o.MetaObjective = &v
+}
+
 func (o BoostPostRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -2101,6 +2135,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.OptimizationGoal) {
 		toSerialize["optimizationGoal"] = o.OptimizationGoal
+	}
+	if !IsNil(o.MetaObjective) {
+		toSerialize["metaObjective"] = o.MetaObjective
 	}
 	return toSerialize, nil
 }
