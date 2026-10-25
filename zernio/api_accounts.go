@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.356.1
+API version: 1.357.0
 Contact: support@zernio.com
 */
 
@@ -332,8 +332,10 @@ On YouTube the returned `id` is the video ID that `GET /v1/analytics/youtube/dai
 a video picker in your own UI.
 
 Not every field applies to every platform: `reactionCount` is Facebook and LinkedIn,
-`shareCount` is platform dependent, `cid` is the Bluesky content id needed to reply, and
-`subreddit` is Reddit only. Absent fields are omitted from the response.
+`shareCount` is platform dependent, `cid` is the Bluesky content id needed to reply,
+`subreddit` is Reddit only, and `title`, `description`, `link`, `boardId` and
+`boardOwnerUsername` are Pinterest only (the native Pin values; `message` keeps title and
+description joined). Absent fields are omitted from the response.
 
 The account's token is refreshed before the call when it has expired. When the refresh
 cannot recover it, the response is a 401 with code `TOKEN_EXPIRED` and the account has to

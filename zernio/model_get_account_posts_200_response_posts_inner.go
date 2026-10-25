@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.356.1
+API version: 1.357.0
 Contact: support@zernio.com
 */
 
@@ -41,6 +41,16 @@ type GetAccountPosts200ResponsePostsInner struct {
 	Cid *string `json:"cid,omitempty"`
 	// Reddit only
 	Subreddit *string `json:"subreddit,omitempty"`
+	// Pinterest only: native Pin title
+	Title *string `json:"title,omitempty"`
+	// Pinterest only: full native Pin description (Pinterest caps it at 800 characters)
+	Description *string `json:"description,omitempty"`
+	// Pinterest only: destination URL of the Pin, not the Pin page (see permalink)
+	Link *string `json:"link,omitempty"`
+	// Pinterest only: id of the board holding the Pin
+	BoardId *string `json:"boardId,omitempty"`
+	// Pinterest only: username of the board owner
+	BoardOwnerUsername *string `json:"boardOwnerUsername,omitempty"`
 }
 
 // NewGetAccountPosts200ResponsePostsInner instantiates a new GetAccountPosts200ResponsePostsInner object
@@ -476,6 +486,166 @@ func (o *GetAccountPosts200ResponsePostsInner) SetSubreddit(v string) {
 	o.Subreddit = &v
 }
 
+// GetTitle returns the Title field value if set, zero value otherwise.
+func (o *GetAccountPosts200ResponsePostsInner) GetTitle() string {
+	if o == nil || IsNil(o.Title) {
+		var ret string
+		return ret
+	}
+	return *o.Title
+}
+
+// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountPosts200ResponsePostsInner) GetTitleOk() (*string, bool) {
+	if o == nil || IsNil(o.Title) {
+		return nil, false
+	}
+	return o.Title, true
+}
+
+// HasTitle returns a boolean if a field has been set.
+func (o *GetAccountPosts200ResponsePostsInner) HasTitle() bool {
+	if o != nil && !IsNil(o.Title) {
+		return true
+	}
+
+	return false
+}
+
+// SetTitle gets a reference to the given string and assigns it to the Title field.
+func (o *GetAccountPosts200ResponsePostsInner) SetTitle(v string) {
+	o.Title = &v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *GetAccountPosts200ResponsePostsInner) GetDescription() string {
+	if o == nil || IsNil(o.Description) {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountPosts200ResponsePostsInner) GetDescriptionOk() (*string, bool) {
+	if o == nil || IsNil(o.Description) {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *GetAccountPosts200ResponsePostsInner) HasDescription() bool {
+	if o != nil && !IsNil(o.Description) {
+		return true
+	}
+
+	return false
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *GetAccountPosts200ResponsePostsInner) SetDescription(v string) {
+	o.Description = &v
+}
+
+// GetLink returns the Link field value if set, zero value otherwise.
+func (o *GetAccountPosts200ResponsePostsInner) GetLink() string {
+	if o == nil || IsNil(o.Link) {
+		var ret string
+		return ret
+	}
+	return *o.Link
+}
+
+// GetLinkOk returns a tuple with the Link field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountPosts200ResponsePostsInner) GetLinkOk() (*string, bool) {
+	if o == nil || IsNil(o.Link) {
+		return nil, false
+	}
+	return o.Link, true
+}
+
+// HasLink returns a boolean if a field has been set.
+func (o *GetAccountPosts200ResponsePostsInner) HasLink() bool {
+	if o != nil && !IsNil(o.Link) {
+		return true
+	}
+
+	return false
+}
+
+// SetLink gets a reference to the given string and assigns it to the Link field.
+func (o *GetAccountPosts200ResponsePostsInner) SetLink(v string) {
+	o.Link = &v
+}
+
+// GetBoardId returns the BoardId field value if set, zero value otherwise.
+func (o *GetAccountPosts200ResponsePostsInner) GetBoardId() string {
+	if o == nil || IsNil(o.BoardId) {
+		var ret string
+		return ret
+	}
+	return *o.BoardId
+}
+
+// GetBoardIdOk returns a tuple with the BoardId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountPosts200ResponsePostsInner) GetBoardIdOk() (*string, bool) {
+	if o == nil || IsNil(o.BoardId) {
+		return nil, false
+	}
+	return o.BoardId, true
+}
+
+// HasBoardId returns a boolean if a field has been set.
+func (o *GetAccountPosts200ResponsePostsInner) HasBoardId() bool {
+	if o != nil && !IsNil(o.BoardId) {
+		return true
+	}
+
+	return false
+}
+
+// SetBoardId gets a reference to the given string and assigns it to the BoardId field.
+func (o *GetAccountPosts200ResponsePostsInner) SetBoardId(v string) {
+	o.BoardId = &v
+}
+
+// GetBoardOwnerUsername returns the BoardOwnerUsername field value if set, zero value otherwise.
+func (o *GetAccountPosts200ResponsePostsInner) GetBoardOwnerUsername() string {
+	if o == nil || IsNil(o.BoardOwnerUsername) {
+		var ret string
+		return ret
+	}
+	return *o.BoardOwnerUsername
+}
+
+// GetBoardOwnerUsernameOk returns a tuple with the BoardOwnerUsername field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountPosts200ResponsePostsInner) GetBoardOwnerUsernameOk() (*string, bool) {
+	if o == nil || IsNil(o.BoardOwnerUsername) {
+		return nil, false
+	}
+	return o.BoardOwnerUsername, true
+}
+
+// HasBoardOwnerUsername returns a boolean if a field has been set.
+func (o *GetAccountPosts200ResponsePostsInner) HasBoardOwnerUsername() bool {
+	if o != nil && !IsNil(o.BoardOwnerUsername) {
+		return true
+	}
+
+	return false
+}
+
+// SetBoardOwnerUsername gets a reference to the given string and assigns it to the BoardOwnerUsername field.
+func (o *GetAccountPosts200ResponsePostsInner) SetBoardOwnerUsername(v string) {
+	o.BoardOwnerUsername = &v
+}
+
 func (o GetAccountPosts200ResponsePostsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -524,6 +694,21 @@ func (o GetAccountPosts200ResponsePostsInner) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.Subreddit) {
 		toSerialize["subreddit"] = o.Subreddit
+	}
+	if !IsNil(o.Title) {
+		toSerialize["title"] = o.Title
+	}
+	if !IsNil(o.Description) {
+		toSerialize["description"] = o.Description
+	}
+	if !IsNil(o.Link) {
+		toSerialize["link"] = o.Link
+	}
+	if !IsNil(o.BoardId) {
+		toSerialize["boardId"] = o.BoardId
+	}
+	if !IsNil(o.BoardOwnerUsername) {
+		toSerialize["boardOwnerUsername"] = o.BoardOwnerUsername
 	}
 	return toSerialize, nil
 }
