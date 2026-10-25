@@ -927,12 +927,15 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.MessagesAPI.ListInboxConversations(ctx)` | List conversations |
+| `client.MessagesAPI.ListInboxLabels(ctx)` | List the Page's conversation labels |
 | `client.MessagesAPI.CreateInboxConversation(ctx)` | Create conversation |
+| `client.MessagesAPI.CreateInboxLabel(ctx)` | Create a conversation label |
 | `client.MessagesAPI.GetInboxConversation(ctx)` | Get conversation |
 | `client.MessagesAPI.GetInboxConversationMessages(ctx)` | List messages |
 | `client.MessagesAPI.GetMessageAttachment(ctx)` | Resolve message attachment |
 | `client.MessagesAPI.UpdateInboxConversation(ctx)` | Update conversation status |
 | `client.MessagesAPI.DeleteInboxConversation(ctx)` | Delete conversation |
+| `client.MessagesAPI.DeleteInboxLabel(ctx)` | Delete a conversation label |
 | `client.MessagesAPI.DeleteInboxMessage(ctx)` | Delete message |
 | `client.MessagesAPI.AcceptConversationRequest(ctx)` | Accept a message request |
 | `client.MessagesAPI.AddMessageReaction(ctx)` | Add reaction |
