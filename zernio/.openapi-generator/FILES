@@ -134,6 +134,7 @@ model_ad_rule_object_evaluation_conditions_inner.go
 model_ad_rule_run.go
 model_ad_rule_run_evaluation.go
 model_ad_rule_run_evaluation_actions_inner.go
+model_ad_rule_run_evaluation_notification.go
 model_ad_rule_schedule.go
 model_ad_schedule_window.go
 model_ad_status.go
