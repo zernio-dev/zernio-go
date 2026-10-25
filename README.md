@@ -926,6 +926,7 @@ func main() {
 ### Messages (Inbox)
 | Method | Description |
 |--------|-------------|
+| `client.MessagesAPI.ListConversationLabels(ctx)` | List the labels on a conversation |
 | `client.MessagesAPI.ListInboxConversations(ctx)` | List conversations |
 | `client.MessagesAPI.ListInboxLabels(ctx)` | List the Page's conversation labels |
 | `client.MessagesAPI.CreateInboxConversation(ctx)` | Create conversation |
@@ -938,9 +939,11 @@ func main() {
 | `client.MessagesAPI.DeleteInboxLabel(ctx)` | Delete a conversation label |
 | `client.MessagesAPI.DeleteInboxMessage(ctx)` | Delete message |
 | `client.MessagesAPI.AcceptConversationRequest(ctx)` | Accept a message request |
+| `client.MessagesAPI.AddConversationLabel(ctx)` | Add a label to a conversation |
 | `client.MessagesAPI.AddMessageReaction(ctx)` | Add reaction |
 | `client.MessagesAPI.EditInboxMessage(ctx)` | Edit message |
 | `client.MessagesAPI.MarkConversationRead(ctx)` | Mark a conversation as read |
+| `client.MessagesAPI.RemoveConversationLabel(ctx)` | Remove a label from a conversation |
 | `client.MessagesAPI.RemoveMessageReaction(ctx)` | Remove reaction |
 | `client.MessagesAPI.SearchInboxConversations(ctx)` | Search conversations |
 | `client.MessagesAPI.SendInboxMessage(ctx)` | Send message |
