@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.364.0
+API version: 1.365.0
 Contact: support@zernio.com
 */
 
@@ -20,13 +20,13 @@ var _ MappedNullable = &GoogleListingGroupDimension{}
 
 // GoogleListingGroupDimension Exactly one key. Omit the value (for example { productBrand: {} }) for the everything-else node of that level.
 type GoogleListingGroupDimension struct {
-	ProductBrand           *GoogleListingGroupDimensionProductBrand           `json:"productBrand,omitempty"`
-	ProductCategory        *GoogleListingGroupDimensionProductCategory        `json:"productCategory,omitempty"`
-	ProductType            *GoogleListingGroupDimensionProductType            `json:"productType,omitempty"`
-	ProductItemId          *GoogleListingGroupDimensionProductBrand           `json:"productItemId,omitempty"`
-	ProductCondition       *GoogleListingGroupDimensionProductCondition       `json:"productCondition,omitempty"`
-	ProductChannel         *GoogleListingGroupDimensionProductChannel         `json:"productChannel,omitempty"`
-	ProductCustomAttribute *GoogleListingGroupDimensionProductCustomAttribute `json:"productCustomAttribute,omitempty"`
+	ProductBrand           *GoogleAnalyticsReportRowsInnerDimensionValuesInner `json:"productBrand,omitempty"`
+	ProductCategory        *GoogleListingGroupDimensionProductCategory         `json:"productCategory,omitempty"`
+	ProductType            *GoogleListingGroupDimensionProductType             `json:"productType,omitempty"`
+	ProductItemId          *GoogleAnalyticsReportRowsInnerDimensionValuesInner `json:"productItemId,omitempty"`
+	ProductCondition       *GoogleListingGroupDimensionProductCondition        `json:"productCondition,omitempty"`
+	ProductChannel         *GoogleListingGroupDimensionProductChannel          `json:"productChannel,omitempty"`
+	ProductCustomAttribute *GoogleListingGroupDimensionProductCustomAttribute  `json:"productCustomAttribute,omitempty"`
 }
 
 // NewGoogleListingGroupDimension instantiates a new GoogleListingGroupDimension object
@@ -47,9 +47,9 @@ func NewGoogleListingGroupDimensionWithDefaults() *GoogleListingGroupDimension {
 }
 
 // GetProductBrand returns the ProductBrand field value if set, zero value otherwise.
-func (o *GoogleListingGroupDimension) GetProductBrand() GoogleListingGroupDimensionProductBrand {
+func (o *GoogleListingGroupDimension) GetProductBrand() GoogleAnalyticsReportRowsInnerDimensionValuesInner {
 	if o == nil || IsNil(o.ProductBrand) {
-		var ret GoogleListingGroupDimensionProductBrand
+		var ret GoogleAnalyticsReportRowsInnerDimensionValuesInner
 		return ret
 	}
 	return *o.ProductBrand
@@ -57,7 +57,7 @@ func (o *GoogleListingGroupDimension) GetProductBrand() GoogleListingGroupDimens
 
 // GetProductBrandOk returns a tuple with the ProductBrand field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GoogleListingGroupDimension) GetProductBrandOk() (*GoogleListingGroupDimensionProductBrand, bool) {
+func (o *GoogleListingGroupDimension) GetProductBrandOk() (*GoogleAnalyticsReportRowsInnerDimensionValuesInner, bool) {
 	if o == nil || IsNil(o.ProductBrand) {
 		return nil, false
 	}
@@ -73,8 +73,8 @@ func (o *GoogleListingGroupDimension) HasProductBrand() bool {
 	return false
 }
 
-// SetProductBrand gets a reference to the given GoogleListingGroupDimensionProductBrand and assigns it to the ProductBrand field.
-func (o *GoogleListingGroupDimension) SetProductBrand(v GoogleListingGroupDimensionProductBrand) {
+// SetProductBrand gets a reference to the given GoogleAnalyticsReportRowsInnerDimensionValuesInner and assigns it to the ProductBrand field.
+func (o *GoogleListingGroupDimension) SetProductBrand(v GoogleAnalyticsReportRowsInnerDimensionValuesInner) {
 	o.ProductBrand = &v
 }
 
@@ -143,9 +143,9 @@ func (o *GoogleListingGroupDimension) SetProductType(v GoogleListingGroupDimensi
 }
 
 // GetProductItemId returns the ProductItemId field value if set, zero value otherwise.
-func (o *GoogleListingGroupDimension) GetProductItemId() GoogleListingGroupDimensionProductBrand {
+func (o *GoogleListingGroupDimension) GetProductItemId() GoogleAnalyticsReportRowsInnerDimensionValuesInner {
 	if o == nil || IsNil(o.ProductItemId) {
-		var ret GoogleListingGroupDimensionProductBrand
+		var ret GoogleAnalyticsReportRowsInnerDimensionValuesInner
 		return ret
 	}
 	return *o.ProductItemId
@@ -153,7 +153,7 @@ func (o *GoogleListingGroupDimension) GetProductItemId() GoogleListingGroupDimen
 
 // GetProductItemIdOk returns a tuple with the ProductItemId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GoogleListingGroupDimension) GetProductItemIdOk() (*GoogleListingGroupDimensionProductBrand, bool) {
+func (o *GoogleListingGroupDimension) GetProductItemIdOk() (*GoogleAnalyticsReportRowsInnerDimensionValuesInner, bool) {
 	if o == nil || IsNil(o.ProductItemId) {
 		return nil, false
 	}
@@ -169,8 +169,8 @@ func (o *GoogleListingGroupDimension) HasProductItemId() bool {
 	return false
 }
 
-// SetProductItemId gets a reference to the given GoogleListingGroupDimensionProductBrand and assigns it to the ProductItemId field.
-func (o *GoogleListingGroupDimension) SetProductItemId(v GoogleListingGroupDimensionProductBrand) {
+// SetProductItemId gets a reference to the given GoogleAnalyticsReportRowsInnerDimensionValuesInner and assigns it to the ProductItemId field.
+func (o *GoogleListingGroupDimension) SetProductItemId(v GoogleAnalyticsReportRowsInnerDimensionValuesInner) {
 	o.ProductItemId = &v
 }
 

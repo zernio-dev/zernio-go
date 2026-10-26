@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.364.0
+API version: 1.365.0
 Contact: support@zernio.com
 */
 
@@ -1750,7 +1750,7 @@ func (r AccountsAPIListAccountsRequest) Search(search string) AccountsAPIListAcc
 	return r
 }
 
-// Only accounts of this kind. ads &#x3D; ad accounts (Meta, Google, LinkedIn, Pinterest, TikTok, X, OpenAI, Reddit), communication &#x3D; WhatsApp, Telegram, Discord, Slack and iMessage, blogs &#x3D; Shopify and WordPress, crm &#x3D; HubSpot, social &#x3D; every other platform.
+// Only accounts of this kind. ads &#x3D; ad accounts (Meta, Google, LinkedIn, Pinterest, TikTok, X, OpenAI, Reddit), communication &#x3D; WhatsApp, Telegram, Discord, Slack and iMessage, blogs &#x3D; Shopify and WordPress, crm &#x3D; HubSpot, analytics &#x3D; Google Analytics, social &#x3D; every other platform.
 func (r AccountsAPIListAccountsRequest) Category(category string) AccountsAPIListAccountsRequest {
 	r.category = &category
 	return r
