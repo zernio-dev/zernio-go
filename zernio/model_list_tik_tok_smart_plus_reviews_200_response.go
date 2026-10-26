@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.361.0
+API version: 1.363.0
 Contact: support@zernio.com
 */
 
@@ -44,8 +44,10 @@ type ListTikTokSmartPlusReviews200Response struct {
 	AllFresh *bool `json:"allFresh,omitempty"`
 	// Smart+ ads of this page never read. Empty when every ad has a stored review or refusal.
 	PendingSmartPlusAdIds []string `json:"pendingSmartPlusAdIds,omitempty"`
-	// Seconds to wait before reading this page again, set only while `incomplete` is true and review reads are paused. Null when complete (stale items included), or when the page is incomplete without a quota pause (read it again right away).
+	// Seconds until Zernio calls TikTok's review endpoint for this advertiser and connection again (the stored pause with its jitter), set exactly when `refreshState` is `paused` or `refused`, stale items with nothing pending included. Always the same value as the `Retry-After` header, which is sent exactly when this is not null. Client rule: present, wait that long before reading the page again; null with stale or pending ads, a retry is not blocked (read again now or on your `maxAgeSeconds` schedule; with `refreshState: error` check `reviewError` first).
 	RetryAfterSeconds NullableInt32 `json:"retryAfterSeconds,omitempty"`
+	// Whether this request could refresh the due (stale or pending) Smart+ ads of the page. `refused`: TikTok refused a review call of this request over quota (40002 `OVER_QPS_LIMIT` or 40100) and Zernio paused. `paused`: no call was sent for the due ads because a pause from an earlier refusal, or the spacing of at least 60 seconds after a success, is still running. Both carry `retryAfterSeconds`. `error`: TikTok refused the batch for another reason (both halves the same way), the page is served from stored reviews and `reviewError` holds TikTok's error; `retryAfterSeconds` is null because retrying soon repeats the refusal. `ok`: nothing blocks a retry (every due ad was read, none was due, or the split cap left some for the next read, which can come right away).
+	RefreshState *string `json:"refreshState,omitempty"`
 }
 
 // NewListTikTokSmartPlusReviews200Response instantiates a new ListTikTokSmartPlusReviews200Response object
@@ -631,6 +633,38 @@ func (o *ListTikTokSmartPlusReviews200Response) UnsetRetryAfterSeconds() {
 	o.RetryAfterSeconds.Unset()
 }
 
+// GetRefreshState returns the RefreshState field value if set, zero value otherwise.
+func (o *ListTikTokSmartPlusReviews200Response) GetRefreshState() string {
+	if o == nil || IsNil(o.RefreshState) {
+		var ret string
+		return ret
+	}
+	return *o.RefreshState
+}
+
+// GetRefreshStateOk returns a tuple with the RefreshState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListTikTokSmartPlusReviews200Response) GetRefreshStateOk() (*string, bool) {
+	if o == nil || IsNil(o.RefreshState) {
+		return nil, false
+	}
+	return o.RefreshState, true
+}
+
+// HasRefreshState returns a boolean if a field has been set.
+func (o *ListTikTokSmartPlusReviews200Response) HasRefreshState() bool {
+	if o != nil && !IsNil(o.RefreshState) {
+		return true
+	}
+
+	return false
+}
+
+// SetRefreshState gets a reference to the given string and assigns it to the RefreshState field.
+func (o *ListTikTokSmartPlusReviews200Response) SetRefreshState(v string) {
+	o.RefreshState = &v
+}
+
 func (o ListTikTokSmartPlusReviews200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -691,6 +725,9 @@ func (o ListTikTokSmartPlusReviews200Response) ToMap() (map[string]interface{}, 
 	}
 	if o.RetryAfterSeconds.IsSet() {
 		toSerialize["retryAfterSeconds"] = o.RetryAfterSeconds.Get()
+	}
+	if !IsNil(o.RefreshState) {
+		toSerialize["refreshState"] = o.RefreshState
 	}
 	return toSerialize, nil
 }
