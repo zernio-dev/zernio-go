@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.365.0
+API version: 1.366.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,8 @@ type BlogArticle struct {
 	BodyHtml NullableString `json:"bodyHtml,omitempty"`
 	// URL slug of the article.
 	Handle *string `json:"handle,omitempty"`
+	// WordPress and Wix. Public URL of the article while it is published; null for drafts and scheduled posts, and on a Wix site that is not published yet.
+	Url NullableString `json:"url,omitempty"`
 	// Tag names. On WordPress and Wix, missing tag names are created and matching is case-insensitive.
 	Tags []string `json:"tags,omitempty"`
 	// Shopify author display name, numeric WordPress user id serialized as a string, or Wix site member id. Wix posts without one are attributed to the site's default author.
@@ -270,6 +272,49 @@ func (o *BlogArticle) HasHandle() bool {
 // SetHandle gets a reference to the given string and assigns it to the Handle field.
 func (o *BlogArticle) SetHandle(v string) {
 	o.Handle = &v
+}
+
+// GetUrl returns the Url field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BlogArticle) GetUrl() string {
+	if o == nil || IsNil(o.Url.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Url.Get()
+}
+
+// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BlogArticle) GetUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Url.Get(), o.Url.IsSet()
+}
+
+// HasUrl returns a boolean if a field has been set.
+func (o *BlogArticle) HasUrl() bool {
+	if o != nil && o.Url.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetUrl gets a reference to the given NullableString and assigns it to the Url field.
+func (o *BlogArticle) SetUrl(v string) {
+	o.Url.Set(&v)
+}
+
+// SetUrlNil sets the value for Url to be an explicit nil
+func (o *BlogArticle) SetUrlNil() {
+	o.Url.Set(nil)
+}
+
+// UnsetUrl ensures that no value is present for Url, not even an explicit nil
+func (o *BlogArticle) UnsetUrl() {
+	o.Url.Unset()
 }
 
 // GetTags returns the Tags field value if set, zero value otherwise.
@@ -685,6 +730,9 @@ func (o BlogArticle) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Handle) {
 		toSerialize["handle"] = o.Handle
+	}
+	if o.Url.IsSet() {
+		toSerialize["url"] = o.Url.Get()
 	}
 	if !IsNil(o.Tags) {
 		toSerialize["tags"] = o.Tags

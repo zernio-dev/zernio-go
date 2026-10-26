@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.365.0
+API version: 1.366.0
 Contact: support@zernio.com
 */
 
@@ -3634,7 +3634,10 @@ with platform `googleanalytics`; it reads reports and does not post.
 Redirect the user to `authUrl`. When the Google account can read one property, Zernio connects
 it and redirects to `redirect_url` (or the dashboard) with `connected=googleanalytics`,
 `profileId`, `accountId` and `username` (the property name). When it can read several, the user
-first picks one on a Zernio-hosted page, which then redirects the same way. On failure the
+first picks one on a Zernio-hosted page, which then redirects the same way. To show your own picker
+instead, add `headless=true` to `redirect_url`: Zernio then redirects there with `step=select_property`,
+`profileId`, `platform=googleanalytics` and a `pendingDataToken` for
+`GET /v1/connect/googleanalytics/properties` and `POST /v1/connect/googleanalytics/select-property`. On failure the
 redirect carries `error`, `platform=googleanalytics` and `error_message`; errors include
 `googleanalytics_scope_missing` (the user unticked Analytics access) and
 `googleanalytics_no_properties`.
@@ -6465,6 +6468,159 @@ func (a *ConnectAPIService) ListFacebookPagesExecute(r ConnectAPIListFacebookPag
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIListGoogleAnalyticsPropertiesRequest struct {
+	ctx              context.Context
+	ApiService       *ConnectAPIService
+	pendingDataToken *string
+}
+
+// Token from the headless redirect.
+func (r ConnectAPIListGoogleAnalyticsPropertiesRequest) PendingDataToken(pendingDataToken string) ConnectAPIListGoogleAnalyticsPropertiesRequest {
+	r.pendingDataToken = &pendingDataToken
+	return r
+}
+
+func (r ConnectAPIListGoogleAnalyticsPropertiesRequest) Execute() (*ListGoogleAnalyticsProperties200Response, *http.Response, error) {
+	return r.ApiService.ListGoogleAnalyticsPropertiesExecute(r)
+}
+
+/*
+ListGoogleAnalyticsProperties List Google Analytics properties for a pending connect
+
+For headless flows. When the connect started with `redirect_url=...?headless=true` and the Google
+account can read several GA4 properties, Zernio redirects to your `redirect_url` with
+`step=select_property`, `profileId`, `platform=googleanalytics` and a `pendingDataToken`. Call this
+to list the properties and show your own picker, then call
+`POST /v1/connect/googleanalytics/select-property`. Listing does not consume the token. A headless
+token passes through your own URLs, so it is honored only together with your API key (or connect
+token) for the same profile. It expires after one hour.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIListGoogleAnalyticsPropertiesRequest
+*/
+func (a *ConnectAPIService) ListGoogleAnalyticsProperties(ctx context.Context) ConnectAPIListGoogleAnalyticsPropertiesRequest {
+	return ConnectAPIListGoogleAnalyticsPropertiesRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListGoogleAnalyticsProperties200Response
+func (a *ConnectAPIService) ListGoogleAnalyticsPropertiesExecute(r ConnectAPIListGoogleAnalyticsPropertiesRequest) (*ListGoogleAnalyticsProperties200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListGoogleAnalyticsProperties200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ListGoogleAnalyticsProperties")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/googleanalytics/properties"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.pendingDataToken == nil {
+		return localVarReturnValue, nil, reportError("pendingDataToken is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "pendingDataToken", r.pendingDataToken, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIListGoogleBusinessLocationsRequest struct {
 	ctx              context.Context
 	ApiService       *ConnectAPIService
@@ -7851,6 +8007,146 @@ func (a *ConnectAPIService) SelectFacebookPageExecute(r ConnectAPISelectFacebook
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 422 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPISelectGoogleAnalyticsPropertyRequest struct {
+	ctx                                  context.Context
+	ApiService                           *ConnectAPIService
+	selectGoogleAnalyticsPropertyRequest *SelectGoogleAnalyticsPropertyRequest
+}
+
+func (r ConnectAPISelectGoogleAnalyticsPropertyRequest) SelectGoogleAnalyticsPropertyRequest(selectGoogleAnalyticsPropertyRequest SelectGoogleAnalyticsPropertyRequest) ConnectAPISelectGoogleAnalyticsPropertyRequest {
+	r.selectGoogleAnalyticsPropertyRequest = &selectGoogleAnalyticsPropertyRequest
+	return r
+}
+
+func (r ConnectAPISelectGoogleAnalyticsPropertyRequest) Execute() (*SelectGoogleAnalyticsProperty200Response, *http.Response, error) {
+	return r.ApiService.SelectGoogleAnalyticsPropertyExecute(r)
+}
+
+/*
+SelectGoogleAnalyticsProperty Connect the chosen Google Analytics property
+
+For headless flows. Connects the property the user picked as a `googleanalytics` account and returns
+where to send the user next: your `redirect_url` with `connected=googleanalytics`, `profileId`,
+`accountId` and `username`, or an `error` when the connect was refused (for example a billing block).
+Consumes the `pendingDataToken`; a refused or failed attempt leaves it usable for a retry. Send your
+API key (or connect token) for the same profile with a headless token.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPISelectGoogleAnalyticsPropertyRequest
+*/
+func (a *ConnectAPIService) SelectGoogleAnalyticsProperty(ctx context.Context) ConnectAPISelectGoogleAnalyticsPropertyRequest {
+	return ConnectAPISelectGoogleAnalyticsPropertyRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SelectGoogleAnalyticsProperty200Response
+func (a *ConnectAPIService) SelectGoogleAnalyticsPropertyExecute(r ConnectAPISelectGoogleAnalyticsPropertyRequest) (*SelectGoogleAnalyticsProperty200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SelectGoogleAnalyticsProperty200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.SelectGoogleAnalyticsProperty")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/googleanalytics/select-property"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.selectGoogleAnalyticsPropertyRequest == nil {
+		return localVarReturnValue, nil, reportError("selectGoogleAnalyticsPropertyRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.selectGoogleAnalyticsPropertyRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
