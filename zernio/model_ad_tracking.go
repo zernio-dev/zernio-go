@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.360.0
+API version: 1.361.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type AdTracking struct {
 	PixelId *string `json:"pixelId,omitempty"`
 	// Click-URL params. Meta: stored on the creative as `url_tags` and returned by GET /v1/ads/{adId}/tracking-tags. App-promotion linkUrl stays byte-identical to promotedObject.objectStoreUrl. Meta dynamic macros ({{ad.id}}, {{campaign.id}}, {{placement}}, ...) are sent through unescaped so Meta expands them; every other character is percent-encoded. ChatGPT (OpenAI): the same encoding, with OpenAI's macros `{campaign_id}`, `{ad_group_id}`, `{ad_id}` and `{oppref}` (click id) passed through raw. OpenAI expands macros here, not inside `linkUrl`.
 	UrlTags []UpdateAdTrackingTagsRequestUrlTagsInner `json:"urlTags,omitempty"`
+	// POST /v1/ads/create on Meta and Google only. Every ad created there carries `zrn=<platform ad id>` on its landing URL so orders and events tied to the landing URL map back to the ad. Meta: `{ key: zrn, value: '{{ad.id}}' }` is appended after your `urlTags`, which are sent unchanged; a `zrn` key you send yourself is kept. Skipped for lead forms, call ads, `existingCreativeId` and app promotion. Google (Display and Search): the ad's `final_url_suffix` becomes the suffix it would inherit (ad group, campaign or account) plus `&zrn={creative}`, so your account and campaign UTMs still apply; if that suffix cannot be read or Google rejects it, the ad is created untagged. Existing ads are never changed. Set `false` to create the ad with no Zernio tag.
+	ZernioTag *bool `json:"zernioTag,omitempty"`
 }
 
 // NewAdTracking instantiates a new AdTracking object
@@ -32,6 +34,8 @@ type AdTracking struct {
 // will change when the set of required properties is changed
 func NewAdTracking() *AdTracking {
 	this := AdTracking{}
+	var zernioTag bool = true
+	this.ZernioTag = &zernioTag
 	return &this
 }
 
@@ -40,6 +44,8 @@ func NewAdTracking() *AdTracking {
 // but it doesn't guarantee that properties required by API are set
 func NewAdTrackingWithDefaults() *AdTracking {
 	this := AdTracking{}
+	var zernioTag bool = true
+	this.ZernioTag = &zernioTag
 	return &this
 }
 
@@ -107,6 +113,38 @@ func (o *AdTracking) SetUrlTags(v []UpdateAdTrackingTagsRequestUrlTagsInner) {
 	o.UrlTags = v
 }
 
+// GetZernioTag returns the ZernioTag field value if set, zero value otherwise.
+func (o *AdTracking) GetZernioTag() bool {
+	if o == nil || IsNil(o.ZernioTag) {
+		var ret bool
+		return ret
+	}
+	return *o.ZernioTag
+}
+
+// GetZernioTagOk returns a tuple with the ZernioTag field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTracking) GetZernioTagOk() (*bool, bool) {
+	if o == nil || IsNil(o.ZernioTag) {
+		return nil, false
+	}
+	return o.ZernioTag, true
+}
+
+// HasZernioTag returns a boolean if a field has been set.
+func (o *AdTracking) HasZernioTag() bool {
+	if o != nil && !IsNil(o.ZernioTag) {
+		return true
+	}
+
+	return false
+}
+
+// SetZernioTag gets a reference to the given bool and assigns it to the ZernioTag field.
+func (o *AdTracking) SetZernioTag(v bool) {
+	o.ZernioTag = &v
+}
+
 func (o AdTracking) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -122,6 +160,9 @@ func (o AdTracking) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.UrlTags) {
 		toSerialize["urlTags"] = o.UrlTags
+	}
+	if !IsNil(o.ZernioTag) {
+		toSerialize["zernioTag"] = o.ZernioTag
 	}
 	return toSerialize, nil
 }
