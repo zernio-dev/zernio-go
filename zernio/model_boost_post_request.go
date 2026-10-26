@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.363.0
+API version: 1.364.0
 Contact: support@zernio.com
 */
 
@@ -128,8 +128,10 @@ type BoostPostRequest struct {
 	// Meta only. Ad-set attribution windows, same shape as POST /v1/ads/create. Applied on OUTCOME_SALES, OUTCOME_LEADS and OUTCOME_APP_PROMOTION campaigns (conversions, lead_conversion, lead_generation, app_promotion); other objectives keep Meta's default. Not allowed with adSetId.
 	AttributionSpec []BoostPostRequestAttributionSpecInner `json:"attributionSpec,omitempty"`
 	// Meta only. Extra primary-text options Meta rotates on the boosted post (asset_feed_spec.bodies with DEGREES_OF_FREEDOM); the post keeps its own text as one of the options. Works for Facebook posts and Instagram media. Under a conversions or traffic goal Meta also wants a website URL on the options, taken from `linkUrl` (send it with a `callToAction`); engagement boosts need none.
-	Bodies         []string                          `json:"bodies,omitempty"`
-	SmartTargeting *UpdateAdSetRequestSmartTargeting `json:"smartTargeting,omitempty"`
+	Bodies []string `json:"bodies,omitempty"`
+	// Meta only (a 400 elsewhere). When Meta refuses an existing Instagram video as the ad (subcode 1815279), Zernio first copies the video into the ad account and retries on the original post, then falls back to a new Facebook video in a new Page post that does not show the original post's likes and comments; the response reports which in `instagramVideoFallback`. Messaging boosts never use the unlinked copy. `false` skips every fallback and returns Meta's error.
+	RehostOnInstagramVideoRejection *bool                             `json:"rehostOnInstagramVideoRejection,omitempty"`
+	SmartTargeting                  *UpdateAdSetRequestSmartTargeting `json:"smartTargeting,omitempty"`
 	// Meta, or TikTok with `goal: video_views`. TikTok: ENGAGED_VIEW (6-second Focused View, the default) or ENGAGED_VIEW_FIFTEEN (15-second views), both billed per view (CPV); any other value is a 400. Meta: explicit ad-set `optimization_goal` override. When omitted, defaults to the value derived from `goal`. Messaging boosts always use CONVERSATIONS and reject another optimizationGoal. Otherwise the value must be compatible with the objective Meta derives from `goal`, not with the objective used by `POST /v1/ads/create` for the same `goal` name: boost maps `goal: \"engagement\"` to objective `OUTCOME_AWARENESS`, which accepts `REACH`, `IMPRESSIONS`, `AD_RECALL_LIFT`, or THRUPLAY-class values, and rejects `POST_ENGAGEMENT` (that value is only valid under `OUTCOME_ENGAGEMENT`, which create uses for the same goal name, and which `metaObjective` selects on a boost).
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 	// Meta only, with `goal: engagement` and without `adSetId` (400 otherwise). `OUTCOME_ENGAGEMENT` creates the campaign with objective `OUTCOME_ENGAGEMENT` and the ad set with `optimization_goal` `POST_ENGAGEMENT` (unless `optimizationGoal` is set) and `destination_type` `ON_POST` (unless `destinationType` is set), the shape Ads Manager uses to boost an existing post. When omitted, an engagement boost keeps `OUTCOME_AWARENESS` with `REACH`. Returns 400 with `leadGenFormId` or with a `callToAction` whose objective is not `OUTCOME_ENGAGEMENT` (`CALL_NOW`); messaging CTAs keep their own `CONVERSATIONS` ad set. Verified against Meta on Facebook posts; Instagram posts are accepted but not yet verified.
@@ -148,6 +150,8 @@ func NewBoostPostRequest(accountId string, adAccountId string, name string, goal
 	this.AdAccountId = adAccountId
 	this.Name = name
 	this.Goal = goal
+	var rehostOnInstagramVideoRejection bool = true
+	this.RehostOnInstagramVideoRejection = &rehostOnInstagramVideoRejection
 	return &this
 }
 
@@ -156,6 +160,8 @@ func NewBoostPostRequest(accountId string, adAccountId string, name string, goal
 // but it doesn't guarantee that properties required by API are set
 func NewBoostPostRequestWithDefaults() *BoostPostRequest {
 	this := BoostPostRequest{}
+	var rehostOnInstagramVideoRejection bool = true
+	this.RehostOnInstagramVideoRejection = &rehostOnInstagramVideoRejection
 	return &this
 }
 
@@ -1870,6 +1876,38 @@ func (o *BoostPostRequest) SetBodies(v []string) {
 	o.Bodies = v
 }
 
+// GetRehostOnInstagramVideoRejection returns the RehostOnInstagramVideoRejection field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetRehostOnInstagramVideoRejection() bool {
+	if o == nil || IsNil(o.RehostOnInstagramVideoRejection) {
+		var ret bool
+		return ret
+	}
+	return *o.RehostOnInstagramVideoRejection
+}
+
+// GetRehostOnInstagramVideoRejectionOk returns a tuple with the RehostOnInstagramVideoRejection field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetRehostOnInstagramVideoRejectionOk() (*bool, bool) {
+	if o == nil || IsNil(o.RehostOnInstagramVideoRejection) {
+		return nil, false
+	}
+	return o.RehostOnInstagramVideoRejection, true
+}
+
+// HasRehostOnInstagramVideoRejection returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasRehostOnInstagramVideoRejection() bool {
+	if o != nil && !IsNil(o.RehostOnInstagramVideoRejection) {
+		return true
+	}
+
+	return false
+}
+
+// SetRehostOnInstagramVideoRejection gets a reference to the given bool and assigns it to the RehostOnInstagramVideoRejection field.
+func (o *BoostPostRequest) SetRehostOnInstagramVideoRejection(v bool) {
+	o.RehostOnInstagramVideoRejection = &v
+}
+
 // GetSmartTargeting returns the SmartTargeting field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetSmartTargeting() UpdateAdSetRequestSmartTargeting {
 	if o == nil || IsNil(o.SmartTargeting) {
@@ -2129,6 +2167,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Bodies) {
 		toSerialize["bodies"] = o.Bodies
+	}
+	if !IsNil(o.RehostOnInstagramVideoRejection) {
+		toSerialize["rehostOnInstagramVideoRejection"] = o.RehostOnInstagramVideoRejection
 	}
 	if !IsNil(o.SmartTargeting) {
 		toSerialize["smartTargeting"] = o.SmartTargeting

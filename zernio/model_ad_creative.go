@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.363.0
+API version: 1.364.0
 Contact: support@zernio.com
 */
 
@@ -81,10 +81,11 @@ type AdCreative struct {
 	// Destination URL
 	LinkUrl *string `json:"linkUrl,omitempty"`
 	// Explicit E.164 WhatsApp number supplied when creating a Meta boost or messaging ad. Absent when omitted by the caller or on older records.
-	WhatsappPhoneNumber  *string `json:"whatsappPhoneNumber,omitempty"`
-	PinterestImageUrl    *string `json:"pinterestImageUrl,omitempty"`
-	PinterestTitle       *string `json:"pinterestTitle,omitempty"`
-	PinterestDescription *string `json:"pinterestDescription,omitempty"`
+	WhatsappPhoneNumber    *string                 `json:"whatsappPhoneNumber,omitempty"`
+	InstagramVideoFallback *InstagramVideoFallback `json:"instagramVideoFallback,omitempty"`
+	PinterestImageUrl      *string                 `json:"pinterestImageUrl,omitempty"`
+	PinterestTitle         *string                 `json:"pinterestTitle,omitempty"`
+	PinterestDescription   *string                 `json:"pinterestDescription,omitempty"`
 }
 
 // NewAdCreative instantiates a new AdCreative object
@@ -1260,6 +1261,38 @@ func (o *AdCreative) SetWhatsappPhoneNumber(v string) {
 	o.WhatsappPhoneNumber = &v
 }
 
+// GetInstagramVideoFallback returns the InstagramVideoFallback field value if set, zero value otherwise.
+func (o *AdCreative) GetInstagramVideoFallback() InstagramVideoFallback {
+	if o == nil || IsNil(o.InstagramVideoFallback) {
+		var ret InstagramVideoFallback
+		return ret
+	}
+	return *o.InstagramVideoFallback
+}
+
+// GetInstagramVideoFallbackOk returns a tuple with the InstagramVideoFallback field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetInstagramVideoFallbackOk() (*InstagramVideoFallback, bool) {
+	if o == nil || IsNil(o.InstagramVideoFallback) {
+		return nil, false
+	}
+	return o.InstagramVideoFallback, true
+}
+
+// HasInstagramVideoFallback returns a boolean if a field has been set.
+func (o *AdCreative) HasInstagramVideoFallback() bool {
+	if o != nil && !IsNil(o.InstagramVideoFallback) {
+		return true
+	}
+
+	return false
+}
+
+// SetInstagramVideoFallback gets a reference to the given InstagramVideoFallback and assigns it to the InstagramVideoFallback field.
+func (o *AdCreative) SetInstagramVideoFallback(v InstagramVideoFallback) {
+	o.InstagramVideoFallback = &v
+}
+
 // GetPinterestImageUrl returns the PinterestImageUrl field value if set, zero value otherwise.
 func (o *AdCreative) GetPinterestImageUrl() string {
 	if o == nil || IsNil(o.PinterestImageUrl) {
@@ -1461,6 +1494,9 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.WhatsappPhoneNumber) {
 		toSerialize["whatsappPhoneNumber"] = o.WhatsappPhoneNumber
+	}
+	if !IsNil(o.InstagramVideoFallback) {
+		toSerialize["instagramVideoFallback"] = o.InstagramVideoFallback
 	}
 	if !IsNil(o.PinterestImageUrl) {
 		toSerialize["pinterestImageUrl"] = o.PinterestImageUrl
