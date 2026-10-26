@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.366.1
+API version: 1.368.0
 Contact: support@zernio.com
 */
 
@@ -10160,7 +10160,10 @@ PUT /v1/ads/{adId}/status. See the Status model in the Ad Campaigns tag.
 
 **Live read, then write.** The campaign's switch is read from the platform first. When that
 live read shows it already in the requested state nothing is written (`updated: 0`,
-`skipped: 1`, with the reason). Otherwise the switch is written (`updated: 1`), read back and
+`skipped: 1`, with the reason), and when the campaign delivers in that state but some of its
+ads are stored in the other state (for example ads switched on in the platform's own UI and
+still stored `paused`), those ads (up to 20, at most once every 10 minutes per campaign) are
+re-read and stored. Otherwise the switch is written (`updated: 1`), read back and
 stored, and the delivery status of the ads under it (up to 20) is re-read and stored, so an
 immediate GET returns what the platform now reports. A stored switch never skips a write, and
 when the platform cannot be read the write always goes out. On Meta the check reads the
@@ -10836,7 +10839,10 @@ in the Ad Campaigns tag.
 
 **Live read, then write.** The ad set's switch is read from the platform
 first. When that live read shows it already in the requested state
-nothing is written (`updated: 0`, `skipped: 1`, with the reason).
+nothing is written (`updated: 0`, `skipped: 1`, with the reason), and
+when the ad set delivers in that state but some of its ads are stored in
+the other state, those ads (up to 20, at most once every 10 minutes per
+ad set) are re-read and stored.
 Otherwise the switch is written (`updated: 1`), read back and stored, and
 the delivery status of its ads (up to 20) is re-read and stored, so an
 immediate GET returns what the platform now reports. A stored switch
