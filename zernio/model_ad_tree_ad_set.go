@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.387.0
+API version: 1.388.0
 Contact: support@zernio.com
 */
 
@@ -46,8 +46,10 @@ type AdTreeAdSet struct {
 	// LinkedIn only. Effective cost model (billing event) of the LinkedIn campaign backing this ad set: CPM, CPC or CPV. Null for non-LinkedIn ad sets.
 	CostType NullableString `json:"costType,omitempty"`
 	// LinkedIn only. Why the LinkedIn campaign backing this ad set is (or is not) delivering. A LinkedIn Campaign maps to this ad-set node, so this is the level where LinkedIn's holds actually apply. Empty means no serving data, [\"RUNNABLE\"] means eligible to serve, anything else is a hold. See the `servingStatuses` field on `Ad` for the known values.
-	ServingStatuses []string                   `json:"servingStatuses,omitempty"`
-	PromotedObject  *AdTreeAdSetPromotedObject `json:"promotedObject,omitempty"`
+	ServingStatuses []string `json:"servingStatuses,omitempty"`
+	// Meta only. Where the ad set stands in Meta's learning phase, as of the last sync: LEARNING while delivery is still being optimized (about 50 optimization events in 7 days end it), SUCCESS once it has left learning, FAIL when it could not gather enough events (Ads Manager's \"Learning limited\"). Null on other platforms and for ad sets not yet synced.
+	LearningStatus NullableString             `json:"learningStatus,omitempty"`
+	PromotedObject *AdTreeAdSetPromotedObject `json:"promotedObject,omitempty"`
 	// Individual ads within this ad set (capped at 100). When the ad set has more than 100 ads these are the 100 highest-spending over the requested date range, so this array depends on `fromDate`/`toDate`; `adCount` is always the true ad set size. Returns a subset of Ad fields from the aggregation: `_id`, `name`, `platform`, `status`, `configuredStatus`, `reviewStatus`, `budget`, `metrics`, `creative`, `goal` and the `platform*` ids are always included; `targeting` and `schedule` may be absent. `configuredStatus` (the ad's own on/off toggle) and `reviewStatus` (the platform's review verdict) are part of this contract, not incidental: a rejected ad is only distinguishable from a healthy one through `reviewStatus`. When `timeIncrement=1&dailyLevel=ad`, each entry also carries a `daily[]` array of `AdDailyMetrics`.
 	Ads []Ad `json:"ads,omitempty"`
 	// Per-day metric series for this ad set. Present only when `GET /v1/ads/tree` is called with `timeIncrement=1` and `dailyLevel` is `adset` or `ad`.
@@ -649,6 +651,49 @@ func (o *AdTreeAdSet) SetServingStatuses(v []string) {
 	o.ServingStatuses = v
 }
 
+// GetLearningStatus returns the LearningStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdTreeAdSet) GetLearningStatus() string {
+	if o == nil || IsNil(o.LearningStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.LearningStatus.Get()
+}
+
+// GetLearningStatusOk returns a tuple with the LearningStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdTreeAdSet) GetLearningStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LearningStatus.Get(), o.LearningStatus.IsSet()
+}
+
+// HasLearningStatus returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasLearningStatus() bool {
+	if o != nil && o.LearningStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLearningStatus gets a reference to the given NullableString and assigns it to the LearningStatus field.
+func (o *AdTreeAdSet) SetLearningStatus(v string) {
+	o.LearningStatus.Set(&v)
+}
+
+// SetLearningStatusNil sets the value for LearningStatus to be an explicit nil
+func (o *AdTreeAdSet) SetLearningStatusNil() {
+	o.LearningStatus.Set(nil)
+}
+
+// UnsetLearningStatus ensures that no value is present for LearningStatus, not even an explicit nil
+func (o *AdTreeAdSet) UnsetLearningStatus() {
+	o.LearningStatus.Unset()
+}
+
 // GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
 func (o *AdTreeAdSet) GetPromotedObject() AdTreeAdSetPromotedObject {
 	if o == nil || IsNil(o.PromotedObject) {
@@ -802,6 +847,9 @@ func (o AdTreeAdSet) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ServingStatuses) {
 		toSerialize["servingStatuses"] = o.ServingStatuses
+	}
+	if o.LearningStatus.IsSet() {
+		toSerialize["learningStatus"] = o.LearningStatus.Get()
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject
