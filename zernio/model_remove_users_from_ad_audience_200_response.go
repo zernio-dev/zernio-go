@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.382.0
+API version: 1.383.0
 Contact: support@zernio.com
 */
 
@@ -21,9 +21,9 @@ var _ MappedNullable = &RemoveUsersFromAdAudience200Response{}
 // RemoveUsersFromAdAudience200Response struct for RemoveUsersFromAdAudience200Response
 type RemoveUsersFromAdAudience200Response struct {
 	Message *string `json:"message,omitempty"`
-	// Rows Meta received.
+	// Rows the platform received.
 	NumReceived *int32 `json:"numReceived,omitempty"`
-	// Rows Meta could not read.
+	// Rows the platform could not read.
 	NumInvalid *int32 `json:"numInvalid,omitempty"`
 	// A sample of the rows Meta could not read, passed through as Meta returns it. Empty when every row was valid.
 	InvalidEntrySamples map[string]string `json:"invalidEntrySamples,omitempty"`
