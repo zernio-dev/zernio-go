@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.376.0
+API version: 1.377.0
 Contact: support@zernio.com
 */
 
@@ -19,8 +19,8 @@ import (
 
 // CreateStandaloneAd201Response - struct for CreateStandaloneAd201Response
 type CreateStandaloneAd201Response struct {
-	CreateStandaloneAd201ResponseOneOf *CreateStandaloneAd201ResponseOneOf
-	UpdateAd200Response                *UpdateAd200Response
+	CreateStandaloneAd201ResponseOneOf  *CreateStandaloneAd201ResponseOneOf
+	CreateStandaloneAd201ResponseOneOf1 *CreateStandaloneAd201ResponseOneOf1
 }
 
 // CreateStandaloneAd201ResponseOneOfAsCreateStandaloneAd201Response is a convenience function that returns CreateStandaloneAd201ResponseOneOf wrapped in CreateStandaloneAd201Response
@@ -30,10 +30,10 @@ func CreateStandaloneAd201ResponseOneOfAsCreateStandaloneAd201Response(v *Create
 	}
 }
 
-// UpdateAd200ResponseAsCreateStandaloneAd201Response is a convenience function that returns UpdateAd200Response wrapped in CreateStandaloneAd201Response
-func UpdateAd200ResponseAsCreateStandaloneAd201Response(v *UpdateAd200Response) CreateStandaloneAd201Response {
+// CreateStandaloneAd201ResponseOneOf1AsCreateStandaloneAd201Response is a convenience function that returns CreateStandaloneAd201ResponseOneOf1 wrapped in CreateStandaloneAd201Response
+func CreateStandaloneAd201ResponseOneOf1AsCreateStandaloneAd201Response(v *CreateStandaloneAd201ResponseOneOf1) CreateStandaloneAd201Response {
 	return CreateStandaloneAd201Response{
-		UpdateAd200Response: v,
+		CreateStandaloneAd201ResponseOneOf1: v,
 	}
 }
 
@@ -58,27 +58,27 @@ func (dst *CreateStandaloneAd201Response) UnmarshalJSON(data []byte) error {
 		dst.CreateStandaloneAd201ResponseOneOf = nil
 	}
 
-	// try to unmarshal data into UpdateAd200Response
-	err = newStrictDecoder(data).Decode(&dst.UpdateAd200Response)
+	// try to unmarshal data into CreateStandaloneAd201ResponseOneOf1
+	err = newStrictDecoder(data).Decode(&dst.CreateStandaloneAd201ResponseOneOf1)
 	if err == nil {
-		jsonUpdateAd200Response, _ := json.Marshal(dst.UpdateAd200Response)
-		if string(jsonUpdateAd200Response) == "{}" { // empty struct
-			dst.UpdateAd200Response = nil
+		jsonCreateStandaloneAd201ResponseOneOf1, _ := json.Marshal(dst.CreateStandaloneAd201ResponseOneOf1)
+		if string(jsonCreateStandaloneAd201ResponseOneOf1) == "{}" { // empty struct
+			dst.CreateStandaloneAd201ResponseOneOf1 = nil
 		} else {
-			if err = validator.Validate(dst.UpdateAd200Response); err != nil {
-				dst.UpdateAd200Response = nil
+			if err = validator.Validate(dst.CreateStandaloneAd201ResponseOneOf1); err != nil {
+				dst.CreateStandaloneAd201ResponseOneOf1 = nil
 			} else {
 				match++
 			}
 		}
 	} else {
-		dst.UpdateAd200Response = nil
+		dst.CreateStandaloneAd201ResponseOneOf1 = nil
 	}
 
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.CreateStandaloneAd201ResponseOneOf = nil
-		dst.UpdateAd200Response = nil
+		dst.CreateStandaloneAd201ResponseOneOf1 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(CreateStandaloneAd201Response)")
 	} else if match == 1 {
@@ -94,8 +94,8 @@ func (src CreateStandaloneAd201Response) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.CreateStandaloneAd201ResponseOneOf)
 	}
 
-	if src.UpdateAd200Response != nil {
-		return json.Marshal(&src.UpdateAd200Response)
+	if src.CreateStandaloneAd201ResponseOneOf1 != nil {
+		return json.Marshal(&src.CreateStandaloneAd201ResponseOneOf1)
 	}
 
 	return nil, nil // no data in oneOf schemas
@@ -110,8 +110,8 @@ func (obj *CreateStandaloneAd201Response) GetActualInstance() interface{} {
 		return obj.CreateStandaloneAd201ResponseOneOf
 	}
 
-	if obj.UpdateAd200Response != nil {
-		return obj.UpdateAd200Response
+	if obj.CreateStandaloneAd201ResponseOneOf1 != nil {
+		return obj.CreateStandaloneAd201ResponseOneOf1
 	}
 
 	// all schemas are nil
@@ -124,8 +124,8 @@ func (obj CreateStandaloneAd201Response) GetActualInstanceValue() interface{} {
 		return *obj.CreateStandaloneAd201ResponseOneOf
 	}
 
-	if obj.UpdateAd200Response != nil {
-		return *obj.UpdateAd200Response
+	if obj.CreateStandaloneAd201ResponseOneOf1 != nil {
+		return *obj.CreateStandaloneAd201ResponseOneOf1
 	}
 
 	// all schemas are nil

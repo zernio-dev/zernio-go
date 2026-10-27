@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.376.0
+API version: 1.377.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,8 @@ var _ MappedNullable = &CreateStandaloneAdRequest{}
 type CreateStandaloneAdRequest struct {
 	AccountId   string `json:"accountId"`
 	AdAccountId string `json:"adAccountId"`
-	Name        string `json:"name"`
+	// Omitted, the ad is named `Ad <YYYY-MM-DD HH:MM:SS>` (UTC) and the response reports it in `appliedDefaults.name`.
+	Name *string `json:"name,omitempty"`
 	// Meta, Reddit and Google. Exact campaign name. Overrides the default `<name> - Campaign`. Ignored when the request joins an existing campaign or ad set. Google: no line breaks and at most 255 characters, checked before calling Google; names are unique in the Google Ads account, and on Search and Display a taken name is a 400 naming this field.
 	CampaignName *string `json:"campaignName,omitempty"`
 	// Meta, Reddit and Google (the ad group). Exact ad set name. Overrides the default `<name> - Ad Set` (Google Search and Display: `<name> - Ad Group`). Ignored when the request joins an existing ad set (`adSetId`). Google Search and Display only, also on `existingCampaignId`, where the new ad group's name is returned as `adSetName`; no line breaks, at most 255 characters, unique in the campaign (a taken name is a 400 naming this field). Demand Gen names its ad group with `demandGen.adGroupName` and Performance Max with `assetGroup.name`. (For per-ad names on the multi-creative shape, set `name` on each `creatives[]` entry.)
@@ -33,7 +34,7 @@ type CreateStandaloneAdRequest struct {
 	// Meta only. Exact ad name (the single-creative ad object's name). Overrides the default, which is `name`. (For per-ad names on the multi-creative shape, set `name` on each `creatives[]` entry instead.)
 	AdName   *string     `json:"adName,omitempty"`
 	Tracking *AdTracking `json:"tracking,omitempty"`
-	// Required on legacy and multi-creative shapes; the attach shape inherits it from the ad set. Available goals vary by platform.  **Meta** - `conversions`: OUTCOME_SALES. Requires `promotedObject.pixelId` and `promotedObject.customEventType` with a commerce event such as PURCHASE or START_TRIAL, or `promotedObject.customConversionId` to optimise against a Custom Conversion, or `customEventType: OTHER` + `customEventStr` to optimise against a pixel custom event. - `lead_conversion`: OUTCOME_LEADS optimizing website pixel leads. Same pixel and event fields, but with a leads-class event such as LEAD, SUBMIT_APPLICATION, SCHEDULE or CONTACT (or `promotedObject.customConversionId` to optimise against a Custom Conversion instead). Meta gates conversion events by objective, so leads-class events are rejected under `conversions`. - `lead_generation`: OUTCOME_LEADS with instant forms. Requires `leadGenFormId`. `promotedObject.pageId` is optional and auto-filled from the connected Page. - `app_promotion`: requires `promotedObject.applicationId` and `promotedObject.objectStoreUrl`. - `catalog_sales`: Advantage+ catalog ads, for example vehicle inventory. Requires `promotedObject.productSetId`, `promotedObject.pixelId` and `promotedObject.customEventType`. Builds a catalog TEMPLATE creative from the copy fields, which may carry template tags like {{product.name}} or {{vehicle.make}}. No imageUrl or video is sent; Meta renders the visuals per catalog item. Discover catalogs via GET /v1/ads/catalogs and product sets via GET /v1/ads/catalogs/{catalogId}/product-sets. Single shape only, no creatives[], dynamicCreative, placementAssets, existingCreativeId or carouselCards; an imageUrl or video sent with it is ignored and not uploaded. Works with `existingCampaignId`, and with `adSetId` to add a catalog ad to an existing ad set (then only `promotedObject.productSetId` is required; pixel and event stay on the ad set). Pick the format with `catalogFormat`. - `traffic` with `promotedObject.productSetId`: a catalog ad without a pixel (OUTCOME_TRAFFIC, `optimizationGoal` LINK_CLICKS by default or LANDING_PAGE_VIEWS). The product set goes on the template creative only, never on the ad set's promoted_object, and no `pixelId` or `customEventType` is needed. Same creative rules as `catalog_sales`. - `page_likes`: Page Likes conversion location under OUTCOME_ENGAGEMENT (destination_type ON_PAGE, optimization PAGE_LIKES). `promotedObject.pageId` is optional and auto-filled from the connected Page. The creative CTA is fixed to LIKE_PAGE targeting that Page; headline / body / linkUrl / callToAction / imageUrl / video are all optional (Meta derives the link and the Like button from the Page). - `page_visits`: Meta's \"Page visits and followers\" under OUTCOME_TRAFFIC (destination_type FACEBOOK_PAGE, optimization PROFILE_VISIT). `promotedObject.pageId` is optional and auto-filled from the connected Page, and `linkUrl` defaults to the Page. Meta enables Profile Visit ads per ad account: one it has not enabled is refused with Meta's \"This account isn't eligible to use Profile Visit ads yet\".  **TikTok** - `conversions`: website-conversion ad group. Requires `promotedObject.pixelId`, your TikTok Pixel ID. Accepts an optional `promotedObject.customEventType` with a TikTok optimization_event code your pixel tracks (newer pixels use e.g. SHOPPING for purchase events; legacy pixels use ON_WEB_ORDER, INITIATE_ORDER, ON_WEB_REGISTER or FORM). To inherit pixel and event from an existing ad group, pass `adSetId` instead.  **LinkedIn** - `engagement`, `traffic`, `awareness` and `video_views` create standalone Direct Sponsored Content ads. `traffic` requires `linkUrl`; `video_views` requires `video`. - `lead_generation`: requires `leadGenFormId` (an adForm ID from POST /v1/ads/lead-forms). The campaign objective is set to MAX_LEAD and the creative's `leadgenCallToAction` destination is set to `urn:li:adForm:{id}`. - `job_applicants` requires a `platformSpecificData.jobs` creative. - For `conversions` on LinkedIn, or to promote an existing post, use POST /v1/ads/boost.  **OpenAI Ads** - Only `traffic`, `awareness`, and `conversions` are supported (other goals return 400). Maps to OpenAI's `bidding_type` (clicks, impressions, conversions respectively). `conversions` requires an active conversion event setting on the account; create a tracking tag with `defaultEventType` via the tracking-tags API (`POST /v1/accounts/{accountId}/tracking-tags`), or configure a conversion event in OpenAI Ads Manager, or the request returns 400. Pick the event with `promotedObject.customEventType` (see AdPromotedObject); without it the most recently created optimizable event is used.  **Reddit Ads** - `traffic` (CLICKS), `awareness` (BRAND_AWARENESS), `conversions`, `video_views` (VIDEO_VIEWABLE_IMPRESSIONS) and `lead_generation` (LEAD_GENERATION); any other goal returns 400. - `conversions` requires `promotedObject.customEventType`; the pixel must already have received that event (see AdPromotedObject). - `lead_generation` sends people to `linkUrl` and optimizes toward the pixel's Lead event, which the pixel must already have received. Reddit retired its native lead forms on September 30, 2026, so `leadGenFormId` returns 400. - `video_views` needs a `video` (422 otherwise); `optimizationGoal` picks VIDEO_VIEW_6S (default) or VIDEO_VIEW_15S.
+	// Available goals vary by platform. Omitted, it is inferred from the ad (see `appliedDefaults.goal` in the response); the attach shape inherits it from the ad set.  **Meta** - `conversions`: OUTCOME_SALES. Requires `promotedObject.pixelId` and `promotedObject.customEventType` with a commerce event such as PURCHASE or START_TRIAL, or `promotedObject.customConversionId` to optimise against a Custom Conversion, or `customEventType: OTHER` + `customEventStr` to optimise against a pixel custom event. - `lead_conversion`: OUTCOME_LEADS optimizing website pixel leads. Same pixel and event fields, but with a leads-class event such as LEAD, SUBMIT_APPLICATION, SCHEDULE or CONTACT (or `promotedObject.customConversionId` to optimise against a Custom Conversion instead). Meta gates conversion events by objective, so leads-class events are rejected under `conversions`. - `lead_generation`: OUTCOME_LEADS with instant forms. Requires `leadGenFormId`. `promotedObject.pageId` is optional and auto-filled from the connected Page. - `app_promotion`: requires `promotedObject.applicationId` and `promotedObject.objectStoreUrl`. - `catalog_sales`: Advantage+ catalog ads, for example vehicle inventory. Requires `promotedObject.productSetId`, `promotedObject.pixelId` and `promotedObject.customEventType`. Builds a catalog TEMPLATE creative from the copy fields, which may carry template tags like {{product.name}} or {{vehicle.make}}. No imageUrl or video is sent; Meta renders the visuals per catalog item. Discover catalogs via GET /v1/ads/catalogs and product sets via GET /v1/ads/catalogs/{catalogId}/product-sets. Single shape only, no creatives[], dynamicCreative, placementAssets, existingCreativeId or carouselCards; an imageUrl or video sent with it is ignored and not uploaded. Works with `existingCampaignId`, and with `adSetId` to add a catalog ad to an existing ad set (then only `promotedObject.productSetId` is required; pixel and event stay on the ad set). Pick the format with `catalogFormat`. - `traffic` with `promotedObject.productSetId`: a catalog ad without a pixel (OUTCOME_TRAFFIC, `optimizationGoal` LINK_CLICKS by default or LANDING_PAGE_VIEWS). The product set goes on the template creative only, never on the ad set's promoted_object, and no `pixelId` or `customEventType` is needed. Same creative rules as `catalog_sales`. - `page_likes`: Page Likes conversion location under OUTCOME_ENGAGEMENT (destination_type ON_PAGE, optimization PAGE_LIKES). `promotedObject.pageId` is optional and auto-filled from the connected Page. The creative CTA is fixed to LIKE_PAGE targeting that Page; headline / body / linkUrl / callToAction / imageUrl / video are all optional (Meta derives the link and the Like button from the Page). - `page_visits`: Meta's \"Page visits and followers\" under OUTCOME_TRAFFIC (destination_type FACEBOOK_PAGE, optimization PROFILE_VISIT). `promotedObject.pageId` is optional and auto-filled from the connected Page, and `linkUrl` defaults to the Page. Meta enables Profile Visit ads per ad account: one it has not enabled is refused with Meta's \"This account isn't eligible to use Profile Visit ads yet\".  **TikTok** - `conversions`: website-conversion ad group. Requires `promotedObject.pixelId`, your TikTok Pixel ID. Accepts an optional `promotedObject.customEventType` with a TikTok optimization_event code your pixel tracks (newer pixels use e.g. SHOPPING for purchase events; legacy pixels use ON_WEB_ORDER, INITIATE_ORDER, ON_WEB_REGISTER or FORM). To inherit pixel and event from an existing ad group, pass `adSetId` instead.  **LinkedIn** - `engagement`, `traffic`, `awareness` and `video_views` create standalone Direct Sponsored Content ads. `traffic` requires `linkUrl`; `video_views` requires `video`. - `lead_generation`: requires `leadGenFormId` (an adForm ID from POST /v1/ads/lead-forms). The campaign objective is set to MAX_LEAD and the creative's `leadgenCallToAction` destination is set to `urn:li:adForm:{id}`. - `job_applicants` requires a `platformSpecificData.jobs` creative. - For `conversions` on LinkedIn, or to promote an existing post, use POST /v1/ads/boost.  **OpenAI Ads** - Only `traffic`, `awareness`, and `conversions` are supported (other goals return 400). Maps to OpenAI's `bidding_type` (clicks, impressions, conversions respectively). `conversions` requires an active conversion event setting on the account; create a tracking tag with `defaultEventType` via the tracking-tags API (`POST /v1/accounts/{accountId}/tracking-tags`), or configure a conversion event in OpenAI Ads Manager, or the request returns 400. Pick the event with `promotedObject.customEventType` (see AdPromotedObject); without it the most recently created optimizable event is used.  **Reddit Ads** - `traffic` (CLICKS), `awareness` (BRAND_AWARENESS), `conversions`, `video_views` (VIDEO_VIEWABLE_IMPRESSIONS) and `lead_generation` (LEAD_GENERATION); any other goal returns 400. - `conversions` requires `promotedObject.customEventType`; the pixel must already have received that event (see AdPromotedObject). - `lead_generation` sends people to `linkUrl` and optimizes toward the pixel's Lead event, which the pixel must already have received. Reddit retired its native lead forms on September 30, 2026, so `leadGenFormId` returns 400. - `video_views` needs a `video` (422 otherwise); `optimizationGoal` picks VIDEO_VIEW_6S (default) or VIDEO_VIEW_15S.
 	Goal           *string                           `json:"goal,omitempty"`
 	SmartTargeting *UpdateAdSetRequestSmartTargeting `json:"smartTargeting,omitempty"`
 	// Meta, TikTok with goal video_views (ENGAGED_VIEW, the 6-second default, or ENGAGED_VIEW_FIFTEEN; both bill per view), or Reddit with goal video_views (VIDEO_VIEW_6S, the default, or VIDEO_VIEW_15S; other values return 400). Meta: Explicit ad-set `optimization_goal` (e.g. `LANDING_PAGE_VIEWS`, `LINK_CLICKS`, `REACH`, `IMPRESSIONS`, `OFFSITE_CONVERSIONS`, `THRUPLAY`, `LEAD_GENERATION`). Overrides the default derived from `goal` (e.g. `traffic` defaults to `LINK_CLICKS`). Forwarded verbatim to Meta, which validates compatibility with the campaign objective and rejects incompatible combinations.
@@ -58,7 +59,7 @@ type CreateStandaloneAdRequest struct {
 	ValidateOnly *bool `json:"validateOnly,omitempty"`
 	// Budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Required on legacy, multi-creative and Performance Max shapes. Inherited on attach. OpenAI Ads: in the ad account currency, minimum 1; OpenAI can require a higher daily minimum for some currencies and names it in the error.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
-	// Required on legacy, multi-creative and Performance Max shapes. Inherited on attach. OpenAI Ads accepts both as the campaign's single spend cap. A lifetime cap can later switch to daily with PUT /v1/ads/campaigns/{campaignId}, but OpenAI never switches a daily cap back to lifetime (422). Automatic bidding (Maximize Results) needs a daily budget. Reddit Ads: the ad group's daily or lifetime spend goal; lifetime needs `endDate`.
+	// Defaults to daily when `budgetAmount` is sent without it (reported in `appliedDefaults.budgetType`). Inherited on attach. OpenAI Ads accepts both as the campaign's single spend cap. A lifetime cap can later switch to daily with PUT /v1/ads/campaigns/{campaignId}, but OpenAI never switches a daily cap back to lifetime (422). Automatic bidding (Maximize Results) needs a daily budget. Reddit Ads: the ad group's daily or lifetime spend goal.
 	BudgetType *string `json:"budgetType,omitempty"`
 	// Publish state of the created entities, on every platform. Omitted or ACTIVE publishes live (default, back-compat); PAUSED pauses only the TOP-MOST object this call creates and switches everything below it on, so one resume of that object brings the new tree live and nothing that already existed is touched: a new campaign is held paused with its ad set and ad on; with `existingCampaignId` the new ad set is held paused with its ad on; with `adSetId` the new ad itself is paused. `campaignStatus: ACTIVE` with `status: PAUSED` moves the pause down to the new ad set. `campaignStatus`, `adSetStatus` and `adStatus` set one level each and always win for that level; `status: PAUSED` adds a hold of its own only when none of them is PAUSED. To create every object paused, send all three as PAUSED. LinkedIn: a held campaign group is PAUSED with its campaign and creative ACTIVE; a new campaign in an existing group stays DRAFT; a held creative (with `adSetId`) is created DRAFT, as LinkedIn refuses PAUSED until its review is APPROVED. X has no per-ad switch, so its lowest level is the line item. Google Performance Max and Demand Gen accept PAUSED only (the campaign is created paused).
 	Status *string `json:"status,omitempty"`
@@ -157,7 +158,7 @@ type CreateStandaloneAdRequest struct {
 	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
 	// Meta only. Verified identity IDs of the beneficiary and payer for each declared regionalRegulatedCategories value. Meta may require them on ad sets created through the API even when a default beneficiary and payer are set in Ads Manager advertising settings (seen on AUSTRALIA_FINSERV), so sending them explicitly is the reliable path. The value is the Verified identity ID (Meta Business Settings > Verified identities), not a Page or Business ID, and beneficiary and payer may be the same ID. Send each ID as a string of digits: Verified identity IDs can have 17 digits, more than a JSON number holds exactly, and a number that arrives rounded is rejected. Numbers up to 9007199254740991 are still accepted. The IDs reach Meta unchanged. Keys by category: AUSTRALIA_FINSERV uses australia_finserv_beneficiary / australia_finserv_payer; TAIWAN_FINSERV uses taiwan_finserv_beneficiary / taiwan_finserv_payer; INDIA_FINSERV uses india_finserv_beneficiary / india_finserv_payer; TAIWAN_UNIVERSAL uses taiwan_universal_beneficiary / taiwan_universal_payer; SINGAPORE_UNIVERSAL uses singapore_universal_beneficiary / singapore_universal_payer; AUSTRALIA_UNIVERSAL, BRAZIL_REGULATION, MALAYSIA_UNIVERSAL and THAILAND_UNIVERSAL use universal_beneficiary / universal_payer. When Meta rejects the ad set for a missing verified advertiser, the error carries param regionalRegulationIdentities, details.expectedIdentityKeys (the keys the declared categories expect), details.suggestedCategories (the markets Meta ties to that subcode) and Meta's metaCode, metaSubcode and fbtraceId. Ignored when adSetId adds the ad to an existing ad set.
 	RegionalRegulationIdentities map[string]BoostPostRequestRegionalRegulationIdentitiesValue `json:"regionalRegulationIdentities,omitempty"`
-	// Required for lifetime budgets. Read like `startDate` (account timezone on Meta, TikTok, X, Pinterest, OpenAI and Reddit; whole account-local days on Google; UTC on LinkedIn), and a date-only end runs to 23:59:59 local.
+	// Omitted on a lifetime budget, the ad ends 7 days after it starts (reported in `appliedDefaults.endDate`); a daily budget without one runs until paused. Read like `startDate` (account timezone on Meta, TikTok, X, Pinterest, OpenAI and Reddit; whole account-local days on Google; UTC on LinkedIn), and a date-only end runs to 23:59:59 local.
 	EndDate *time.Time `json:"endDate,omitempty"`
 	// Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's start (Meta `start_time`, TikTok ad group `schedule_start_time`, LinkedIn / Pinterest / X / Google campaign start). When omitted the ad starts delivering immediately. For lifetime budgets Meta also requires `endDate`. On Meta, TikTok, X, Pinterest, OpenAI and Reddit a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone (Meta itself would read it as UTC). Google runs whole days in the customer account timezone and takes the value's calendar date as written. LinkedIn ad accounts carry no timezone, so there a value without an offset is read as UTC. The created ad's `schedule` echoes the start and end the platform stored, as UTC instants; when attaching to an existing ad set (`adSetId`) it is that ad set's start and end. Same field as on `POST /v1/ads/boost`.
 	StartDate *time.Time `json:"startDate,omitempty"`
@@ -236,7 +237,7 @@ type CreateStandaloneAdRequest struct {
 	IdentityId *string `json:"identityId,omitempty"`
 	// TikTok only. Forces the identity attribution on the ad:    - `TT_USER`: the posting account's open_id (real @username     branding). Requires a connected TikTok posting account     on the same profile.   - `CUSTOMIZED_USER`: synthetic Brand Identity (display     name + avatar). Requires a configured Brand Identity     (cached on the `tiktokads` SocialAccount via     `PATCH /v1/connect/tiktok-ads`) or an inline     `brandIdentity` to create one on the fly.  When omitted, defaults to `TT_USER` if a posting account is connected on this profile, else `CUSTOMIZED_USER`. Spark Ads (`POST /v1/ads/boost`) always use `TT_USER` regardless of this field, because TikTok requires the original organic post's author identity for Spark.
 	IdentityType *string `json:"identityType,omitempty"`
-	// TikTok only. Creates the ad as a TikTok Upgraded Smart+ campaign: TikTok automates targeting, bidding and delivery. Supports goals `conversions` (Smart+ Web Conversions), `lead_generation` (Smart+ Lead Generation with a website form on `linkUrl`; TikTok Instant Forms not supported) and `app_promotion` (Smart+ App installs; the ad's destination is the app store, so `linkUrl` is not used). The web goals require `promotedObject.pixelId` AND `promotedObject.customEventType`; `app_promotion` requires `promotedObject.applicationId` instead. Targeting works like on any TikTok ad (defaults to `countries: [\"US\"]` when omitted); TikTok automates delivery within it. The budget lives on the Smart+ campaign (Campaign Budget Optimization); a `lifetime` budget additionally requires `endDate`. Cannot be combined with `adSetId`.
+	// TikTok only. Creates the ad as a TikTok Upgraded Smart+ campaign: TikTok automates targeting, bidding and delivery. Supports goals `conversions` (Smart+ Web Conversions), `lead_generation` (Smart+ Lead Generation with a website form on `linkUrl`; TikTok Instant Forms not supported) and `app_promotion` (Smart+ App installs; the ad's destination is the app store, so `linkUrl` is not used). The web goals require `promotedObject.pixelId` AND `promotedObject.customEventType`; `app_promotion` requires `promotedObject.applicationId` instead. Targeting works like on any TikTok ad (defaults to `countries: [\"US\"]` when omitted); TikTok automates delivery within it. The budget lives on the Smart+ campaign (Campaign Budget Optimization); a `lifetime` budget without `endDate` ends 7 days after it starts. Smart+ needs `goal` sent, it is never inferred. Cannot be combined with `adSetId`.
 	SmartPlus *bool `json:"smartPlus,omitempty"`
 	// Meta only. Operating systems and version ranges, such as iOS_ver_14.0_and_above or Android. Emitted as user_os. May also be supplied inside targeting.
 	UserOs []string `json:"userOs,omitempty"`
@@ -255,11 +256,10 @@ type _CreateStandaloneAdRequest CreateStandaloneAdRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateStandaloneAdRequest(accountId string, adAccountId string, name string) *CreateStandaloneAdRequest {
+func NewCreateStandaloneAdRequest(accountId string, adAccountId string) *CreateStandaloneAdRequest {
 	this := CreateStandaloneAdRequest{}
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
-	this.Name = name
 	var buyingType string = "AUCTION"
 	this.BuyingType = &buyingType
 	var budgetLevel string = "adset"
@@ -335,28 +335,36 @@ func (o *CreateStandaloneAdRequest) SetAdAccountId(v string) {
 	o.AdAccountId = v
 }
 
-// GetName returns the Name field value
+// GetName returns the Name field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetName() string {
-	if o == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
-
-	return o.Name
+	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CreateStandaloneAdRequest) GetNameOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return &o.Name, true
+	return o.Name, true
 }
 
-// SetName sets field value
+// HasName returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
 func (o *CreateStandaloneAdRequest) SetName(v string) {
-	o.Name = v
+	o.Name = &v
 }
 
 // GetCampaignName returns the CampaignName field value if set, zero value otherwise.
@@ -4104,7 +4112,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
-	toSerialize["name"] = o.Name
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
 	if !IsNil(o.CampaignName) {
 		toSerialize["campaignName"] = o.CampaignName
 	}
@@ -4463,7 +4473,6 @@ func (o *CreateStandaloneAdRequest) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"accountId",
 		"adAccountId",
-		"name",
 	}
 
 	allProperties := make(map[string]interface{})

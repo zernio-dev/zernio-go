@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.376.0
+API version: 1.377.0
 Contact: support@zernio.com
 */
 
@@ -18,12 +18,11 @@ import (
 // checks if the CreateStandaloneAd201ResponseOneOf type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreateStandaloneAd201ResponseOneOf{}
 
-// CreateStandaloneAd201ResponseOneOf Multi-creative shape: N ads returned sharing platformCampaignId / platformAdSetId.
+// CreateStandaloneAd201ResponseOneOf Legacy + attach shapes: one ad returned.
 type CreateStandaloneAd201ResponseOneOf struct {
-	Ads                []Ad    `json:"ads,omitempty"`
-	PlatformCampaignId *string `json:"platformCampaignId,omitempty"`
-	PlatformAdSetId    *string `json:"platformAdSetId,omitempty"`
-	Message            *string `json:"message,omitempty"`
+	Ad              *Ad                `json:"ad,omitempty"`
+	AppliedDefaults *AdAppliedDefaults `json:"appliedDefaults,omitempty"`
+	Message         *string            `json:"message,omitempty"`
 }
 
 // NewCreateStandaloneAd201ResponseOneOf instantiates a new CreateStandaloneAd201ResponseOneOf object
@@ -43,100 +42,68 @@ func NewCreateStandaloneAd201ResponseOneOfWithDefaults() *CreateStandaloneAd201R
 	return &this
 }
 
-// GetAds returns the Ads field value if set, zero value otherwise.
-func (o *CreateStandaloneAd201ResponseOneOf) GetAds() []Ad {
-	if o == nil || IsNil(o.Ads) {
-		var ret []Ad
+// GetAd returns the Ad field value if set, zero value otherwise.
+func (o *CreateStandaloneAd201ResponseOneOf) GetAd() Ad {
+	if o == nil || IsNil(o.Ad) {
+		var ret Ad
 		return ret
 	}
-	return o.Ads
+	return *o.Ad
 }
 
-// GetAdsOk returns a tuple with the Ads field value if set, nil otherwise
+// GetAdOk returns a tuple with the Ad field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAd201ResponseOneOf) GetAdsOk() ([]Ad, bool) {
-	if o == nil || IsNil(o.Ads) {
+func (o *CreateStandaloneAd201ResponseOneOf) GetAdOk() (*Ad, bool) {
+	if o == nil || IsNil(o.Ad) {
 		return nil, false
 	}
-	return o.Ads, true
+	return o.Ad, true
 }
 
-// HasAds returns a boolean if a field has been set.
-func (o *CreateStandaloneAd201ResponseOneOf) HasAds() bool {
-	if o != nil && !IsNil(o.Ads) {
+// HasAd returns a boolean if a field has been set.
+func (o *CreateStandaloneAd201ResponseOneOf) HasAd() bool {
+	if o != nil && !IsNil(o.Ad) {
 		return true
 	}
 
 	return false
 }
 
-// SetAds gets a reference to the given []Ad and assigns it to the Ads field.
-func (o *CreateStandaloneAd201ResponseOneOf) SetAds(v []Ad) {
-	o.Ads = v
+// SetAd gets a reference to the given Ad and assigns it to the Ad field.
+func (o *CreateStandaloneAd201ResponseOneOf) SetAd(v Ad) {
+	o.Ad = &v
 }
 
-// GetPlatformCampaignId returns the PlatformCampaignId field value if set, zero value otherwise.
-func (o *CreateStandaloneAd201ResponseOneOf) GetPlatformCampaignId() string {
-	if o == nil || IsNil(o.PlatformCampaignId) {
-		var ret string
+// GetAppliedDefaults returns the AppliedDefaults field value if set, zero value otherwise.
+func (o *CreateStandaloneAd201ResponseOneOf) GetAppliedDefaults() AdAppliedDefaults {
+	if o == nil || IsNil(o.AppliedDefaults) {
+		var ret AdAppliedDefaults
 		return ret
 	}
-	return *o.PlatformCampaignId
+	return *o.AppliedDefaults
 }
 
-// GetPlatformCampaignIdOk returns a tuple with the PlatformCampaignId field value if set, nil otherwise
+// GetAppliedDefaultsOk returns a tuple with the AppliedDefaults field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAd201ResponseOneOf) GetPlatformCampaignIdOk() (*string, bool) {
-	if o == nil || IsNil(o.PlatformCampaignId) {
+func (o *CreateStandaloneAd201ResponseOneOf) GetAppliedDefaultsOk() (*AdAppliedDefaults, bool) {
+	if o == nil || IsNil(o.AppliedDefaults) {
 		return nil, false
 	}
-	return o.PlatformCampaignId, true
+	return o.AppliedDefaults, true
 }
 
-// HasPlatformCampaignId returns a boolean if a field has been set.
-func (o *CreateStandaloneAd201ResponseOneOf) HasPlatformCampaignId() bool {
-	if o != nil && !IsNil(o.PlatformCampaignId) {
+// HasAppliedDefaults returns a boolean if a field has been set.
+func (o *CreateStandaloneAd201ResponseOneOf) HasAppliedDefaults() bool {
+	if o != nil && !IsNil(o.AppliedDefaults) {
 		return true
 	}
 
 	return false
 }
 
-// SetPlatformCampaignId gets a reference to the given string and assigns it to the PlatformCampaignId field.
-func (o *CreateStandaloneAd201ResponseOneOf) SetPlatformCampaignId(v string) {
-	o.PlatformCampaignId = &v
-}
-
-// GetPlatformAdSetId returns the PlatformAdSetId field value if set, zero value otherwise.
-func (o *CreateStandaloneAd201ResponseOneOf) GetPlatformAdSetId() string {
-	if o == nil || IsNil(o.PlatformAdSetId) {
-		var ret string
-		return ret
-	}
-	return *o.PlatformAdSetId
-}
-
-// GetPlatformAdSetIdOk returns a tuple with the PlatformAdSetId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateStandaloneAd201ResponseOneOf) GetPlatformAdSetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.PlatformAdSetId) {
-		return nil, false
-	}
-	return o.PlatformAdSetId, true
-}
-
-// HasPlatformAdSetId returns a boolean if a field has been set.
-func (o *CreateStandaloneAd201ResponseOneOf) HasPlatformAdSetId() bool {
-	if o != nil && !IsNil(o.PlatformAdSetId) {
-		return true
-	}
-
-	return false
-}
-
-// SetPlatformAdSetId gets a reference to the given string and assigns it to the PlatformAdSetId field.
-func (o *CreateStandaloneAd201ResponseOneOf) SetPlatformAdSetId(v string) {
-	o.PlatformAdSetId = &v
+// SetAppliedDefaults gets a reference to the given AdAppliedDefaults and assigns it to the AppliedDefaults field.
+func (o *CreateStandaloneAd201ResponseOneOf) SetAppliedDefaults(v AdAppliedDefaults) {
+	o.AppliedDefaults = &v
 }
 
 // GetMessage returns the Message field value if set, zero value otherwise.
@@ -181,14 +148,11 @@ func (o CreateStandaloneAd201ResponseOneOf) MarshalJSON() ([]byte, error) {
 
 func (o CreateStandaloneAd201ResponseOneOf) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Ads) {
-		toSerialize["ads"] = o.Ads
+	if !IsNil(o.Ad) {
+		toSerialize["ad"] = o.Ad
 	}
-	if !IsNil(o.PlatformCampaignId) {
-		toSerialize["platformCampaignId"] = o.PlatformCampaignId
-	}
-	if !IsNil(o.PlatformAdSetId) {
-		toSerialize["platformAdSetId"] = o.PlatformAdSetId
+	if !IsNil(o.AppliedDefaults) {
+		toSerialize["appliedDefaults"] = o.AppliedDefaults
 	}
 	if !IsNil(o.Message) {
 		toSerialize["message"] = o.Message

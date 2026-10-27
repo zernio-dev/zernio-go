@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.376.0
+API version: 1.377.0
 Contact: support@zernio.com
 */
 
@@ -21,9 +21,10 @@ var _ MappedNullable = &CreateStandaloneAd200Response{}
 // CreateStandaloneAd200Response struct for CreateStandaloneAd200Response
 type CreateStandaloneAd200Response struct {
 	// Always true in a validate-only response.
-	ValidateOnly *bool                                       `json:"validateOnly,omitempty"`
-	Results      []CreateStandaloneAd200ResponseResultsInner `json:"results,omitempty"`
-	Message      *string                                     `json:"message,omitempty"`
+	ValidateOnly    *bool                                       `json:"validateOnly,omitempty"`
+	AppliedDefaults *AdAppliedDefaults                          `json:"appliedDefaults,omitempty"`
+	Results         []CreateStandaloneAd200ResponseResultsInner `json:"results,omitempty"`
+	Message         *string                                     `json:"message,omitempty"`
 }
 
 // NewCreateStandaloneAd200Response instantiates a new CreateStandaloneAd200Response object
@@ -73,6 +74,38 @@ func (o *CreateStandaloneAd200Response) HasValidateOnly() bool {
 // SetValidateOnly gets a reference to the given bool and assigns it to the ValidateOnly field.
 func (o *CreateStandaloneAd200Response) SetValidateOnly(v bool) {
 	o.ValidateOnly = &v
+}
+
+// GetAppliedDefaults returns the AppliedDefaults field value if set, zero value otherwise.
+func (o *CreateStandaloneAd200Response) GetAppliedDefaults() AdAppliedDefaults {
+	if o == nil || IsNil(o.AppliedDefaults) {
+		var ret AdAppliedDefaults
+		return ret
+	}
+	return *o.AppliedDefaults
+}
+
+// GetAppliedDefaultsOk returns a tuple with the AppliedDefaults field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAd200Response) GetAppliedDefaultsOk() (*AdAppliedDefaults, bool) {
+	if o == nil || IsNil(o.AppliedDefaults) {
+		return nil, false
+	}
+	return o.AppliedDefaults, true
+}
+
+// HasAppliedDefaults returns a boolean if a field has been set.
+func (o *CreateStandaloneAd200Response) HasAppliedDefaults() bool {
+	if o != nil && !IsNil(o.AppliedDefaults) {
+		return true
+	}
+
+	return false
+}
+
+// SetAppliedDefaults gets a reference to the given AdAppliedDefaults and assigns it to the AppliedDefaults field.
+func (o *CreateStandaloneAd200Response) SetAppliedDefaults(v AdAppliedDefaults) {
+	o.AppliedDefaults = &v
 }
 
 // GetResults returns the Results field value if set, zero value otherwise.
@@ -151,6 +184,9 @@ func (o CreateStandaloneAd200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.ValidateOnly) {
 		toSerialize["validateOnly"] = o.ValidateOnly
+	}
+	if !IsNil(o.AppliedDefaults) {
+		toSerialize["appliedDefaults"] = o.AppliedDefaults
 	}
 	if !IsNil(o.Results) {
 		toSerialize["results"] = o.Results
