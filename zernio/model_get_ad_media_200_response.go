@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.386.0
+API version: 1.387.0
 Contact: support@zernio.com
 */
 
@@ -22,8 +22,10 @@ var _ MappedNullable = &GetAdMedia200Response{}
 type GetAdMedia200Response struct {
 	AdId *string `json:"adId,omitempty"`
 	// 'facebook' or 'instagram'. Only Meta is supported for now.
-	Platform *string                           `json:"platform,omitempty"`
-	Media    []GetAdMedia200ResponseMediaInner `json:"media,omitempty"`
+	Platform *string `json:"platform,omitempty"`
+	// False when the ad was read live from Meta because it is not in Zernio's store (request made with `accountId`).
+	Synced *bool                             `json:"synced,omitempty"`
+	Media  []GetAdMedia200ResponseMediaInner `json:"media,omitempty"`
 }
 
 // NewGetAdMedia200Response instantiates a new GetAdMedia200Response object
@@ -107,6 +109,38 @@ func (o *GetAdMedia200Response) SetPlatform(v string) {
 	o.Platform = &v
 }
 
+// GetSynced returns the Synced field value if set, zero value otherwise.
+func (o *GetAdMedia200Response) GetSynced() bool {
+	if o == nil || IsNil(o.Synced) {
+		var ret bool
+		return ret
+	}
+	return *o.Synced
+}
+
+// GetSyncedOk returns a tuple with the Synced field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdMedia200Response) GetSyncedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Synced) {
+		return nil, false
+	}
+	return o.Synced, true
+}
+
+// HasSynced returns a boolean if a field has been set.
+func (o *GetAdMedia200Response) HasSynced() bool {
+	if o != nil && !IsNil(o.Synced) {
+		return true
+	}
+
+	return false
+}
+
+// SetSynced gets a reference to the given bool and assigns it to the Synced field.
+func (o *GetAdMedia200Response) SetSynced(v bool) {
+	o.Synced = &v
+}
+
 // GetMedia returns the Media field value if set, zero value otherwise.
 func (o *GetAdMedia200Response) GetMedia() []GetAdMedia200ResponseMediaInner {
 	if o == nil || IsNil(o.Media) {
@@ -154,6 +188,9 @@ func (o GetAdMedia200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
+	}
+	if !IsNil(o.Synced) {
+		toSerialize["synced"] = o.Synced
 	}
 	if !IsNil(o.Media) {
 		toSerialize["media"] = o.Media

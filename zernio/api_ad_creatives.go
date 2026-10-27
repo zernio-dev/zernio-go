@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.386.0
+API version: 1.387.0
 Contact: support@zernio.com
 */
 
@@ -891,6 +891,13 @@ type AdCreativesAPIGetAdMediaRequest struct {
 	ctx        context.Context
 	ApiService *AdCreativesAPIService
 	adId       string
+	accountId  *string
+}
+
+// Meta only. A Zernio connection id (Meta Ads or Facebook connection) used when &#x60;{adId}&#x60; is a Meta ad id that is not in Zernio&#39;s synced store, for example an ad created in Ads Manager on an ad account reached only through a Facebook connection. The ad is then read live from Meta through that connection and the response carries &#x60;synced: false&#x60;. The same rules as GET /v1/ads/campaigns/{campaignId} apply: a connection on a profile the API key cannot access answers 404, and an ad on an ad account outside the connection&#39;s selected ad accounts answers 403 &#x60;ad_account_not_selected&#x60;. An id Meta cannot read through the connection, or that is not an ad (a campaign or ad set id, for example), answers 404 &#x60;ad_not_found&#x60;, and a connection that is not Meta answers 501. Ads Meta reports as DELETED are returned too, with their status. Ignored when the ad is in the store (the stored ad&#39;s own connection is used). Without it an unsynced ad answers 404 &#x60;ad_not_found&#x60;. Writes (PUT, DELETE, status) still need the ad in the store.
+func (r AdCreativesAPIGetAdMediaRequest) AccountId(accountId string) AdCreativesAPIGetAdMediaRequest {
+	r.accountId = &accountId
+	return r
 }
 
 func (r AdCreativesAPIGetAdMediaRequest) Execute() (*GetAdMedia200Response, *http.Response, error) {
@@ -917,6 +924,9 @@ Reads Meta live rather than the stored creative blob because Meta's signed fbcdn
 URLs carry an `oe=<hex>` expiration (image_url ~24 h, video source ~12 d). Treat
 URLs as short-lived: re-fetch this endpoint before serving or downloading assets
 instead of caching URLs beyond that window.
+
+**Meta ads that are not synced yet.** Pass `accountId` with a Meta platform ad id that is not in
+Zernio's store to read its media live through that connection; the response carries `synced: false`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Zernio ad id (24-char hex) or platform ad id.
@@ -953,6 +963,9 @@ func (a *AdCreativesAPIService) GetAdMediaExecute(r AdCreativesAPIGetAdMediaRequ
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1033,7 +1046,14 @@ type AdCreativesAPIGetAdPreviewsRequest struct {
 	ctx        context.Context
 	ApiService *AdCreativesAPIService
 	adId       string
+	accountId  *string
 	formats    *string
+}
+
+// Meta only. A Zernio connection id (Meta Ads or Facebook connection) used when &#x60;{adId}&#x60; is a Meta ad id that is not in Zernio&#39;s synced store, for example an ad created in Ads Manager on an ad account reached only through a Facebook connection. The ad is then read live from Meta through that connection and the response carries &#x60;synced: false&#x60;. The same rules as GET /v1/ads/campaigns/{campaignId} apply: a connection on a profile the API key cannot access answers 404, and an ad on an ad account outside the connection&#39;s selected ad accounts answers 403 &#x60;ad_account_not_selected&#x60;. An id Meta cannot read through the connection, or that is not an ad (a campaign or ad set id, for example), answers 404 &#x60;ad_not_found&#x60;, and a connection that is not Meta answers 501. Ads Meta reports as DELETED are returned too, with their status. Ignored when the ad is in the store (the stored ad&#39;s own connection is used). Without it an unsynced ad answers 404 &#x60;ad_not_found&#x60;. Writes (PUT, DELETE, status) still need the ad in the store.
+func (r AdCreativesAPIGetAdPreviewsRequest) AccountId(accountId string) AdCreativesAPIGetAdPreviewsRequest {
+	r.accountId = &accountId
+	return r
 }
 
 // Comma-separated Meta ad_format values (max 10), one preview per format. Defaults to DESKTOP_FEED_STANDARD.
@@ -1054,8 +1074,11 @@ Shows how an existing Meta ad looks in each placement, as embeddable previews.
 Renders an EXISTING ad per placement via Meta's `/{ad_id}/previews`. Each preview is an HTML
 `<iframe>` snippet embeddable directly. Unknown `formats` values return Meta's 400 verbatim.
 
+**Meta ads that are not synced yet.** Pass `accountId` with a Meta platform ad id that is not in
+Zernio's store to render it live through that connection; the response carries `synced: false`.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param adId Zernio ad id (24-char hex).
+	@param adId Zernio ad id (24-char hex) or Meta platform ad id.
 	@return AdCreativesAPIGetAdPreviewsRequest
 */
 func (a *AdCreativesAPIService) GetAdPreviews(ctx context.Context, adId string) AdCreativesAPIGetAdPreviewsRequest {
@@ -1089,6 +1112,9 @@ func (a *AdCreativesAPIService) GetAdPreviewsExecute(r AdCreativesAPIGetAdPrevie
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
 	if r.formats != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "formats", r.formats, "form", "")
 	}

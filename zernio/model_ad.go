@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.386.0
+API version: 1.387.0
 Contact: support@zernio.com
 */
 
@@ -38,7 +38,9 @@ type Ad struct {
 	// Available goals vary by platform. Meta (Facebook/Instagram) supports all 11 (incl. `lead_conversion` = website pixel lead optimization, `catalog_sales` = Advantage+ catalog ads `page_likes` = Page Likes conversion location under Engagement and `page_visits` = Page visits and followers under Traffic). TikTok supports engagement, traffic, awareness, video_views, lead_generation, conversions, app_promotion. LinkedIn supports all Meta goals except app_promotion / lead_conversion / catalog_sales / page_likes / page_visits. X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest supports only engagement, traffic, awareness, video_views. Google Ads supports only engagement, traffic, awareness (video_views is rejected at create with 422 FEATURE_NOT_AVAILABLE).
 	Goal *string `json:"goal,omitempty"`
 	// True for ads synced from platform ad managers
-	IsExternal          *bool                                   `json:"isExternal,omitempty"`
+	IsExternal *bool `json:"isExternal,omitempty"`
+	// Only on GET /v1/ads/{adId}. True when the ad comes from Zernio's synced store; false when it was read live from Meta because it is not synced yet (request made with `accountId`). An unsynced ad has no `id`.
+	Synced              *bool                                   `json:"synced,omitempty"`
 	Budget              *ListAdSets200ResponseAdSetsInnerBudget `json:"budget,omitempty"`
 	Metrics             NullableAdMetrics                       `json:"metrics,omitempty"`
 	PlatformAdId        *string                                 `json:"platformAdId,omitempty"`
@@ -464,6 +466,38 @@ func (o *Ad) HasIsExternal() bool {
 // SetIsExternal gets a reference to the given bool and assigns it to the IsExternal field.
 func (o *Ad) SetIsExternal(v bool) {
 	o.IsExternal = &v
+}
+
+// GetSynced returns the Synced field value if set, zero value otherwise.
+func (o *Ad) GetSynced() bool {
+	if o == nil || IsNil(o.Synced) {
+		var ret bool
+		return ret
+	}
+	return *o.Synced
+}
+
+// GetSyncedOk returns a tuple with the Synced field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Ad) GetSyncedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Synced) {
+		return nil, false
+	}
+	return o.Synced, true
+}
+
+// HasSynced returns a boolean if a field has been set.
+func (o *Ad) HasSynced() bool {
+	if o != nil && !IsNil(o.Synced) {
+		return true
+	}
+
+	return false
+}
+
+// SetSynced gets a reference to the given bool and assigns it to the Synced field.
+func (o *Ad) SetSynced(v bool) {
+	o.Synced = &v
 }
 
 // GetBudget returns the Budget field value if set, zero value otherwise.
@@ -1375,6 +1409,9 @@ func (o Ad) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IsExternal) {
 		toSerialize["isExternal"] = o.IsExternal
+	}
+	if !IsNil(o.Synced) {
+		toSerialize["synced"] = o.Synced
 	}
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.386.0
+API version: 1.387.0
 Contact: support@zernio.com
 */
 
@@ -3544,11 +3544,18 @@ type AdCampaignsAPIGetAdRequest struct {
 	ApiService *AdCampaignsAPIService
 	adId       string
 	live       *bool
+	accountId  *string
 }
 
 // Read the on/off switches live from the platform instead of returning the synced values. The fresh values are stored (so later reads return them too) and the response carries &#x60;statusReadAt&#x60;, the time of the read. At most 20 platform objects are read per request. Where a read fails (credentials, platform error, no reader on that platform), the stored values come back with &#x60;statusReadAt: null&#x60;. See \&quot;Status freshness\&quot; in the operation description. On X the budget is read live in the same read: on GET /v1/ads/{adId} &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches); on the ad set and campaign listings &#x60;budget&#x60; is the one that line item or campaign holds now (returned, not stored); a row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
 func (r AdCampaignsAPIGetAdRequest) Live(live bool) AdCampaignsAPIGetAdRequest {
 	r.live = &live
+	return r
+}
+
+// Meta only. A Zernio connection id (Meta Ads or Facebook connection) used when &#x60;{adId}&#x60; is a Meta ad id that is not in Zernio&#39;s synced store, for example an ad created in Ads Manager on an ad account reached only through a Facebook connection. The ad is then read live from Meta through that connection and the response carries &#x60;synced: false&#x60;. The same rules as GET /v1/ads/campaigns/{campaignId} apply: a connection on a profile the API key cannot access answers 404, and an ad on an ad account outside the connection&#39;s selected ad accounts answers 403 &#x60;ad_account_not_selected&#x60;. An id Meta cannot read through the connection, or that is not an ad (a campaign or ad set id, for example), answers 404 &#x60;ad_not_found&#x60;, and a connection that is not Meta answers 501. Ads Meta reports as DELETED are returned too, with their status. Ignored when the ad is in the store (the stored ad&#39;s own connection is used). Without it an unsynced ad answers 404 &#x60;ad_not_found&#x60;. Writes (PUT, DELETE, status) still need the ad in the store.
+func (r AdCampaignsAPIGetAdRequest) AccountId(accountId string) AdCampaignsAPIGetAdRequest {
+	r.accountId = &accountId
 	return r
 }
 
@@ -3600,6 +3607,15 @@ With `live=true` the ad's own switch (`configuredStatus`), its delivery status (
 `platformStatus`) and its ad set and campaign switches (`platformAdSetStatus`,
 `platformCampaignStatus`) are read live.
 
+**Meta ads that are not synced yet.** Pass `accountId` with a Meta `platformAdId` to read an ad
+Zernio has not synced (for example one created in Ads Manager on an ad account reached only
+through a Facebook connection). The ad is read live from Meta and mapped exactly like a synced
+row (name, `status`, `platformStatus`, `configuredStatus`, `platformAdSetId`,
+`platformCampaignId`, campaign and ad set names, budgets, and `creative` with its `id`, body,
+link, image and video), with `synced: false`, no `id` (it has no Zernio row) and `statusReadAt`
+set to the time of the read. Synced ads answer `synced: true`. Only a numeric id takes this
+path, so dark post ids (`{pageId}_{postId}`) keep the dark post lookup above.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Zernio `_id` (hex), Meta `platformAdId` (numeric), or one of the creative's effective story/media IDs. See description for details.
 	@return AdCampaignsAPIGetAdRequest
@@ -3641,6 +3657,9 @@ func (a *AdCampaignsAPIService) GetAdExecute(r AdCampaignsAPIGetAdRequest) (*Get
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "live", defaultValue, "form", "")
 		r.live = &defaultValue
+	}
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3703,6 +3722,17 @@ func (a *AdCampaignsAPIService) GetAdExecute(r AdCampaignsAPIGetAdRequest) (*Get
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -3712,6 +3742,7 @@ func (a *AdCampaignsAPIService) GetAdExecute(r AdCampaignsAPIGetAdRequest) (*Get
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3919,6 +3950,13 @@ type AdCampaignsAPIGetAdReviewRequest struct {
 	ctx        context.Context
 	ApiService *AdCampaignsAPIService
 	adId       string
+	accountId  *string
+}
+
+// Meta only. A Zernio connection id (Meta Ads or Facebook connection) used when &#x60;{adId}&#x60; is a Meta ad id that is not in Zernio&#39;s synced store, for example an ad created in Ads Manager on an ad account reached only through a Facebook connection. The ad is then read live from Meta through that connection and the response carries &#x60;synced: false&#x60;. The same rules as GET /v1/ads/campaigns/{campaignId} apply: a connection on a profile the API key cannot access answers 404, and an ad on an ad account outside the connection&#39;s selected ad accounts answers 403 &#x60;ad_account_not_selected&#x60;. An id Meta cannot read through the connection, or that is not an ad (a campaign or ad set id, for example), answers 404 &#x60;ad_not_found&#x60;, and a connection that is not Meta answers 501. Ads Meta reports as DELETED are returned too, with their status. Ignored when the ad is in the store (the stored ad&#39;s own connection is used). Without it an unsynced ad answers 404 &#x60;ad_not_found&#x60;. Writes (PUT, DELETE, status) still need the ad in the store.
+func (r AdCampaignsAPIGetAdReviewRequest) AccountId(accountId string) AdCampaignsAPIGetAdReviewRequest {
+	r.accountId = &accountId
+	return r
 }
 
 func (r AdCampaignsAPIGetAdReviewRequest) Execute() (*GetAdReview200Response, *http.Response, error) {
@@ -3963,6 +4001,10 @@ TikTok uses `/ad/review_info/`. Platforms other than TikTok, Google and Meta ret
 `AD_STATUS_AD_PRE_ONLINE` once it passed and is about to deliver (both map to
 `status: pending_review`); `AD_STATUS_AUDIT_DENY` maps to `rejected`.
 
+**Meta ads that are not synced yet.** Pass `accountId` with a Meta platform ad id that is not in
+Zernio's store to read its review live through that connection. The response then has
+`adId: null`, `synced: false`, and nothing is stored. Synced ads answer `synced: true`.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Zernio ad id (24-char hex) or the platform ad id.
 	@return AdCampaignsAPIGetAdReviewRequest
@@ -3998,6 +4040,9 @@ func (a *AdCampaignsAPIService) GetAdReviewExecute(r AdCampaignsAPIGetAdReviewRe
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

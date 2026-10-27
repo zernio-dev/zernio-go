@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.386.0
+API version: 1.387.0
 Contact: support@zernio.com
 */
 
@@ -20,10 +20,13 @@ var _ MappedNullable = &GetAdReview200Response{}
 
 // GetAdReview200Response struct for GetAdReview200Response
 type GetAdReview200Response struct {
-	AdId         *string                       `json:"adId,omitempty"`
-	Platform     *string                       `json:"platform,omitempty"`
-	PlatformAdId *string                       `json:"platformAdId,omitempty"`
-	Review       *GetAdReview200ResponseReview `json:"review,omitempty"`
+	// Zernio ad id; null for an unsynced Meta ad read with `accountId`.
+	AdId         NullableString `json:"adId,omitempty"`
+	Platform     *string        `json:"platform,omitempty"`
+	PlatformAdId *string        `json:"platformAdId,omitempty"`
+	// False when the ad was read live from Meta because it is not in Zernio's store.
+	Synced *bool                         `json:"synced,omitempty"`
+	Review *GetAdReview200ResponseReview `json:"review,omitempty"`
 }
 
 // NewGetAdReview200Response instantiates a new GetAdReview200Response object
@@ -43,36 +46,47 @@ func NewGetAdReview200ResponseWithDefaults() *GetAdReview200Response {
 	return &this
 }
 
-// GetAdId returns the AdId field value if set, zero value otherwise.
+// GetAdId returns the AdId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetAdReview200Response) GetAdId() string {
-	if o == nil || IsNil(o.AdId) {
+	if o == nil || IsNil(o.AdId.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.AdId
+	return *o.AdId.Get()
 }
 
 // GetAdIdOk returns a tuple with the AdId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetAdReview200Response) GetAdIdOk() (*string, bool) {
-	if o == nil || IsNil(o.AdId) {
+	if o == nil {
 		return nil, false
 	}
-	return o.AdId, true
+	return o.AdId.Get(), o.AdId.IsSet()
 }
 
 // HasAdId returns a boolean if a field has been set.
 func (o *GetAdReview200Response) HasAdId() bool {
-	if o != nil && !IsNil(o.AdId) {
+	if o != nil && o.AdId.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAdId gets a reference to the given string and assigns it to the AdId field.
+// SetAdId gets a reference to the given NullableString and assigns it to the AdId field.
 func (o *GetAdReview200Response) SetAdId(v string) {
-	o.AdId = &v
+	o.AdId.Set(&v)
+}
+
+// SetAdIdNil sets the value for AdId to be an explicit nil
+func (o *GetAdReview200Response) SetAdIdNil() {
+	o.AdId.Set(nil)
+}
+
+// UnsetAdId ensures that no value is present for AdId, not even an explicit nil
+func (o *GetAdReview200Response) UnsetAdId() {
+	o.AdId.Unset()
 }
 
 // GetPlatform returns the Platform field value if set, zero value otherwise.
@@ -139,6 +153,38 @@ func (o *GetAdReview200Response) SetPlatformAdId(v string) {
 	o.PlatformAdId = &v
 }
 
+// GetSynced returns the Synced field value if set, zero value otherwise.
+func (o *GetAdReview200Response) GetSynced() bool {
+	if o == nil || IsNil(o.Synced) {
+		var ret bool
+		return ret
+	}
+	return *o.Synced
+}
+
+// GetSyncedOk returns a tuple with the Synced field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdReview200Response) GetSyncedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Synced) {
+		return nil, false
+	}
+	return o.Synced, true
+}
+
+// HasSynced returns a boolean if a field has been set.
+func (o *GetAdReview200Response) HasSynced() bool {
+	if o != nil && !IsNil(o.Synced) {
+		return true
+	}
+
+	return false
+}
+
+// SetSynced gets a reference to the given bool and assigns it to the Synced field.
+func (o *GetAdReview200Response) SetSynced(v bool) {
+	o.Synced = &v
+}
+
 // GetReview returns the Review field value if set, zero value otherwise.
 func (o *GetAdReview200Response) GetReview() GetAdReview200ResponseReview {
 	if o == nil || IsNil(o.Review) {
@@ -181,14 +227,17 @@ func (o GetAdReview200Response) MarshalJSON() ([]byte, error) {
 
 func (o GetAdReview200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.AdId) {
-		toSerialize["adId"] = o.AdId
+	if o.AdId.IsSet() {
+		toSerialize["adId"] = o.AdId.Get()
 	}
 	if !IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
 	}
 	if !IsNil(o.PlatformAdId) {
 		toSerialize["platformAdId"] = o.PlatformAdId
+	}
+	if !IsNil(o.Synced) {
+		toSerialize["synced"] = o.Synced
 	}
 	if !IsNil(o.Review) {
 		toSerialize["review"] = o.Review
