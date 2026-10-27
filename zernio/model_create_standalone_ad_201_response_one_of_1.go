@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.379.0
+API version: 1.380.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,8 @@ type CreateStandaloneAd201ResponseOneOf1 struct {
 	PlatformAdSetId    *string            `json:"platformAdSetId,omitempty"`
 	AppliedDefaults    *AdAppliedDefaults `json:"appliedDefaults,omitempty"`
 	Message            *string            `json:"message,omitempty"`
+	// Meta only, present only when needed. An `activation_failed:` entry means Meta refused the final switch to ACTIVE for the ads it names (or for their ad set or campaign): the entry names what was kept PAUSED and what was switched ACTIVE, and quotes Meta's error and the status calls that switch the PAUSED ones on later.
+	Warnings []string `json:"warnings,omitempty"`
 }
 
 // NewCreateStandaloneAd201ResponseOneOf1 instantiates a new CreateStandaloneAd201ResponseOneOf1 object
@@ -204,6 +206,38 @@ func (o *CreateStandaloneAd201ResponseOneOf1) SetMessage(v string) {
 	o.Message = &v
 }
 
+// GetWarnings returns the Warnings field value if set, zero value otherwise.
+func (o *CreateStandaloneAd201ResponseOneOf1) GetWarnings() []string {
+	if o == nil || IsNil(o.Warnings) {
+		var ret []string
+		return ret
+	}
+	return o.Warnings
+}
+
+// GetWarningsOk returns a tuple with the Warnings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAd201ResponseOneOf1) GetWarningsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Warnings) {
+		return nil, false
+	}
+	return o.Warnings, true
+}
+
+// HasWarnings returns a boolean if a field has been set.
+func (o *CreateStandaloneAd201ResponseOneOf1) HasWarnings() bool {
+	if o != nil && !IsNil(o.Warnings) {
+		return true
+	}
+
+	return false
+}
+
+// SetWarnings gets a reference to the given []string and assigns it to the Warnings field.
+func (o *CreateStandaloneAd201ResponseOneOf1) SetWarnings(v []string) {
+	o.Warnings = v
+}
+
 func (o CreateStandaloneAd201ResponseOneOf1) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -228,6 +262,9 @@ func (o CreateStandaloneAd201ResponseOneOf1) ToMap() (map[string]interface{}, er
 	}
 	if !IsNil(o.Message) {
 		toSerialize["message"] = o.Message
+	}
+	if !IsNil(o.Warnings) {
+		toSerialize["warnings"] = o.Warnings
 	}
 	return toSerialize, nil
 }

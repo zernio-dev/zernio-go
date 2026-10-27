@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.379.0
+API version: 1.380.0
 Contact: support@zernio.com
 */
 
@@ -1972,6 +1972,8 @@ Per-platform required fields, budget minimums, and video-ad rules are documented
 - `dynamicCreative`: `imageUrls` or `videoUrls`, `callToActionTypes`, and `linkUrls` unless the goal is `lead_generation`. Top-level `body` is not required.
 - `existingCreativeId`: no creative fields. Goal `page_likes`: `body` only.
 - Goal `lead_generation` always needs `leadGenFormId`, except with `existingCreativeId`.
+
+**Meta activation.** Meta builds the campaign, ad set and ads PAUSED and switches the requested levels to ACTIVE as the last step. When Meta refuses that switch, or the connection drops, after Zernio's retries, the request still answers 201 and nothing is deleted: the refused level and every level below it stay PAUSED, while levels above it that already went ACTIVE stay ACTIVE (the ad comes back with `status: paused` and its `configuredStatus` as read back from Meta). A switch Meta applied although its answer was lost counts as ACTIVE, since Zernio reads the status back first. `message` says not everything is ACTIVE, and `warnings` carries one entry starting with `activation_failed:` that quotes Meta's code, subcode and message, names what was kept PAUSED and what was switched ACTIVE, and lists the calls that switch the PAUSED ones on later (PUT /v1/ads/campaigns/{campaignId}/status, PUT /v1/ads/ad-sets/{adSetId}/status and PUT /v1/ads/{adId}/status with status `active`, in that order). On the `creatives[]` shape only the ads Meta refused stay PAUSED when the campaign and ad set went through. A Reach and Frequency ad is created ACTIVE and is never listed as kept PAUSED. With an `Idempotency-Key` a retry replays this 201.
 
 LinkedIn creates a Single Image or Single Video Ad backed by a Direct Sponsored Content "dark post" authored by a Company Page (see `organizationId`). Supported goals are engagement, traffic, awareness, and video_views (video ads use the `video` field; video_views requires a video), and traffic ads require `linkUrl`.
 
