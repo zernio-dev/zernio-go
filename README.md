@@ -805,6 +805,7 @@ func main() {
 | `client.ConversionsAPI.ListConversionDestinations(ctx)` | List conversion destinations |
 | `client.ConversionsAPI.ListCustomConversionGoals(ctx)` | List custom conversion goals |
 | `client.ConversionsAPI.ListEventDestinations(ctx)` | List event destinations |
+| `client.ConversionsAPI.ListEvents(ctx)` | List stored events |
 | `client.ConversionsAPI.CreateConversionAction(ctx)` | Create website conversion action |
 | `client.ConversionsAPI.CreateConversionDestination(ctx)` | Create a conversion destination |
 | `client.ConversionsAPI.CreateCustomConversionGoal(ctx)` | Create a custom conversion goal |

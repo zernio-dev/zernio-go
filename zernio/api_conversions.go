@@ -18,6 +18,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 // ConversionsAPIService ConversionsAPI service
@@ -2770,6 +2771,205 @@ func (a *ConversionsAPIService) ListEventDestinationsExecute(r ConversionsAPILis
 
 	if r.profileId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConversionsAPIListEventsRequest struct {
+	ctx        context.Context
+	ApiService *ConversionsAPIService
+	profileId  *string
+	limit      *int32
+	from       *time.Time
+	to         *time.Time
+	eventName  *string
+	cursor     *string
+}
+
+func (r ConversionsAPIListEventsRequest) ProfileId(profileId string) ConversionsAPIListEventsRequest {
+	r.profileId = &profileId
+	return r
+}
+
+func (r ConversionsAPIListEventsRequest) Limit(limit int32) ConversionsAPIListEventsRequest {
+	r.limit = &limit
+	return r
+}
+
+// Only events at or after this time (ISO 8601, on the event time).
+func (r ConversionsAPIListEventsRequest) From(from time.Time) ConversionsAPIListEventsRequest {
+	r.from = &from
+	return r
+}
+
+// Only events before this time (ISO 8601, on the event time).
+func (r ConversionsAPIListEventsRequest) To(to time.Time) ConversionsAPIListEventsRequest {
+	r.to = &to
+	return r
+}
+
+// Only events with this name, such as &#x60;Purchase&#x60;.
+func (r ConversionsAPIListEventsRequest) EventName(eventName string) ConversionsAPIListEventsRequest {
+	r.eventName = &eventName
+	return r
+}
+
+// &#x60;nextCursor&#x60; from the previous page.
+func (r ConversionsAPIListEventsRequest) Cursor(cursor string) ConversionsAPIListEventsRequest {
+	r.cursor = &cursor
+	return r
+}
+
+func (r ConversionsAPIListEventsRequest) Execute() (*ListEvents200Response, *http.Response, error) {
+	return r.ApiService.ListEventsExecute(r)
+}
+
+/*
+ListEvents List stored events
+
+Lists the conversion events stored for a profile by `POST /v1/events`, newest first. Personal data is never
+returned: `hasEmail`, `hasPhone` and `hasExternalId` only say whether the event carried that identifier.
+Events sent with `testCode` are not stored, so they never appear here.
+
+Paginate with `cursor`: pass the `nextCursor` of the previous page until it comes back `null`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConversionsAPIListEventsRequest
+*/
+func (a *ConversionsAPIService) ListEvents(ctx context.Context) ConversionsAPIListEventsRequest {
+	return ConversionsAPIListEventsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListEvents200Response
+func (a *ConversionsAPIService) ListEventsExecute(r ConversionsAPIListEventsRequest) (*ListEvents200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListEvents200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.ListEvents")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/events"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.profileId == nil {
+		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 50
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
+	}
+	if r.to != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "to", r.to, "form", "")
+	}
+	if r.eventName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "eventName", r.eventName, "form", "")
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
