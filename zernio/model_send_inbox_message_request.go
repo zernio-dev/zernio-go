@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.378.0
+API version: 1.379.0
 Contact: support@zernio.com
 */
 
@@ -40,6 +40,8 @@ type SendInboxMessageRequest struct {
 	VoiceNote *bool `json:"voiceNote,omitempty"`
 	// iMessage only (JSON body only). Bold title line rendered above the message text. Rejected with 400 on other platforms; ignored on voice-message sends.
 	Subject *string `json:"subject,omitempty"`
+	// Email threads only (Google / Microsoft accounts, JSON body only). Extra recipients copied on the reply.
+	Cc []string `json:"cc,omitempty"`
 	// iMessage only (JSON body only). Apple screen/bubble animation played when the message arrives. Rejected with 400 on other platforms.
 	Effect *string `json:"effect,omitempty"`
 	// iMessage only (JSON body only). When `true`, attaches the sender's contact card (vCard) so the recipient can save the sender. Counts as message content on its own, so `message` becomes optional.
@@ -370,6 +372,38 @@ func (o *SendInboxMessageRequest) HasSubject() bool {
 // SetSubject gets a reference to the given string and assigns it to the Subject field.
 func (o *SendInboxMessageRequest) SetSubject(v string) {
 	o.Subject = &v
+}
+
+// GetCc returns the Cc field value if set, zero value otherwise.
+func (o *SendInboxMessageRequest) GetCc() []string {
+	if o == nil || IsNil(o.Cc) {
+		var ret []string
+		return ret
+	}
+	return o.Cc
+}
+
+// GetCcOk returns a tuple with the Cc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessageRequest) GetCcOk() ([]string, bool) {
+	if o == nil || IsNil(o.Cc) {
+		return nil, false
+	}
+	return o.Cc, true
+}
+
+// HasCc returns a boolean if a field has been set.
+func (o *SendInboxMessageRequest) HasCc() bool {
+	if o != nil && !IsNil(o.Cc) {
+		return true
+	}
+
+	return false
+}
+
+// SetCc gets a reference to the given []string and assigns it to the Cc field.
+func (o *SendInboxMessageRequest) SetCc(v []string) {
+	o.Cc = v
 }
 
 // GetEffect returns the Effect field value if set, zero value otherwise.
@@ -886,6 +920,9 @@ func (o SendInboxMessageRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Subject) {
 		toSerialize["subject"] = o.Subject
+	}
+	if !IsNil(o.Cc) {
+		toSerialize["cc"] = o.Cc
 	}
 	if !IsNil(o.Effect) {
 		toSerialize["effect"] = o.Effect

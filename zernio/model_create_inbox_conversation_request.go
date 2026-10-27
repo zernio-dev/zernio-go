@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.378.0
+API version: 1.379.0
 Contact: support@zernio.com
 */
 
@@ -28,8 +28,12 @@ type CreateInboxConversationRequest struct {
 	ParticipantId *string `json:"participantId,omitempty"`
 	// Recipient handle/username, an X or Bluesky handle (with or without @) or a Reddit username (with or without u/). Resolved via lookup. Provide either this or participantId.
 	ParticipantUsername *string `json:"participantUsername,omitempty"`
-	// Text content of the message. At least one of message, attachment, or (for WhatsApp) templateName is required. Required when category is set (a Direct Send utility message is a text message).
+	// Text content of the message. At least one of message, attachment, or (for WhatsApp) templateName is required. Required when category is set (a Direct Send utility message is a text message). Required on email accounts.
 	Message *string `json:"message,omitempty"`
+	// Email accounts only (Google / Microsoft). Subject of the new thread.
+	Subject *string `json:"subject,omitempty"`
+	// Email accounts only (Google / Microsoft). Extra recipients copied on the opening mail.
+	Cc []string `json:"cc,omitempty"`
 	// X only. Skip the receives_your_dm eligibility check before sending. Use if you have already verified the recipient accepts DMs.
 	SkipDmCheck *bool `json:"skipDmCheck,omitempty"`
 	// WhatsApp only. Name of the approved template to start the conversation with. Required for WhatsApp unless category is used instead (Direct Send). Cannot be combined with category.
@@ -196,6 +200,70 @@ func (o *CreateInboxConversationRequest) HasMessage() bool {
 // SetMessage gets a reference to the given string and assigns it to the Message field.
 func (o *CreateInboxConversationRequest) SetMessage(v string) {
 	o.Message = &v
+}
+
+// GetSubject returns the Subject field value if set, zero value otherwise.
+func (o *CreateInboxConversationRequest) GetSubject() string {
+	if o == nil || IsNil(o.Subject) {
+		var ret string
+		return ret
+	}
+	return *o.Subject
+}
+
+// GetSubjectOk returns a tuple with the Subject field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInboxConversationRequest) GetSubjectOk() (*string, bool) {
+	if o == nil || IsNil(o.Subject) {
+		return nil, false
+	}
+	return o.Subject, true
+}
+
+// HasSubject returns a boolean if a field has been set.
+func (o *CreateInboxConversationRequest) HasSubject() bool {
+	if o != nil && !IsNil(o.Subject) {
+		return true
+	}
+
+	return false
+}
+
+// SetSubject gets a reference to the given string and assigns it to the Subject field.
+func (o *CreateInboxConversationRequest) SetSubject(v string) {
+	o.Subject = &v
+}
+
+// GetCc returns the Cc field value if set, zero value otherwise.
+func (o *CreateInboxConversationRequest) GetCc() []string {
+	if o == nil || IsNil(o.Cc) {
+		var ret []string
+		return ret
+	}
+	return o.Cc
+}
+
+// GetCcOk returns a tuple with the Cc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInboxConversationRequest) GetCcOk() ([]string, bool) {
+	if o == nil || IsNil(o.Cc) {
+		return nil, false
+	}
+	return o.Cc, true
+}
+
+// HasCc returns a boolean if a field has been set.
+func (o *CreateInboxConversationRequest) HasCc() bool {
+	if o != nil && !IsNil(o.Cc) {
+		return true
+	}
+
+	return false
+}
+
+// SetCc gets a reference to the given []string and assigns it to the Cc field.
+func (o *CreateInboxConversationRequest) SetCc(v []string) {
+	o.Cc = v
 }
 
 // GetSkipDmCheck returns the SkipDmCheck field value if set, zero value otherwise.
@@ -537,6 +605,12 @@ func (o CreateInboxConversationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.Message) {
 		toSerialize["message"] = o.Message
+	}
+	if !IsNil(o.Subject) {
+		toSerialize["subject"] = o.Subject
+	}
+	if !IsNil(o.Cc) {
+		toSerialize["cc"] = o.Cc
 	}
 	if !IsNil(o.SkipDmCheck) {
 		toSerialize["skipDmCheck"] = o.SkipDmCheck

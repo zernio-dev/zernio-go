@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.378.0
+API version: 1.379.0
 Contact: support@zernio.com
 */
 
@@ -2879,6 +2879,7 @@ type ConnectAPIGetConnectUrlRequest struct {
 	forceReauth            *bool
 	redirectUrl            *string
 	scopes                 *string
+	loginHint              *string
 	headless               *bool
 	loginMethod            *string
 	onboarding             *string
@@ -2922,15 +2923,21 @@ func (r ConnectAPIGetConnectUrlRequest) ForceReauth(forceReauth bool) ConnectAPI
 	return r
 }
 
-// Your custom redirect URL after connection completes. MUST be an absolute http(s) URL or a custom app scheme for mobile deeplinks (e.g. myapp://callback); a relative path is rejected with 400 INVALID_REDIRECT_URL. X (twitter) caps the OAuth &#x60;state&#x60; at 500 characters and the redirect is carried inside it, so the URL-encoded &#x60;redirect_url&#x60; must be at most 258 characters for API callers (310 for dashboard sessions; in headless mode the appended &#x60;headless&#x3D;true&#x60; counts toward it); a longer one is rejected with 400 INVALID_REDIRECT_URL. Result params are appended with the URL API, so an existing query string is preserved. Standard mode appends connected&#x3D;{platform}&amp;profileId&#x3D;X&amp;accountId&#x3D;Y&amp;username&#x3D;Z. Headless mode appends OAuth data params for platforms requiring selection (e.g. LinkedIn orgs, Facebook pages). If no selection is needed, the account is created directly and the redirect includes accountId.  On failure, the browser is sent to the same redirect_url with &#x60;error&#x60; and &#x60;platform&#x60; appended. &#x60;error&#x60; and &#x60;platform&#x60; are always present. &#x60;error_message&#x60;, &#x60;is_user_fixable&#x60;, &#x60;reason&#x60;, &#x60;dashboard_url&#x60;, &#x60;missing_scopes&#x60;, &#x60;error_reason&#x60; and the &#x60;platform_error*&#x60; params are conditional and must be treated as optional. Your own query params are kept on every redirect, but ours overwrite a param of yours with the same name. On an error redirect the internal &#x60;headless&#x60;, &#x60;adsConnect&#x60;, &#x60;adsScope&#x60;, &#x60;reconnectAccountId&#x60;, &#x60;expectedPlatformUserId&#x60; and &#x60;expectedUsername&#x60; markers we add during the flow are removed.  Correlation (every redirect from an OAuth callback, success and failure, and the &#x60;redirect_url&#x60; returned by the selection endpoints such as POST /v1/connect/facebook/select-page):   - &#x60;request_id&#x60;: the id we log that request under. Quote it when reporting a problem.   - &#x60;stage&#x60;: where the flow ended. &#x60;authorize&#x60; &#x3D; the platform&#39;s consent dialog returned an     error or denial instead of a code. &#x60;callback&#x60; &#x3D; we processed the returned code (success,     a selection step, or a failure). &#x60;select_page&#x60; &#x3D; the destination-selection endpoint     (page, account, organization, board, location, profile or phone number) completed it.  &#x60;oauth_denied&#x60; carries &#x60;error_message&#x60; and, when the platform sent them, its own values as &#x60;platform_error&#x60; (e.g. &#x60;access_denied&#x60;), &#x60;platform_error_reason&#x60; (e.g. &#x60;user_denied&#x60;) and &#x60;platform_error_description&#x60; (truncated to 500 characters). &#x60;is_user_fixable&#x3D;true&#x60; is set when the platform reported that the user cancelled or declined.  &#x60;no_facebook_pages&#x60; comes with &#x60;is_user_fixable&#x3D;true&#x60;, an &#x60;error_message&#x60; telling the user to click \&quot;Edit previous settings\&quot; in Meta&#39;s dialog and tick the Page (or create one), and, when Meta&#39;s token debug answered, &#x60;error_reason&#x60;:   - &#x60;pages_permission_declined&#x60;: the user declined the pages_show_list permission.   - &#x60;no_pages_granted&#x60;: the permission was granted with no Page ticked. Meta reports a user who     manages no Page the same way, so this covers both.   - &#x60;granted_pages_not_listed&#x60;: Pages were ticked but Meta listed none the user can manage, and a     direct read of each ticked Page returned no access token.  Headless Facebook success (&#x60;step&#x3D;select_page&#x60;) and headless Instagram &#x60;facebook_login&#x60; success (&#x60;step&#x3D;select_account&#x60;): &#x60;userProfile&#x60; is JSON that was percent-encoded once before being set as a query param, so it is encoded twice on the wire. After your framework decodes the query string once, run one more decodeURIComponent (or equivalent) and then JSON.parse it. &#x60;tempToken&#x60; and &#x60;connect_token&#x60; are plain values.  &#x60;code_already_redeemed&#x60; means the same authorization code arrived more than once and an earlier request already processed it (the code is never sent to the platform twice). It is not a failure: check GET /v1/accounts or wait for the &#x60;account.connected&#x60; webhook.  &#x60;missing_google_permissions&#x60; (YouTube, Google Business and Google Ads) means the user unchecked one or more permissions on Google&#39;s consent screen. It always comes with &#x60;is_user_fixable&#x3D;true&#x60;. When Google reported the granted scopes, &#x60;missing_scopes&#x60; is also present: a comma-separated list of the requested Google scopes that were not granted. Ask the user to connect again and keep every permission checked.  &#x60;no_youtube_channel&#x60; means Google authorized the account but it has no YouTube channel we can connect. It always comes with &#x60;is_user_fixable&#x3D;true&#x60; and an &#x60;error_message&#x60;. The usual causes: the user picked their personal Google identity instead of the Brand Account in Google&#39;s account chooser, they only have YouTube Studio access (not Brand Account owner or manager), or the account has no channel yet.  This list is NOT exhaustive and new values may be added at any time. Treat an unrecognized value as a generic failure rather than matching it exhaustively. Existing values are not renamed or removed without notice.  OAuth and callback:   oauth_denied, invalid_callback, invalid_state, unsupported_platform, connection_failed,   internal_error, token_exchange_failed, byok_config_error, personal_account_not_supported,   missing_google_permissions, missing_tiktok_permissions, platform_requires_destination,   reconnect_account_mismatch, account_mismatch, instagram_login_method_mismatch, invalid_request,   code_already_redeemed  Access and limits:   profile_not_found, invalid_profile_id, access_denied, account_limit_exceeded,   profile_limit_exceeded, payment_required  Destination selection:   no_facebook_pages, facebook_pages_error, no_google_locations, google_locations_error,   google_permission_denied, no_snapchat_public_profiles, snapchat_profiles_error,   no_youtube_channel, discord_no_guild, slack_no_team  WhatsApp:   whatsapp_error, one_whatsapp_per_profile, whatsapp_number_already_connected,   whatsapp_number_pinned_to_profile, whatsapp_coexistence_not_registered, connection_cancelled  Google Ads (platform&#x3D;googleads):   google_ads_auth_failed, google_ads_invalid_state, google_ads_config_error,   google_ads_token_failed, google_ads_quota_exhausted, google_ads_callback_error  TikTok Ads (platform&#x3D;tiktokads):   tiktok_ads_auth_failed, tiktok_ads_invalid_state, tiktok_ads_access_denied,   tiktok_ads_config_error, tiktok_ads_token_failed, tiktok_ads_account_not_found,   tiktok_ads_callback_error  X Ads (platform&#x3D;xads):   x_ads_denied, x_ads_auth_failed, x_ads_config_error, x_ads_account_not_found,   x_ads_state_error, x_ads_token_failed, x_ads_token_missing, x_ads_callback_error  Reddit Ads (platform&#x3D;redditads):   reddit_ads_auth_failed, reddit_ads_invalid_state, reddit_ads_access_denied,   reddit_ads_scope_not_granted, reddit_ads_no_ad_accounts, reddit_ads_callback_error  Shopify (platform&#x3D;shopify):   shopify_auth_failed, shopify_config_error, shopify_invalid_state, shopify_invalid_hmac,   shopify_invalid_shop, shopify_missing_scopes, shopify_callback_error  1. On this endpoint every upstream OAuth error is collapsed into &#x60;oauth_denied&#x60;, with the provider&#39;s own values in the &#x60;platform_error*&#x60; params described above. The dedicated ads flows below are different: they use their own denial slugs and &#x60;google_ads_auth_failed&#x60; and &#x60;tiktok_ads_auth_failed&#x60; may carry the provider&#39;s raw error string in &#x60;error_message&#x60;.  2. On the tiktok and twitter ads flows &#x60;platform&#x60; carries the ads platform id (&#x60;tiktokads&#x60;, &#x60;xads&#x60;), not the value used in the request path. The googleads, redditads and shopify flows report &#x60;googleads&#x60;, &#x60;redditads&#x60; and &#x60;shopify&#x60;.  3. &#x60;missing_tiktok_permissions&#x60; means the TikTok authorization left out a permission the already-connected account needs, so nothing was changed and it keeps working as before. It is user-fixable: connect again and accept every permission on TikTok&#39;s screen.  4. &#x60;instagram_login_method_mismatch&#x60; means an Instagram Login authorization landed on a profile whose Instagram account is connected through Facebook Login, so nothing was changed and it keeps working as before. To refresh it, connect again with &#x60;loginMethod&#x3D;facebook_login&#x60;. To move it to Instagram Login, disconnect it first.
+// Your custom redirect URL after connection completes. MUST be an absolute http(s) URL or a custom app scheme for mobile deeplinks (e.g. myapp://callback); a relative path is rejected with 400 INVALID_REDIRECT_URL.  Exit notice: when &#x60;redirect_url&#x60; is an http(s) URL on another site (anything but zernio.com), the user is not sent there directly. Every redirect of the flow lands first on a Zernio page, &#x60;https://zernio.com/connect/continue?to&#x3D;&lt;your URL&gt;&#x60;, that names your site and continues to it with one click. All the params described below arrive on your URL unchanged; the notice page moves them over. A custom app scheme (myapp://...) is never routed through the notice. In headless mode the redirects we hand you (and the &#x60;redirect_url&#x60; returned by the selection endpoints) are notice URLs, so pass them back or navigate to them as they are.  X (twitter) caps the OAuth &#x60;state&#x60; at 500 characters and the redirect is carried inside it (for an http(s) URL on another site, wrapped in the notice URL), so the URL-encoded form must be at most 258 characters for API callers (310 for dashboard sessions; in headless mode the appended &#x60;headless&#x3D;true&#x60; counts toward it). For a plain https URL on another site that leaves about 165 to 190 characters of your own URL, depending on how many characters need encoding; a longer one is rejected with 400 INVALID_REDIRECT_URL, and the error says by how much. Result params are appended with the URL API, so an existing query string is preserved. Standard mode appends connected&#x3D;{platform}&amp;profileId&#x3D;X&amp;accountId&#x3D;Y&amp;username&#x3D;Z. Headless mode appends OAuth data params for platforms requiring selection (e.g. LinkedIn orgs, Facebook pages). If no selection is needed, the account is created directly and the redirect includes accountId.  On failure, the browser is sent to the same redirect_url with &#x60;error&#x60; and &#x60;platform&#x60; appended. &#x60;error&#x60; and &#x60;platform&#x60; are always present. &#x60;error_message&#x60;, &#x60;is_user_fixable&#x60;, &#x60;reason&#x60;, &#x60;dashboard_url&#x60;, &#x60;missing_scopes&#x60;, &#x60;error_reason&#x60; and the &#x60;platform_error*&#x60; params are conditional and must be treated as optional. Your own query params are kept on every redirect, but ours overwrite a param of yours with the same name. On an error redirect the internal &#x60;headless&#x60;, &#x60;adsConnect&#x60;, &#x60;adsScope&#x60;, &#x60;reconnectAccountId&#x60;, &#x60;expectedPlatformUserId&#x60; and &#x60;expectedUsername&#x60; markers we add during the flow are removed.  Correlation (every redirect from an OAuth callback, success and failure, and the &#x60;redirect_url&#x60; returned by the selection endpoints such as POST /v1/connect/facebook/select-page):   - &#x60;request_id&#x60;: the id we log that request under. Quote it when reporting a problem.   - &#x60;stage&#x60;: where the flow ended. &#x60;authorize&#x60; &#x3D; the platform&#39;s consent dialog returned an     error or denial instead of a code. &#x60;callback&#x60; &#x3D; we processed the returned code (success,     a selection step, or a failure). &#x60;select_page&#x60; &#x3D; the destination-selection endpoint     (page, account, organization, board, location, profile or phone number) completed it.  &#x60;oauth_denied&#x60; carries &#x60;error_message&#x60; and, when the platform sent them, its own values as &#x60;platform_error&#x60; (e.g. &#x60;access_denied&#x60;), &#x60;platform_error_reason&#x60; (e.g. &#x60;user_denied&#x60;) and &#x60;platform_error_description&#x60; (truncated to 500 characters). &#x60;is_user_fixable&#x3D;true&#x60; is set when the platform reported that the user cancelled or declined.  &#x60;no_facebook_pages&#x60; comes with &#x60;is_user_fixable&#x3D;true&#x60;, an &#x60;error_message&#x60; telling the user to click \&quot;Edit previous settings\&quot; in Meta&#39;s dialog and tick the Page (or create one), and, when Meta&#39;s token debug answered, &#x60;error_reason&#x60;:   - &#x60;pages_permission_declined&#x60;: the user declined the pages_show_list permission.   - &#x60;no_pages_granted&#x60;: the permission was granted with no Page ticked. Meta reports a user who     manages no Page the same way, so this covers both.   - &#x60;granted_pages_not_listed&#x60;: Pages were ticked but Meta listed none the user can manage, and a     direct read of each ticked Page returned no access token.  Headless Facebook success (&#x60;step&#x3D;select_page&#x60;) and headless Instagram &#x60;facebook_login&#x60; success (&#x60;step&#x3D;select_account&#x60;): &#x60;userProfile&#x60; is JSON that was percent-encoded once before being set as a query param, so it is encoded twice on the wire. After your framework decodes the query string once, run one more decodeURIComponent (or equivalent) and then JSON.parse it. &#x60;tempToken&#x60; and &#x60;connect_token&#x60; are plain values.  &#x60;code_already_redeemed&#x60; means the same authorization code arrived more than once and an earlier request already processed it (the code is never sent to the platform twice). It is not a failure: check GET /v1/accounts or wait for the &#x60;account.connected&#x60; webhook.  &#x60;missing_google_permissions&#x60; (YouTube, Google Business and Google Ads) means the user unchecked one or more permissions on Google&#39;s consent screen. It always comes with &#x60;is_user_fixable&#x3D;true&#x60;. When Google reported the granted scopes, &#x60;missing_scopes&#x60; is also present: a comma-separated list of the requested Google scopes that were not granted. Ask the user to connect again and keep every permission checked.  &#x60;no_youtube_channel&#x60; means Google authorized the account but it has no YouTube channel we can connect. It always comes with &#x60;is_user_fixable&#x3D;true&#x60; and an &#x60;error_message&#x60;. The usual causes: the user picked their personal Google identity instead of the Brand Account in Google&#39;s account chooser, they only have YouTube Studio access (not Brand Account owner or manager), or the account has no channel yet.  This list is NOT exhaustive and new values may be added at any time. Treat an unrecognized value as a generic failure rather than matching it exhaustively. Existing values are not renamed or removed without notice.  OAuth and callback:   oauth_denied, invalid_callback, invalid_state, unsupported_platform, connection_failed,   internal_error, token_exchange_failed, byok_config_error, personal_account_not_supported,   missing_google_permissions, missing_tiktok_permissions, platform_requires_destination,   reconnect_account_mismatch, account_mismatch, instagram_login_method_mismatch, invalid_request,   code_already_redeemed  Access and limits:   profile_not_found, invalid_profile_id, access_denied, account_limit_exceeded,   profile_limit_exceeded, payment_required  Destination selection:   no_facebook_pages, facebook_pages_error, no_google_locations, google_locations_error,   google_permission_denied, no_snapchat_public_profiles, snapchat_profiles_error,   no_youtube_channel, discord_no_guild, slack_no_team  WhatsApp:   whatsapp_error, one_whatsapp_per_profile, whatsapp_number_already_connected,   whatsapp_number_pinned_to_profile, whatsapp_coexistence_not_registered, connection_cancelled  Google Ads (platform&#x3D;googleads):   google_ads_auth_failed, google_ads_invalid_state, google_ads_config_error,   google_ads_token_failed, google_ads_quota_exhausted, google_ads_callback_error  TikTok Ads (platform&#x3D;tiktokads):   tiktok_ads_auth_failed, tiktok_ads_invalid_state, tiktok_ads_access_denied,   tiktok_ads_config_error, tiktok_ads_token_failed, tiktok_ads_account_not_found,   tiktok_ads_callback_error  X Ads (platform&#x3D;xads):   x_ads_denied, x_ads_auth_failed, x_ads_config_error, x_ads_account_not_found,   x_ads_state_error, x_ads_token_failed, x_ads_token_missing, x_ads_callback_error  Reddit Ads (platform&#x3D;redditads):   reddit_ads_auth_failed, reddit_ads_invalid_state, reddit_ads_access_denied,   reddit_ads_scope_not_granted, reddit_ads_no_ad_accounts, reddit_ads_callback_error  Shopify (platform&#x3D;shopify):   shopify_auth_failed, shopify_config_error, shopify_invalid_state, shopify_invalid_hmac,   shopify_invalid_shop, shopify_missing_scopes, shopify_callback_error  1. On this endpoint every upstream OAuth error is collapsed into &#x60;oauth_denied&#x60;, with the provider&#39;s own values in the &#x60;platform_error*&#x60; params described above. The dedicated ads flows below are different: they use their own denial slugs and &#x60;google_ads_auth_failed&#x60; and &#x60;tiktok_ads_auth_failed&#x60; may carry the provider&#39;s raw error string in &#x60;error_message&#x60;.  2. On the tiktok and twitter ads flows &#x60;platform&#x60; carries the ads platform id (&#x60;tiktokads&#x60;, &#x60;xads&#x60;), not the value used in the request path. The googleads, redditads and shopify flows report &#x60;googleads&#x60;, &#x60;redditads&#x60; and &#x60;shopify&#x60;.  3. &#x60;missing_tiktok_permissions&#x60; means the TikTok authorization left out a permission the already-connected account needs, so nothing was changed and it keeps working as before. It is user-fixable: connect again and accept every permission on TikTok&#39;s screen.  4. &#x60;instagram_login_method_mismatch&#x60; means an Instagram Login authorization landed on a profile whose Instagram account is connected through Facebook Login, so nothing was changed and it keeps working as before. To refresh it, connect again with &#x60;loginMethod&#x3D;facebook_login&#x60;. To move it to Instagram Login, disconnect it first.
 func (r ConnectAPIGetConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetConnectUrlRequest {
 	r.redirectUrl = &redirectUrl
 	return r
 }
 
-// Comma-separated permission areas to request instead of the platform&#39;s full permission set. Values: &#x60;posting&#x60;, &#x60;analytics&#x60;, &#x60;comments&#x60;, &#x60;messaging&#x60;, &#x60;ads&#x60;. Omit it (the default, and what the dashboard does) to request everything the platform supports.  When present, the consent dialog asks only for the platform scopes behind those areas plus the scopes every connection needs (identity, token refresh, and listing the pages, organizations or channels the user picks from). Scopes the user was never asked for are absent from the account&#39;s &#x60;permissions&#x60;, and the health endpoints report them as not granted, so a &#x60;posting&#x60;-only account cannot read analytics or the inbox until it is connected again with more areas. First comments need &#x60;comments&#x60;: a &#x60;posting&#x60;-only account publishes the post and skips the first comment. Scopes the platform lists under none of the areas (X likes, bookmarks and follows, Pinterest ads-only extras) are requested only when the parameter is omitted.  Supported on facebook, instagram (both login methods), linkedin, twitter, tiktok, youtube, threads, reddit, pinterest, googlebusiness and slack (via &#x60;GET /v1/connect/slack&#x60;). Rejected with 400 &#x60;INVALID_FIELD_VALUE&#x60; (&#x60;param: scopes&#x60;) on bluesky, telegram, discord, snapchat and whatsapp, whose dialog cannot be reduced, and for an empty list or an unknown area.  What each area asks for, per platform (Google scopes shortened to their last path segment):  | Platform | &#x60;posting&#x60; | &#x60;analytics&#x60; | &#x60;comments&#x60; | &#x60;messaging&#x60; | &#x60;ads&#x60; | Always requested | |---|---|---|---|---|---|---| | facebook | &#x60;pages_manage_posts&#x60; | &#x60;read_insights&#x60;, &#x60;pages_read_user_content&#x60; | &#x60;pages_manage_engagement&#x60;, &#x60;pages_read_user_content&#x60; | &#x60;pages_messaging&#x60; | &#x60;ads_management&#x60;, &#x60;ads_read&#x60;, &#x60;leads_retrieval&#x60;, &#x60;pages_manage_ads&#x60;, &#x60;instagram_basic&#x60;, &#x60;business_management&#x60; | &#x60;pages_show_list&#x60;, &#x60;pages_read_engagement&#x60;, &#x60;pages_manage_metadata&#x60; | | instagram (Instagram Login) | &#x60;instagram_business_content_publish&#x60; | &#x60;instagram_business_manage_insights&#x60; | &#x60;instagram_business_manage_comments&#x60; | &#x60;instagram_business_manage_messages&#x60; | none | &#x60;instagram_business_basic&#x60; | | instagram (&#x60;loginMethod&#x3D;facebook_login&#x60;) | &#x60;instagram_content_publish&#x60; | &#x60;instagram_manage_insights&#x60; | &#x60;instagram_manage_comments&#x60; | &#x60;instagram_manage_messages&#x60; | &#x60;ads_management&#x60;, &#x60;ads_read&#x60;, &#x60;leads_retrieval&#x60;, &#x60;pages_manage_ads&#x60; | &#x60;instagram_basic&#x60;, &#x60;pages_show_list&#x60;, &#x60;pages_read_engagement&#x60;, &#x60;business_management&#x60;, &#x60;pages_messaging&#x60;, &#x60;pages_manage_metadata&#x60; | | linkedin | &#x60;w_member_social&#x60;, &#x60;w_organization_social&#x60;, &#x60;r_organization_social&#x60;, &#x60;r_organization_followers&#x60; | &#x60;r_member_postAnalytics&#x60;, &#x60;r_member_profileAnalytics&#x60;, &#x60;rw_organization_admin&#x60;, &#x60;r_organization_social&#x60;, &#x60;r_organization_followers&#x60; | &#x60;w_member_social&#x60;, &#x60;w_member_social_feed&#x60;, &#x60;w_organization_social&#x60;, &#x60;w_organization_social_feed&#x60;, &#x60;r_organization_social&#x60;, &#x60;r_organization_social_feed&#x60; | none | &#x60;r_ads&#x60;, &#x60;rw_ads&#x60;, &#x60;r_ads_reporting&#x60;, &#x60;r_marketing_leadgen_automation&#x60;, &#x60;rw_conversions&#x60; | &#x60;openid&#x60;, &#x60;profile&#x60;, &#x60;email&#x60;, &#x60;r_basicprofile&#x60;, &#x60;rw_organization_admin&#x60; | | twitter | &#x60;tweet.write&#x60;, &#x60;media.write&#x60; | (in the always-requested set) | &#x60;tweet.write&#x60;, &#x60;like.write&#x60;, &#x60;tweet.moderate.write&#x60; | &#x60;dm.read&#x60;, &#x60;dm.write&#x60;, &#x60;media.write&#x60; | none | &#x60;tweet.read&#x60;, &#x60;users.read&#x60;, &#x60;offline.access&#x60; | | tiktok | &#x60;video.publish&#x60; | &#x60;user.info.stats&#x60;, &#x60;user.insights&#x60;, &#x60;video.list&#x60;, &#x60;video.insights&#x60; | &#x60;comment.list&#x60;, &#x60;comment.list.manage&#x60;, &#x60;video.list&#x60; | &#x60;message.list.read&#x60;, &#x60;message.list.send&#x60;, &#x60;message.list.manage&#x60; | none | &#x60;user.info.basic&#x60;, &#x60;user.info.username&#x60;, &#x60;user.info.profile&#x60;, &#x60;user.account.type&#x60;, &#x60;video.publish&#x60;, &#x60;video.upload&#x60;, &#x60;video.list&#x60; | | youtube | &#x60;youtube.upload&#x60; | &#x60;yt-analytics.readonly&#x60; | &#x60;youtube.force-ssl&#x60; | none | none | &#x60;youtube&#x60; | | threads | &#x60;threads_content_publish&#x60;, &#x60;threads_manage_replies&#x60;, &#x60;threads_delete&#x60; | &#x60;threads_manage_insights&#x60; | &#x60;threads_content_publish&#x60;, &#x60;threads_read_replies&#x60;, &#x60;threads_manage_replies&#x60;, &#x60;threads_delete&#x60; | none | none | &#x60;threads_basic&#x60; | | reddit | &#x60;submit&#x60;, &#x60;read&#x60;, &#x60;mysubreddits&#x60;, &#x60;flair&#x60;, &#x60;history&#x60;, &#x60;edit&#x60; | &#x60;read&#x60;, &#x60;history&#x60; | &#x60;read&#x60;, &#x60;history&#x60;, &#x60;edit&#x60;, &#x60;vote&#x60; | &#x60;privatemessages&#x60; | none | &#x60;identity&#x60; | | pinterest | &#x60;boards:write&#x60;, &#x60;pins:read&#x60;, &#x60;pins:write&#x60; | &#x60;pins:read&#x60;, &#x60;user_accounts:read&#x60; | none | none | &#x60;ads:read&#x60;, &#x60;ads:write&#x60;, &#x60;boards:write&#x60;, &#x60;pins:read&#x60;, &#x60;pins:write&#x60; | &#x60;boards:read&#x60;, &#x60;user_accounts:read&#x60; | | googlebusiness | &#x60;business.manage&#x60; | &#x60;business.manage&#x60; | &#x60;business.manage&#x60; | none | none | &#x60;business.manage&#x60;, &#x60;userinfo.profile&#x60;, &#x60;userinfo.email&#x60; | | slack | &#x60;chat:write&#x60;, &#x60;chat:write.public&#x60;, &#x60;chat:write.customize&#x60;, &#x60;files:write&#x60;, &#x60;files:read&#x60; | none | none | &#x60;chat:write&#x60;, &#x60;chat:write.customize&#x60;, &#x60;files:write&#x60;, &#x60;files:read&#x60;, &#x60;channels:history&#x60;, &#x60;groups:history&#x60;, &#x60;im:history&#x60;, &#x60;mpim:history&#x60;, &#x60;im:read&#x60;, &#x60;im:write&#x60;, &#x60;mpim:read&#x60;, &#x60;users:read&#x60;, &#x60;reactions:read&#x60;, &#x60;reactions:write&#x60; | none | &#x60;channels:join&#x60;, &#x60;channels:read&#x60;, &#x60;groups:read&#x60;, &#x60;team:read&#x60; |
+// Comma-separated permission areas to request instead of the platform&#39;s full permission set. Values: &#x60;posting&#x60;, &#x60;analytics&#x60;, &#x60;comments&#x60;, &#x60;messaging&#x60;, &#x60;ads&#x60;, and on google and microsoft &#x60;email&#x60;, &#x60;calendar&#x60;, &#x60;files&#x60;, &#x60;contacts&#x60;. Omit it (the default, and what the dashboard does) to request everything the platform supports; google and microsoft REQUIRE it (400 &#x60;INVALID_FIELD_VALUE&#x60; when absent) because their consent screens are reviewed per area.  When present, the consent dialog asks only for the platform scopes behind those areas plus the scopes every connection needs (identity, token refresh, and listing the pages, organizations or channels the user picks from). Scopes the user was never asked for are absent from the account&#39;s &#x60;permissions&#x60;, and the health endpoints report them as not granted, so a &#x60;posting&#x60;-only account cannot read analytics or the inbox until it is connected again with more areas. First comments need &#x60;comments&#x60;: a &#x60;posting&#x60;-only account publishes the post and skips the first comment. Scopes the platform lists under none of the areas (X likes, bookmarks and follows, Pinterest ads-only extras) are requested only when the parameter is omitted.  Supported on facebook, instagram (both login methods), linkedin, twitter, tiktok, youtube, threads, reddit, pinterest, googlebusiness and slack (via &#x60;GET /v1/connect/slack&#x60;). Rejected with 400 &#x60;INVALID_FIELD_VALUE&#x60; (&#x60;param: scopes&#x60;) on bluesky, telegram, discord, snapchat and whatsapp, whose dialog cannot be reduced, and for an empty list or an unknown area.  What each area asks for, per platform (Google scopes shortened to their last path segment):  | Platform | &#x60;posting&#x60; | &#x60;analytics&#x60; | &#x60;comments&#x60; | &#x60;messaging&#x60; | &#x60;ads&#x60; | Always requested | |---|---|---|---|---|---|---| | facebook | &#x60;pages_manage_posts&#x60; | &#x60;read_insights&#x60;, &#x60;pages_read_user_content&#x60; | &#x60;pages_manage_engagement&#x60;, &#x60;pages_read_user_content&#x60; | &#x60;pages_messaging&#x60; | &#x60;ads_management&#x60;, &#x60;ads_read&#x60;, &#x60;leads_retrieval&#x60;, &#x60;pages_manage_ads&#x60;, &#x60;instagram_basic&#x60;, &#x60;business_management&#x60; | &#x60;pages_show_list&#x60;, &#x60;pages_read_engagement&#x60;, &#x60;pages_manage_metadata&#x60; | | instagram (Instagram Login) | &#x60;instagram_business_content_publish&#x60; | &#x60;instagram_business_manage_insights&#x60; | &#x60;instagram_business_manage_comments&#x60; | &#x60;instagram_business_manage_messages&#x60; | none | &#x60;instagram_business_basic&#x60; | | instagram (&#x60;loginMethod&#x3D;facebook_login&#x60;) | &#x60;instagram_content_publish&#x60; | &#x60;instagram_manage_insights&#x60; | &#x60;instagram_manage_comments&#x60; | &#x60;instagram_manage_messages&#x60; | &#x60;ads_management&#x60;, &#x60;ads_read&#x60;, &#x60;leads_retrieval&#x60;, &#x60;pages_manage_ads&#x60; | &#x60;instagram_basic&#x60;, &#x60;pages_show_list&#x60;, &#x60;pages_read_engagement&#x60;, &#x60;business_management&#x60;, &#x60;pages_messaging&#x60;, &#x60;pages_manage_metadata&#x60; | | linkedin | &#x60;w_member_social&#x60;, &#x60;w_organization_social&#x60;, &#x60;r_organization_social&#x60;, &#x60;r_organization_followers&#x60; | &#x60;r_member_postAnalytics&#x60;, &#x60;r_member_profileAnalytics&#x60;, &#x60;rw_organization_admin&#x60;, &#x60;r_organization_social&#x60;, &#x60;r_organization_followers&#x60; | &#x60;w_member_social&#x60;, &#x60;w_member_social_feed&#x60;, &#x60;w_organization_social&#x60;, &#x60;w_organization_social_feed&#x60;, &#x60;r_organization_social&#x60;, &#x60;r_organization_social_feed&#x60; | none | &#x60;r_ads&#x60;, &#x60;rw_ads&#x60;, &#x60;r_ads_reporting&#x60;, &#x60;r_marketing_leadgen_automation&#x60;, &#x60;rw_conversions&#x60; | &#x60;openid&#x60;, &#x60;profile&#x60;, &#x60;email&#x60;, &#x60;r_basicprofile&#x60;, &#x60;rw_organization_admin&#x60; | | twitter | &#x60;tweet.write&#x60;, &#x60;media.write&#x60; | (in the always-requested set) | &#x60;tweet.write&#x60;, &#x60;like.write&#x60;, &#x60;tweet.moderate.write&#x60; | &#x60;dm.read&#x60;, &#x60;dm.write&#x60;, &#x60;media.write&#x60; | none | &#x60;tweet.read&#x60;, &#x60;users.read&#x60;, &#x60;offline.access&#x60; | | tiktok | &#x60;video.publish&#x60; | &#x60;user.info.stats&#x60;, &#x60;user.insights&#x60;, &#x60;video.list&#x60;, &#x60;video.insights&#x60; | &#x60;comment.list&#x60;, &#x60;comment.list.manage&#x60;, &#x60;video.list&#x60; | &#x60;message.list.read&#x60;, &#x60;message.list.send&#x60;, &#x60;message.list.manage&#x60; | none | &#x60;user.info.basic&#x60;, &#x60;user.info.username&#x60;, &#x60;user.info.profile&#x60;, &#x60;user.account.type&#x60;, &#x60;video.publish&#x60;, &#x60;video.upload&#x60;, &#x60;video.list&#x60; | | youtube | &#x60;youtube.upload&#x60; | &#x60;yt-analytics.readonly&#x60; | &#x60;youtube.force-ssl&#x60; | none | none | &#x60;youtube&#x60; | | threads | &#x60;threads_content_publish&#x60;, &#x60;threads_manage_replies&#x60;, &#x60;threads_delete&#x60; | &#x60;threads_manage_insights&#x60; | &#x60;threads_content_publish&#x60;, &#x60;threads_read_replies&#x60;, &#x60;threads_manage_replies&#x60;, &#x60;threads_delete&#x60; | none | none | &#x60;threads_basic&#x60; | | reddit | &#x60;submit&#x60;, &#x60;read&#x60;, &#x60;mysubreddits&#x60;, &#x60;flair&#x60;, &#x60;history&#x60;, &#x60;edit&#x60; | &#x60;read&#x60;, &#x60;history&#x60; | &#x60;read&#x60;, &#x60;history&#x60;, &#x60;edit&#x60;, &#x60;vote&#x60; | &#x60;privatemessages&#x60; | none | &#x60;identity&#x60; | | pinterest | &#x60;boards:write&#x60;, &#x60;pins:read&#x60;, &#x60;pins:write&#x60; | &#x60;pins:read&#x60;, &#x60;user_accounts:read&#x60; | none | none | &#x60;ads:read&#x60;, &#x60;ads:write&#x60;, &#x60;boards:write&#x60;, &#x60;pins:read&#x60;, &#x60;pins:write&#x60; | &#x60;boards:read&#x60;, &#x60;user_accounts:read&#x60; | | googlebusiness | &#x60;business.manage&#x60; | &#x60;business.manage&#x60; | &#x60;business.manage&#x60; | none | none | &#x60;business.manage&#x60;, &#x60;userinfo.profile&#x60;, &#x60;userinfo.email&#x60; | | slack | &#x60;chat:write&#x60;, &#x60;chat:write.public&#x60;, &#x60;chat:write.customize&#x60;, &#x60;files:write&#x60;, &#x60;files:read&#x60; | none | none | &#x60;chat:write&#x60;, &#x60;chat:write.customize&#x60;, &#x60;files:write&#x60;, &#x60;files:read&#x60;, &#x60;channels:history&#x60;, &#x60;groups:history&#x60;, &#x60;im:history&#x60;, &#x60;mpim:history&#x60;, &#x60;im:read&#x60;, &#x60;im:write&#x60;, &#x60;mpim:read&#x60;, &#x60;users:read&#x60;, &#x60;reactions:read&#x60;, &#x60;reactions:write&#x60; | none | &#x60;channels:join&#x60;, &#x60;channels:read&#x60;, &#x60;groups:read&#x60;, &#x60;team:read&#x60; |  Google and Microsoft accounts use the mailbox areas instead (&#x60;scopes&#x60; is required there):  | Platform | &#x60;email&#x60; | &#x60;calendar&#x60; | &#x60;files&#x60; | &#x60;contacts&#x60; | Always requested | |---|---|---|---|---|---| | google | &#x60;gmail.modify&#x60; | &#x60;calendar&#x60; | &#x60;drive.file&#x60; (only files Zernio created or the user picked, see the Files tag) | &#x60;contacts.readonly&#x60; | &#x60;openid&#x60;, &#x60;userinfo.email&#x60;, &#x60;userinfo.profile&#x60; | | microsoft | &#x60;Mail.ReadWrite&#x60;, &#x60;Mail.Send&#x60; | &#x60;Calendars.ReadWrite&#x60; | &#x60;Files.ReadWrite&#x60; | &#x60;Contacts.Read&#x60; | &#x60;openid&#x60;, &#x60;profile&#x60;, &#x60;email&#x60;, &#x60;offline_access&#x60;, &#x60;User.Read&#x60; |  Areas accumulate: reconnecting with more areas widens the grant and &#x60;GET /v1/accounts/{accountId}/health&#x60; reports the result.
 func (r ConnectAPIGetConnectUrlRequest) Scopes(scopes string) ConnectAPIGetConnectUrlRequest {
 	r.scopes = &scopes
+	return r
+}
+
+// google and microsoft only: pre-fills the account picker with this address so the user lands on the right mailbox.
+func (r ConnectAPIGetConnectUrlRequest) LoginHint(loginHint string) ConnectAPIGetConnectUrlRequest {
+	r.loginHint = &loginHint
 	return r
 }
 
@@ -3079,6 +3086,9 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 	}
 	if r.scopes != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "scopes", r.scopes, "form", "")
+	}
+	if r.loginHint != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "loginHint", r.loginHint, "form", "")
 	}
 	if r.headless != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "headless", r.headless, "form", "")
@@ -9007,6 +9017,158 @@ func (a *ConnectAPIService) SetRedditPostFlairExecute(r ConnectAPISetRedditPostF
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIStartMicrosoftAdminConsentRequest struct {
+	ctx         context.Context
+	ApiService  *ConnectAPIService
+	accountId   *string
+	redirectUrl *string
+}
+
+func (r ConnectAPIStartMicrosoftAdminConsentRequest) AccountId(accountId string) ConnectAPIStartMicrosoftAdminConsentRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Where to send the administrator afterwards.
+func (r ConnectAPIStartMicrosoftAdminConsentRequest) RedirectUrl(redirectUrl string) ConnectAPIStartMicrosoftAdminConsentRequest {
+	r.redirectUrl = &redirectUrl
+	return r
+}
+
+func (r ConnectAPIStartMicrosoftAdminConsentRequest) Execute() (*StartMicrosoftAdminConsent200Response, *http.Response, error) {
+	return r.ApiService.StartMicrosoftAdminConsentExecute(r)
+}
+
+/*
+StartMicrosoftAdminConsent Admin-consent link for a Microsoft tenant
+
+Some Microsoft 365 tenants let no user grant mail or calendar access themselves; the API then answers 412 `admin_consent_required` with `details.adminConsentUrl`, a ready admin-consent link. This endpoint mints a fresh one (each is valid for one hour) and lets you choose `redirectUrl`. It returns the Microsoft Entra admin-consent link for the app. A tenant administrator opens it, approves, and is sent to `redirectUrl` with `adminConsent=granted&tenant=…` (or `adminConsent=denied&error=…`); the grant is recorded on the account and later requests succeed without a reconnect.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIStartMicrosoftAdminConsentRequest
+*/
+func (a *ConnectAPIService) StartMicrosoftAdminConsent(ctx context.Context) ConnectAPIStartMicrosoftAdminConsentRequest {
+	return ConnectAPIStartMicrosoftAdminConsentRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return StartMicrosoftAdminConsent200Response
+func (a *ConnectAPIService) StartMicrosoftAdminConsentExecute(r ConnectAPIStartMicrosoftAdminConsentRequest) (*StartMicrosoftAdminConsent200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *StartMicrosoftAdminConsent200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.StartMicrosoftAdminConsent")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/microsoft/admin-consent"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.redirectUrl != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "redirectUrl", r.redirectUrl, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

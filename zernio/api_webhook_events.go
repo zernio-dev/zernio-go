@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.378.0
+API version: 1.379.0
 Contact: support@zernio.com
 */
 
@@ -494,6 +494,105 @@ func (a *WebhookEventsAPIService) OnAccountDisconnectedExecute(r WebhookEventsAP
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadAccountDisconnected
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAccountRateLimitedRequest struct {
+	ctx                              context.Context
+	ApiService                       *WebhookEventsAPIService
+	webhookPayloadAccountRateLimited *WebhookPayloadAccountRateLimited
+}
+
+func (r WebhookEventsAPIOnAccountRateLimitedRequest) WebhookPayloadAccountRateLimited(webhookPayloadAccountRateLimited WebhookPayloadAccountRateLimited) WebhookEventsAPIOnAccountRateLimitedRequest {
+	r.webhookPayloadAccountRateLimited = &webhookPayloadAccountRateLimited
+	return r
+}
+
+func (r WebhookEventsAPIOnAccountRateLimitedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAccountRateLimitedExecute(r)
+}
+
+/*
+OnAccountRateLimited Mailbox sending cooldown started
+
+Fired when a Google or Microsoft mailbox enters a sending cooldown (same body to more than 50 recipients in an hour, or a later trigger). Sends answer 429 until `account.resetsAt`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAccountRateLimitedRequest
+*/
+func (a *WebhookEventsAPIService) OnAccountRateLimited(ctx context.Context) WebhookEventsAPIOnAccountRateLimitedRequest {
+	return WebhookEventsAPIOnAccountRateLimitedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAccountRateLimitedExecute(r WebhookEventsAPIOnAccountRateLimitedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAccountRateLimited")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/account.rate_limited"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAccountRateLimited == nil {
+		return nil, reportError("webhookPayloadAccountRateLimited is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAccountRateLimited
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1777,6 +1876,299 @@ func (a *WebhookEventsAPIService) OnBrandedCallingNumberStatusUpdatedExecute(r W
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnCalendarEventCreatedRequest struct {
+	ctx                         context.Context
+	ApiService                  *WebhookEventsAPIService
+	webhookPayloadCalendarEvent *WebhookPayloadCalendarEvent
+}
+
+func (r WebhookEventsAPIOnCalendarEventCreatedRequest) WebhookPayloadCalendarEvent(webhookPayloadCalendarEvent WebhookPayloadCalendarEvent) WebhookEventsAPIOnCalendarEventCreatedRequest {
+	r.webhookPayloadCalendarEvent = &webhookPayloadCalendarEvent
+	return r
+}
+
+func (r WebhookEventsAPIOnCalendarEventCreatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCalendarEventCreatedExecute(r)
+}
+
+/*
+OnCalendarEventCreated Calendar event created
+
+A new event appeared on a connected Microsoft calendar (push, seconds after the change).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCalendarEventCreatedRequest
+*/
+func (a *WebhookEventsAPIService) OnCalendarEventCreated(ctx context.Context) WebhookEventsAPIOnCalendarEventCreatedRequest {
+	return WebhookEventsAPIOnCalendarEventCreatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCalendarEventCreatedExecute(r WebhookEventsAPIOnCalendarEventCreatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCalendarEventCreated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/calendar.event.created"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCalendarEvent == nil {
+		return nil, reportError("webhookPayloadCalendarEvent is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCalendarEvent
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCalendarEventDeletedRequest struct {
+	ctx                         context.Context
+	ApiService                  *WebhookEventsAPIService
+	webhookPayloadCalendarEvent *WebhookPayloadCalendarEvent
+}
+
+func (r WebhookEventsAPIOnCalendarEventDeletedRequest) WebhookPayloadCalendarEvent(webhookPayloadCalendarEvent WebhookPayloadCalendarEvent) WebhookEventsAPIOnCalendarEventDeletedRequest {
+	r.webhookPayloadCalendarEvent = &webhookPayloadCalendarEvent
+	return r
+}
+
+func (r WebhookEventsAPIOnCalendarEventDeletedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCalendarEventDeletedExecute(r)
+}
+
+/*
+OnCalendarEventDeleted Calendar event deleted
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCalendarEventDeletedRequest
+*/
+func (a *WebhookEventsAPIService) OnCalendarEventDeleted(ctx context.Context) WebhookEventsAPIOnCalendarEventDeletedRequest {
+	return WebhookEventsAPIOnCalendarEventDeletedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCalendarEventDeletedExecute(r WebhookEventsAPIOnCalendarEventDeletedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCalendarEventDeleted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/calendar.event.deleted"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCalendarEvent == nil {
+		return nil, reportError("webhookPayloadCalendarEvent is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCalendarEvent
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCalendarEventUpdatedRequest struct {
+	ctx                         context.Context
+	ApiService                  *WebhookEventsAPIService
+	webhookPayloadCalendarEvent *WebhookPayloadCalendarEvent
+}
+
+func (r WebhookEventsAPIOnCalendarEventUpdatedRequest) WebhookPayloadCalendarEvent(webhookPayloadCalendarEvent WebhookPayloadCalendarEvent) WebhookEventsAPIOnCalendarEventUpdatedRequest {
+	r.webhookPayloadCalendarEvent = &webhookPayloadCalendarEvent
+	return r
+}
+
+func (r WebhookEventsAPIOnCalendarEventUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCalendarEventUpdatedExecute(r)
+}
+
+/*
+OnCalendarEventUpdated Calendar event updated
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCalendarEventUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnCalendarEventUpdated(ctx context.Context) WebhookEventsAPIOnCalendarEventUpdatedRequest {
+	return WebhookEventsAPIOnCalendarEventUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCalendarEventUpdatedExecute(r WebhookEventsAPIOnCalendarEventUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCalendarEventUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/calendar.event.updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCalendarEvent == nil {
+		return nil, reportError("webhookPayloadCalendarEvent is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCalendarEvent
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnCallEndedRequest struct {
 	ctx                     context.Context
 	ApiService              *WebhookEventsAPIService
@@ -2994,6 +3386,105 @@ func (a *WebhookEventsAPIService) OnCommerceProductUpdatedExecute(r WebhookEvent
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnContactDeletedRequest struct {
+	ctx                   context.Context
+	ApiService            *WebhookEventsAPIService
+	webhookPayloadContact *WebhookPayloadContact
+}
+
+func (r WebhookEventsAPIOnContactDeletedRequest) WebhookPayloadContact(webhookPayloadContact WebhookPayloadContact) WebhookEventsAPIOnContactDeletedRequest {
+	r.webhookPayloadContact = &webhookPayloadContact
+	return r
+}
+
+func (r WebhookEventsAPIOnContactDeletedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnContactDeletedExecute(r)
+}
+
+/*
+OnContactDeleted Contact deleted
+
+The provider contact was deleted; its email channel is removed, the contact row stays when other channels remain.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnContactDeletedRequest
+*/
+func (a *WebhookEventsAPIService) OnContactDeleted(ctx context.Context) WebhookEventsAPIOnContactDeletedRequest {
+	return WebhookEventsAPIOnContactDeletedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnContactDeletedExecute(r WebhookEventsAPIOnContactDeletedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnContactDeleted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/contact.deleted"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadContact == nil {
+		return nil, reportError("webhookPayloadContact is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadContact
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnContactFieldChangedRequest struct {
 	ctx                               context.Context
 	ApiService                        *WebhookEventsAPIService
@@ -3291,6 +3782,105 @@ func (a *WebhookEventsAPIService) OnContactTagRemovedExecute(r WebhookEventsAPIO
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnContactUpdatedRequest struct {
+	ctx                   context.Context
+	ApiService            *WebhookEventsAPIService
+	webhookPayloadContact *WebhookPayloadContact
+}
+
+func (r WebhookEventsAPIOnContactUpdatedRequest) WebhookPayloadContact(webhookPayloadContact WebhookPayloadContact) WebhookEventsAPIOnContactUpdatedRequest {
+	r.webhookPayloadContact = &webhookPayloadContact
+	return r
+}
+
+func (r WebhookEventsAPIOnContactUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnContactUpdatedExecute(r)
+}
+
+/*
+OnContactUpdated Contact updated
+
+A provider contacts sync created or changed a contact.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnContactUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnContactUpdated(ctx context.Context) WebhookEventsAPIOnContactUpdatedRequest {
+	return WebhookEventsAPIOnContactUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnContactUpdatedExecute(r WebhookEventsAPIOnContactUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnContactUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/contact.updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadContact == nil {
+		return nil, reportError("webhookPayloadContact is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadContact
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnConversationControlChangedRequest struct {
 	ctx                                      context.Context
 	ApiService                               *WebhookEventsAPIService
@@ -3474,6 +4064,400 @@ func (a *WebhookEventsAPIService) OnConversationStartedExecute(r WebhookEventsAP
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadConversationStarted
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnFileCreatedRequest struct {
+	ctx                context.Context
+	ApiService         *WebhookEventsAPIService
+	webhookPayloadFile *WebhookPayloadFile
+}
+
+func (r WebhookEventsAPIOnFileCreatedRequest) WebhookPayloadFile(webhookPayloadFile WebhookPayloadFile) WebhookEventsAPIOnFileCreatedRequest {
+	r.webhookPayloadFile = &webhookPayloadFile
+	return r
+}
+
+func (r WebhookEventsAPIOnFileCreatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnFileCreatedExecute(r)
+}
+
+/*
+OnFileCreated File created
+
+A file or folder appeared in a connected Drive or OneDrive (push, seconds after the change).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnFileCreatedRequest
+*/
+func (a *WebhookEventsAPIService) OnFileCreated(ctx context.Context) WebhookEventsAPIOnFileCreatedRequest {
+	return WebhookEventsAPIOnFileCreatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnFileCreatedExecute(r WebhookEventsAPIOnFileCreatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnFileCreated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/file.created"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadFile == nil {
+		return nil, reportError("webhookPayloadFile is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadFile
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnFileDeletedRequest struct {
+	ctx                context.Context
+	ApiService         *WebhookEventsAPIService
+	webhookPayloadFile *WebhookPayloadFile
+}
+
+func (r WebhookEventsAPIOnFileDeletedRequest) WebhookPayloadFile(webhookPayloadFile WebhookPayloadFile) WebhookEventsAPIOnFileDeletedRequest {
+	r.webhookPayloadFile = &webhookPayloadFile
+	return r
+}
+
+func (r WebhookEventsAPIOnFileDeletedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnFileDeletedExecute(r)
+}
+
+/*
+OnFileDeleted File deleted
+
+The item was trashed or removed on the provider.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnFileDeletedRequest
+*/
+func (a *WebhookEventsAPIService) OnFileDeleted(ctx context.Context) WebhookEventsAPIOnFileDeletedRequest {
+	return WebhookEventsAPIOnFileDeletedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnFileDeletedExecute(r WebhookEventsAPIOnFileDeletedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnFileDeleted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/file.deleted"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadFile == nil {
+		return nil, reportError("webhookPayloadFile is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadFile
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnFilePickedRequest struct {
+	ctx                      context.Context
+	ApiService               *WebhookEventsAPIService
+	webhookPayloadFilePicked *WebhookPayloadFilePicked
+}
+
+func (r WebhookEventsAPIOnFilePickedRequest) WebhookPayloadFilePicked(webhookPayloadFilePicked WebhookPayloadFilePicked) WebhookEventsAPIOnFilePickedRequest {
+	r.webhookPayloadFilePicked = &webhookPayloadFilePicked
+	return r
+}
+
+func (r WebhookEventsAPIOnFilePickedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnFilePickedExecute(r)
+}
+
+/*
+OnFilePicked Files picked
+
+The user finished a hosted picker session (`POST /v1/files/picker-sessions`) and picked at least one file. The app can now open those files. Not sent on cancel.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnFilePickedRequest
+*/
+func (a *WebhookEventsAPIService) OnFilePicked(ctx context.Context) WebhookEventsAPIOnFilePickedRequest {
+	return WebhookEventsAPIOnFilePickedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnFilePickedExecute(r WebhookEventsAPIOnFilePickedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnFilePicked")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/file.picked"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadFilePicked == nil {
+		return nil, reportError("webhookPayloadFilePicked is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadFilePicked
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnFileUpdatedRequest struct {
+	ctx                context.Context
+	ApiService         *WebhookEventsAPIService
+	webhookPayloadFile *WebhookPayloadFile
+}
+
+func (r WebhookEventsAPIOnFileUpdatedRequest) WebhookPayloadFile(webhookPayloadFile WebhookPayloadFile) WebhookEventsAPIOnFileUpdatedRequest {
+	r.webhookPayloadFile = &webhookPayloadFile
+	return r
+}
+
+func (r WebhookEventsAPIOnFileUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnFileUpdatedExecute(r)
+}
+
+/*
+OnFileUpdated File updated
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnFileUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnFileUpdated(ctx context.Context) WebhookEventsAPIOnFileUpdatedRequest {
+	return WebhookEventsAPIOnFileUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnFileUpdatedExecute(r WebhookEventsAPIOnFileUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnFileUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/file.updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadFile == nil {
+		return nil, reportError("webhookPayloadFile is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadFile
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

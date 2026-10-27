@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.378.0
+API version: 1.379.0
 Contact: support@zernio.com
 */
 
@@ -23,9 +23,12 @@ type GetAccountHealth200Response struct {
 	AccountId *string `json:"accountId,omitempty"`
 	Platform  *string `json:"platform,omitempty"`
 	// TikTok only. The TikTok integration the account is connected through: business (TikTok for Business, Accounts API) or developer (the original integration). Absent on other platforms.
-	IntegrationLane *string `json:"integrationLane,omitempty"`
-	Username        *string `json:"username,omitempty"`
-	DisplayName     *string `json:"displayName,omitempty"`
+	IntegrationLane *string                             `json:"integrationLane,omitempty"`
+	SendCap         *GetAccountHealth200ResponseSendCap `json:"sendCap,omitempty"`
+	// Google and Microsoft only: state of the provider change-notification subscriptions behind `message.received` and `calendar.event.*`. `pending` means a granted area has no live subscription yet (retried every 6 hours), `failed` that renewals keep failing (reconnect the account).
+	Push        *string `json:"push,omitempty"`
+	Username    *string `json:"username,omitempty"`
+	DisplayName *string `json:"displayName,omitempty"`
 	// Overall health status
 	Status      *string                                 `json:"status,omitempty"`
 	TokenStatus *GetAccountHealth200ResponseTokenStatus `json:"tokenStatus,omitempty"`
@@ -150,6 +153,70 @@ func (o *GetAccountHealth200Response) HasIntegrationLane() bool {
 // SetIntegrationLane gets a reference to the given string and assigns it to the IntegrationLane field.
 func (o *GetAccountHealth200Response) SetIntegrationLane(v string) {
 	o.IntegrationLane = &v
+}
+
+// GetSendCap returns the SendCap field value if set, zero value otherwise.
+func (o *GetAccountHealth200Response) GetSendCap() GetAccountHealth200ResponseSendCap {
+	if o == nil || IsNil(o.SendCap) {
+		var ret GetAccountHealth200ResponseSendCap
+		return ret
+	}
+	return *o.SendCap
+}
+
+// GetSendCapOk returns a tuple with the SendCap field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200Response) GetSendCapOk() (*GetAccountHealth200ResponseSendCap, bool) {
+	if o == nil || IsNil(o.SendCap) {
+		return nil, false
+	}
+	return o.SendCap, true
+}
+
+// HasSendCap returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasSendCap() bool {
+	if o != nil && !IsNil(o.SendCap) {
+		return true
+	}
+
+	return false
+}
+
+// SetSendCap gets a reference to the given GetAccountHealth200ResponseSendCap and assigns it to the SendCap field.
+func (o *GetAccountHealth200Response) SetSendCap(v GetAccountHealth200ResponseSendCap) {
+	o.SendCap = &v
+}
+
+// GetPush returns the Push field value if set, zero value otherwise.
+func (o *GetAccountHealth200Response) GetPush() string {
+	if o == nil || IsNil(o.Push) {
+		var ret string
+		return ret
+	}
+	return *o.Push
+}
+
+// GetPushOk returns a tuple with the Push field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200Response) GetPushOk() (*string, bool) {
+	if o == nil || IsNil(o.Push) {
+		return nil, false
+	}
+	return o.Push, true
+}
+
+// HasPush returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasPush() bool {
+	if o != nil && !IsNil(o.Push) {
+		return true
+	}
+
+	return false
+}
+
+// SetPush gets a reference to the given string and assigns it to the Push field.
+func (o *GetAccountHealth200Response) SetPush(v string) {
+	o.Push = &v
 }
 
 // GetUsername returns the Username field value if set, zero value otherwise.
@@ -490,6 +557,12 @@ func (o GetAccountHealth200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IntegrationLane) {
 		toSerialize["integrationLane"] = o.IntegrationLane
+	}
+	if !IsNil(o.SendCap) {
+		toSerialize["sendCap"] = o.SendCap
+	}
+	if !IsNil(o.Push) {
+		toSerialize["push"] = o.Push
 	}
 	if !IsNil(o.Username) {
 		toSerialize["username"] = o.Username

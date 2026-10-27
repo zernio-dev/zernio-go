@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.378.0
+API version: 1.379.0
 Contact: support@zernio.com
 */
 
@@ -21,8 +21,8 @@ var _ MappedNullable = &GetInboxConversationMessages200Response{}
 
 // GetInboxConversationMessages200Response struct for GetInboxConversationMessages200Response
 type GetInboxConversationMessages200Response struct {
-	Status     *string                                      `json:"status,omitempty"`
-	Pagination *ListInboxConversations200ResponsePagination `json:"pagination,omitempty"`
+	Status     *string                         `json:"status,omitempty"`
+	Pagination *ListFiles200ResponsePagination `json:"pagination,omitempty"`
 	// Sort order actually applied to the returned page. May differ from the requested `sortOrder` for Facebook and Bluesky (always `desc` regardless of request).
 	SortOrderApplied *string                                                `json:"sortOrderApplied,omitempty"`
 	Messages         []GetInboxConversationMessages200ResponseMessagesInner `json:"messages,omitempty"`
@@ -79,9 +79,9 @@ func (o *GetInboxConversationMessages200Response) SetStatus(v string) {
 }
 
 // GetPagination returns the Pagination field value if set, zero value otherwise.
-func (o *GetInboxConversationMessages200Response) GetPagination() ListInboxConversations200ResponsePagination {
+func (o *GetInboxConversationMessages200Response) GetPagination() ListFiles200ResponsePagination {
 	if o == nil || IsNil(o.Pagination) {
-		var ret ListInboxConversations200ResponsePagination
+		var ret ListFiles200ResponsePagination
 		return ret
 	}
 	return *o.Pagination
@@ -89,7 +89,7 @@ func (o *GetInboxConversationMessages200Response) GetPagination() ListInboxConve
 
 // GetPaginationOk returns a tuple with the Pagination field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetInboxConversationMessages200Response) GetPaginationOk() (*ListInboxConversations200ResponsePagination, bool) {
+func (o *GetInboxConversationMessages200Response) GetPaginationOk() (*ListFiles200ResponsePagination, bool) {
 	if o == nil || IsNil(o.Pagination) {
 		return nil, false
 	}
@@ -105,8 +105,8 @@ func (o *GetInboxConversationMessages200Response) HasPagination() bool {
 	return false
 }
 
-// SetPagination gets a reference to the given ListInboxConversations200ResponsePagination and assigns it to the Pagination field.
-func (o *GetInboxConversationMessages200Response) SetPagination(v ListInboxConversations200ResponsePagination) {
+// SetPagination gets a reference to the given ListFiles200ResponsePagination and assigns it to the Pagination field.
+func (o *GetInboxConversationMessages200Response) SetPagination(v ListFiles200ResponsePagination) {
 	o.Pagination = &v
 }
 

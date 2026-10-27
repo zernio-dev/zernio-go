@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.378.0
+API version: 1.379.0
 Contact: support@zernio.com
 */
 
@@ -20,9 +20,14 @@ var _ MappedNullable = &MediaItem{}
 
 // MediaItem Media referenced in posts. URLs must be publicly reachable over HTTPS. Use POST /v1/media/presign for uploads up to 5GB. Zernio auto-compresses images and videos that exceed platform limits (videos over 200 MB may not be compressed).
 type MediaItem struct {
+	// Optional when the item names a connected file (`fileId`): inferred from the file's MIME type.
 	Type *string `json:"type,omitempty"`
-	// A media item with a null, missing or empty url is dropped.
+	// A media item with a null, missing or empty url is dropped, unless it names a connected file with `fileId` + `accountId`.
 	Url *string `json:"url,omitempty"`
+	// A file of a connected Google Drive or OneDrive account (see the Files endpoints). The file is copied into Zernio media storage when the post is created and the item is stored as a plain `url`; a folder, an undownloadable file or an unknown id fails the request with a 4xx naming `mediaItems[i].fileId`. Requires `accountId`.
+	FileId *string `json:"fileId,omitempty"`
+	// The connected Google or Microsoft account the `fileId` belongs to (must have the `files` area). Required with `fileId`.
+	AccountId *string `json:"accountId,omitempty"`
 	// Optional title for the media item. Used as the document title for LinkedIn PDF/carousel posts. If omitted, falls back to the post title, then the filename.
 	Title *string `json:"title,omitempty"`
 	// Accessibility alternative text for an image, applied on every platform that supports it: Instagram (feed images only, not Reels/Stories), Facebook, Threads, X (max 1000 chars), LinkedIn, Bluesky, and Pinterest (max 500 chars). Ignored on platforms without alt-text support (TikTok, YouTube, Snapchat, Telegram, Reddit, Google Business Profile, WhatsApp) and on video items where the platform does not accept it. Set once per image; the same value is sent to each selected platform.
@@ -121,6 +126,70 @@ func (o *MediaItem) HasUrl() bool {
 // SetUrl gets a reference to the given string and assigns it to the Url field.
 func (o *MediaItem) SetUrl(v string) {
 	o.Url = &v
+}
+
+// GetFileId returns the FileId field value if set, zero value otherwise.
+func (o *MediaItem) GetFileId() string {
+	if o == nil || IsNil(o.FileId) {
+		var ret string
+		return ret
+	}
+	return *o.FileId
+}
+
+// GetFileIdOk returns a tuple with the FileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MediaItem) GetFileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.FileId) {
+		return nil, false
+	}
+	return o.FileId, true
+}
+
+// HasFileId returns a boolean if a field has been set.
+func (o *MediaItem) HasFileId() bool {
+	if o != nil && !IsNil(o.FileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetFileId gets a reference to the given string and assigns it to the FileId field.
+func (o *MediaItem) SetFileId(v string) {
+	o.FileId = &v
+}
+
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *MediaItem) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MediaItem) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *MediaItem) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *MediaItem) SetAccountId(v string) {
+	o.AccountId = &v
 }
 
 // GetTitle returns the Title field value if set, zero value otherwise.
@@ -426,6 +495,12 @@ func (o MediaItem) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Url) {
 		toSerialize["url"] = o.Url
+	}
+	if !IsNil(o.FileId) {
+		toSerialize["fileId"] = o.FileId
+	}
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
 	}
 	if !IsNil(o.Title) {
 		toSerialize["title"] = o.Title

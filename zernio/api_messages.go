@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.378.0
+API version: 1.379.0
 Contact: support@zernio.com
 */
 
@@ -467,7 +467,9 @@ CreateInboxConversation Create conversation
 
 Start a direct message conversation with a user. If a conversation with that recipient already exists, the message is added to the existing thread.
 
-Supported platforms: X, Bluesky, Reddit, WhatsApp, SMS, Slack, and iMessage. Other platforms return PLATFORM_NOT_SUPPORTED.
+Supported platforms: X, Bluesky, Reddit, WhatsApp, SMS, Slack, iMessage, and email (Google and Microsoft accounts). Other platforms return PLATFORM_NOT_SUPPORTED.
+
+**Email (Google / Microsoft).** Pass the recipient address as participantId with `subject`, `message` and optionally `cc`. The mail is sent from the mailbox, mirrored into the inbox, and the response names the inbox conversation it opened (the provider thread id, usable with the other inbox endpoints). An account connected without the `email` area returns 412 `account_scope_missing`; a disconnected one 409. Gmail accounts need a card on file (402 `payment_required`). Sends count toward the mailbox's daily cap and never toward managed messages.
 
 **iMessage.** Pass the recipient as participantId: a phone number in international format (+15551234567) or an iMessage email. Senders ordered through Zernio can message contacts who never wrote to them. The first message to such a contact must be plain text from an identifiable person or business opening a conversation; a cold introduction, including a sales one, is fine ("Hi Mark, this is John from Pratt Media. I help local roofers get more leads. Would you be open to a quick chat?"). It may not contain links, email addresses, phone numbers, prices or attachments (the provider's own rule for opening messages). One that does returns 400 with code `invalid_content`, a message saying what was flagged, and nothing is sent. Each sender may open at most one new conversation every 15 minutes, and a new sender warms up: 2 new conversations per 24 hours on days 1-2 after activation, 5 on days 3-4, 10 on days 5-7, 20 on days 8-14, 30 on days 15-21 and 50 after that. Beyond that the request returns 429 with code `new_contact_limit` and a time to retry. The warm-up counts from when a sender ordered through Zernio went live; senders registered from your own provider account are not warmed up by Zernio. Until the contact replies, the thread accepts the opening and at most two follow-ups, at least 24 hours apart: a follow-up sooner returns 429 `new_contact_limit` with the time to retry, and a fourth message returns 409 `recipient_must_message_first`. The provider treats every message to a contact who has not replied as a new conversation, so follow-ups follow the same content rule and count toward the 15-minute spacing and the daily warm-up like an opening. Once the contact has written, the thread behaves like any other and is not limited. Recipients can report a first message as junk, and reports can get a sender blocked permanently, so keep the reply rate high (above roughly 30%). A sender registered with your own provider account may lack the add-on for new contacts; its sends to them return 409 `recipient_must_message_first`, and an opt-in link is the way in. A contact who opted out returns 409 `recipient_opted_out`.
 
@@ -3026,6 +3028,15 @@ SendInboxMessage Send message
 Send a message in a conversation. Supports text, attachments, quick replies,
 buttons, templates, and message tags. Attachment and interactive message
 support varies by platform.
+
+Email threads (Google / Microsoft accounts): the text is sent as a reply to
+the latest mail of the thread, in either direction, with its recipients and
+a "Re:" subject, and `cc` adds recipients. `message` is required; attachments
+and `replyTo` return 400 here (use POST /v1/email/messages/{messageId}/reply
+for a reply with attachments). An account connected without the `email` area
+returns 412 `account_scope_missing`, a disconnected one 409, and a Gmail account
+without a card on file 402. Mail sends count toward the mailbox's daily cap,
+never toward managed messages.
 
 WhatsApp per-recipient rate limit: WhatsApp caps how many messages you may
 send to the same recipient in a short window and rejects the excess with
