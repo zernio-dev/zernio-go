@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.375.1
+API version: 1.376.0
 Contact: support@zernio.com
 */
 
@@ -50,6 +50,10 @@ type AdLead struct {
 	ContactId NullableString `json:"contactId,omitempty"`
 	// When the first WhatsApp message to the lead was delivered.
 	FirstContactedAt NullableTime `json:"firstContactedAt,omitempty"`
+	// The Inbox conversation a lead_received workflow opened with the lead.
+	ConversationId NullableString `json:"conversationId,omitempty"`
+	// Meta leads only. When the `lead.received` webhook was delivered; null while it has not been.
+	WebhookDeliveredAt NullableTime `json:"webhookDeliveredAt,omitempty"`
 }
 
 // NewAdLead instantiates a new AdLead object
@@ -787,6 +791,92 @@ func (o *AdLead) UnsetFirstContactedAt() {
 	o.FirstContactedAt.Unset()
 }
 
+// GetConversationId returns the ConversationId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdLead) GetConversationId() string {
+	if o == nil || IsNil(o.ConversationId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ConversationId.Get()
+}
+
+// GetConversationIdOk returns a tuple with the ConversationId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdLead) GetConversationIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ConversationId.Get(), o.ConversationId.IsSet()
+}
+
+// HasConversationId returns a boolean if a field has been set.
+func (o *AdLead) HasConversationId() bool {
+	if o != nil && o.ConversationId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetConversationId gets a reference to the given NullableString and assigns it to the ConversationId field.
+func (o *AdLead) SetConversationId(v string) {
+	o.ConversationId.Set(&v)
+}
+
+// SetConversationIdNil sets the value for ConversationId to be an explicit nil
+func (o *AdLead) SetConversationIdNil() {
+	o.ConversationId.Set(nil)
+}
+
+// UnsetConversationId ensures that no value is present for ConversationId, not even an explicit nil
+func (o *AdLead) UnsetConversationId() {
+	o.ConversationId.Unset()
+}
+
+// GetWebhookDeliveredAt returns the WebhookDeliveredAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdLead) GetWebhookDeliveredAt() time.Time {
+	if o == nil || IsNil(o.WebhookDeliveredAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.WebhookDeliveredAt.Get()
+}
+
+// GetWebhookDeliveredAtOk returns a tuple with the WebhookDeliveredAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdLead) GetWebhookDeliveredAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.WebhookDeliveredAt.Get(), o.WebhookDeliveredAt.IsSet()
+}
+
+// HasWebhookDeliveredAt returns a boolean if a field has been set.
+func (o *AdLead) HasWebhookDeliveredAt() bool {
+	if o != nil && o.WebhookDeliveredAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetWebhookDeliveredAt gets a reference to the given NullableTime and assigns it to the WebhookDeliveredAt field.
+func (o *AdLead) SetWebhookDeliveredAt(v time.Time) {
+	o.WebhookDeliveredAt.Set(&v)
+}
+
+// SetWebhookDeliveredAtNil sets the value for WebhookDeliveredAt to be an explicit nil
+func (o *AdLead) SetWebhookDeliveredAtNil() {
+	o.WebhookDeliveredAt.Set(nil)
+}
+
+// UnsetWebhookDeliveredAt ensures that no value is present for WebhookDeliveredAt, not even an explicit nil
+func (o *AdLead) UnsetWebhookDeliveredAt() {
+	o.WebhookDeliveredAt.Unset()
+}
+
 func (o AdLead) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -853,6 +943,12 @@ func (o AdLead) ToMap() (map[string]interface{}, error) {
 	}
 	if o.FirstContactedAt.IsSet() {
 		toSerialize["firstContactedAt"] = o.FirstContactedAt.Get()
+	}
+	if o.ConversationId.IsSet() {
+		toSerialize["conversationId"] = o.ConversationId.Get()
+	}
+	if o.WebhookDeliveredAt.IsSet() {
+		toSerialize["webhookDeliveredAt"] = o.WebhookDeliveredAt.Get()
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.375.1
+API version: 1.376.0
 Contact: support@zernio.com
 */
 
@@ -148,6 +148,150 @@ func (a *LeadGenAPIService) ArchiveLeadFormExecute(r LeadGenAPIArchiveLeadFormRe
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type LeadGenAPICountLeadsRequest struct {
+	ctx        context.Context
+	ApiService *LeadGenAPIService
+	accountId  *string
+	campaignId *string
+}
+
+// Count one connected account only.
+func (r LeadGenAPICountLeadsRequest) AccountId(accountId string) LeadGenAPICountLeadsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// The platform campaign id the leads came from.
+func (r LeadGenAPICountLeadsRequest) CampaignId(campaignId string) LeadGenAPICountLeadsRequest {
+	r.campaignId = &campaignId
+	return r
+}
+
+func (r LeadGenAPICountLeadsRequest) Execute() (*CountLeads200Response, *http.Response, error) {
+	return r.ApiService.CountLeadsExecute(r)
+}
+
+/*
+CountLeads Count leads by status
+
+Counts your team's stored Meta leads per status, for a status filter or a "new leads" badge.
+
+Every status is present, with 0 when no lead has it. Requires the Ads add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return LeadGenAPICountLeadsRequest
+*/
+func (a *LeadGenAPIService) CountLeads(ctx context.Context) LeadGenAPICountLeadsRequest {
+	return LeadGenAPICountLeadsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CountLeads200Response
+func (a *LeadGenAPIService) CountLeadsExecute(r LeadGenAPICountLeadsRequest) (*CountLeads200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CountLeads200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LeadGenAPIService.CountLeads")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/leads/counts"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.campaignId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -1109,6 +1253,11 @@ type LeadGenAPIListLeadsRequest struct {
 	ApiService  *LeadGenAPIService
 	formId      *string
 	accountId   *string
+	accountIds  *string
+	status      *string
+	campaignId  *string
+	platform    *string
+	q           *string
 	adAccountId *string
 	limit       *int32
 	since       *int32
@@ -1124,6 +1273,36 @@ func (r LeadGenAPIListLeadsRequest) FormId(formId string) LeadGenAPIListLeadsReq
 // Filter to a single connected account. LinkedIn ads accounts switch to the live fetch.
 func (r LeadGenAPIListLeadsRequest) AccountId(accountId string) LeadGenAPIListLeadsRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Meta only. Comma-separated connected account ids, to list several accounts at once. Without accountId or accountIds every account of the team is listed.
+func (r LeadGenAPIListLeadsRequest) AccountIds(accountIds string) LeadGenAPIListLeadsRequest {
+	r.accountIds = &accountIds
+	return r
+}
+
+// Meta only. Comma-separated lead statuses: new, contacted, unreachable, qualified, converted, disqualified.
+func (r LeadGenAPIListLeadsRequest) Status(status string) LeadGenAPIListLeadsRequest {
+	r.status = &status
+	return r
+}
+
+// Meta only. The platform campaign id the lead came from.
+func (r LeadGenAPIListLeadsRequest) CampaignId(campaignId string) LeadGenAPIListLeadsRequest {
+	r.campaignId = &campaignId
+	return r
+}
+
+// meta skips the LinkedIn live fetch; linkedin requires accountId to be a LinkedIn ads connection (400 otherwise).
+func (r LeadGenAPIListLeadsRequest) Platform(platform string) LeadGenAPIListLeadsRequest {
+	r.platform = &platform
+	return r
+}
+
+// Meta only. Case-insensitive text search over the lead&#39;s answers and the form name.
+func (r LeadGenAPIListLeadsRequest) Q(q string) LeadGenAPIListLeadsRequest {
+	r.q = &q
 	return r
 }
 
@@ -1198,6 +1377,21 @@ func (a *LeadGenAPIService) ListLeadsExecute(r LeadGenAPIListLeadsRequest) (*Lis
 	}
 	if r.accountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.accountIds != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountIds", r.accountIds, "form", "")
+	}
+	if r.status != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")
+	}
+	if r.campaignId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
+	}
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.q != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "q", r.q, "form", "")
 	}
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.375.1
+API version: 1.376.0
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,7 @@ type GenerateAdPreviewsRequest struct {
 	Formats []string `json:"formats,omitempty"`
 	// Preview an existing ad-account creative by id. Mutually exclusive with creativeSpec.
 	ExistingCreativeId *string `json:"existingCreativeId,omitempty"`
-	// Raw Meta creative spec forwarded verbatim to /generatepreviews. Mutually exclusive with existingCreativeId.
+	// Raw Meta creative spec forwarded to /generatepreviews. Mutually exclusive with existingCreativeId. An `object_story_spec` without `page_id` or `instagram_user_id`, and a `source_instagram_media_id` spec without `instagram_user_id`, get the connection's Facebook Page and Instagram account, as a create would.
 	CreativeSpec map[string]interface{} `json:"creativeSpec,omitempty"`
 }
 
