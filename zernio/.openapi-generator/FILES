@@ -554,6 +554,7 @@ model_create_ad_rule_201_response.go
 model_create_ad_rule_request.go
 model_create_ad_set_201_response.go
 model_create_ad_set_request.go
+model_create_ad_set_request_promoted_object.go
 model_create_api_key_201_response.go
 model_create_api_key_request.go
 model_create_bid_strategy_201_response.go

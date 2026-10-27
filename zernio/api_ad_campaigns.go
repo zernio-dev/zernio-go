@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.383.0
+API version: 1.384.0
 Contact: support@zernio.com
 */
 
@@ -1243,11 +1243,29 @@ func (r AdCampaignsAPICreateAdSetRequest) Execute() (*CreateAdSet201Response, *h
 /*
 CreateAdSet Create a standalone ad group
 
-Creates an empty Google ad group under an existing campaign, ready for ads to be added later.
+Creates an empty ad group under an existing campaign, ready for ads to be added later.
 
-Google Ads compliance row C.190: creates an ad group WITHOUT an ad,
+Creates an ad group WITHOUT an ad (Google Ads compliance row C.190),
 under an existing campaign. Ads join it later via `adSetId`
-on POST /v1/ads/create. Google only; every other platform returns 501.
+on POST /v1/ads/create. Google Ads and Reddit Ads; every other platform returns 501.
+
+**Reddit Ads** (`platform: reddit`): `adAccountId` (the Reddit ad
+account id) is required and must be a selected ad account of the
+connection (403 otherwise). When the campaign has no campaign budget,
+send `budgetAmount` + `budgetType` (a lifetime budget needs
+`endDate`); the ad group is optimized for the campaign's objective
+(`promotedObject.customEventType` is required on a conversions
+campaign, and the pixel must have received that event, else 422),
+and bids with `bidStrategy`/`bidAmount` like POST /v1/ads/create.
+Under campaign budget optimization the ad group takes the
+campaign's bid, goal type, optimization event and pixel, and bid
+fields return 400. The ad group must start no earlier than a future
+campaign start and end no later than the campaign end (400
+otherwise). `targeting` takes the same targeting object as
+the other ad endpoints (no geo defaults to the US). A campaign of
+another ad account returns 404, a Reddit Max campaign 422.
+`maxCpc` and `customerId` are Google only (400 on Reddit), and the
+Reddit fields return 400 on Google.
 
 Created `PAUSED` unless `status: ACTIVE`. The new ad group has no ad
 yet, so it will not appear in GET /v1/ads/tree (built purely from `ads`

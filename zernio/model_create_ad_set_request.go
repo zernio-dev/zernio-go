@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.383.0
+API version: 1.384.0
 Contact: support@zernio.com
 */
 
@@ -22,21 +22,37 @@ var _ MappedNullable = &CreateAdSetRequest{}
 
 // CreateAdSetRequest struct for CreateAdSetRequest
 type CreateAdSetRequest struct {
-	// Zernio SocialAccount id owning the Google Ads connection.
+	// Zernio SocialAccount id owning the Google Ads or Reddit Ads connection.
 	AccountId string `json:"accountId"`
-	// Only \"google\" is implemented today; every other value returns 501.
+	// \"google\" and \"reddit\" are implemented; every other value returns 501.
 	Platform string `json:"platform"`
-	// Google platform campaign ID (numeric) the ad group is created under.
+	// Platform campaign ID the ad group is created under (numeric on Google).
 	CampaignId string  `json:"campaignId"`
 	Name       string  `json:"name"`
 	Status     *string `json:"status,omitempty"`
 	// Max CPC of the new ad group, in the account's currency units. Send it when the campaign uses Manual CPC: Google gives an ad group without one a 0.01 bid.
 	MaxCpc *float32 `json:"maxCpc,omitempty"`
-	// Platform ad account ID (Google customer ID, digits only). Only required when the connection has more than one.
+	// Platform ad account ID: the Google customer ID (digits only, only required when the connection has more than one) or the Reddit ad account id (required).
 	AdAccountId *string `json:"adAccountId,omitempty"`
-	// Alias of adAccountId, kept for existing callers
+	// Google only. Alias of adAccountId, kept for existing callers
 	// Deprecated
 	CustomerId *string `json:"customerId,omitempty"`
+	// Reddit only. Budget of the new ad group, in the ad account's currency units. Required when the campaign has no campaign budget; not applied under campaign budget optimization.
+	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
+	// Reddit only. Sent together with budgetAmount.
+	BudgetType *string `json:"budgetType,omitempty"`
+	// Reddit only. ISO 8601 start of the ad group. Defaults to now, or to the campaign start when it is in the future.
+	StartDate *string `json:"startDate,omitempty"`
+	// Reddit only. ISO 8601 end of the ad group. Defaults to the campaign end.
+	EndDate        *string                           `json:"endDate,omitempty"`
+	Targeting      *TargetingSpec                    `json:"targeting,omitempty"`
+	PromotedObject *CreateAdSetRequestPromotedObject `json:"promotedObject,omitempty"`
+	// Reddit only. VIDEO_VIEW_6S (default) or VIDEO_VIEW_15S on a video views campaign.
+	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
+	// Reddit only. Defaults to LOWEST_COST_WITHOUT_CAP. Not accepted under campaign budget optimization.
+	BidStrategy *string `json:"bidStrategy,omitempty"`
+	// Reddit only. Bid cap in currency units, sent with bidStrategy.
+	BidAmount *float32 `json:"bidAmount,omitempty"`
 }
 
 type _CreateAdSetRequest CreateAdSetRequest
@@ -293,6 +309,294 @@ func (o *CreateAdSetRequest) SetCustomerId(v string) {
 	o.CustomerId = &v
 }
 
+// GetBudgetAmount returns the BudgetAmount field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetBudgetAmount() float32 {
+	if o == nil || IsNil(o.BudgetAmount) {
+		var ret float32
+		return ret
+	}
+	return *o.BudgetAmount
+}
+
+// GetBudgetAmountOk returns a tuple with the BudgetAmount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetBudgetAmountOk() (*float32, bool) {
+	if o == nil || IsNil(o.BudgetAmount) {
+		return nil, false
+	}
+	return o.BudgetAmount, true
+}
+
+// HasBudgetAmount returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasBudgetAmount() bool {
+	if o != nil && !IsNil(o.BudgetAmount) {
+		return true
+	}
+
+	return false
+}
+
+// SetBudgetAmount gets a reference to the given float32 and assigns it to the BudgetAmount field.
+func (o *CreateAdSetRequest) SetBudgetAmount(v float32) {
+	o.BudgetAmount = &v
+}
+
+// GetBudgetType returns the BudgetType field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetBudgetType() string {
+	if o == nil || IsNil(o.BudgetType) {
+		var ret string
+		return ret
+	}
+	return *o.BudgetType
+}
+
+// GetBudgetTypeOk returns a tuple with the BudgetType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetBudgetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.BudgetType) {
+		return nil, false
+	}
+	return o.BudgetType, true
+}
+
+// HasBudgetType returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasBudgetType() bool {
+	if o != nil && !IsNil(o.BudgetType) {
+		return true
+	}
+
+	return false
+}
+
+// SetBudgetType gets a reference to the given string and assigns it to the BudgetType field.
+func (o *CreateAdSetRequest) SetBudgetType(v string) {
+	o.BudgetType = &v
+}
+
+// GetStartDate returns the StartDate field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetStartDate() string {
+	if o == nil || IsNil(o.StartDate) {
+		var ret string
+		return ret
+	}
+	return *o.StartDate
+}
+
+// GetStartDateOk returns a tuple with the StartDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetStartDateOk() (*string, bool) {
+	if o == nil || IsNil(o.StartDate) {
+		return nil, false
+	}
+	return o.StartDate, true
+}
+
+// HasStartDate returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasStartDate() bool {
+	if o != nil && !IsNil(o.StartDate) {
+		return true
+	}
+
+	return false
+}
+
+// SetStartDate gets a reference to the given string and assigns it to the StartDate field.
+func (o *CreateAdSetRequest) SetStartDate(v string) {
+	o.StartDate = &v
+}
+
+// GetEndDate returns the EndDate field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetEndDate() string {
+	if o == nil || IsNil(o.EndDate) {
+		var ret string
+		return ret
+	}
+	return *o.EndDate
+}
+
+// GetEndDateOk returns a tuple with the EndDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetEndDateOk() (*string, bool) {
+	if o == nil || IsNil(o.EndDate) {
+		return nil, false
+	}
+	return o.EndDate, true
+}
+
+// HasEndDate returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasEndDate() bool {
+	if o != nil && !IsNil(o.EndDate) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndDate gets a reference to the given string and assigns it to the EndDate field.
+func (o *CreateAdSetRequest) SetEndDate(v string) {
+	o.EndDate = &v
+}
+
+// GetTargeting returns the Targeting field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetTargeting() TargetingSpec {
+	if o == nil || IsNil(o.Targeting) {
+		var ret TargetingSpec
+		return ret
+	}
+	return *o.Targeting
+}
+
+// GetTargetingOk returns a tuple with the Targeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetTargetingOk() (*TargetingSpec, bool) {
+	if o == nil || IsNil(o.Targeting) {
+		return nil, false
+	}
+	return o.Targeting, true
+}
+
+// HasTargeting returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasTargeting() bool {
+	if o != nil && !IsNil(o.Targeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargeting gets a reference to the given TargetingSpec and assigns it to the Targeting field.
+func (o *CreateAdSetRequest) SetTargeting(v TargetingSpec) {
+	o.Targeting = &v
+}
+
+// GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetPromotedObject() CreateAdSetRequestPromotedObject {
+	if o == nil || IsNil(o.PromotedObject) {
+		var ret CreateAdSetRequestPromotedObject
+		return ret
+	}
+	return *o.PromotedObject
+}
+
+// GetPromotedObjectOk returns a tuple with the PromotedObject field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetPromotedObjectOk() (*CreateAdSetRequestPromotedObject, bool) {
+	if o == nil || IsNil(o.PromotedObject) {
+		return nil, false
+	}
+	return o.PromotedObject, true
+}
+
+// HasPromotedObject returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasPromotedObject() bool {
+	if o != nil && !IsNil(o.PromotedObject) {
+		return true
+	}
+
+	return false
+}
+
+// SetPromotedObject gets a reference to the given CreateAdSetRequestPromotedObject and assigns it to the PromotedObject field.
+func (o *CreateAdSetRequest) SetPromotedObject(v CreateAdSetRequestPromotedObject) {
+	o.PromotedObject = &v
+}
+
+// GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetOptimizationGoal() string {
+	if o == nil || IsNil(o.OptimizationGoal) {
+		var ret string
+		return ret
+	}
+	return *o.OptimizationGoal
+}
+
+// GetOptimizationGoalOk returns a tuple with the OptimizationGoal field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetOptimizationGoalOk() (*string, bool) {
+	if o == nil || IsNil(o.OptimizationGoal) {
+		return nil, false
+	}
+	return o.OptimizationGoal, true
+}
+
+// HasOptimizationGoal returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasOptimizationGoal() bool {
+	if o != nil && !IsNil(o.OptimizationGoal) {
+		return true
+	}
+
+	return false
+}
+
+// SetOptimizationGoal gets a reference to the given string and assigns it to the OptimizationGoal field.
+func (o *CreateAdSetRequest) SetOptimizationGoal(v string) {
+	o.OptimizationGoal = &v
+}
+
+// GetBidStrategy returns the BidStrategy field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetBidStrategy() string {
+	if o == nil || IsNil(o.BidStrategy) {
+		var ret string
+		return ret
+	}
+	return *o.BidStrategy
+}
+
+// GetBidStrategyOk returns a tuple with the BidStrategy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetBidStrategyOk() (*string, bool) {
+	if o == nil || IsNil(o.BidStrategy) {
+		return nil, false
+	}
+	return o.BidStrategy, true
+}
+
+// HasBidStrategy returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasBidStrategy() bool {
+	if o != nil && !IsNil(o.BidStrategy) {
+		return true
+	}
+
+	return false
+}
+
+// SetBidStrategy gets a reference to the given string and assigns it to the BidStrategy field.
+func (o *CreateAdSetRequest) SetBidStrategy(v string) {
+	o.BidStrategy = &v
+}
+
+// GetBidAmount returns the BidAmount field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetBidAmount() float32 {
+	if o == nil || IsNil(o.BidAmount) {
+		var ret float32
+		return ret
+	}
+	return *o.BidAmount
+}
+
+// GetBidAmountOk returns a tuple with the BidAmount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetBidAmountOk() (*float32, bool) {
+	if o == nil || IsNil(o.BidAmount) {
+		return nil, false
+	}
+	return o.BidAmount, true
+}
+
+// HasBidAmount returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasBidAmount() bool {
+	if o != nil && !IsNil(o.BidAmount) {
+		return true
+	}
+
+	return false
+}
+
+// SetBidAmount gets a reference to the given float32 and assigns it to the BidAmount field.
+func (o *CreateAdSetRequest) SetBidAmount(v float32) {
+	o.BidAmount = &v
+}
+
 func (o CreateAdSetRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -318,6 +622,33 @@ func (o CreateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CustomerId) {
 		toSerialize["customerId"] = o.CustomerId
+	}
+	if !IsNil(o.BudgetAmount) {
+		toSerialize["budgetAmount"] = o.BudgetAmount
+	}
+	if !IsNil(o.BudgetType) {
+		toSerialize["budgetType"] = o.BudgetType
+	}
+	if !IsNil(o.StartDate) {
+		toSerialize["startDate"] = o.StartDate
+	}
+	if !IsNil(o.EndDate) {
+		toSerialize["endDate"] = o.EndDate
+	}
+	if !IsNil(o.Targeting) {
+		toSerialize["targeting"] = o.Targeting
+	}
+	if !IsNil(o.PromotedObject) {
+		toSerialize["promotedObject"] = o.PromotedObject
+	}
+	if !IsNil(o.OptimizationGoal) {
+		toSerialize["optimizationGoal"] = o.OptimizationGoal
+	}
+	if !IsNil(o.BidStrategy) {
+		toSerialize["bidStrategy"] = o.BidStrategy
+	}
+	if !IsNil(o.BidAmount) {
+		toSerialize["bidAmount"] = o.BidAmount
 	}
 	return toSerialize, nil
 }
