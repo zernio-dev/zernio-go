@@ -1794,6 +1794,7 @@ model_messaging_carousel_card.go
 model_messenger_greeting.go
 model_messenger_ice_breaker_locale.go
 model_messenger_ice_breaker_locale_call_to_actions_inner.go
+model_meta_ad_schedule_inner.go
 model_meta_ads_platform_data.go
 model_meta_assigned_user.go
 model_meta_business_user.go

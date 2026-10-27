@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.368.0
+API version: 1.370.0
 Contact: support@zernio.com
 */
 
@@ -51,6 +51,8 @@ type GetAdAccountLiveEntities200ResponseAdSetsInner struct {
 	// The platform's targeting verbatim (snake_case), as it reports it now: Meta `targeting`, or TikTok's ad group targeting fields (location_ids, age_groups, gender, languages, interest_category_ids, audience_ids, placements...).
 	Targeting *map[string]interface{}                   `json:"targeting,omitempty"`
 	Schedule  *ListAdSets200ResponseAdSetsInnerSchedule `json:"schedule,omitempty"`
+	// Meta only. The ad set's dayparting (`adset_schedule`) in the `platformSpecificData.adSchedule` shape, one window per day (a window Meta stores off the hour is widened to whole hours). Null when the ad set runs around the clock. Absent on TikTok.
+	AdSchedule []MetaAdScheduleInner `json:"adSchedule,omitempty"`
 }
 
 // NewGetAdAccountLiveEntities200ResponseAdSetsInner instantiates a new GetAdAccountLiveEntities200ResponseAdSetsInner object
@@ -778,6 +780,39 @@ func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) SetSchedule(v ListAdSet
 	o.Schedule = &v
 }
 
+// GetAdSchedule returns the AdSchedule field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) GetAdSchedule() []MetaAdScheduleInner {
+	if o == nil {
+		var ret []MetaAdScheduleInner
+		return ret
+	}
+	return o.AdSchedule
+}
+
+// GetAdScheduleOk returns a tuple with the AdSchedule field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) GetAdScheduleOk() ([]MetaAdScheduleInner, bool) {
+	if o == nil || IsNil(o.AdSchedule) {
+		return nil, false
+	}
+	return o.AdSchedule, true
+}
+
+// HasAdSchedule returns a boolean if a field has been set.
+func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) HasAdSchedule() bool {
+	if o != nil && !IsNil(o.AdSchedule) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdSchedule gets a reference to the given []MetaAdScheduleInner and assigns it to the AdSchedule field.
+func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) SetAdSchedule(v []MetaAdScheduleInner) {
+	o.AdSchedule = v
+}
+
 func (o GetAdAccountLiveEntities200ResponseAdSetsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -841,6 +876,9 @@ func (o GetAdAccountLiveEntities200ResponseAdSetsInner) ToMap() (map[string]inte
 	}
 	if !IsNil(o.Schedule) {
 		toSerialize["schedule"] = o.Schedule
+	}
+	if o.AdSchedule != nil {
+		toSerialize["adSchedule"] = o.AdSchedule
 	}
 	return toSerialize, nil
 }

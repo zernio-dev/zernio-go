@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.368.0
+API version: 1.370.0
 Contact: support@zernio.com
 */
 
@@ -31,9 +31,11 @@ type UpdateAdSetRequestPlatformSpecificData struct {
 	// Meta `daily_min_spend_target`: the least this ad set should spend per day, in whole currency units of the ad account. It reserves a share of a CAMPAIGN budget for one ad set, so it requires a campaign using Advantage campaign budget (CBO). On an ad set that owns its budget (ABO) this returns 409. Move the budget to the campaign with `PUT /v1/ads/campaigns/{campaignId}` first. Meta treats it as a target, not a guarantee, and rejects the combined minimum of a campaign's ad sets going over the campaign budget. Mutually exclusive with `lifetimeMinSpendTarget` (400): the flavour must match the campaign budget type, a daily budget takes a daily target. Read it back with `GET /v1/ads/ad-sets/{adSetId}?fields=daily_min_spend_target`.
 	DailyMinSpendTarget *float32 `json:"dailyMinSpendTarget,omitempty"`
 	// Meta `lifetime_min_spend_target`: the lifetime-budget flavour of `dailyMinSpendTarget`, in whole currency units. Send this one when the campaign budget is a lifetime budget. Same rules and same rejections.
-	LifetimeMinSpendTarget *float32                                              `json:"lifetimeMinSpendTarget,omitempty"`
-	CustomerLifecycle      *MetaCustomerLifecycle                                `json:"customerLifecycle,omitempty"`
-	PromotedObject         *UpdateAdSetRequestPlatformSpecificDataPromotedObject `json:"promotedObject,omitempty"`
+	LifetimeMinSpendTarget *float32               `json:"lifetimeMinSpendTarget,omitempty"`
+	CustomerLifecycle      *MetaCustomerLifecycle `json:"customerLifecycle,omitempty"`
+	// Replaces the ad set's dayparting (Meta `adset_schedule`, `pacing_type: [\"day_parting\"]`). Meta runs a schedule only on a lifetime budget. Before anything in the request is written, Zernio takes `budget.type` from the same request or reads the ad set's budget (or its campaign's under Advantage campaign budget), and a daily one is a 400 with `param: platformSpecificData.adSchedule`. An empty array removes the schedule (`pacing_type: [\"standard\"]`). Read it back with `GET /v1/ads/ad-sets/{adSetId}` (`adset_schedule`, `pacing_type`) or as `adSchedule` on `GET /v1/ads/accounts/live`.
+	AdSchedule     []MetaAdScheduleInner                                 `json:"adSchedule,omitempty"`
+	PromotedObject *UpdateAdSetRequestPlatformSpecificDataPromotedObject `json:"promotedObject,omitempty"`
 }
 
 // NewUpdateAdSetRequestPlatformSpecificData instantiates a new UpdateAdSetRequestPlatformSpecificData object
@@ -277,6 +279,38 @@ func (o *UpdateAdSetRequestPlatformSpecificData) SetCustomerLifecycle(v MetaCust
 	o.CustomerLifecycle = &v
 }
 
+// GetAdSchedule returns the AdSchedule field value if set, zero value otherwise.
+func (o *UpdateAdSetRequestPlatformSpecificData) GetAdSchedule() []MetaAdScheduleInner {
+	if o == nil || IsNil(o.AdSchedule) {
+		var ret []MetaAdScheduleInner
+		return ret
+	}
+	return o.AdSchedule
+}
+
+// GetAdScheduleOk returns a tuple with the AdSchedule field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequestPlatformSpecificData) GetAdScheduleOk() ([]MetaAdScheduleInner, bool) {
+	if o == nil || IsNil(o.AdSchedule) {
+		return nil, false
+	}
+	return o.AdSchedule, true
+}
+
+// HasAdSchedule returns a boolean if a field has been set.
+func (o *UpdateAdSetRequestPlatformSpecificData) HasAdSchedule() bool {
+	if o != nil && !IsNil(o.AdSchedule) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdSchedule gets a reference to the given []MetaAdScheduleInner and assigns it to the AdSchedule field.
+func (o *UpdateAdSetRequestPlatformSpecificData) SetAdSchedule(v []MetaAdScheduleInner) {
+	o.AdSchedule = v
+}
+
 // GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
 func (o *UpdateAdSetRequestPlatformSpecificData) GetPromotedObject() UpdateAdSetRequestPlatformSpecificDataPromotedObject {
 	if o == nil || IsNil(o.PromotedObject) {
@@ -339,6 +373,9 @@ func (o UpdateAdSetRequestPlatformSpecificData) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.CustomerLifecycle) {
 		toSerialize["customerLifecycle"] = o.CustomerLifecycle
+	}
+	if !IsNil(o.AdSchedule) {
+		toSerialize["adSchedule"] = o.AdSchedule
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject

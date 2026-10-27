@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.368.0
+API version: 1.370.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,8 @@ type MetaAdsPlatformData struct {
 	// Meta lifetime_min_spend_target: the lifetime-budget flavour of dailyMinSpendTarget, in whole currency units. Same rules and same rejections.
 	LifetimeMinSpendTarget *float32               `json:"lifetimeMinSpendTarget,omitempty"`
 	CustomerLifecycle      *MetaCustomerLifecycle `json:"customerLifecycle,omitempty"`
+	// Dayparting on the ad set being created (Meta `adset_schedule` with `pacing_type: [\"day_parting\"]`). Meta runs a schedule only on a LIFETIME budget, so a daily budget (on the ad set, or on the campaign joined with `existingCampaignId`) is a 400 with `param: platformSpecificData.adSchedule`. Also a 400 when empty, in adSetId attach mode and with `buyingType: RESERVED`. Change it later with `PUT /v1/ads/ad-sets/{adSetId}`.
+	AdSchedule []MetaAdScheduleInner `json:"adSchedule,omitempty"`
 }
 
 // NewMetaAdsPlatformData instantiates a new MetaAdsPlatformData object
@@ -241,6 +243,38 @@ func (o *MetaAdsPlatformData) SetCustomerLifecycle(v MetaCustomerLifecycle) {
 	o.CustomerLifecycle = &v
 }
 
+// GetAdSchedule returns the AdSchedule field value if set, zero value otherwise.
+func (o *MetaAdsPlatformData) GetAdSchedule() []MetaAdScheduleInner {
+	if o == nil || IsNil(o.AdSchedule) {
+		var ret []MetaAdScheduleInner
+		return ret
+	}
+	return o.AdSchedule
+}
+
+// GetAdScheduleOk returns a tuple with the AdSchedule field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetaAdsPlatformData) GetAdScheduleOk() ([]MetaAdScheduleInner, bool) {
+	if o == nil || IsNil(o.AdSchedule) {
+		return nil, false
+	}
+	return o.AdSchedule, true
+}
+
+// HasAdSchedule returns a boolean if a field has been set.
+func (o *MetaAdsPlatformData) HasAdSchedule() bool {
+	if o != nil && !IsNil(o.AdSchedule) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdSchedule gets a reference to the given []MetaAdScheduleInner and assigns it to the AdSchedule field.
+func (o *MetaAdsPlatformData) SetAdSchedule(v []MetaAdScheduleInner) {
+	o.AdSchedule = v
+}
+
 func (o MetaAdsPlatformData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -268,6 +302,9 @@ func (o MetaAdsPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CustomerLifecycle) {
 		toSerialize["customerLifecycle"] = o.CustomerLifecycle
+	}
+	if !IsNil(o.AdSchedule) {
+		toSerialize["adSchedule"] = o.AdSchedule
 	}
 	return toSerialize, nil
 }
