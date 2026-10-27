@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.374.1
+API version: 1.374.2
 Contact: support@zernio.com
 */
 
@@ -38,7 +38,7 @@ type ListInboxConversations200ResponseDataInner struct {
 	LastMessage      *string    `json:"lastMessage,omitempty"`
 	UpdatedTime      *time.Time `json:"updatedTime,omitempty"`
 	Status           *string    `json:"status,omitempty"`
-	// Number of unread messages
+	// Number of unread incoming messages, capped at 1000. Read from a replica, so it can trail a conversation you just marked read by a few seconds.
 	UnreadCount NullableInt32 `json:"unreadCount,omitempty"`
 	// Present once a handover has touched the thread (WhatsApp, Facebook, Instagram). ai_agent: Meta Business Agent answers (WhatsApp) and new inbound arrive flagged metadata.standby; app: you hold control; other: another app does (a WhatsApp partner, or a Messenger / Instagram receiver such as Page Inbox). Change it with POST /v1/inbox/conversations/{conversationId}/thread-control.
 	ThreadControl *string `json:"threadControl,omitempty"`
