@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.370.0
+API version: 1.371.0
 Contact: support@zernio.com
 */
 
@@ -39,6 +39,8 @@ type AdLead struct {
 	Fields map[string]string `json:"fields,omitempty"`
 	// Raw Meta field_data.
 	FieldData []map[string]interface{} `json:"fieldData,omitempty"`
+	// Meta lead forms only: the answer to every custom disclaimer checkbox, required or optional. Empty when the form has none, and may be empty on leads stored before 2026-10-22. LinkedIn leads do not carry the field.
+	Consents []AdLeadConsent `json:"consents,omitempty"`
 	// Meta leads only. `contacted` is set when the first WhatsApp message of a lead_received workflow is delivered, `unreachable` when it fails or the phone number is not valid.
 	Status          *string         `json:"status,omitempty"`
 	StatusChangedAt NullableTime    `json:"statusChangedAt,omitempty"`
@@ -506,6 +508,38 @@ func (o *AdLead) SetFieldData(v []map[string]interface{}) {
 	o.FieldData = v
 }
 
+// GetConsents returns the Consents field value if set, zero value otherwise.
+func (o *AdLead) GetConsents() []AdLeadConsent {
+	if o == nil || IsNil(o.Consents) {
+		var ret []AdLeadConsent
+		return ret
+	}
+	return o.Consents
+}
+
+// GetConsentsOk returns a tuple with the Consents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdLead) GetConsentsOk() ([]AdLeadConsent, bool) {
+	if o == nil || IsNil(o.Consents) {
+		return nil, false
+	}
+	return o.Consents, true
+}
+
+// HasConsents returns a boolean if a field has been set.
+func (o *AdLead) HasConsents() bool {
+	if o != nil && !IsNil(o.Consents) {
+		return true
+	}
+
+	return false
+}
+
+// SetConsents gets a reference to the given []AdLeadConsent and assigns it to the Consents field.
+func (o *AdLead) SetConsents(v []AdLeadConsent) {
+	o.Consents = v
+}
+
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *AdLead) GetStatus() string {
 	if o == nil || IsNil(o.Status) {
@@ -798,6 +832,9 @@ func (o AdLead) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.FieldData) {
 		toSerialize["fieldData"] = o.FieldData
+	}
+	if !IsNil(o.Consents) {
+		toSerialize["consents"] = o.Consents
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status

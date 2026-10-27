@@ -114,6 +114,7 @@ model_ad_keyword.go
 model_ad_keyword_metrics.go
 model_ad_keyword_quality.go
 model_ad_lead.go
+model_ad_lead_consent.go
 model_ad_metrics.go
 model_ad_negative_keyword_list.go
 model_ad_negative_keyword_list_keyword.go

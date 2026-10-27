@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.370.0
+API version: 1.371.0
 Contact: support@zernio.com
 */
 
@@ -37,6 +37,8 @@ type WebhookPayloadLeadLead struct {
 	CampaignId NullableString `json:"campaignId,omitempty"`
 	// Flattened question key -> answer map. For multiple-choice questions the value is the option key (e.g. \"k1\"), not the display label.
 	Fields map[string]string `json:"fields"`
+	// Sent on every delivery since 2026-10-25. Absent when an older event is redelivered, since redeliveries replay the stored payload.
+	Consents []AdLeadConsent `json:"consents,omitempty"`
 	// True when the lead came from an organic post rather than a paid ad
 	IsOrganic bool `json:"isOrganic"`
 	// Meta's lead creation time (ISO 8601)
@@ -336,6 +338,38 @@ func (o *WebhookPayloadLeadLead) SetFields(v map[string]string) {
 	o.Fields = v
 }
 
+// GetConsents returns the Consents field value if set, zero value otherwise.
+func (o *WebhookPayloadLeadLead) GetConsents() []AdLeadConsent {
+	if o == nil || IsNil(o.Consents) {
+		var ret []AdLeadConsent
+		return ret
+	}
+	return o.Consents
+}
+
+// GetConsentsOk returns a tuple with the Consents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadLeadLead) GetConsentsOk() ([]AdLeadConsent, bool) {
+	if o == nil || IsNil(o.Consents) {
+		return nil, false
+	}
+	return o.Consents, true
+}
+
+// HasConsents returns a boolean if a field has been set.
+func (o *WebhookPayloadLeadLead) HasConsents() bool {
+	if o != nil && !IsNil(o.Consents) {
+		return true
+	}
+
+	return false
+}
+
+// SetConsents gets a reference to the given []AdLeadConsent and assigns it to the Consents field.
+func (o *WebhookPayloadLeadLead) SetConsents(v []AdLeadConsent) {
+	o.Consents = v
+}
+
 // GetIsOrganic returns the IsOrganic field value
 func (o *WebhookPayloadLeadLead) GetIsOrganic() bool {
 	if o == nil {
@@ -410,6 +444,9 @@ func (o WebhookPayloadLeadLead) ToMap() (map[string]interface{}, error) {
 		toSerialize["campaignId"] = o.CampaignId.Get()
 	}
 	toSerialize["fields"] = o.Fields
+	if !IsNil(o.Consents) {
+		toSerialize["consents"] = o.Consents
+	}
 	toSerialize["isOrganic"] = o.IsOrganic
 	toSerialize["createdAt"] = o.CreatedAt
 	return toSerialize, nil
