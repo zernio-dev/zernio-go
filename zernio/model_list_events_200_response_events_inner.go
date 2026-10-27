@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.385.0
+API version: 1.386.0
 Contact: support@zernio.com
 */
 
@@ -35,10 +35,11 @@ type ListEvents200ResponseEventsInner struct {
 	Zrn      NullableString                            `json:"zrn,omitempty"`
 	ClickIds *ListEvents200ResponseEventsInnerClickIds `json:"clickIds,omitempty"`
 	// Destinations the event was forwarded to.
-	DestinationsSent *int32 `json:"destinationsSent,omitempty"`
-	HasEmail         *bool  `json:"hasEmail,omitempty"`
-	HasPhone         *bool  `json:"hasPhone,omitempty"`
-	HasExternalId    *bool  `json:"hasExternalId,omitempty"`
+	DestinationsSent *int32                              `json:"destinationsSent,omitempty"`
+	HasEmail         *bool                               `json:"hasEmail,omitempty"`
+	HasPhone         *bool                               `json:"hasPhone,omitempty"`
+	HasExternalId    *bool                               `json:"hasExternalId,omitempty"`
+	Ad               *ListEvents200ResponseEventsInnerAd `json:"ad,omitempty"`
 }
 
 // NewListEvents200ResponseEventsInner instantiates a new ListEvents200ResponseEventsInner object
@@ -593,6 +594,38 @@ func (o *ListEvents200ResponseEventsInner) SetHasExternalId(v bool) {
 	o.HasExternalId = &v
 }
 
+// GetAd returns the Ad field value if set, zero value otherwise.
+func (o *ListEvents200ResponseEventsInner) GetAd() ListEvents200ResponseEventsInnerAd {
+	if o == nil || IsNil(o.Ad) {
+		var ret ListEvents200ResponseEventsInnerAd
+		return ret
+	}
+	return *o.Ad
+}
+
+// GetAdOk returns a tuple with the Ad field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListEvents200ResponseEventsInner) GetAdOk() (*ListEvents200ResponseEventsInnerAd, bool) {
+	if o == nil || IsNil(o.Ad) {
+		return nil, false
+	}
+	return o.Ad, true
+}
+
+// HasAd returns a boolean if a field has been set.
+func (o *ListEvents200ResponseEventsInner) HasAd() bool {
+	if o != nil && !IsNil(o.Ad) {
+		return true
+	}
+
+	return false
+}
+
+// SetAd gets a reference to the given ListEvents200ResponseEventsInnerAd and assigns it to the Ad field.
+func (o *ListEvents200ResponseEventsInner) SetAd(v ListEvents200ResponseEventsInnerAd) {
+	o.Ad = &v
+}
+
 func (o ListEvents200ResponseEventsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -647,6 +680,9 @@ func (o ListEvents200ResponseEventsInner) ToMap() (map[string]interface{}, error
 	}
 	if !IsNil(o.HasExternalId) {
 		toSerialize["hasExternalId"] = o.HasExternalId
+	}
+	if !IsNil(o.Ad) {
+		toSerialize["ad"] = o.Ad
 	}
 	return toSerialize, nil
 }
