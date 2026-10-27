@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.384.0
+API version: 1.385.0
 Contact: support@zernio.com
 */
 
@@ -40,7 +40,11 @@ type UpdateAdSetRequest struct {
 	RegionalRegulationIdentities map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue `json:"regionalRegulationIdentities,omitempty"`
 	SmartTargeting               *UpdateAdSetRequestSmartTargeting                              `json:"smartTargeting,omitempty"`
 	Placements                   *UpdateAdSetRequestPlacements                                  `json:"placements,omitempty"`
-	// Meta only (400 elsewhere). Targeting fields to change, same shape as the `targeting` object on POST /v1/ads/create. Only the keys you send change: Zernio reads the ad set's live targeting from Meta, merges these keys over it and writes the full spec back, so everything you do not send (custom audiences, geo, age, interest groups, `targeting_automation`) is kept. Setting any location replaces every location list. An empty list or `gender: all` clears that key. `incomeTier` is resolved to Meta's income segment first (422 when Meta has none). Fields Meta cannot target (LinkedIn B2B, Google `devices`, Reddit communities and keywords) return 400 with `param: targeting.<field>`. An empty object is a 400, and so is a `targeting.placements` object with no non-empty list (`param: targeting.placements`). When the live targeting cannot be read the request returns 502 and nothing is written.
+	// Reddit only. Every other platform ignores it (nothing is written and no error is returned, so a body that also sends `status` still applies it); Meta takes it in `platformSpecificData.startDate`. The ad group's new start_time, ISO 8601. A value without an offset (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone. It cannot be earlier than the start of a campaign that starts in the future, nor at or after the ad group's end (400, `param: startDate`).
+	StartDate *string `json:"startDate,omitempty"`
+	// Reddit only. Every other platform ignores it (nothing is written and no error is returned, so a body that also sends `status` still applies it); Meta takes it in `platformSpecificData.endDate`. The ad group's new end_time, ISO 8601, read in the ad account timezone when it has no offset; a date alone means the end of that day. `null` removes the end date so the ad group runs continuously. Returns 400 with `param: endDate` when it is not after the start, when it falls after the campaign's end, when the campaign uses campaign budget optimization with no end date (Reddit then takes no end date on its ad groups), when `null` would outlive a campaign budget campaign that ends, or when `null` is sent for an ad group with a lifetime budget.
+	EndDate NullableString `json:"endDate,omitempty"`
+	// Meta and Reddit (400 elsewhere). On Reddit, see the description above: `languages` must be among Reddit's ISO 639-1 codes (AR, CS, DA, DE, EL, EN, ES, FI, FR, HU, IT, JA, KO, NL, NO, PL, PT, RO, SV, VI, ZH, any case), emptying every included location is a 400 with `param: targeting.countries`, and fields Reddit ad groups cannot take (age, income, devices, behaviors, B2B, `places`) return 400 with `param: targeting.<field>`. On Meta: targeting fields to change, same shape as the `targeting` object on POST /v1/ads/create. Only the keys you send change: Zernio reads the ad set's live targeting from Meta, merges these keys over it and writes the full spec back, so everything you do not send (custom audiences, geo, age, interest groups, `targeting_automation`) is kept. Setting any location replaces every location list. An empty list or `gender: all` clears that key. `incomeTier` is resolved to Meta's income segment first (422 when Meta has none). Fields Meta cannot target (LinkedIn B2B, Google `devices`, Reddit communities and keywords) return 400 with `param: targeting.<field>`. An empty object is a 400, and so is a `targeting.placements` object with no non-empty list (`param: targeting.placements`). When the live targeting cannot be read the request returns 502 and nothing is written.
 	Targeting NullableTargetingSpec `json:"targeting,omitempty"`
 	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP. Internally converted to Meta's smallest-denomination integer, or (on OpenAI and X) to micros (× 1,000,000). Meta only: may be sent alone, WITHOUT bidStrategy, to update the cap amount on an ad set whose parent campaign is COST_CAP or LOWEST_COST_WITH_BID_CAP (the strategy is inherited from the campaign and is left untouched).
 	BidAmount *float32 `json:"bidAmount,omitempty"`
@@ -417,6 +421,81 @@ func (o *UpdateAdSetRequest) SetPlacements(v UpdateAdSetRequestPlacements) {
 	o.Placements = &v
 }
 
+// GetStartDate returns the StartDate field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetStartDate() string {
+	if o == nil || IsNil(o.StartDate) {
+		var ret string
+		return ret
+	}
+	return *o.StartDate
+}
+
+// GetStartDateOk returns a tuple with the StartDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetStartDateOk() (*string, bool) {
+	if o == nil || IsNil(o.StartDate) {
+		return nil, false
+	}
+	return o.StartDate, true
+}
+
+// HasStartDate returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasStartDate() bool {
+	if o != nil && !IsNil(o.StartDate) {
+		return true
+	}
+
+	return false
+}
+
+// SetStartDate gets a reference to the given string and assigns it to the StartDate field.
+func (o *UpdateAdSetRequest) SetStartDate(v string) {
+	o.StartDate = &v
+}
+
+// GetEndDate returns the EndDate field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdSetRequest) GetEndDate() string {
+	if o == nil || IsNil(o.EndDate.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.EndDate.Get()
+}
+
+// GetEndDateOk returns a tuple with the EndDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdSetRequest) GetEndDateOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.EndDate.Get(), o.EndDate.IsSet()
+}
+
+// HasEndDate returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasEndDate() bool {
+	if o != nil && o.EndDate.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEndDate gets a reference to the given NullableString and assigns it to the EndDate field.
+func (o *UpdateAdSetRequest) SetEndDate(v string) {
+	o.EndDate.Set(&v)
+}
+
+// SetEndDateNil sets the value for EndDate to be an explicit nil
+func (o *UpdateAdSetRequest) SetEndDateNil() {
+	o.EndDate.Set(nil)
+}
+
+// UnsetEndDate ensures that no value is present for EndDate, not even an explicit nil
+func (o *UpdateAdSetRequest) UnsetEndDate() {
+	o.EndDate.Unset()
+}
+
 // GetTargeting returns the Targeting field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *UpdateAdSetRequest) GetTargeting() TargetingSpec {
 	if o == nil || IsNil(o.Targeting.Get()) {
@@ -660,6 +739,12 @@ func (o UpdateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Placements) {
 		toSerialize["placements"] = o.Placements
+	}
+	if !IsNil(o.StartDate) {
+		toSerialize["startDate"] = o.StartDate
+	}
+	if o.EndDate.IsSet() {
+		toSerialize["endDate"] = o.EndDate.Get()
 	}
 	if o.Targeting.IsSet() {
 		toSerialize["targeting"] = o.Targeting.Get()

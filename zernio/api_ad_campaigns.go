@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.384.0
+API version: 1.385.0
 Contact: support@zernio.com
 */
 
@@ -4246,6 +4246,150 @@ func (a *AdCampaignsAPIService) GetAdSetDetailsExecute(r AdCampaignsAPIGetAdSetD
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIGetAdSetTargetingRequest struct {
+	ctx        context.Context
+	ApiService *AdCampaignsAPIService
+	adSetId    string
+	platform   *string
+}
+
+// Disambiguates when the same adSetId string exists on more than one connected platform.
+func (r AdCampaignsAPIGetAdSetTargetingRequest) Platform(platform string) AdCampaignsAPIGetAdSetTargetingRequest {
+	r.platform = &platform
+	return r
+}
+
+func (r AdCampaignsAPIGetAdSetTargetingRequest) Execute() (*GetAdSetTargeting200Response, *http.Response, error) {
+	return r.ApiService.GetAdSetTargetingExecute(r)
+}
+
+/*
+GetAdSetTargeting Read a Reddit ad group's targeting and schedule
+
+Shows a Reddit ad group's live targeting and schedule in the same shape PUT /v1/ads/ad-sets/{adSetId} takes, so you can prefill an editor.
+
+Read live from Reddit on every call. Location and interest names are resolved with
+Reddit's targeting taxonomy; when Reddit cannot resolve them the ids stand in as names and
+a location that is not a two-letter country is listed under `regions`. Excluded DMAs are
+listed under `excludedLocations.regions`, since excluded locations have no metro list.
+Languages come back as lowercase ISO 639-1 codes. Targeting Zernio cannot edit (devices,
+platforms, carriers, automated expansion) is left out and kept on every edit. Reddit only;
+every other platform returns 501.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adSetId Reddit ad group ID
+	@return AdCampaignsAPIGetAdSetTargetingRequest
+*/
+func (a *AdCampaignsAPIService) GetAdSetTargeting(ctx context.Context, adSetId string) AdCampaignsAPIGetAdSetTargetingRequest {
+	return AdCampaignsAPIGetAdSetTargetingRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adSetId:    adSetId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdSetTargeting200Response
+func (a *AdCampaignsAPIService) GetAdSetTargetingExecute(r AdCampaignsAPIGetAdSetTargetingRequest) (*GetAdSetTargeting200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdSetTargeting200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.GetAdSetTargeting")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/ad-sets/{adSetId}/targeting"
+	localVarPath = strings.Replace(localVarPath, "{"+"adSetId"+"}", url.PathEscape(parameterValueToString(r.adSetId, "adSetId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -11063,6 +11207,19 @@ are. Other platforms return 400 for either field before anything in the request 
 written (use PUT /v1/ads/{adId} with `targeting` where that platform supports it). The
 live read and the `incomeTier` lookup run before any other field is written, so a 502
 or 422 from them leaves the ad set unchanged.
+
+Reddit ad group targeting and schedule: `targeting` (same shape as on create, `placements`
+is a 400) and `startDate` / `endDate` change the ad group with one PATCH to Reddit. Zernio
+reads the live ad group first and replaces only the targeting groups the request names:
+the included locations (`countries`, `regions`, `metros`, `cities`, `zips`) are one list
+on Reddit, so sending any of them replaces all included locations, and devices, platforms,
+carriers and automated expansion set in Reddit Ads Manager are kept. Read the current
+values with GET /v1/ads/ad-sets/{adSetId}/targeting. The schedule is checked against the
+campaign before anything in the request is written: an ad group cannot start before a
+campaign that starts in the future, cannot end after the campaign's end, and under
+campaign budget optimization it must end by the campaign end (and has no end date when the
+campaign has none); each returns 400 naming `startDate` or `endDate`. Zernio never resends
+the PATCH on its own, so after a 5xx read the ad group back before retrying.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Platform ad set ID

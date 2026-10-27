@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.384.0
+API version: 1.385.0
 Contact: support@zernio.com
 */
 
@@ -38,8 +38,12 @@ type UpdateAdSet200Response struct {
 	BidAmount            NullableFloat32        `json:"bidAmount,omitempty"`
 	RoasAverageFloor     NullableFloat32        `json:"roasAverageFloor,omitempty"`
 	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
-	// Present when `placements` or `targeting` was sent. The ad set's full Meta targeting as written (Meta snake_case). The same snake_case object is stored as the ad set's and its ads' `targeting`.
+	// Present when `placements` or `targeting` was sent. The ad set's full targeting as written, in the platform's own vocabulary (Meta or Reddit snake_case). Stored as the ad set's `targeting`. Meta stores the same object on its ads; Reddit stores it on its ads in the create vocabulary (`countries`, `communities`, ...), as GET /v1/ads/ad-sets/{adSetId}/targeting returns it.
 	Targeting map[string]interface{} `json:"targeting,omitempty"`
+	// Reddit: the start_time written, a UTC instant. Present when `startDate` was sent.
+	StartDate *string `json:"startDate,omitempty"`
+	// Reddit: the end_time written, a UTC instant, or null when the end date was removed. Present when `endDate` was sent.
+	EndDate NullableString `json:"endDate,omitempty"`
 }
 
 // NewUpdateAdSet200Response instantiates a new UpdateAdSet200Response object
@@ -562,6 +566,81 @@ func (o *UpdateAdSet200Response) SetTargeting(v map[string]interface{}) {
 	o.Targeting = v
 }
 
+// GetStartDate returns the StartDate field value if set, zero value otherwise.
+func (o *UpdateAdSet200Response) GetStartDate() string {
+	if o == nil || IsNil(o.StartDate) {
+		var ret string
+		return ret
+	}
+	return *o.StartDate
+}
+
+// GetStartDateOk returns a tuple with the StartDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSet200Response) GetStartDateOk() (*string, bool) {
+	if o == nil || IsNil(o.StartDate) {
+		return nil, false
+	}
+	return o.StartDate, true
+}
+
+// HasStartDate returns a boolean if a field has been set.
+func (o *UpdateAdSet200Response) HasStartDate() bool {
+	if o != nil && !IsNil(o.StartDate) {
+		return true
+	}
+
+	return false
+}
+
+// SetStartDate gets a reference to the given string and assigns it to the StartDate field.
+func (o *UpdateAdSet200Response) SetStartDate(v string) {
+	o.StartDate = &v
+}
+
+// GetEndDate returns the EndDate field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdSet200Response) GetEndDate() string {
+	if o == nil || IsNil(o.EndDate.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.EndDate.Get()
+}
+
+// GetEndDateOk returns a tuple with the EndDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdSet200Response) GetEndDateOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.EndDate.Get(), o.EndDate.IsSet()
+}
+
+// HasEndDate returns a boolean if a field has been set.
+func (o *UpdateAdSet200Response) HasEndDate() bool {
+	if o != nil && o.EndDate.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEndDate gets a reference to the given NullableString and assigns it to the EndDate field.
+func (o *UpdateAdSet200Response) SetEndDate(v string) {
+	o.EndDate.Set(&v)
+}
+
+// SetEndDateNil sets the value for EndDate to be an explicit nil
+func (o *UpdateAdSet200Response) SetEndDateNil() {
+	o.EndDate.Set(nil)
+}
+
+// UnsetEndDate ensures that no value is present for EndDate, not even an explicit nil
+func (o *UpdateAdSet200Response) UnsetEndDate() {
+	o.EndDate.Unset()
+}
+
 func (o UpdateAdSet200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -613,6 +692,12 @@ func (o UpdateAdSet200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Targeting) {
 		toSerialize["targeting"] = o.Targeting
+	}
+	if !IsNil(o.StartDate) {
+		toSerialize["startDate"] = o.StartDate
+	}
+	if o.EndDate.IsSet() {
+		toSerialize["endDate"] = o.EndDate.Get()
 	}
 	return toSerialize, nil
 }
