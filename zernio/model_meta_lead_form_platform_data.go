@@ -29,8 +29,12 @@ type MetaLeadFormPlatformData struct {
 	ThankYouTitle         *string                               `json:"thankYouTitle,omitempty"`
 	ThankYouBody          *string                               `json:"thankYouBody,omitempty"`
 	ThankYouButtonText    *string                               `json:"thankYouButtonText,omitempty"`
-	// Meta thank_you_page.button_type. Defaults to VIEW_WEBSITE. Meta rejects MESSAGE_BUSINESS on thank-you pages with (#100) This button type is not yet supported for Thank You Page.
+	// Meta thank_you_page.button_type. Defaults to VIEW_WEBSITE. Case-insensitive, sent to Meta in uppercase. CALL_BUSINESS requires businessPhoneNumber and countryCode (a 400 otherwise). Meta rejects MESSAGE_BUSINESS on thank-you pages with (#100) This button type is not yet supported for Thank You Page.
 	ThankYouButtonType *string `json:"thankYouButtonType,omitempty"`
+	// International E.164 number the CALL_BUSINESS thank-you button dials (Meta thank_you_page.business_phone_number). It must start with + and the country calling code matching countryCode; spaces, dashes, dots and parentheses are stripped, and a local number such as 2025550123 is a 400. Required when thankYouButtonType is CALL_BUSINESS and a 400 with any other button type. Accepted only inside platformSpecificData: a top-level businessPhoneNumber is a 400.
+	BusinessPhoneNumber *string `json:"businessPhoneNumber,omitempty"`
+	// ISO 3166-1 alpha-2 country of businessPhoneNumber (Meta thank_you_page.country_code), sent in uppercase. Required when thankYouButtonType is CALL_BUSINESS and a 400 with any other button type. Accepted only inside platformSpecificData: a top-level countryCode is a 400.
+	CountryCode        *string `json:"countryCode,omitempty" validate:"regexp=^[A-Za-z]{2}$"`
 	ThankYouWebsiteUrl *string `json:"thankYouWebsiteUrl,omitempty"`
 	// Sent as Meta thank_you_page.enable_messenger (boolean). Accepted only inside platformSpecificData: a top-level thankYouEnableMessenger is a 400.
 	ThankYouEnableMessenger *bool `json:"thankYouEnableMessenger,omitempty"`
@@ -320,6 +324,70 @@ func (o *MetaLeadFormPlatformData) SetThankYouButtonType(v string) {
 	o.ThankYouButtonType = &v
 }
 
+// GetBusinessPhoneNumber returns the BusinessPhoneNumber field value if set, zero value otherwise.
+func (o *MetaLeadFormPlatformData) GetBusinessPhoneNumber() string {
+	if o == nil || IsNil(o.BusinessPhoneNumber) {
+		var ret string
+		return ret
+	}
+	return *o.BusinessPhoneNumber
+}
+
+// GetBusinessPhoneNumberOk returns a tuple with the BusinessPhoneNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetaLeadFormPlatformData) GetBusinessPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.BusinessPhoneNumber) {
+		return nil, false
+	}
+	return o.BusinessPhoneNumber, true
+}
+
+// HasBusinessPhoneNumber returns a boolean if a field has been set.
+func (o *MetaLeadFormPlatformData) HasBusinessPhoneNumber() bool {
+	if o != nil && !IsNil(o.BusinessPhoneNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetBusinessPhoneNumber gets a reference to the given string and assigns it to the BusinessPhoneNumber field.
+func (o *MetaLeadFormPlatformData) SetBusinessPhoneNumber(v string) {
+	o.BusinessPhoneNumber = &v
+}
+
+// GetCountryCode returns the CountryCode field value if set, zero value otherwise.
+func (o *MetaLeadFormPlatformData) GetCountryCode() string {
+	if o == nil || IsNil(o.CountryCode) {
+		var ret string
+		return ret
+	}
+	return *o.CountryCode
+}
+
+// GetCountryCodeOk returns a tuple with the CountryCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetaLeadFormPlatformData) GetCountryCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.CountryCode) {
+		return nil, false
+	}
+	return o.CountryCode, true
+}
+
+// HasCountryCode returns a boolean if a field has been set.
+func (o *MetaLeadFormPlatformData) HasCountryCode() bool {
+	if o != nil && !IsNil(o.CountryCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetCountryCode gets a reference to the given string and assigns it to the CountryCode field.
+func (o *MetaLeadFormPlatformData) SetCountryCode(v string) {
+	o.CountryCode = &v
+}
+
 // GetThankYouWebsiteUrl returns the ThankYouWebsiteUrl field value if set, zero value otherwise.
 func (o *MetaLeadFormPlatformData) GetThankYouWebsiteUrl() string {
 	if o == nil || IsNil(o.ThankYouWebsiteUrl) {
@@ -607,6 +675,12 @@ func (o MetaLeadFormPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ThankYouButtonType) {
 		toSerialize["thankYouButtonType"] = o.ThankYouButtonType
+	}
+	if !IsNil(o.BusinessPhoneNumber) {
+		toSerialize["businessPhoneNumber"] = o.BusinessPhoneNumber
+	}
+	if !IsNil(o.CountryCode) {
+		toSerialize["countryCode"] = o.CountryCode
 	}
 	if !IsNil(o.ThankYouWebsiteUrl) {
 		toSerialize["thankYouWebsiteUrl"] = o.ThankYouWebsiteUrl
