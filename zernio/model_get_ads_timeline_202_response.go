@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.377.2
+API version: 1.378.0
 Contact: support@zernio.com
 */
 
@@ -23,8 +23,11 @@ var _ MappedNullable = &GetAdsTimeline202Response{}
 // GetAdsTimeline202Response struct for GetAdsTimeline202Response
 type GetAdsTimeline202Response struct {
 	// Always true on this response. Part of the requested range is still being backfilled; retry until the request returns 200.
-	BackfillPending bool                           `json:"backfillPending"`
-	Rows            []AdsTimelineResponseRowsInner `json:"rows,omitempty"`
+	BackfillPending bool `json:"backfillPending"`
+	// Only with `compare=previous`. The daily rows of `previousRange`, in the same shape as `rows`.
+	PreviousRows  []map[string]interface{}                   `json:"previousRows,omitempty"`
+	PreviousRange *GetAnalyticsDashboard200ResponseDateRange `json:"previousRange,omitempty"`
+	Rows          []AdsTimelineResponseRowsInner             `json:"rows,omitempty"`
 }
 
 type _GetAdsTimeline202Response GetAdsTimeline202Response
@@ -71,6 +74,70 @@ func (o *GetAdsTimeline202Response) SetBackfillPending(v bool) {
 	o.BackfillPending = v
 }
 
+// GetPreviousRows returns the PreviousRows field value if set, zero value otherwise.
+func (o *GetAdsTimeline202Response) GetPreviousRows() []map[string]interface{} {
+	if o == nil || IsNil(o.PreviousRows) {
+		var ret []map[string]interface{}
+		return ret
+	}
+	return o.PreviousRows
+}
+
+// GetPreviousRowsOk returns a tuple with the PreviousRows field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdsTimeline202Response) GetPreviousRowsOk() ([]map[string]interface{}, bool) {
+	if o == nil || IsNil(o.PreviousRows) {
+		return nil, false
+	}
+	return o.PreviousRows, true
+}
+
+// HasPreviousRows returns a boolean if a field has been set.
+func (o *GetAdsTimeline202Response) HasPreviousRows() bool {
+	if o != nil && !IsNil(o.PreviousRows) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreviousRows gets a reference to the given []map[string]interface{} and assigns it to the PreviousRows field.
+func (o *GetAdsTimeline202Response) SetPreviousRows(v []map[string]interface{}) {
+	o.PreviousRows = v
+}
+
+// GetPreviousRange returns the PreviousRange field value if set, zero value otherwise.
+func (o *GetAdsTimeline202Response) GetPreviousRange() GetAnalyticsDashboard200ResponseDateRange {
+	if o == nil || IsNil(o.PreviousRange) {
+		var ret GetAnalyticsDashboard200ResponseDateRange
+		return ret
+	}
+	return *o.PreviousRange
+}
+
+// GetPreviousRangeOk returns a tuple with the PreviousRange field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdsTimeline202Response) GetPreviousRangeOk() (*GetAnalyticsDashboard200ResponseDateRange, bool) {
+	if o == nil || IsNil(o.PreviousRange) {
+		return nil, false
+	}
+	return o.PreviousRange, true
+}
+
+// HasPreviousRange returns a boolean if a field has been set.
+func (o *GetAdsTimeline202Response) HasPreviousRange() bool {
+	if o != nil && !IsNil(o.PreviousRange) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreviousRange gets a reference to the given GetAnalyticsDashboard200ResponseDateRange and assigns it to the PreviousRange field.
+func (o *GetAdsTimeline202Response) SetPreviousRange(v GetAnalyticsDashboard200ResponseDateRange) {
+	o.PreviousRange = &v
+}
+
 // GetRows returns the Rows field value if set, zero value otherwise.
 func (o *GetAdsTimeline202Response) GetRows() []AdsTimelineResponseRowsInner {
 	if o == nil || IsNil(o.Rows) {
@@ -114,6 +181,12 @@ func (o GetAdsTimeline202Response) MarshalJSON() ([]byte, error) {
 func (o GetAdsTimeline202Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["backfillPending"] = o.BackfillPending
+	if !IsNil(o.PreviousRows) {
+		toSerialize["previousRows"] = o.PreviousRows
+	}
+	if !IsNil(o.PreviousRange) {
+		toSerialize["previousRange"] = o.PreviousRange
+	}
 	if !IsNil(o.Rows) {
 		toSerialize["rows"] = o.Rows
 	}

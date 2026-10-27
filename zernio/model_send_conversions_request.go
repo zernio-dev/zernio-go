@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.377.2
+API version: 1.378.0
 Contact: support@zernio.com
 */
 
@@ -27,7 +27,7 @@ type SendConversionsRequest struct {
 	// Platform destination identifier. For Meta, the pixel/dataset ID. For Google, the conversion action resource name. For LinkedIn, the conversion rule ID or full `urn:lla:llaPartnerConversion:{id}` URN. For OpenAI Ads, the pixel wire id. For Pinterest, the numeric ad account id. For Reddit, the pixel id (`a2_...`).
 	DestinationId string            `json:"destinationId"`
 	Events        []ConversionEvent `json:"events"`
-	// Meta `test_event_code` passthrough. On Pinterest any value sends the batch with `test=true` (validated, not recorded). On Reddit, sent as `test_id` so the events show in the pixel's test view. Ignored by Google, LinkedIn, and OpenAI Ads.
+	// Send it at the request root, never inside an event. A root-level `test_event_code` (Meta's own name) is accepted as an alias and must be a non-empty string; sending both with different values is a 400. On Meta it is sent as `test_event_code`: the events show in Events Manager's Test Events tab for the pixel whose current test code matches (Meta rotates the code, so copy it again from that tab), and Meta still processes them like any other event, so remove it in production. On Pinterest any value sends the batch with `test=true` (validated, not recorded). On Reddit, sent as `test_id` so the events show in the pixel's test view. Ignored by Google, LinkedIn, and OpenAI Ads.
 	TestCode *string                        `json:"testCode,omitempty"`
 	Consent  *SendConversionsRequestConsent `json:"consent,omitempty"`
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.377.2
+API version: 1.378.0
 Contact: support@zernio.com
 */
 
@@ -29,6 +29,8 @@ type SendWhatsAppConversion200Response struct {
 	Failures []SendConversions200ResponseFailuresInner `json:"failures,omitempty"`
 	// Meta `fbtrace_id` for debugging. Surface in support tickets.
 	TraceId *string `json:"traceId,omitempty"`
+	// The test code sent to Meta, or `null` when the request carried none.
+	TestCode NullableString `json:"testCode,omitempty"`
 }
 
 // NewSendWhatsAppConversion200Response instantiates a new SendWhatsAppConversion200Response object
@@ -208,6 +210,49 @@ func (o *SendWhatsAppConversion200Response) SetTraceId(v string) {
 	o.TraceId = &v
 }
 
+// GetTestCode returns the TestCode field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SendWhatsAppConversion200Response) GetTestCode() string {
+	if o == nil || IsNil(o.TestCode.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.TestCode.Get()
+}
+
+// GetTestCodeOk returns a tuple with the TestCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SendWhatsAppConversion200Response) GetTestCodeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TestCode.Get(), o.TestCode.IsSet()
+}
+
+// HasTestCode returns a boolean if a field has been set.
+func (o *SendWhatsAppConversion200Response) HasTestCode() bool {
+	if o != nil && o.TestCode.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTestCode gets a reference to the given NullableString and assigns it to the TestCode field.
+func (o *SendWhatsAppConversion200Response) SetTestCode(v string) {
+	o.TestCode.Set(&v)
+}
+
+// SetTestCodeNil sets the value for TestCode to be an explicit nil
+func (o *SendWhatsAppConversion200Response) SetTestCodeNil() {
+	o.TestCode.Set(nil)
+}
+
+// UnsetTestCode ensures that no value is present for TestCode, not even an explicit nil
+func (o *SendWhatsAppConversion200Response) UnsetTestCode() {
+	o.TestCode.Unset()
+}
+
 func (o SendWhatsAppConversion200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -232,6 +277,9 @@ func (o SendWhatsAppConversion200Response) ToMap() (map[string]interface{}, erro
 	}
 	if !IsNil(o.TraceId) {
 		toSerialize["traceId"] = o.TraceId
+	}
+	if o.TestCode.IsSet() {
+		toSerialize["testCode"] = o.TestCode.Get()
 	}
 	return toSerialize, nil
 }

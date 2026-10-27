@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.377.2
+API version: 1.378.0
 Contact: support@zernio.com
 */
 
@@ -15,6 +15,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 // checks if the GetAdTree202Response type satisfies the MappedNullable interface at compile time
@@ -24,6 +25,9 @@ var _ MappedNullable = &GetAdTree202Response{}
 type GetAdTree202Response struct {
 	Campaigns  []AdTreeCampaign `json:"campaigns,omitempty"`
 	Pagination *Pagination      `json:"pagination,omitempty"`
+	// When the most recently synced ad on this page was last read from the platform. Null before the first sync.
+	SyncedAt      *time.Time                                 `json:"syncedAt,omitempty"`
+	PreviousRange *GetAnalyticsDashboard200ResponseDateRange `json:"previousRange,omitempty"`
 	// Always true on this response. Part of the requested range is still being backfilled; retry until the request returns 200.
 	BackfillPending bool `json:"backfillPending"`
 }
@@ -112,6 +116,70 @@ func (o *GetAdTree202Response) SetPagination(v Pagination) {
 	o.Pagination = &v
 }
 
+// GetSyncedAt returns the SyncedAt field value if set, zero value otherwise.
+func (o *GetAdTree202Response) GetSyncedAt() time.Time {
+	if o == nil || IsNil(o.SyncedAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.SyncedAt
+}
+
+// GetSyncedAtOk returns a tuple with the SyncedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdTree202Response) GetSyncedAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.SyncedAt) {
+		return nil, false
+	}
+	return o.SyncedAt, true
+}
+
+// HasSyncedAt returns a boolean if a field has been set.
+func (o *GetAdTree202Response) HasSyncedAt() bool {
+	if o != nil && !IsNil(o.SyncedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetSyncedAt gets a reference to the given time.Time and assigns it to the SyncedAt field.
+func (o *GetAdTree202Response) SetSyncedAt(v time.Time) {
+	o.SyncedAt = &v
+}
+
+// GetPreviousRange returns the PreviousRange field value if set, zero value otherwise.
+func (o *GetAdTree202Response) GetPreviousRange() GetAnalyticsDashboard200ResponseDateRange {
+	if o == nil || IsNil(o.PreviousRange) {
+		var ret GetAnalyticsDashboard200ResponseDateRange
+		return ret
+	}
+	return *o.PreviousRange
+}
+
+// GetPreviousRangeOk returns a tuple with the PreviousRange field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdTree202Response) GetPreviousRangeOk() (*GetAnalyticsDashboard200ResponseDateRange, bool) {
+	if o == nil || IsNil(o.PreviousRange) {
+		return nil, false
+	}
+	return o.PreviousRange, true
+}
+
+// HasPreviousRange returns a boolean if a field has been set.
+func (o *GetAdTree202Response) HasPreviousRange() bool {
+	if o != nil && !IsNil(o.PreviousRange) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreviousRange gets a reference to the given GetAnalyticsDashboard200ResponseDateRange and assigns it to the PreviousRange field.
+func (o *GetAdTree202Response) SetPreviousRange(v GetAnalyticsDashboard200ResponseDateRange) {
+	o.PreviousRange = &v
+}
+
 // GetBackfillPending returns the BackfillPending field value
 func (o *GetAdTree202Response) GetBackfillPending() bool {
 	if o == nil {
@@ -151,6 +219,12 @@ func (o GetAdTree202Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Pagination) {
 		toSerialize["pagination"] = o.Pagination
+	}
+	if !IsNil(o.SyncedAt) {
+		toSerialize["syncedAt"] = o.SyncedAt
+	}
+	if !IsNil(o.PreviousRange) {
+		toSerialize["previousRange"] = o.PreviousRange
 	}
 	toSerialize["backfillPending"] = o.BackfillPending
 	return toSerialize, nil

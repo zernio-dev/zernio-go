@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.377.2
+API version: 1.378.0
 Contact: support@zernio.com
 */
 
@@ -44,9 +44,11 @@ type AdTreeCampaign struct {
 	// Meta-only. Mirrors Campaign.is_budget_schedule_enabled: true when the campaign uses budget scheduling (time-based budget changes). Independent of CBO/ABO.
 	IsBudgetScheduleEnabled *bool `json:"isBudgetScheduleEnabled,omitempty"`
 	// ISO 4217 currency code (e.g. USD, EUR, CLP, JPY) for all budget amounts in this campaign node. Budgets are NOT normalized to USD.
-	Currency            NullableString `json:"currency,omitempty"`
-	Metrics             *AdMetrics     `json:"metrics,omitempty"`
-	PlatformAdAccountId *string        `json:"platformAdAccountId,omitempty"`
+	Currency NullableString `json:"currency,omitempty"`
+	Metrics  *AdMetrics     `json:"metrics,omitempty"`
+	// Only with `compare=previous`. The same metrics over `previousRange`.
+	PreviousMetrics     *AdMetrics `json:"previousMetrics,omitempty"`
+	PlatformAdAccountId *string    `json:"platformAdAccountId,omitempty"`
 	// Human-readable advertiser/account name from the platform. Refreshed on every sync.
 	PlatformAdAccountName NullableString `json:"platformAdAccountName,omitempty"`
 	AccountId             *string        `json:"accountId,omitempty"`
@@ -660,6 +662,38 @@ func (o *AdTreeCampaign) SetMetrics(v AdMetrics) {
 	o.Metrics = &v
 }
 
+// GetPreviousMetrics returns the PreviousMetrics field value if set, zero value otherwise.
+func (o *AdTreeCampaign) GetPreviousMetrics() AdMetrics {
+	if o == nil || IsNil(o.PreviousMetrics) {
+		var ret AdMetrics
+		return ret
+	}
+	return *o.PreviousMetrics
+}
+
+// GetPreviousMetricsOk returns a tuple with the PreviousMetrics field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTreeCampaign) GetPreviousMetricsOk() (*AdMetrics, bool) {
+	if o == nil || IsNil(o.PreviousMetrics) {
+		return nil, false
+	}
+	return o.PreviousMetrics, true
+}
+
+// HasPreviousMetrics returns a boolean if a field has been set.
+func (o *AdTreeCampaign) HasPreviousMetrics() bool {
+	if o != nil && !IsNil(o.PreviousMetrics) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreviousMetrics gets a reference to the given AdMetrics and assigns it to the PreviousMetrics field.
+func (o *AdTreeCampaign) SetPreviousMetrics(v AdMetrics) {
+	o.PreviousMetrics = &v
+}
+
 // GetPlatformAdAccountId returns the PlatformAdAccountId field value if set, zero value otherwise.
 func (o *AdTreeCampaign) GetPlatformAdAccountId() string {
 	if o == nil || IsNil(o.PlatformAdAccountId) {
@@ -1231,6 +1265,9 @@ func (o AdTreeCampaign) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Metrics) {
 		toSerialize["metrics"] = o.Metrics
+	}
+	if !IsNil(o.PreviousMetrics) {
+		toSerialize["previousMetrics"] = o.PreviousMetrics
 	}
 	if !IsNil(o.PlatformAdAccountId) {
 		toSerialize["platformAdAccountId"] = o.PlatformAdAccountId

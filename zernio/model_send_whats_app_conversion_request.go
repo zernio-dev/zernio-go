@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.377.2
+API version: 1.378.0
 Contact: support@zernio.com
 */
 
@@ -44,7 +44,7 @@ type SendWhatsAppConversionRequest struct {
 	Email *string `json:"email,omitempty"`
 	// Stable customer identifier. Lowercased + SHA-256 hashed before sending to Meta.
 	ExternalId *string `json:"externalId,omitempty"`
-	// Meta `test_event_code` passthrough. Routes the event to the Test Events tab in Events Manager instead of the production dataset, useful for development.
+	// Meta `test_event_code` passthrough, sent at the request root (a root-level `test_event_code` is accepted as an alias). The event shows in Events Manager's Test Events tab for the dataset whose current test code matches. Meta still processes it like any other event, so remove it in production.
 	TestCode *string `json:"testCode,omitempty"`
 }
 

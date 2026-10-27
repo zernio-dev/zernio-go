@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.377.2
+API version: 1.378.0
 Contact: support@zernio.com
 */
 
@@ -2609,6 +2609,136 @@ func (a *AdCampaignsAPIService) DeleteAdSetExecute(r AdCampaignsAPIDeleteAdSetRe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIDismissAdsAlertRequest struct {
+	ctx        context.Context
+	ApiService *AdCampaignsAPIService
+	alertId    string
+}
+
+func (r AdCampaignsAPIDismissAdsAlertRequest) Execute() (*DismissAdsAlert200Response, *http.Response, error) {
+	return r.ApiService.DismissAdsAlertExecute(r)
+}
+
+/*
+DismissAdsAlert Dismiss an ads alert
+
+Hides an alert from `GET /v1/ads/alerts` for 30 days for the calling user. If the problem is still there after
+that, the alert comes back.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param alertId The `id` of an alert from GET /v1/ads/alerts.
+	@return AdCampaignsAPIDismissAdsAlertRequest
+*/
+func (a *AdCampaignsAPIService) DismissAdsAlert(ctx context.Context, alertId string) AdCampaignsAPIDismissAdsAlertRequest {
+	return AdCampaignsAPIDismissAdsAlertRequest{
+		ApiService: a,
+		ctx:        ctx,
+		alertId:    alertId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return DismissAdsAlert200Response
+func (a *AdCampaignsAPIService) DismissAdsAlertExecute(r AdCampaignsAPIDismissAdsAlertRequest) (*DismissAdsAlert200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DismissAdsAlert200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.DismissAdsAlert")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/alerts/{alertId}/dismiss"
+	localVarPath = strings.Replace(localVarPath, "{"+"alertId"+"}", url.PathEscape(parameterValueToString(r.alertId, "alertId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if strlen(r.alertId) > 200 {
+		return localVarReturnValue, nil, reportError("alertId must have less than 200 elements")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIDismissGoogleRecommendationsRequest struct {
 	ctx                                 context.Context
 	ApiService                          *AdCampaignsAPIService
@@ -4143,6 +4273,7 @@ type AdCampaignsAPIGetAdTreeRequest struct {
 	sort          *string
 	timeIncrement *int32
 	dailyLevel    *string
+	compare       *string
 }
 
 // Page number (1-based)
@@ -4255,6 +4386,12 @@ func (r AdCampaignsAPIGetAdTreeRequest) TimeIncrement(timeIncrement int32) AdCam
 // Which tree levels get the &#x60;daily[]&#x60; series when &#x60;timeIncrement&#x3D;1&#x60;. &#x60;campaign&#x60; (default) attaches it on campaign nodes only: the common per-campaign-trend case, and the smallest payload. &#x60;adset&#x60; adds it on ad sets too; &#x60;ad&#x60; adds it on every ad in &#x60;ads[]&#x60; as well (heaviest: a long range × up to 100 ads per ad set). Scope with &#x60;campaignId&#x60; to keep &#x60;ad&#x60;-level responses small. Ignored when &#x60;timeIncrement&#x60; is unset.
 func (r AdCampaignsAPIGetAdTreeRequest) DailyLevel(dailyLevel string) AdCampaignsAPIGetAdTreeRequest {
 	r.dailyLevel = &dailyLevel
+	return r
+}
+
+// Set to &#x60;previous&#x60; to also read the period of the same length that ends the day before &#x60;fromDate&#x60;. Every campaign, ad set and ad gains &#x60;previousMetrics&#x60; (same fields as &#x60;metrics&#x60;) and the response gains &#x60;previousRange&#x60;, so a table can show the change against the previous period in one call.
+func (r AdCampaignsAPIGetAdTreeRequest) Compare(compare string) AdCampaignsAPIGetAdTreeRequest {
+	r.compare = &compare
 	return r
 }
 
@@ -4400,6 +4537,9 @@ func (a *AdCampaignsAPIService) GetAdTreeExecute(r AdCampaignsAPIGetAdTreeReques
 		parameterAddToHeaderOrQuery(localVarQueryParams, "dailyLevel", defaultValue, "form", "")
 		r.dailyLevel = &defaultValue
 	}
+	if r.compare != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "compare", r.compare, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -4473,6 +4613,7 @@ type AdCampaignsAPIGetAdsTimelineRequest struct {
 	fromDate    *string
 	toDate      *string
 	platform    *string
+	compare     *string
 }
 
 // Account ID. Sibling-expanded to its linked posting↔ads pair. An id that does not exist or sits on a profile the API key cannot reach answers 404 (code: account_not_found).
@@ -4502,6 +4643,12 @@ func (r AdCampaignsAPIGetAdsTimelineRequest) ToDate(toDate string) AdCampaignsAP
 // Restrict to one platform.
 func (r AdCampaignsAPIGetAdsTimelineRequest) Platform(platform string) AdCampaignsAPIGetAdsTimelineRequest {
 	r.platform = &platform
+	return r
+}
+
+// Set to &#x60;previous&#x60; to also return &#x60;previousRows&#x60; for the period of the same length that ends the day before &#x60;fromDate&#x60;, with that period as &#x60;previousRange&#x60;. Needs a &#x60;fromDate&#x60; (sent or defaulted); &#x60;toDate&#x60; alone answers 400.
+func (r AdCampaignsAPIGetAdsTimelineRequest) Compare(compare string) AdCampaignsAPIGetAdsTimelineRequest {
+	r.compare = &compare
 	return r
 }
 
@@ -4582,6 +4729,9 @@ func (a *AdCampaignsAPIService) GetAdsTimelineExecute(r AdCampaignsAPIGetAdsTime
 	}
 	if r.platform != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.compare != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "compare", r.compare, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -6946,6 +7096,158 @@ func (a *AdCampaignsAPIService) ListAdsExecute(r AdCampaignsAPIListAdsRequest) (
 	}
 	if r.toDate != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIListAdsAlertsRequest struct {
+	ctx              context.Context
+	ApiService       *AdCampaignsAPIService
+	accountId        *string
+	includeDismissed *bool
+}
+
+// Only alerts of this ads connection (sibling-expanded like /v1/ads/tree). Omit for every ad account the API key can reach.
+func (r AdCampaignsAPIListAdsAlertsRequest) AccountId(accountId string) AdCampaignsAPIListAdsAlertsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Also return dismissed alerts, with &#x60;dismissed: true&#x60;.
+func (r AdCampaignsAPIListAdsAlertsRequest) IncludeDismissed(includeDismissed bool) AdCampaignsAPIListAdsAlertsRequest {
+	r.includeDismissed = &includeDismissed
+	return r
+}
+
+func (r AdCampaignsAPIListAdsAlertsRequest) Execute() (*ListAdsAlerts200Response, *http.Response, error) {
+	return r.ApiService.ListAdsAlertsExecute(r)
+}
+
+/*
+ListAdsAlerts List ads that need attention
+
+Lists what needs attention across your ads, most severe first: ads created in the last 90 days that were rejected, campaigns the platform reports
+delivery issues on, Meta ad accounts with a failed or overdue payment or disabled while holding live ads,
+campaigns that spent on 3 or more of the last 7 days without a result (conversion, lead, purchase or
+conversation goals), and budgets spent to their daily cap yesterday.
+
+Built from stored data and the last 7 days of synced metrics, so it costs no platform call. Each alert has a
+stable `id`; dismiss one with `POST /v1/ads/alerts/{alertId}/dismiss` to hide it for 30 days.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdCampaignsAPIListAdsAlertsRequest
+*/
+func (a *AdCampaignsAPIService) ListAdsAlerts(ctx context.Context) AdCampaignsAPIListAdsAlertsRequest {
+	return AdCampaignsAPIListAdsAlertsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListAdsAlerts200Response
+func (a *AdCampaignsAPIService) ListAdsAlertsExecute(r AdCampaignsAPIListAdsAlertsRequest) (*ListAdsAlerts200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListAdsAlerts200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ListAdsAlerts")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/alerts"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.includeDismissed != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeDismissed", r.includeDismissed, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeDismissed", defaultValue, "form", "")
+		r.includeDismissed = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

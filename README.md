@@ -409,6 +409,7 @@ func main() {
 | `client.AdCampaignsAPI.ListAdKeywords(ctx)` | List Search keywords |
 | `client.AdCampaignsAPI.ListAdSets(ctx)` | List ad sets |
 | `client.AdCampaignsAPI.ListAds(ctx)` | List ads |
+| `client.AdCampaignsAPI.ListAdsAlerts(ctx)` | List ads that need attention |
 | `client.AdCampaignsAPI.ListBidStrategies(ctx)` | List portfolio bid strategies |
 | `client.AdCampaignsAPI.ListCampaignAssets(ctx)` | List campaign assets |
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywordLists(ctx)` | List campaign negative lists |
@@ -458,6 +459,7 @@ func main() {
 | `client.AdCampaignsAPI.AttachAdGroupAssets(ctx)` | Attach ad-group assets |
 | `client.AdCampaignsAPI.AttachCampaignAssets(ctx)` | Attach campaign assets |
 | `client.AdCampaignsAPI.BoostPost(ctx)` | Boost post as ad |
+| `client.AdCampaignsAPI.DismissAdsAlert(ctx)` | Dismiss an ads alert |
 | `client.AdCampaignsAPI.DismissGoogleRecommendations(ctx)` | Dismiss Google Ads recommendations |
 | `client.AdCampaignsAPI.DuplicateAd(ctx)` | Duplicate an ad |
 | `client.AdCampaignsAPI.DuplicateAdCampaign(ctx)` | Duplicate a campaign |

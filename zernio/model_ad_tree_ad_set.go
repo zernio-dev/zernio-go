@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.377.2
+API version: 1.378.0
 Contact: support@zernio.com
 */
 
@@ -33,6 +33,8 @@ type AdTreeAdSet struct {
 	Budget      *ListAdSets200ResponseAdSetsInnerBudget `json:"budget,omitempty"`
 	AdSetBudget *ListAdSets200ResponseAdSetsInnerBudget `json:"adSetBudget,omitempty"`
 	Metrics     *AdMetrics                              `json:"metrics,omitempty"`
+	// Only with `compare=previous`. The same metrics over `previousRange`.
+	PreviousMetrics *AdMetrics `json:"previousMetrics,omitempty"`
 	// What the delivery system optimizes for. Meta ad set optimization goal (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION), or on LinkedIn the campaign's effective optimizationTargetType (NONE means manual bidding). See the `optimizationGoal` field on `Ad` for the full value spaces.
 	OptimizationGoal NullableString `json:"optimizationGoal,omitempty"`
 	// Bid strategy for this ad set (overrides campaign level when set). Meta and TikTok only; LinkedIn uses `costType` instead.
@@ -366,6 +368,38 @@ func (o *AdTreeAdSet) HasMetrics() bool {
 // SetMetrics gets a reference to the given AdMetrics and assigns it to the Metrics field.
 func (o *AdTreeAdSet) SetMetrics(v AdMetrics) {
 	o.Metrics = &v
+}
+
+// GetPreviousMetrics returns the PreviousMetrics field value if set, zero value otherwise.
+func (o *AdTreeAdSet) GetPreviousMetrics() AdMetrics {
+	if o == nil || IsNil(o.PreviousMetrics) {
+		var ret AdMetrics
+		return ret
+	}
+	return *o.PreviousMetrics
+}
+
+// GetPreviousMetricsOk returns a tuple with the PreviousMetrics field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTreeAdSet) GetPreviousMetricsOk() (*AdMetrics, bool) {
+	if o == nil || IsNil(o.PreviousMetrics) {
+		return nil, false
+	}
+	return o.PreviousMetrics, true
+}
+
+// HasPreviousMetrics returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasPreviousMetrics() bool {
+	if o != nil && !IsNil(o.PreviousMetrics) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreviousMetrics gets a reference to the given AdMetrics and assigns it to the PreviousMetrics field.
+func (o *AdTreeAdSet) SetPreviousMetrics(v AdMetrics) {
+	o.PreviousMetrics = &v
 }
 
 // GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -747,6 +781,9 @@ func (o AdTreeAdSet) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Metrics) {
 		toSerialize["metrics"] = o.Metrics
+	}
+	if !IsNil(o.PreviousMetrics) {
+		toSerialize["previousMetrics"] = o.PreviousMetrics
 	}
 	if o.OptimizationGoal.IsSet() {
 		toSerialize["optimizationGoal"] = o.OptimizationGoal.Get()
