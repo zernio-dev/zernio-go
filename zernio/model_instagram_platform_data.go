@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.381.0
+API version: 1.382.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type InstagramPlatformData struct {
 	ShareToFeed *bool `json:"shareToFeed,omitempty"`
 	// Up to 3 Instagram usernames to invite as collaborators (feed/Reels only)
 	Collaborators []string `json:"collaborators,omitempty"`
+	// Output only. Set by Zernio when Instagram rejected these collaborators and the retry was sent without them.
+	DroppedCollaborators []InstagramPlatformDataDroppedCollaboratorsInner `json:"droppedCollaborators,omitempty"`
 	// Optional first comment to add after the post is created (not applied to Stories)
 	FirstComment *string                           `json:"firstComment,omitempty"`
 	TrialParams  *InstagramPlatformDataTrialParams `json:"trialParams,omitempty"`
@@ -185,6 +187,38 @@ func (o *InstagramPlatformData) HasCollaborators() bool {
 // SetCollaborators gets a reference to the given []string and assigns it to the Collaborators field.
 func (o *InstagramPlatformData) SetCollaborators(v []string) {
 	o.Collaborators = v
+}
+
+// GetDroppedCollaborators returns the DroppedCollaborators field value if set, zero value otherwise.
+func (o *InstagramPlatformData) GetDroppedCollaborators() []InstagramPlatformDataDroppedCollaboratorsInner {
+	if o == nil || IsNil(o.DroppedCollaborators) {
+		var ret []InstagramPlatformDataDroppedCollaboratorsInner
+		return ret
+	}
+	return o.DroppedCollaborators
+}
+
+// GetDroppedCollaboratorsOk returns a tuple with the DroppedCollaborators field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstagramPlatformData) GetDroppedCollaboratorsOk() ([]InstagramPlatformDataDroppedCollaboratorsInner, bool) {
+	if o == nil || IsNil(o.DroppedCollaborators) {
+		return nil, false
+	}
+	return o.DroppedCollaborators, true
+}
+
+// HasDroppedCollaborators returns a boolean if a field has been set.
+func (o *InstagramPlatformData) HasDroppedCollaborators() bool {
+	if o != nil && !IsNil(o.DroppedCollaborators) {
+		return true
+	}
+
+	return false
+}
+
+// SetDroppedCollaborators gets a reference to the given []InstagramPlatformDataDroppedCollaboratorsInner and assigns it to the DroppedCollaborators field.
+func (o *InstagramPlatformData) SetDroppedCollaborators(v []InstagramPlatformDataDroppedCollaboratorsInner) {
+	o.DroppedCollaborators = v
 }
 
 // GetFirstComment returns the FirstComment field value if set, zero value otherwise.
@@ -653,6 +687,9 @@ func (o InstagramPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Collaborators) {
 		toSerialize["collaborators"] = o.Collaborators
+	}
+	if !IsNil(o.DroppedCollaborators) {
+		toSerialize["droppedCollaborators"] = o.DroppedCollaborators
 	}
 	if !IsNil(o.FirstComment) {
 		toSerialize["firstComment"] = o.FirstComment
