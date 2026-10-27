@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.380.1
+API version: 1.381.0
 Contact: support@zernio.com
 */
 
@@ -157,7 +157,7 @@ type CreateStandaloneAdRequest struct {
 	// Meta only. Regional regulation categories required when the ad set targets certain countries. Known values: AUSTRALIA_FINSERV, AUSTRALIA_UNIVERSAL, BRAZIL_REGULATION, INDIA_FINSERV, MALAYSIA_UNIVERSAL, SINGAPORE_UNIVERSAL, TAIWAN_FINSERV, TAIWAN_UNIVERSAL, THAILAND_UNIVERSAL. Meta rejects the ad set without this when the targeting geo includes the corresponding country.
 	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
 	// Meta only. Verified identity IDs of the beneficiary and payer for each declared regionalRegulatedCategories value. Meta may require them on ad sets created through the API even when a default beneficiary and payer are set in Ads Manager advertising settings (seen on AUSTRALIA_FINSERV), so sending them explicitly is the reliable path. The value is the Verified identity ID (Meta Business Settings > Verified identities), not a Page or Business ID, and beneficiary and payer may be the same ID. Send each ID as a string of digits: Verified identity IDs can have 17 digits, more than a JSON number holds exactly, and a number that arrives rounded is rejected. Numbers up to 9007199254740991 are still accepted. The IDs reach Meta unchanged. Keys by category: AUSTRALIA_FINSERV uses australia_finserv_beneficiary / australia_finserv_payer; TAIWAN_FINSERV uses taiwan_finserv_beneficiary / taiwan_finserv_payer; INDIA_FINSERV uses india_finserv_beneficiary / india_finserv_payer; TAIWAN_UNIVERSAL uses taiwan_universal_beneficiary / taiwan_universal_payer; SINGAPORE_UNIVERSAL uses singapore_universal_beneficiary / singapore_universal_payer; AUSTRALIA_UNIVERSAL, BRAZIL_REGULATION, MALAYSIA_UNIVERSAL and THAILAND_UNIVERSAL use universal_beneficiary / universal_payer. When Meta rejects the ad set for a missing verified advertiser, the error carries param regionalRegulationIdentities, details.expectedIdentityKeys (the keys the declared categories expect), details.suggestedCategories (the markets Meta ties to that subcode) and Meta's metaCode, metaSubcode and fbtraceId. Ignored when adSetId adds the ad to an existing ad set.
-	RegionalRegulationIdentities map[string]BoostPostRequestRegionalRegulationIdentitiesValue `json:"regionalRegulationIdentities,omitempty"`
+	RegionalRegulationIdentities map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue `json:"regionalRegulationIdentities,omitempty"`
 	// Omitted on a lifetime budget, the ad ends 7 days after it starts (reported in `appliedDefaults.endDate`); a daily budget without one runs until paused. Read like `startDate` (account timezone on Meta, TikTok, X, Pinterest, OpenAI and Reddit; whole account-local days on Google; UTC on LinkedIn), and a date-only end runs to 23:59:59 local.
 	EndDate *time.Time `json:"endDate,omitempty"`
 	// Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's start (Meta `start_time`, TikTok ad group `schedule_start_time`, LinkedIn / Pinterest / X / Google campaign start). When omitted the ad starts delivering immediately. For lifetime budgets Meta also requires `endDate`. On Meta, TikTok, X, Pinterest, OpenAI and Reddit a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone (Meta itself would read it as UTC). Google runs whole days in the customer account timezone and takes the value's calendar date as written. LinkedIn ad accounts carry no timezone, so there a value without an offset is read as UTC. The created ad's `schedule` echoes the start and end the platform stored, as UTC instants; when attaching to an existing ad set (`adSetId`) it is that ad set's start and end. Same field as on `POST /v1/ads/boost`.
@@ -2556,9 +2556,9 @@ func (o *CreateStandaloneAdRequest) SetRegionalRegulatedCategories(v []string) {
 }
 
 // GetRegionalRegulationIdentities returns the RegionalRegulationIdentities field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetRegionalRegulationIdentities() map[string]BoostPostRequestRegionalRegulationIdentitiesValue {
+func (o *CreateStandaloneAdRequest) GetRegionalRegulationIdentities() map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue {
 	if o == nil || IsNil(o.RegionalRegulationIdentities) {
-		var ret map[string]BoostPostRequestRegionalRegulationIdentitiesValue
+		var ret map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue
 		return ret
 	}
 	return o.RegionalRegulationIdentities
@@ -2566,9 +2566,9 @@ func (o *CreateStandaloneAdRequest) GetRegionalRegulationIdentities() map[string
 
 // GetRegionalRegulationIdentitiesOk returns a tuple with the RegionalRegulationIdentities field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetRegionalRegulationIdentitiesOk() (map[string]BoostPostRequestRegionalRegulationIdentitiesValue, bool) {
+func (o *CreateStandaloneAdRequest) GetRegionalRegulationIdentitiesOk() (map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue, bool) {
 	if o == nil || IsNil(o.RegionalRegulationIdentities) {
-		return map[string]BoostPostRequestRegionalRegulationIdentitiesValue{}, false
+		return map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue{}, false
 	}
 	return o.RegionalRegulationIdentities, true
 }
@@ -2582,8 +2582,8 @@ func (o *CreateStandaloneAdRequest) HasRegionalRegulationIdentities() bool {
 	return false
 }
 
-// SetRegionalRegulationIdentities gets a reference to the given map[string]BoostPostRequestRegionalRegulationIdentitiesValue and assigns it to the RegionalRegulationIdentities field.
-func (o *CreateStandaloneAdRequest) SetRegionalRegulationIdentities(v map[string]BoostPostRequestRegionalRegulationIdentitiesValue) {
+// SetRegionalRegulationIdentities gets a reference to the given map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue and assigns it to the RegionalRegulationIdentities field.
+func (o *CreateStandaloneAdRequest) SetRegionalRegulationIdentities(v map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue) {
 	o.RegionalRegulationIdentities = v
 }
 

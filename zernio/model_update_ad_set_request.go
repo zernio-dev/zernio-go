@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.380.1
+API version: 1.381.0
 Contact: support@zernio.com
 */
 
@@ -29,9 +29,17 @@ type UpdateAdSetRequest struct {
 	// Rename the ad set on any supported platform: Meta, Google (the ad group), TikTok, LinkedIn (the campaign), Pinterest, X (the line item `name`), OpenAI and Reddit; platforms without a rename return 501. The new name is stored right away, so GET /v1/ads/ad-sets and GET /v1/ads/tree return it without a sync. At least one of budget/status/bidStrategy/name is required.
 	Name *string `json:"name,omitempty"`
 	// Ad-set-level bid strategy. Overrides the campaign-level default. Supported on Meta (facebook, instagram), TikTok, and OpenAI. On TikTok the Meta-style enum is mapped to bid_type / bid_price / deep_bid_type automatically. On OpenAI, LOWEST_COST_WITH_BID_CAP and COST_CAP both map to the ad group's `bidding_config.max_bid_micros` (one knob covers both); LOWEST_COST_WITH_MIN_ROAS is rejected with 422 (OpenAI has no ROAS-based bidding). On X it writes the line item's `bid_strategy`: LOWEST_COST_WITHOUT_CAP = AUTO, LOWEST_COST_WITH_BID_CAP = MAX and COST_CAP = TARGET, with `bidAmount` as `bid_amount_local_micro`; LOWEST_COST_WITH_MIN_ROAS is rejected with 422. X decides which strategy the line item's objective allows (TARGET only on REACH, FOLLOWERS and WEBSITE_CLICKS, MAX not on REACH or FOLLOWERS). On Reddit, see the mapping in the description above (LOWEST_COST_WITH_MIN_ROAS returns 422). Other platforms (linkedin, pinterest, google) return 501 Not Implemented when bidStrategy is set.
-	BidStrategy    *BidStrategy                      `json:"bidStrategy,omitempty"`
-	SmartTargeting *UpdateAdSetRequestSmartTargeting `json:"smartTargeting,omitempty"`
-	Placements     *UpdateAdSetRequestPlacements     `json:"placements,omitempty"`
+	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
+	// Meta only (400 elsewhere, before anything in the request is written). Writes the ad set's `dsa_beneficiary`, the legal entity that benefits from its ads, same field and limits as `dsaBeneficiary` on POST /v1/ads/create. Only the fields you send are written. It is the EU DSA field; for the regional regimes (Brazil, Malaysia, Thailand, Australia, Singapore, Taiwan, India) use `regionalRegulatedCategories` and `regionalRegulationIdentities` instead. Read it back with GET /v1/ads/ad-sets/{adSetId}?accountId={accountId}&fields=dsa_beneficiary,dsa_payor.
+	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
+	// Meta only (400 elsewhere, before anything in the request is written). Writes the ad set's `dsa_payor`, the legal entity that pays for its ads, same field and limits as `dsaPayor` on POST /v1/ads/create. Can differ from `dsaBeneficiary`.
+	DsaPayor *string `json:"dsaPayor,omitempty"`
+	// Meta only (400 elsewhere, before anything in the request is written). Writes the ad set's `regional_regulated_categories`, same values as on POST /v1/ads/create (AUSTRALIA_FINSERV, AUSTRALIA_UNIVERSAL, BRAZIL_REGULATION, INDIA_FINSERV, MALAYSIA_UNIVERSAL, SINGAPORE_UNIVERSAL, TAIWAN_FINSERV, TAIWAN_UNIVERSAL, THAILAND_UNIVERSAL). Send it with `regionalRegulationIdentities`. An empty array is a 400.
+	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
+	// Meta only (400 elsewhere, before anything in the request is written). Writes the ad set's `regional_regulation_identities`: the Verified identity IDs of the beneficiary and payer for each declared category, same keys and validation as on POST /v1/ads/create (for example `universal_beneficiary` / `universal_payer` for BRAZIL_REGULATION, MALAYSIA_UNIVERSAL and THAILAND_UNIVERSAL). Send each ID as a string of digits; an empty object is a 400. When Meta refuses the ad set for a missing verified advertiser, the 400 `platform_api_error` names the keys the declared categories expect in `details.expectedIdentityKeys`, as on create. Read both back with GET /v1/ads/ad-sets/{adSetId}?accountId={accountId}&fields=regional_regulated_categories,regional_regulation_identities.
+	RegionalRegulationIdentities map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue `json:"regionalRegulationIdentities,omitempty"`
+	SmartTargeting               *UpdateAdSetRequestSmartTargeting                              `json:"smartTargeting,omitempty"`
+	Placements                   *UpdateAdSetRequestPlacements                                  `json:"placements,omitempty"`
 	// Meta only (400 elsewhere). Targeting fields to change, same shape as the `targeting` object on POST /v1/ads/create. Only the keys you send change: Zernio reads the ad set's live targeting from Meta, merges these keys over it and writes the full spec back, so everything you do not send (custom audiences, geo, age, interest groups, `targeting_automation`) is kept. Setting any location replaces every location list. An empty list or `gender: all` clears that key. `incomeTier` is resolved to Meta's income segment first (422 when Meta has none). Fields Meta cannot target (LinkedIn B2B, Google `devices`, Reddit communities and keywords) return 400 with `param: targeting.<field>`. An empty object is a 400, and so is a `targeting.placements` object with no non-empty list (`param: targeting.placements`). When the live targeting cannot be read the request returns 502 and nothing is written.
 	Targeting *TargetingSpec `json:"targeting,omitempty"`
 	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP. Internally converted to Meta's smallest-denomination integer, or (on OpenAI and X) to micros (× 1,000,000). Meta only: may be sent alone, WITHOUT bidStrategy, to update the cap amount on an ad set whose parent campaign is COST_CAP or LOWEST_COST_WITH_BID_CAP (the strategy is inherited from the campaign and is left untouched).
@@ -215,6 +223,134 @@ func (o *UpdateAdSetRequest) HasBidStrategy() bool {
 // SetBidStrategy gets a reference to the given BidStrategy and assigns it to the BidStrategy field.
 func (o *UpdateAdSetRequest) SetBidStrategy(v BidStrategy) {
 	o.BidStrategy = &v
+}
+
+// GetDsaBeneficiary returns the DsaBeneficiary field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetDsaBeneficiary() string {
+	if o == nil || IsNil(o.DsaBeneficiary) {
+		var ret string
+		return ret
+	}
+	return *o.DsaBeneficiary
+}
+
+// GetDsaBeneficiaryOk returns a tuple with the DsaBeneficiary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetDsaBeneficiaryOk() (*string, bool) {
+	if o == nil || IsNil(o.DsaBeneficiary) {
+		return nil, false
+	}
+	return o.DsaBeneficiary, true
+}
+
+// HasDsaBeneficiary returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasDsaBeneficiary() bool {
+	if o != nil && !IsNil(o.DsaBeneficiary) {
+		return true
+	}
+
+	return false
+}
+
+// SetDsaBeneficiary gets a reference to the given string and assigns it to the DsaBeneficiary field.
+func (o *UpdateAdSetRequest) SetDsaBeneficiary(v string) {
+	o.DsaBeneficiary = &v
+}
+
+// GetDsaPayor returns the DsaPayor field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetDsaPayor() string {
+	if o == nil || IsNil(o.DsaPayor) {
+		var ret string
+		return ret
+	}
+	return *o.DsaPayor
+}
+
+// GetDsaPayorOk returns a tuple with the DsaPayor field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetDsaPayorOk() (*string, bool) {
+	if o == nil || IsNil(o.DsaPayor) {
+		return nil, false
+	}
+	return o.DsaPayor, true
+}
+
+// HasDsaPayor returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasDsaPayor() bool {
+	if o != nil && !IsNil(o.DsaPayor) {
+		return true
+	}
+
+	return false
+}
+
+// SetDsaPayor gets a reference to the given string and assigns it to the DsaPayor field.
+func (o *UpdateAdSetRequest) SetDsaPayor(v string) {
+	o.DsaPayor = &v
+}
+
+// GetRegionalRegulatedCategories returns the RegionalRegulatedCategories field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetRegionalRegulatedCategories() []string {
+	if o == nil || IsNil(o.RegionalRegulatedCategories) {
+		var ret []string
+		return ret
+	}
+	return o.RegionalRegulatedCategories
+}
+
+// GetRegionalRegulatedCategoriesOk returns a tuple with the RegionalRegulatedCategories field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetRegionalRegulatedCategoriesOk() ([]string, bool) {
+	if o == nil || IsNil(o.RegionalRegulatedCategories) {
+		return nil, false
+	}
+	return o.RegionalRegulatedCategories, true
+}
+
+// HasRegionalRegulatedCategories returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasRegionalRegulatedCategories() bool {
+	if o != nil && !IsNil(o.RegionalRegulatedCategories) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegionalRegulatedCategories gets a reference to the given []string and assigns it to the RegionalRegulatedCategories field.
+func (o *UpdateAdSetRequest) SetRegionalRegulatedCategories(v []string) {
+	o.RegionalRegulatedCategories = v
+}
+
+// GetRegionalRegulationIdentities returns the RegionalRegulationIdentities field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetRegionalRegulationIdentities() map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue {
+	if o == nil || IsNil(o.RegionalRegulationIdentities) {
+		var ret map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue
+		return ret
+	}
+	return o.RegionalRegulationIdentities
+}
+
+// GetRegionalRegulationIdentitiesOk returns a tuple with the RegionalRegulationIdentities field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetRegionalRegulationIdentitiesOk() (map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue, bool) {
+	if o == nil || IsNil(o.RegionalRegulationIdentities) {
+		return map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue{}, false
+	}
+	return o.RegionalRegulationIdentities, true
+}
+
+// HasRegionalRegulationIdentities returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasRegionalRegulationIdentities() bool {
+	if o != nil && !IsNil(o.RegionalRegulationIdentities) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegionalRegulationIdentities gets a reference to the given map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue and assigns it to the RegionalRegulationIdentities field.
+func (o *UpdateAdSetRequest) SetRegionalRegulationIdentities(v map[string]UpdateAdSetRequestRegionalRegulationIdentitiesValue) {
+	o.RegionalRegulationIdentities = v
 }
 
 // GetSmartTargeting returns the SmartTargeting field value if set, zero value otherwise.
@@ -495,6 +631,18 @@ func (o UpdateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.BidStrategy) {
 		toSerialize["bidStrategy"] = o.BidStrategy
+	}
+	if !IsNil(o.DsaBeneficiary) {
+		toSerialize["dsaBeneficiary"] = o.DsaBeneficiary
+	}
+	if !IsNil(o.DsaPayor) {
+		toSerialize["dsaPayor"] = o.DsaPayor
+	}
+	if !IsNil(o.RegionalRegulatedCategories) {
+		toSerialize["regionalRegulatedCategories"] = o.RegionalRegulatedCategories
+	}
+	if !IsNil(o.RegionalRegulationIdentities) {
+		toSerialize["regionalRegulationIdentities"] = o.RegionalRegulationIdentities
 	}
 	if !IsNil(o.SmartTargeting) {
 		toSerialize["smartTargeting"] = o.SmartTargeting
