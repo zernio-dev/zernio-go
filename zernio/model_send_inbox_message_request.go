@@ -61,7 +61,7 @@ type SendInboxMessageRequest struct {
 	ReplyMarkup *SendInboxMessageRequestReplyMarkup   `json:"replyMarkup,omitempty"`
 	// Facebook messaging type. Required when using messageTag.
 	MessagingType *string `json:"messagingType,omitempty"`
-	// Facebook message tag for messaging outside 24h window. Requires messagingType MESSAGE_TAG. Instagram only supports HUMAN_AGENT.
+	// Facebook and Instagram. To reply after the 24h window, send HUMAN_AGENT with messagingType MESSAGE_TAG: it works up to 7 days after the person's last message, for replies typed by a person only (Meta does not allow it on automated messages). Meta retired the other tags, so they fail.
 	MessageTag *string `json:"messageTag,omitempty"`
 	// Platform message ID to quote-reply to. For WhatsApp, pass the wamid; for Telegram, the Telegram message ID (delivered as message.platformMessageId on webhooks, and as `id` on each entry of the list-messages endpoint). On Slack it threads the reply (thread_ts) instead of quoting. Instagram and Facebook Messenger do not support send-side quote replies: the message is sent without a quote and the successful response includes a warnings entry with code ignored_field and param replyTo. Other platforms without send-side reply support ignore this field.
 	ReplyTo  *string                                       `json:"replyTo,omitempty"`
