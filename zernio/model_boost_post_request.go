@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.374.2
+API version: 1.375.0
 Contact: support@zernio.com
 */
 
@@ -136,6 +136,8 @@ type BoostPostRequest struct {
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 	// Meta only, with `goal: engagement` and without `adSetId` (400 otherwise). `OUTCOME_ENGAGEMENT` creates the campaign with objective `OUTCOME_ENGAGEMENT` and the ad set with `optimization_goal` `POST_ENGAGEMENT` (unless `optimizationGoal` is set) and `destination_type` `ON_POST`, the shape Ads Manager uses to boost an existing post. `optimizationGoal: POST_ENGAGEMENT` selects the same objective, so the two may be sent together. `destinationType` returns 400 (messaging CTAs excepted) and `optimizationGoal` must be `POST_ENGAGEMENT` or `REACH` (400 otherwise). When both are omitted, an engagement boost keeps `OUTCOME_AWARENESS` with `REACH`. Returns 400 with `leadGenFormId` or with a `callToAction` whose objective is not `OUTCOME_ENGAGEMENT` (`CALL_NOW`); messaging CTAs keep their own `CONVERSATIONS` ad set. Verified against Meta on Facebook posts; Instagram posts are accepted but not yet verified.
 	MetaObjective *string `json:"metaObjective,omitempty"`
+	// Meta only (facebook, instagram and Meta ads connections). Dry-runs the boost with Meta's execution_options validate_only: the campaign, ad set, creative (the post reference) and ad are checked as sent, everything PAUSED, and nothing is created or stored on Meta or in Zernio. Returns 200 with the same body as a validateOnly POST /v1/ads/create (`validateOnly`, `results` per node, `message`). Idempotency-Key storage and the duplicate-boost guard are bypassed. Counts toward the 30 Meta writes per ad account per 5 minutes. With `adSetId` only the ad is dry-run. An Instagram video that Meta refuses as a direct reference (subcode 1815279) comes back as `unverified` nodes, because the copy a real boost makes cannot be dry-run. `true` on any other platform returns 400 naming `validateOnly` and creates nothing; `false` is ignored. `dryRun` is not a field: sending it returns 400 instead of creating the ad.
+	ValidateOnly *bool `json:"validateOnly,omitempty"`
 }
 
 type _BoostPostRequest BoostPostRequest
@@ -152,6 +154,8 @@ func NewBoostPostRequest(accountId string, adAccountId string, name string, goal
 	this.Goal = goal
 	var rehostOnInstagramVideoRejection bool = true
 	this.RehostOnInstagramVideoRejection = &rehostOnInstagramVideoRejection
+	var validateOnly bool = false
+	this.ValidateOnly = &validateOnly
 	return &this
 }
 
@@ -162,6 +166,8 @@ func NewBoostPostRequestWithDefaults() *BoostPostRequest {
 	this := BoostPostRequest{}
 	var rehostOnInstagramVideoRejection bool = true
 	this.RehostOnInstagramVideoRejection = &rehostOnInstagramVideoRejection
+	var validateOnly bool = false
+	this.ValidateOnly = &validateOnly
 	return &this
 }
 
@@ -2004,6 +2010,38 @@ func (o *BoostPostRequest) SetMetaObjective(v string) {
 	o.MetaObjective = &v
 }
 
+// GetValidateOnly returns the ValidateOnly field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetValidateOnly() bool {
+	if o == nil || IsNil(o.ValidateOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.ValidateOnly
+}
+
+// GetValidateOnlyOk returns a tuple with the ValidateOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetValidateOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.ValidateOnly) {
+		return nil, false
+	}
+	return o.ValidateOnly, true
+}
+
+// HasValidateOnly returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasValidateOnly() bool {
+	if o != nil && !IsNil(o.ValidateOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetValidateOnly gets a reference to the given bool and assigns it to the ValidateOnly field.
+func (o *BoostPostRequest) SetValidateOnly(v bool) {
+	o.ValidateOnly = &v
+}
+
 func (o BoostPostRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -2179,6 +2217,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MetaObjective) {
 		toSerialize["metaObjective"] = o.MetaObjective
+	}
+	if !IsNil(o.ValidateOnly) {
+		toSerialize["validateOnly"] = o.ValidateOnly
 	}
 	return toSerialize, nil
 }

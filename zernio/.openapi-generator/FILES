@@ -267,6 +267,8 @@ model_blog_article.go
 model_blog_article_image.go
 model_bluesky_platform_data.go
 model_bookmark_post_200_response.go
+model_boost_post_200_response.go
+model_boost_post_200_response_results_inner.go
 model_boost_post_201_response.go
 model_boost_post_request.go
 model_boost_post_request_attribution_spec_inner.go
