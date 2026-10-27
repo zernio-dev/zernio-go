@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.388.0
+API version: 1.389.0
 Contact: support@zernio.com
 */
 
@@ -19,6 +19,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 )
 
 // PostsAPIService PostsAPI service
@@ -1005,6 +1006,7 @@ type PostsAPIListPostsRequest struct {
 	offset        *int32
 	cursor        *string
 	fields        *string
+	updatedSince  *time.Time
 	source        *string
 	status        *string
 	platform      *string
@@ -1048,6 +1050,12 @@ func (r PostsAPIListPostsRequest) Cursor(cursor string) PostsAPIListPostsRequest
 // Comma-separated list of post fields to return. Each post then carries &#x60;_id&#x60; plus only these fields, which makes large pages much cheaper: leave out &#x60;platforms&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60; or &#x60;metadata&#x60; when you do not need them. Accepted: &#x60;userId&#x60;, &#x60;title&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60;, &#x60;platforms&#x60;, &#x60;scheduledFor&#x60;, &#x60;timezone&#x60;, &#x60;status&#x60;, &#x60;tags&#x60;, &#x60;hashtags&#x60;, &#x60;mentions&#x60;, &#x60;visibility&#x60;, &#x60;metadata&#x60;, &#x60;recycling&#x60;, &#x60;recycledFromPostId&#x60;, &#x60;queuedFromProfile&#x60;, &#x60;queueId&#x60;, &#x60;createdAt&#x60;, &#x60;updatedAt&#x60;. An unknown field returns 400 naming it. &#x60;fields&#x3D;_id&#x60; returns ids only. Omit it (or send it empty) for the full post. Not available with &#x60;source&#x3D;external&#x60;.
 func (r PostsAPIListPostsRequest) Fields(fields string) PostsAPIListPostsRequest {
 	r.fields = &fields
+	return r
+}
+
+// Only posts whose &#x60;updatedAt&#x60; is at or after this ISO 8601 timestamp, an offset or &#x60;Z&#x60; required. &#x60;updatedAt&#x60; moves when the post or any of its platforms changes (an edit, a status change, a platform publishing or failing), so to keep a copy in sync, send the time of your previous sync instead of reading every page again. Combines with the other filters and with &#x60;cursor&#x60;. Deleted posts are not returned. Not available with &#x60;source&#x3D;external&#x60;.
+func (r PostsAPIListPostsRequest) UpdatedSince(updatedSince time.Time) PostsAPIListPostsRequest {
+	r.updatedSince = &updatedSince
 	return r
 }
 
@@ -1197,6 +1205,9 @@ func (a *PostsAPIService) ListPostsExecute(r PostsAPIListPostsRequest) (*PostsLi
 	}
 	if r.fields != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "fields", r.fields, "form", "")
+	}
+	if r.updatedSince != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "updatedSince", r.updatedSince, "form", "")
 	}
 	if r.source != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "source", r.source, "form", "")
