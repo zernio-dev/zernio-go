@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.395.2
+API version: 1.396.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ type AdTracking struct {
 	PixelId *string `json:"pixelId,omitempty"`
 	// Click-URL params. Meta: stored on the creative as `url_tags` and returned by GET /v1/ads/{adId}/tracking-tags. App-promotion linkUrl stays byte-identical to promotedObject.objectStoreUrl. Meta dynamic macros ({{ad.id}}, {{campaign.id}}, {{placement}}, ...) are sent through unescaped so Meta expands them; every other character is percent-encoded. ChatGPT (OpenAI): the same encoding, with OpenAI's macros `{campaign_id}`, `{ad_group_id}`, `{ad_id}` and `{oppref}` (click id) passed through raw. OpenAI expands macros here, not inside `linkUrl`.
 	UrlTags []UpdateAdTrackingTagsRequestUrlTagsInner `json:"urlTags,omitempty"`
-	// POST /v1/ads/create on Meta and Google only. Every ad created there carries `zrn=<platform ad id>` on its landing URL so orders and events tied to the landing URL map back to the ad. Meta: `{ key: zrn, value: '{{ad.id}}' }` is appended after your `urlTags`, which are sent unchanged; a `zrn` key you send yourself is kept. Skipped for lead forms, call ads, `existingCreativeId` and app promotion. Google (Display and Search): the ad's `final_url_suffix` is set to `zrn={creative}` only when the ad inherits no suffix from its ad group, campaign or account; when one exists the ad is left untouched (your suffix keeps applying) and attribution uses the click's `gclid`. If the inherited suffix cannot be read or Google rejects the tag, the ad is created untagged. Existing ads are never changed. Set `false` to create the ad with no Zernio tag.
+	// POST /v1/ads/create on Meta and Google only. Opt-in: set `true` and the ad carries `zrn=<platform ad id>` on its landing URL so orders and events tied to the landing URL map back to the ad. Meta: `{ key: zrn, value: '{{ad.id}}' }` is appended after your `urlTags`, which are sent unchanged; a `zrn` key you send yourself is kept. Skipped for lead forms, call ads, `existingCreativeId` and app promotion. Google (Display and Search): the ad's `final_url_suffix` is set to `zrn={creative}` only when the ad inherits no suffix from its ad group, campaign or account; when one exists the ad is left untouched (your suffix keeps applying) and attribution uses the click's `gclid`. If the inherited suffix cannot be read or Google rejects the tag, the ad is created untagged. Existing ads are never changed. Omitted or `false` creates the ad with no Zernio tag.
 	ZernioTag *bool `json:"zernioTag,omitempty"`
 }
 
@@ -34,7 +34,7 @@ type AdTracking struct {
 // will change when the set of required properties is changed
 func NewAdTracking() *AdTracking {
 	this := AdTracking{}
-	var zernioTag bool = true
+	var zernioTag bool = false
 	this.ZernioTag = &zernioTag
 	return &this
 }
@@ -44,7 +44,7 @@ func NewAdTracking() *AdTracking {
 // but it doesn't guarantee that properties required by API are set
 func NewAdTrackingWithDefaults() *AdTracking {
 	this := AdTracking{}
-	var zernioTag bool = true
+	var zernioTag bool = false
 	this.ZernioTag = &zernioTag
 	return &this
 }
