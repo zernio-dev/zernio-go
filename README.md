@@ -109,6 +109,8 @@ func main() {
 |--------|-------------|
 | `client.AnalyticsAPI.ListFacebookTaggedPosts(ctx)` | List the posts a Facebook Page is tagged in |
 | `client.AnalyticsAPI.ListFacebookVisitorPosts(ctx)` | List visitor posts on a Facebook Page |
+| `client.AnalyticsAPI.ListPostAuthenticity(ctx)` | List authenticity scores |
+| `client.AnalyticsAPI.ListTrackingWindows(ctx)` | List tracking windows |
 | `client.AnalyticsAPI.GetAnalytics(ctx)` | Get post analytics |
 | `client.AnalyticsAPI.GetAnalyticsDashboard(ctx)` | Get an analytics dashboard |
 | `client.AnalyticsAPI.GetAnalyticsDelta(ctx)` | Analytics changed since a cursor |
@@ -131,13 +133,18 @@ func main() {
 | `client.AnalyticsAPI.GetLinkedInOrgAggregateAnalytics(ctx)` | Get LinkedIn org analytics |
 | `client.AnalyticsAPI.GetLinkedInPostAnalytics(ctx)` | Get LinkedIn post stats |
 | `client.AnalyticsAPI.GetLinkedInPostReactions(ctx)` | Get LinkedIn post reactions |
+| `client.AnalyticsAPI.GetPostAuthenticity(ctx)` | Get a post's authenticity score |
+| `client.AnalyticsAPI.GetPostSamples(ctx)` | Get post samples |
 | `client.AnalyticsAPI.GetPostTimeline(ctx)` | Get post analytics timeline |
 | `client.AnalyticsAPI.GetPostingFrequency(ctx)` | Get frequency vs engagement |
 | `client.AnalyticsAPI.GetTikTokAccountInsights(ctx)` | Get TikTok account-level insights |
+| `client.AnalyticsAPI.GetTrackingWindow(ctx)` | Get a tracking window |
 | `client.AnalyticsAPI.GetYouTubeChannelInsights(ctx)` | Get YouTube channel insights |
 | `client.AnalyticsAPI.GetYouTubeDailyViews(ctx)` | Get YouTube daily views |
 | `client.AnalyticsAPI.GetYouTubeDemographics(ctx)` | Get YouTube demographics |
 | `client.AnalyticsAPI.GetYouTubeVideoRetention(ctx)` | Get YouTube video retention curve |
+| `client.AnalyticsAPI.CancelTrackingWindow(ctx)` | Cancel a tracking window |
+| `client.AnalyticsAPI.OpenTrackingWindow(ctx)` | Open a tracking window |
 | `client.AnalyticsAPI.RunGoogleAnalyticsRealtimeReport(ctx)` | Run a Google Analytics (GA4) realtime report |
 | `client.AnalyticsAPI.RunGoogleAnalyticsReport(ctx)` | Run a Google Analytics (GA4) report |
 | `client.AnalyticsAPI.SyncExternalPosts(ctx)` | Sync an external post |
@@ -834,6 +841,50 @@ func main() {
 | `client.ConversionsAPI.SendConversions(ctx)` | Send conversion events |
 | `client.ConversionsAPI.SendEvents(ctx)` | Send events to every destination |
 
+### Creator Campaigns
+| Method | Description |
+|--------|-------------|
+| `client.CreatorCampaignsAPI.ListCampaignLedger(ctx)` | List campaign ledger |
+| `client.CreatorCampaignsAPI.ListCampaignParticipants(ctx)` | List campaign participants |
+| `client.CreatorCampaignsAPI.ListCampaignPayables(ctx)` | List campaign payables |
+| `client.CreatorCampaignsAPI.ListCampaignPayoutBatches(ctx)` | List payout batches |
+| `client.CreatorCampaignsAPI.ListCampaignSubmissions(ctx)` | List campaign submissions |
+| `client.CreatorCampaignsAPI.ListCreatorCampaigns(ctx)` | List creator campaigns |
+| `client.CreatorCampaignsAPI.CreateCampaignAdjustment(ctx)` | Create campaign adjustment |
+| `client.CreatorCampaignsAPI.CreateCampaignInviteLink(ctx)` | Create campaign invite link |
+| `client.CreatorCampaignsAPI.CreateCampaignParticipant(ctx)` | Invite campaign participant |
+| `client.CreatorCampaignsAPI.CreateCampaignPayoutBatch(ctx)` | Pay creators with one card payment |
+| `client.CreatorCampaignsAPI.CreateCreatorCampaign(ctx)` | Create creator campaign |
+| `client.CreatorCampaignsAPI.GetCampaignParticipant(ctx)` | Get campaign participant |
+| `client.CreatorCampaignsAPI.GetCampaignReport(ctx)` | Get campaign report |
+| `client.CreatorCampaignsAPI.GetCampaignSubmission(ctx)` | Get campaign submission |
+| `client.CreatorCampaignsAPI.GetCreatorCampaign(ctx)` | Get creator campaign |
+| `client.CreatorCampaignsAPI.UpdateCreatorCampaign(ctx)` | Update creator campaign |
+| `client.CreatorCampaignsAPI.ActivateCreatorCampaign(ctx)` | Activate creator campaign |
+| `client.CreatorCampaignsAPI.ApproveCampaignSubmission(ctx)` | Approve campaign submission |
+| `client.CreatorCampaignsAPI.CloseCreatorCampaign(ctx)` | Close creator campaign |
+| `client.CreatorCampaignsAPI.PauseCreatorCampaign(ctx)` | Pause creator campaign |
+| `client.CreatorCampaignsAPI.RaiseCreatorCampaignBudget(ctx)` | Raise creator campaign budget |
+| `client.CreatorCampaignsAPI.ReinstateCampaignParticipant(ctx)` | Reinstate campaign participant |
+| `client.CreatorCampaignsAPI.RejectCampaignSubmission(ctx)` | Reject campaign submission |
+| `client.CreatorCampaignsAPI.RemoveCampaignParticipant(ctx)` | Remove campaign participant |
+| `client.CreatorCampaignsAPI.ReopenCampaignSubmission(ctx)` | Reopen campaign submission |
+| `client.CreatorCampaignsAPI.SettleCampaignParticipant(ctx)` | Settle campaign participant |
+| `client.CreatorCampaignsAPI.SuspendCampaignParticipant(ctx)` | Suspend campaign participant |
+
+### Creator Portal (public)
+| Method | Description |
+|--------|-------------|
+| `client.CreatorPortal(public)API.CreateCreatorPayoutLogin(ctx)` | Open the creator's Stripe dashboard |
+| `client.CreatorPortal(public)API.GetCreatorPayoutStatement(ctx)` | Download a payout statement |
+| `client.CreatorPortal(public)API.GetCreatorPayouts(ctx)` | List a creator's earnings history |
+| `client.CreatorPortal(public)API.GetCreatorPortal(ctx)` | Read a creator invite or participant page |
+| `client.CreatorPortal(public)API.JoinCreatorCampaign(ctx)` | Join a campaign |
+| `client.CreatorPortal(public)API.RecoverCreatorPortalLinks(ctx)` | Email a creator their campaign links |
+| `client.CreatorPortal(public)API.StartCreatorConnect(ctx)` | Start connecting a creator account |
+| `client.CreatorPortal(public)API.StartCreatorPayouts(ctx)` | Start payout onboarding |
+| `client.CreatorPortal(public)API.SubmitCreatorPost(ctx)` | Submit a post |
+
 ### Custom Fields
 | Method | Description |
 |--------|-------------|
@@ -992,6 +1043,12 @@ func main() {
 | `client.LeadGenAPI.DeleteTestLead(ctx)` | Delete a test lead |
 | `client.LeadGenAPI.ArchiveLeadForm(ctx)` | Archive a lead form |
 | `client.LeadGenAPI.CountLeads(ctx)` | Count leads by status |
+
+### Ledger
+| Method | Description |
+|--------|-------------|
+| `client.LedgerAPI.ListLedgerEntries(ctx)` | List ledger entries |
+| `client.LedgerAPI.GetLedgerBalances(ctx)` | Get ledger balances |
 
 ### Mentions
 | Method | Description |
@@ -1208,6 +1265,21 @@ func main() {
 | `client.TrackingTagsAPI.RemoveTrackingTagFromStore(ctx)` | Remove from a Shopify, WordPress, Wix or Webflow site |
 | `client.TrackingTagsAPI.RemoveTrackingTagSharedAccount(ctx)` | Stop sharing with an account |
 | `client.TrackingTagsAPI.RemoveTrackingTagUser(ctx)` | Remove a user from a tag |
+
+### Treasury
+| Method | Description |
+|--------|-------------|
+| `client.TreasuryAPI.ListPayees(ctx)` | List payees |
+| `client.TreasuryAPI.ListTopups(ctx)` | List top-ups |
+| `client.TreasuryAPI.ListTransfers(ctx)` | List transfers |
+| `client.TreasuryAPI.CreatePayeeOnboardingLink(ctx)` | Create a payee onboarding link |
+| `client.TreasuryAPI.CreateTopup(ctx)` | Create a top-up |
+| `client.TreasuryAPI.CreateTransfer(ctx)` | Create a transfer |
+| `client.TreasuryAPI.GetBalance(ctx)` | Get balance |
+| `client.TreasuryAPI.GetPayoutBatch(ctx)` | Get a payout batch |
+| `client.TreasuryAPI.GetTopupReceipt(ctx)` | Get a top-up receipt |
+| `client.TreasuryAPI.GetTransfer(ctx)` | Get a transfer |
+| `client.TreasuryAPI.CancelPayoutBatch(ctx)` | Cancel an unpaid payout batch |
 
 ### Twitter Engagement
 | Method | Description |

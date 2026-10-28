@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.396.0
+API version: 1.397.0
 Contact: support@zernio.com
 */
 
@@ -41,7 +41,7 @@ var (
 	queryDescape    = strings.NewReplacer("%5B", "[", "%5D", "]")
 )
 
-// APIClient manages communication with the Zernio API API v1.396.0
+// APIClient manages communication with the Zernio API API v1.397.0
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration
@@ -103,6 +103,10 @@ type APIClient struct {
 
 	ConversionsAPI *ConversionsAPIService
 
+	CreatorCampaignsAPI *CreatorCampaignsAPIService
+
+	CreatorPortalPublicAPI *CreatorPortalPublicAPIService
+
 	CustomFieldsAPI *CustomFieldsAPIService
 
 	DiscordAPI *DiscordAPIService
@@ -138,6 +142,8 @@ type APIClient struct {
 	InvitesAPI *InvitesAPIService
 
 	LeadGenAPI *LeadGenAPIService
+
+	LedgerAPI *LedgerAPIService
 
 	LinkedInMentionsAPI *LinkedInMentionsAPIService
 
@@ -182,6 +188,8 @@ type APIClient struct {
 	ToolsAPI *ToolsAPIService
 
 	TrackingTagsAPI *TrackingTagsAPIService
+
+	TreasuryAPI *TreasuryAPIService
 
 	TwitterEngagementAPI *TwitterEngagementAPIService
 
@@ -255,6 +263,8 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.ConnectedAppsAPI = (*ConnectedAppsAPIService)(&c.common)
 	c.ContactsAPI = (*ContactsAPIService)(&c.common)
 	c.ConversionsAPI = (*ConversionsAPIService)(&c.common)
+	c.CreatorCampaignsAPI = (*CreatorCampaignsAPIService)(&c.common)
+	c.CreatorPortalPublicAPI = (*CreatorPortalPublicAPIService)(&c.common)
 	c.CustomFieldsAPI = (*CustomFieldsAPIService)(&c.common)
 	c.DiscordAPI = (*DiscordAPIService)(&c.common)
 	c.EmailAPI = (*EmailAPIService)(&c.common)
@@ -273,6 +283,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.InstagramAPI = (*InstagramAPIService)(&c.common)
 	c.InvitesAPI = (*InvitesAPIService)(&c.common)
 	c.LeadGenAPI = (*LeadGenAPIService)(&c.common)
+	c.LedgerAPI = (*LedgerAPIService)(&c.common)
 	c.LinkedInMentionsAPI = (*LinkedInMentionsAPIService)(&c.common)
 	c.LogsAPI = (*LogsAPIService)(&c.common)
 	c.MediaAPI = (*MediaAPIService)(&c.common)
@@ -295,6 +306,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.SupportAssistantAPI = (*SupportAssistantAPIService)(&c.common)
 	c.ToolsAPI = (*ToolsAPIService)(&c.common)
 	c.TrackingTagsAPI = (*TrackingTagsAPIService)(&c.common)
+	c.TreasuryAPI = (*TreasuryAPIService)(&c.common)
 	c.TwitterEngagementAPI = (*TwitterEngagementAPIService)(&c.common)
 	c.UsageAPI = (*UsageAPIService)(&c.common)
 	c.UsersAPI = (*UsersAPIService)(&c.common)

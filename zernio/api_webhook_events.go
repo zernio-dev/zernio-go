@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.396.0
+API version: 1.397.0
 Contact: support@zernio.com
 */
 
@@ -2775,6 +2775,1095 @@ func (a *WebhookEventsAPIService) OnCampaignBudgetDepletedExecute(r WebhookEvent
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnCampaignParticipantJoinedRequest struct {
+	ctx                               context.Context
+	ApiService                        *WebhookEventsAPIService
+	webhookPayloadCampaignParticipant *WebhookPayloadCampaignParticipant
+}
+
+func (r WebhookEventsAPIOnCampaignParticipantJoinedRequest) WebhookPayloadCampaignParticipant(webhookPayloadCampaignParticipant WebhookPayloadCampaignParticipant) WebhookEventsAPIOnCampaignParticipantJoinedRequest {
+	r.webhookPayloadCampaignParticipant = &webhookPayloadCampaignParticipant
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignParticipantJoinedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignParticipantJoinedExecute(r)
+}
+
+/*
+OnCampaignParticipantJoined Campaign participant joined event
+
+Fired once when a creator joins a campaign, from their invite link or the open link.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignParticipantJoinedRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignParticipantJoined(ctx context.Context) WebhookEventsAPIOnCampaignParticipantJoinedRequest {
+	return WebhookEventsAPIOnCampaignParticipantJoinedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignParticipantJoinedExecute(r WebhookEventsAPIOnCampaignParticipantJoinedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignParticipantJoined")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign_participant.joined"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignParticipant == nil {
+		return nil, reportError("webhookPayloadCampaignParticipant is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignParticipant
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignParticipantRemovedRequest struct {
+	ctx                               context.Context
+	ApiService                        *WebhookEventsAPIService
+	webhookPayloadCampaignParticipant *WebhookPayloadCampaignParticipant
+}
+
+func (r WebhookEventsAPIOnCampaignParticipantRemovedRequest) WebhookPayloadCampaignParticipant(webhookPayloadCampaignParticipant WebhookPayloadCampaignParticipant) WebhookEventsAPIOnCampaignParticipantRemovedRequest {
+	r.webhookPayloadCampaignParticipant = &webhookPayloadCampaignParticipant
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignParticipantRemovedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignParticipantRemovedExecute(r)
+}
+
+/*
+OnCampaignParticipantRemoved Campaign participant removed event
+
+Fired when an operator removes a participant.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignParticipantRemovedRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignParticipantRemoved(ctx context.Context) WebhookEventsAPIOnCampaignParticipantRemovedRequest {
+	return WebhookEventsAPIOnCampaignParticipantRemovedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignParticipantRemovedExecute(r WebhookEventsAPIOnCampaignParticipantRemovedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignParticipantRemoved")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign_participant.removed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignParticipant == nil {
+		return nil, reportError("webhookPayloadCampaignParticipant is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignParticipant
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignParticipantSuspendedRequest struct {
+	ctx                               context.Context
+	ApiService                        *WebhookEventsAPIService
+	webhookPayloadCampaignParticipant *WebhookPayloadCampaignParticipant
+}
+
+func (r WebhookEventsAPIOnCampaignParticipantSuspendedRequest) WebhookPayloadCampaignParticipant(webhookPayloadCampaignParticipant WebhookPayloadCampaignParticipant) WebhookEventsAPIOnCampaignParticipantSuspendedRequest {
+	r.webhookPayloadCampaignParticipant = &webhookPayloadCampaignParticipant
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignParticipantSuspendedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignParticipantSuspendedExecute(r)
+}
+
+/*
+OnCampaignParticipantSuspended Campaign participant suspended event
+
+Fired when an operator suspends a participant.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignParticipantSuspendedRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignParticipantSuspended(ctx context.Context) WebhookEventsAPIOnCampaignParticipantSuspendedRequest {
+	return WebhookEventsAPIOnCampaignParticipantSuspendedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignParticipantSuspendedExecute(r WebhookEventsAPIOnCampaignParticipantSuspendedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignParticipantSuspended")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign_participant.suspended"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignParticipant == nil {
+		return nil, reportError("webhookPayloadCampaignParticipant is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignParticipant
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignPayoutFailedRequest struct {
+	ctx                          context.Context
+	ApiService                   *WebhookEventsAPIService
+	webhookPayloadCampaignPayout *WebhookPayloadCampaignPayout
+}
+
+func (r WebhookEventsAPIOnCampaignPayoutFailedRequest) WebhookPayloadCampaignPayout(webhookPayloadCampaignPayout WebhookPayloadCampaignPayout) WebhookEventsAPIOnCampaignPayoutFailedRequest {
+	r.webhookPayloadCampaignPayout = &webhookPayloadCampaignPayout
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignPayoutFailedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignPayoutFailedExecute(r)
+}
+
+/*
+OnCampaignPayoutFailed Campaign payout failed event
+
+Fired when a treasury payout to a participant is refused, cannot be confirmed, or is reversed. The amount returns to payable, minus anything a rejection claws back.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignPayoutFailedRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignPayoutFailed(ctx context.Context) WebhookEventsAPIOnCampaignPayoutFailedRequest {
+	return WebhookEventsAPIOnCampaignPayoutFailedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignPayoutFailedExecute(r WebhookEventsAPIOnCampaignPayoutFailedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignPayoutFailed")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign_payout.failed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignPayout == nil {
+		return nil, reportError("webhookPayloadCampaignPayout is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignPayout
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignPayoutPayableRequest struct {
+	ctx                          context.Context
+	ApiService                   *WebhookEventsAPIService
+	webhookPayloadCampaignPayout *WebhookPayloadCampaignPayout
+}
+
+func (r WebhookEventsAPIOnCampaignPayoutPayableRequest) WebhookPayloadCampaignPayout(webhookPayloadCampaignPayout WebhookPayloadCampaignPayout) WebhookEventsAPIOnCampaignPayoutPayableRequest {
+	r.webhookPayloadCampaignPayout = &webhookPayloadCampaignPayout
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignPayoutPayableRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignPayoutPayableExecute(r)
+}
+
+/*
+OnCampaignPayoutPayable Campaign payout payable event
+
+Fired when a participant's held earnings mature and become payable.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignPayoutPayableRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignPayoutPayable(ctx context.Context) WebhookEventsAPIOnCampaignPayoutPayableRequest {
+	return WebhookEventsAPIOnCampaignPayoutPayableRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignPayoutPayableExecute(r WebhookEventsAPIOnCampaignPayoutPayableRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignPayoutPayable")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign_payout.payable"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignPayout == nil {
+		return nil, reportError("webhookPayloadCampaignPayout is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignPayout
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignPayoutSettledRequest struct {
+	ctx                          context.Context
+	ApiService                   *WebhookEventsAPIService
+	webhookPayloadCampaignPayout *WebhookPayloadCampaignPayout
+}
+
+func (r WebhookEventsAPIOnCampaignPayoutSettledRequest) WebhookPayloadCampaignPayout(webhookPayloadCampaignPayout WebhookPayloadCampaignPayout) WebhookEventsAPIOnCampaignPayoutSettledRequest {
+	r.webhookPayloadCampaignPayout = &webhookPayloadCampaignPayout
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignPayoutSettledRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignPayoutSettledExecute(r)
+}
+
+/*
+OnCampaignPayoutSettled Campaign payout settled event
+
+Fired when a settlement to a participant is recorded.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignPayoutSettledRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignPayoutSettled(ctx context.Context) WebhookEventsAPIOnCampaignPayoutSettledRequest {
+	return WebhookEventsAPIOnCampaignPayoutSettledRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignPayoutSettledExecute(r WebhookEventsAPIOnCampaignPayoutSettledRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignPayoutSettled")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign_payout.settled"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignPayout == nil {
+		return nil, reportError("webhookPayloadCampaignPayout is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignPayout
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignSubmissionApprovedRequest struct {
+	ctx                              context.Context
+	ApiService                       *WebhookEventsAPIService
+	webhookPayloadCampaignSubmission *WebhookPayloadCampaignSubmission
+}
+
+func (r WebhookEventsAPIOnCampaignSubmissionApprovedRequest) WebhookPayloadCampaignSubmission(webhookPayloadCampaignSubmission WebhookPayloadCampaignSubmission) WebhookEventsAPIOnCampaignSubmissionApprovedRequest {
+	r.webhookPayloadCampaignSubmission = &webhookPayloadCampaignSubmission
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignSubmissionApprovedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignSubmissionApprovedExecute(r)
+}
+
+/*
+OnCampaignSubmissionApproved Campaign submission approved event
+
+Fired when an operator approves a submission.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignSubmissionApprovedRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignSubmissionApproved(ctx context.Context) WebhookEventsAPIOnCampaignSubmissionApprovedRequest {
+	return WebhookEventsAPIOnCampaignSubmissionApprovedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignSubmissionApprovedExecute(r WebhookEventsAPIOnCampaignSubmissionApprovedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignSubmissionApproved")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign_submission.approved"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignSubmission == nil {
+		return nil, reportError("webhookPayloadCampaignSubmission is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignSubmission
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignSubmissionFlaggedRequest struct {
+	ctx                              context.Context
+	ApiService                       *WebhookEventsAPIService
+	webhookPayloadCampaignSubmission *WebhookPayloadCampaignSubmission
+}
+
+func (r WebhookEventsAPIOnCampaignSubmissionFlaggedRequest) WebhookPayloadCampaignSubmission(webhookPayloadCampaignSubmission WebhookPayloadCampaignSubmission) WebhookEventsAPIOnCampaignSubmissionFlaggedRequest {
+	r.webhookPayloadCampaignSubmission = &webhookPayloadCampaignSubmission
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignSubmissionFlaggedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignSubmissionFlaggedExecute(r)
+}
+
+/*
+OnCampaignSubmissionFlagged Campaign submission flagged event
+
+Fired when a submission gains a fraud flag it did not carry before, at submission or on a later sync.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignSubmissionFlaggedRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignSubmissionFlagged(ctx context.Context) WebhookEventsAPIOnCampaignSubmissionFlaggedRequest {
+	return WebhookEventsAPIOnCampaignSubmissionFlaggedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignSubmissionFlaggedExecute(r WebhookEventsAPIOnCampaignSubmissionFlaggedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignSubmissionFlagged")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign_submission.flagged"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignSubmission == nil {
+		return nil, reportError("webhookPayloadCampaignSubmission is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignSubmission
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignSubmissionPendingReviewRequest struct {
+	ctx                              context.Context
+	ApiService                       *WebhookEventsAPIService
+	webhookPayloadCampaignSubmission *WebhookPayloadCampaignSubmission
+}
+
+func (r WebhookEventsAPIOnCampaignSubmissionPendingReviewRequest) WebhookPayloadCampaignSubmission(webhookPayloadCampaignSubmission WebhookPayloadCampaignSubmission) WebhookEventsAPIOnCampaignSubmissionPendingReviewRequest {
+	r.webhookPayloadCampaignSubmission = &webhookPayloadCampaignSubmission
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignSubmissionPendingReviewRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignSubmissionPendingReviewExecute(r)
+}
+
+/*
+OnCampaignSubmissionPendingReview Campaign submission pending review event
+
+Fired when a submission becomes ready for review: a CPM submission reached minViewsToEarn or a pool submission minViewsToQualify; per-post submissions on the first accrual pass after submission.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignSubmissionPendingReviewRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignSubmissionPendingReview(ctx context.Context) WebhookEventsAPIOnCampaignSubmissionPendingReviewRequest {
+	return WebhookEventsAPIOnCampaignSubmissionPendingReviewRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignSubmissionPendingReviewExecute(r WebhookEventsAPIOnCampaignSubmissionPendingReviewRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignSubmissionPendingReview")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign_submission.pending_review"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignSubmission == nil {
+		return nil, reportError("webhookPayloadCampaignSubmission is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignSubmission
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignSubmissionReceivedRequest struct {
+	ctx                              context.Context
+	ApiService                       *WebhookEventsAPIService
+	webhookPayloadCampaignSubmission *WebhookPayloadCampaignSubmission
+}
+
+func (r WebhookEventsAPIOnCampaignSubmissionReceivedRequest) WebhookPayloadCampaignSubmission(webhookPayloadCampaignSubmission WebhookPayloadCampaignSubmission) WebhookEventsAPIOnCampaignSubmissionReceivedRequest {
+	r.webhookPayloadCampaignSubmission = &webhookPayloadCampaignSubmission
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignSubmissionReceivedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignSubmissionReceivedExecute(r)
+}
+
+/*
+OnCampaignSubmissionReceived Campaign submission received event
+
+Fired when a creator submits a post to a campaign and its tracking window opens.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignSubmissionReceivedRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignSubmissionReceived(ctx context.Context) WebhookEventsAPIOnCampaignSubmissionReceivedRequest {
+	return WebhookEventsAPIOnCampaignSubmissionReceivedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignSubmissionReceivedExecute(r WebhookEventsAPIOnCampaignSubmissionReceivedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignSubmissionReceived")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign_submission.received"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignSubmission == nil {
+		return nil, reportError("webhookPayloadCampaignSubmission is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignSubmission
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignSubmissionRejectedRequest struct {
+	ctx                              context.Context
+	ApiService                       *WebhookEventsAPIService
+	webhookPayloadCampaignSubmission *WebhookPayloadCampaignSubmission
+}
+
+func (r WebhookEventsAPIOnCampaignSubmissionRejectedRequest) WebhookPayloadCampaignSubmission(webhookPayloadCampaignSubmission WebhookPayloadCampaignSubmission) WebhookEventsAPIOnCampaignSubmissionRejectedRequest {
+	r.webhookPayloadCampaignSubmission = &webhookPayloadCampaignSubmission
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignSubmissionRejectedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignSubmissionRejectedExecute(r)
+}
+
+/*
+OnCampaignSubmissionRejected Campaign submission rejected event
+
+Fired when an operator rejects a submission.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignSubmissionRejectedRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignSubmissionRejected(ctx context.Context) WebhookEventsAPIOnCampaignSubmissionRejectedRequest {
+	return WebhookEventsAPIOnCampaignSubmissionRejectedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignSubmissionRejectedExecute(r WebhookEventsAPIOnCampaignSubmissionRejectedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignSubmissionRejected")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign_submission.rejected"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignSubmission == nil {
+		return nil, reportError("webhookPayloadCampaignSubmission is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignSubmission
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnCommentReceivedRequest struct {
 	ctx                   context.Context
 	ApiService            *WebhookEventsAPIService
@@ -4163,6 +5252,204 @@ func (a *WebhookEventsAPIService) OnConversationStartedExecute(r WebhookEventsAP
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadConversationStarted
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCreatorCampaignBudgetExhaustedRequest struct {
+	ctx                           context.Context
+	ApiService                    *WebhookEventsAPIService
+	webhookPayloadCreatorCampaign *WebhookPayloadCreatorCampaign
+}
+
+func (r WebhookEventsAPIOnCreatorCampaignBudgetExhaustedRequest) WebhookPayloadCreatorCampaign(webhookPayloadCreatorCampaign WebhookPayloadCreatorCampaign) WebhookEventsAPIOnCreatorCampaignBudgetExhaustedRequest {
+	r.webhookPayloadCreatorCampaign = &webhookPayloadCreatorCampaign
+	return r
+}
+
+func (r WebhookEventsAPIOnCreatorCampaignBudgetExhaustedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCreatorCampaignBudgetExhaustedExecute(r)
+}
+
+/*
+OnCreatorCampaignBudgetExhausted Creator campaign budget exhausted event
+
+Fired once when a campaign's earnings reach its budget.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCreatorCampaignBudgetExhaustedRequest
+*/
+func (a *WebhookEventsAPIService) OnCreatorCampaignBudgetExhausted(ctx context.Context) WebhookEventsAPIOnCreatorCampaignBudgetExhaustedRequest {
+	return WebhookEventsAPIOnCreatorCampaignBudgetExhaustedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCreatorCampaignBudgetExhaustedExecute(r WebhookEventsAPIOnCreatorCampaignBudgetExhaustedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCreatorCampaignBudgetExhausted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/creator_campaign.budget_exhausted"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCreatorCampaign == nil {
+		return nil, reportError("webhookPayloadCreatorCampaign is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCreatorCampaign
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCreatorCampaignClosedRequest struct {
+	ctx                           context.Context
+	ApiService                    *WebhookEventsAPIService
+	webhookPayloadCreatorCampaign *WebhookPayloadCreatorCampaign
+}
+
+func (r WebhookEventsAPIOnCreatorCampaignClosedRequest) WebhookPayloadCreatorCampaign(webhookPayloadCreatorCampaign WebhookPayloadCreatorCampaign) WebhookEventsAPIOnCreatorCampaignClosedRequest {
+	r.webhookPayloadCreatorCampaign = &webhookPayloadCreatorCampaign
+	return r
+}
+
+func (r WebhookEventsAPIOnCreatorCampaignClosedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCreatorCampaignClosedExecute(r)
+}
+
+/*
+OnCreatorCampaignClosed Creator campaign closed event
+
+Fired once when a campaign closes; a pool campaign is split among participants at this moment.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCreatorCampaignClosedRequest
+*/
+func (a *WebhookEventsAPIService) OnCreatorCampaignClosed(ctx context.Context) WebhookEventsAPIOnCreatorCampaignClosedRequest {
+	return WebhookEventsAPIOnCreatorCampaignClosedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCreatorCampaignClosedExecute(r WebhookEventsAPIOnCreatorCampaignClosedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCreatorCampaignClosed")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/creator_campaign.closed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCreatorCampaign == nil {
+		return nil, reportError("webhookPayloadCreatorCampaign is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCreatorCampaign
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -5604,6 +6891,106 @@ func (a *WebhookEventsAPIService) OnPhoneNumberStockAvailableExecute(r WebhookEv
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnPostAuthenticityChangedRequest struct {
+	ctx                                   context.Context
+	ApiService                            *WebhookEventsAPIService
+	webhookPayloadPostAuthenticityChanged *WebhookPayloadPostAuthenticityChanged
+}
+
+func (r WebhookEventsAPIOnPostAuthenticityChangedRequest) WebhookPayloadPostAuthenticityChanged(webhookPayloadPostAuthenticityChanged WebhookPayloadPostAuthenticityChanged) WebhookEventsAPIOnPostAuthenticityChangedRequest {
+	r.webhookPayloadPostAuthenticityChanged = &webhookPayloadPostAuthenticityChanged
+	return r
+}
+
+func (r WebhookEventsAPIOnPostAuthenticityChangedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnPostAuthenticityChangedExecute(r)
+}
+
+/*
+OnPostAuthenticityChanged Post authenticity changed event
+
+Fired when a tracked post's authenticity score crosses 40 in either direction.
+Carries the new and previous score, confidence and reasons. A first score never fires it.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnPostAuthenticityChangedRequest
+*/
+func (a *WebhookEventsAPIService) OnPostAuthenticityChanged(ctx context.Context) WebhookEventsAPIOnPostAuthenticityChangedRequest {
+	return WebhookEventsAPIOnPostAuthenticityChangedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnPostAuthenticityChangedExecute(r WebhookEventsAPIOnPostAuthenticityChangedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnPostAuthenticityChanged")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/post.authenticity_changed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadPostAuthenticityChanged == nil {
+		return nil, reportError("webhookPayloadPostAuthenticityChanged is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadPostAuthenticityChanged
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnPostCancelledRequest struct {
 	ctx                context.Context
 	ApiService         *WebhookEventsAPIService
@@ -6904,6 +8291,107 @@ func (a *WebhookEventsAPIService) OnPostTikTokUrlResolvedExecute(r WebhookEvents
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadPostPlatform
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnPostTrackingCompletedRequest struct {
+	ctx                                 context.Context
+	ApiService                          *WebhookEventsAPIService
+	webhookPayloadPostTrackingCompleted *WebhookPayloadPostTrackingCompleted
+}
+
+func (r WebhookEventsAPIOnPostTrackingCompletedRequest) WebhookPayloadPostTrackingCompleted(webhookPayloadPostTrackingCompleted WebhookPayloadPostTrackingCompleted) WebhookEventsAPIOnPostTrackingCompletedRequest {
+	r.webhookPayloadPostTrackingCompleted = &webhookPayloadPostTrackingCompleted
+	return r
+}
+
+func (r WebhookEventsAPIOnPostTrackingCompletedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnPostTrackingCompletedExecute(r)
+}
+
+/*
+OnPostTrackingCompleted Post tracking completed event
+
+Fired once when a post's tracking window ends and its final analytics read has
+run. `final` carries the closing metrics, or null when none could be read, and
+`window.completionReason` is `final_read`, `unreachable` or `post_deleted`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnPostTrackingCompletedRequest
+*/
+func (a *WebhookEventsAPIService) OnPostTrackingCompleted(ctx context.Context) WebhookEventsAPIOnPostTrackingCompletedRequest {
+	return WebhookEventsAPIOnPostTrackingCompletedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnPostTrackingCompletedExecute(r WebhookEventsAPIOnPostTrackingCompletedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnPostTrackingCompleted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/post.tracking_completed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadPostTrackingCompleted == nil {
+		return nil, reportError("webhookPayloadPostTrackingCompleted is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadPostTrackingCompleted
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

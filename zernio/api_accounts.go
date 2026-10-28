@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.396.0
+API version: 1.397.0
 Contact: support@zernio.com
 */
 
@@ -1706,24 +1706,25 @@ func (a *AccountsAPIService) GrantBusinessPartnerExecute(r AccountsAPIGrantBusin
 }
 
 type AccountsAPIListAccountsRequest struct {
-	ctx                 context.Context
-	ApiService          *AccountsAPIService
-	profileId           *string
-	platform            *string
-	status              *string
-	search              *string
-	category            *string
-	sort                *string
-	order               *string
-	includeOverLimit    *bool
-	excludeHidden       *bool
-	includeSandbox      *bool
-	includeStatusCounts *bool
-	page                *int32
-	limit               *int32
-	cursor              *string
-	profileIds          *string
-	perProfile          *int32
+	ctx                    context.Context
+	ApiService             *AccountsAPIService
+	profileId              *string
+	platform               *string
+	status                 *string
+	search                 *string
+	category               *string
+	sort                   *string
+	order                  *string
+	includeOverLimit       *bool
+	excludeHidden          *bool
+	includeCreatorAccounts *bool
+	includeSandbox         *bool
+	includeStatusCounts    *bool
+	page                   *int32
+	limit                  *int32
+	cursor                 *string
+	profileIds             *string
+	perProfile             *int32
 }
 
 // Filter accounts by profile ID. Must be a valid ObjectId.
@@ -1777,6 +1778,12 @@ func (r AccountsAPIListAccountsRequest) IncludeOverLimit(includeOverLimit bool) 
 // When true, leaves out accounts the dashboard does not show as connections: posting accounts with &#x60;enabled: false&#x60; (ads accounts are always kept, whatever their &#x60;enabled&#x60; value) and the internal &#x60;sms&#x60; and &#x60;phone&#x60; accounts behind each phone number. Applied before pagination, so page totals and &#x60;statusCounts&#x60; count only the remaining accounts. Sandbox accounts added by &#x60;includeSandbox&#x60; are appended after this filter. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
 func (r AccountsAPIListAccountsRequest) ExcludeHidden(excludeHidden bool) AccountsAPIListAccountsRequest {
 	r.excludeHidden = &excludeHidden
+	return r
+}
+
+// When true, also lists the accounts creators connected to your creator campaigns. They sit on creator profiles, which &#x60;GET /v1/profiles&#x60; does not list, and are left out by default. Asking for one creator profile by &#x60;profileId&#x60; lists its accounts either way. Applied before pagination. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
+func (r AccountsAPIListAccountsRequest) IncludeCreatorAccounts(includeCreatorAccounts bool) AccountsAPIListAccountsRequest {
+	r.includeCreatorAccounts = &includeCreatorAccounts
 	return r
 }
 
@@ -1904,6 +1911,13 @@ func (a *AccountsAPIService) ListAccountsExecute(r AccountsAPIListAccountsReques
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "excludeHidden", defaultValue, "form", "")
 		r.excludeHidden = &defaultValue
+	}
+	if r.includeCreatorAccounts != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeCreatorAccounts", r.includeCreatorAccounts, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeCreatorAccounts", defaultValue, "form", "")
+		r.includeCreatorAccounts = &defaultValue
 	}
 	if r.includeSandbox != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "includeSandbox", r.includeSandbox, "form", "")
