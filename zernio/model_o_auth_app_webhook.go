@@ -22,10 +22,9 @@ var _ MappedNullable = &OAuthAppWebhook{}
 
 // OAuthAppWebhook Facebook and Instagram only: Meta delivers comments and messages to your app's own webhook, so set it to this callback URL and verify token on the app's webhook product (Page for Facebook, Instagram for Instagram) and subscribe the listed fields. Zernio checks each delivery against your app secret. Null on platforms with nothing to set up.
 type OAuthAppWebhook struct {
-	CallbackUrl string `json:"callbackUrl"`
-	VerifyToken string `json:"verifyToken"`
-	// The webhook object to configure.
-	Object string `json:"object"`
+	CallbackUrl string                `json:"callbackUrl"`
+	VerifyToken string                `json:"verifyToken"`
+	Object      OAuthAppWebhookObject `json:"object"`
 	// Subscribe the app to these fields.
 	Fields []string `json:"fields"`
 }
@@ -36,7 +35,7 @@ type _OAuthAppWebhook OAuthAppWebhook
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewOAuthAppWebhook(callbackUrl string, verifyToken string, object string, fields []string) *OAuthAppWebhook {
+func NewOAuthAppWebhook(callbackUrl string, verifyToken string, object OAuthAppWebhookObject, fields []string) *OAuthAppWebhook {
 	this := OAuthAppWebhook{}
 	this.CallbackUrl = callbackUrl
 	this.VerifyToken = verifyToken
@@ -102,9 +101,9 @@ func (o *OAuthAppWebhook) SetVerifyToken(v string) {
 }
 
 // GetObject returns the Object field value
-func (o *OAuthAppWebhook) GetObject() string {
+func (o *OAuthAppWebhook) GetObject() OAuthAppWebhookObject {
 	if o == nil {
-		var ret string
+		var ret OAuthAppWebhookObject
 		return ret
 	}
 
@@ -113,7 +112,7 @@ func (o *OAuthAppWebhook) GetObject() string {
 
 // GetObjectOk returns a tuple with the Object field value
 // and a boolean to check if the value has been set.
-func (o *OAuthAppWebhook) GetObjectOk() (*string, bool) {
+func (o *OAuthAppWebhook) GetObjectOk() (*OAuthAppWebhookObject, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -121,7 +120,7 @@ func (o *OAuthAppWebhook) GetObjectOk() (*string, bool) {
 }
 
 // SetObject sets field value
-func (o *OAuthAppWebhook) SetObject(v string) {
+func (o *OAuthAppWebhook) SetObject(v OAuthAppWebhookObject) {
 	o.Object = v
 }
 
