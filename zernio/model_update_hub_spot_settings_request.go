@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.393.0
+API version: 1.394.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type UpdateHubSpotSettingsRequest struct {
 	SyncContacts *bool `json:"syncContacts,omitempty"`
 	// Log inbound and outbound inbox messages on the contact's HubSpot timeline.
 	LogMessages *bool `json:"logMessages,omitempty"`
+	// Send each deal that becomes closed won as a Purchase to the profile's event destinations, about once an hour. Requires the portal to have granted `crm.objects.deals.read`; otherwise 400. Deals closed before it was turned on are not sent.
+	ReportDeals *bool `json:"reportDeals,omitempty"`
 }
 
 // NewUpdateHubSpotSettingsRequest instantiates a new UpdateHubSpotSettingsRequest object
@@ -107,6 +109,38 @@ func (o *UpdateHubSpotSettingsRequest) SetLogMessages(v bool) {
 	o.LogMessages = &v
 }
 
+// GetReportDeals returns the ReportDeals field value if set, zero value otherwise.
+func (o *UpdateHubSpotSettingsRequest) GetReportDeals() bool {
+	if o == nil || IsNil(o.ReportDeals) {
+		var ret bool
+		return ret
+	}
+	return *o.ReportDeals
+}
+
+// GetReportDealsOk returns a tuple with the ReportDeals field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateHubSpotSettingsRequest) GetReportDealsOk() (*bool, bool) {
+	if o == nil || IsNil(o.ReportDeals) {
+		return nil, false
+	}
+	return o.ReportDeals, true
+}
+
+// HasReportDeals returns a boolean if a field has been set.
+func (o *UpdateHubSpotSettingsRequest) HasReportDeals() bool {
+	if o != nil && !IsNil(o.ReportDeals) {
+		return true
+	}
+
+	return false
+}
+
+// SetReportDeals gets a reference to the given bool and assigns it to the ReportDeals field.
+func (o *UpdateHubSpotSettingsRequest) SetReportDeals(v bool) {
+	o.ReportDeals = &v
+}
+
 func (o UpdateHubSpotSettingsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -122,6 +156,9 @@ func (o UpdateHubSpotSettingsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.LogMessages) {
 		toSerialize["logMessages"] = o.LogMessages
+	}
+	if !IsNil(o.ReportDeals) {
+		toSerialize["reportDeals"] = o.ReportDeals
 	}
 	return toSerialize, nil
 }
