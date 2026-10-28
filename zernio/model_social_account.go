@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.390.0
+API version: 1.391.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,10 @@ type SocialAccount struct {
 	DisplayName *string                `json:"displayName,omitempty"`
 	// The account's id on its platform as the platform reports it to Zernio; stable across reconnects, so it is the key to match an account against your own records. Instagram: the app-scoped user id on Instagram Login accounts (the professional account id is in `metadata.instagramScopedId`), the professional account id (`17841...`) on Facebook Login accounts. TikTok: the open_id of Zernio's TikTok app, which differs from the open_id any other app sees for the same user. Either value can be passed back as `expectedPlatformUserId` on GET /v1/connect/{platform}.
 	PlatformUserId *string `json:"platformUserId,omitempty"`
+	// Accounts connected through your own OAuth app: the permission areas the connect requested. Null on accounts connected through Zernio's app.
+	ScopeAreas []string `json:"scopeAreas,omitempty"`
+	// The id of your own OAuth app this account connected through (see /v1/connect/oauth-apps); null when it uses Zernio's app.
+	OauthAppId NullableString `json:"oauthAppId,omitempty"`
 	// TikTok accounts only. The account type TikTok reported when the account was connected. `personal` accounts cannot use TikTok direct messages through the API (TikTok limits Business Messaging to Business Accounts): skip the inbox for them and tell the user to switch to a Business Account in the TikTok app, then reconnect. `business` is the prerequisite, not a guarantee; messaging also needs the messaging scopes granted and TikTok's regional availability. `unknown` on accounts connected before this was captured or whose grant left out the account-type scope.
 	TiktokAccountType *string `json:"tiktokAccountType,omitempty"`
 	// URL to the account's profile picture on the platform. May be null if the platform does not provide one.
@@ -242,6 +246,82 @@ func (o *SocialAccount) HasPlatformUserId() bool {
 // SetPlatformUserId gets a reference to the given string and assigns it to the PlatformUserId field.
 func (o *SocialAccount) SetPlatformUserId(v string) {
 	o.PlatformUserId = &v
+}
+
+// GetScopeAreas returns the ScopeAreas field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SocialAccount) GetScopeAreas() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.ScopeAreas
+}
+
+// GetScopeAreasOk returns a tuple with the ScopeAreas field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SocialAccount) GetScopeAreasOk() ([]string, bool) {
+	if o == nil || IsNil(o.ScopeAreas) {
+		return nil, false
+	}
+	return o.ScopeAreas, true
+}
+
+// HasScopeAreas returns a boolean if a field has been set.
+func (o *SocialAccount) HasScopeAreas() bool {
+	if o != nil && !IsNil(o.ScopeAreas) {
+		return true
+	}
+
+	return false
+}
+
+// SetScopeAreas gets a reference to the given []string and assigns it to the ScopeAreas field.
+func (o *SocialAccount) SetScopeAreas(v []string) {
+	o.ScopeAreas = v
+}
+
+// GetOauthAppId returns the OauthAppId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SocialAccount) GetOauthAppId() string {
+	if o == nil || IsNil(o.OauthAppId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.OauthAppId.Get()
+}
+
+// GetOauthAppIdOk returns a tuple with the OauthAppId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SocialAccount) GetOauthAppIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.OauthAppId.Get(), o.OauthAppId.IsSet()
+}
+
+// HasOauthAppId returns a boolean if a field has been set.
+func (o *SocialAccount) HasOauthAppId() bool {
+	if o != nil && o.OauthAppId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetOauthAppId gets a reference to the given NullableString and assigns it to the OauthAppId field.
+func (o *SocialAccount) SetOauthAppId(v string) {
+	o.OauthAppId.Set(&v)
+}
+
+// SetOauthAppIdNil sets the value for OauthAppId to be an explicit nil
+func (o *SocialAccount) SetOauthAppIdNil() {
+	o.OauthAppId.Set(nil)
+}
+
+// UnsetOauthAppId ensures that no value is present for OauthAppId, not even an explicit nil
+func (o *SocialAccount) UnsetOauthAppId() {
+	o.OauthAppId.Unset()
 }
 
 // GetTiktokAccountType returns the TiktokAccountType field value if set, zero value otherwise.
@@ -642,6 +722,12 @@ func (o SocialAccount) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PlatformUserId) {
 		toSerialize["platformUserId"] = o.PlatformUserId
+	}
+	if o.ScopeAreas != nil {
+		toSerialize["scopeAreas"] = o.ScopeAreas
+	}
+	if o.OauthAppId.IsSet() {
+		toSerialize["oauthAppId"] = o.OauthAppId.Get()
 	}
 	if !IsNil(o.TiktokAccountType) {
 		toSerialize["tiktokAccountType"] = o.TiktokAccountType

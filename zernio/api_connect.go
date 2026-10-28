@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.390.0
+API version: 1.391.0
 Contact: support@zernio.com
 */
 
@@ -2479,6 +2479,139 @@ func (a *ConnectAPIService) ConnectWordPressWithApplicationPasswordExecute(r Con
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPICreateOAuthAppRequest struct {
+	ctx                   context.Context
+	ApiService            *ConnectAPIService
+	createOAuthAppRequest *CreateOAuthAppRequest
+}
+
+func (r ConnectAPICreateOAuthAppRequest) CreateOAuthAppRequest(createOAuthAppRequest CreateOAuthAppRequest) ConnectAPICreateOAuthAppRequest {
+	r.createOAuthAppRequest = &createOAuthAppRequest
+	return r
+}
+
+func (r ConnectAPICreateOAuthAppRequest) Execute() (*CreateOAuthApp201Response, *http.Response, error) {
+	return r.ApiService.CreateOAuthAppExecute(r)
+}
+
+/*
+CreateOAuthApp Add an OAuth app
+
+Saves your app's client ID and secret for a platform. The keys are checked with the platform first: keys it rejects return 400 OAUTH_APP_KEYS_REJECTED and are not saved; keys it could not check are saved with status `unchecked`. Allow the returned `redirectUri` in your app's settings on the platform before connecting. Only the account owner or a full-access team member can add apps, and not with a profile-scoped API key.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPICreateOAuthAppRequest
+*/
+func (a *ConnectAPIService) CreateOAuthApp(ctx context.Context) ConnectAPICreateOAuthAppRequest {
+	return ConnectAPICreateOAuthAppRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateOAuthApp201Response
+func (a *ConnectAPIService) CreateOAuthAppExecute(r ConnectAPICreateOAuthAppRequest) (*CreateOAuthApp201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateOAuthApp201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.CreateOAuthApp")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/oauth-apps"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createOAuthAppRequest == nil {
+		return localVarReturnValue, nil, reportError("createOAuthAppRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createOAuthAppRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPICreatePinterestBoardRequest struct {
 	ctx                         context.Context
 	ApiService                  *ConnectAPIService
@@ -2742,6 +2875,156 @@ func (a *ConnectAPIService) CreateYoutubePlaylistExecute(r ConnectAPICreateYoutu
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIDeleteOAuthAppRequest struct {
+	ctx        context.Context
+	ApiService *ConnectAPIService
+	appId      string
+	confirm    *bool
+}
+
+func (r ConnectAPIDeleteOAuthAppRequest) Confirm(confirm bool) ConnectAPIDeleteOAuthAppRequest {
+	r.confirm = &confirm
+	return r
+}
+
+func (r ConnectAPIDeleteOAuthAppRequest) Execute() (*DeleteOAuthApp200Response, *http.Response, error) {
+	return r.ApiService.DeleteOAuthAppExecute(r)
+}
+
+/*
+DeleteOAuthApp Remove an OAuth app
+
+Removes the app. Accounts connected through it can no longer refresh their tokens, so when any are connected the call returns 409 OAUTH_APP_IN_USE with `details.accountCount` unless `confirm=true` is passed. With confirm, those accounts are marked as needing reconnection and each fires `account.disconnected`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param appId
+	@return ConnectAPIDeleteOAuthAppRequest
+*/
+func (a *ConnectAPIService) DeleteOAuthApp(ctx context.Context, appId string) ConnectAPIDeleteOAuthAppRequest {
+	return ConnectAPIDeleteOAuthAppRequest{
+		ApiService: a,
+		ctx:        ctx,
+		appId:      appId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return DeleteOAuthApp200Response
+func (a *ConnectAPIService) DeleteOAuthAppExecute(r ConnectAPIDeleteOAuthAppRequest) (*DeleteOAuthApp200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeleteOAuthApp200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.DeleteOAuthApp")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/oauth-apps/{appId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"appId"+"}", url.PathEscape(parameterValueToString(r.appId, "appId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.confirm != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "confirm", r.confirm, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "confirm", defaultValue, "form", "")
+		r.confirm = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIGetConnectHandoffRequest struct {
 	ctx        context.Context
 	ApiService *ConnectAPIService
@@ -2874,6 +3157,7 @@ type ConnectAPIGetConnectUrlRequest struct {
 	platform               string
 	profileId              *string
 	reconnectAccountId     *string
+	oauthAppId             *string
 	expectedPlatformUserId *string
 	expectedUsername       *string
 	forceReauth            *bool
@@ -2902,6 +3186,12 @@ func (r ConnectAPIGetConnectUrlRequest) ProfileId(profileId string) ConnectAPIGe
 // Refresh this existing account (a Zernio account id of the same platform on this profile; otherwise 400). The OAuth callback and the selection endpoints (select-page, select-organization, select-board, select-location, Instagram and Snapchat selection) refuse, with &#x60;reconnect_account_mismatch&#x60;, a login that would write to a different account of the platform on this profile instead of this one. In headless mode the marker travels in the redirect_url we hand you, so pass that URL back unchanged to the selection endpoint. On X it counts toward the OAuth state limit described under redirect_url.
 func (r ConnectAPIGetConnectUrlRequest) ReconnectAccountId(reconnectAccountId string) ConnectAPIGetConnectUrlRequest {
 	r.reconnectAccountId = &reconnectAccountId
+	return r
+}
+
+// Connect through one of your own OAuth apps (see /v1/connect/oauth-apps), so the consent screen shows your app and the platform&#39;s limits are your app&#39;s. Without it the connect runs on Zernio&#39;s app, whatever apps the workspace has saved. Only platforms listed in &#x60;platforms&#x60; of GET /v1/connect/oauth-apps accept an app; any other, and connects that end on a destination picker (Facebook Pages, Instagram through Facebook Login), return 400. The connect requests the app&#39;s &#x60;scopeAreas&#x60;; &#x60;scopes&#x60; may narrow them but not add an area the app does not enable (400). If the user does not grant every requested area, the account still connects and the redirect carries &#x60;missing_permissions&#x3D;&lt;areas&gt;&#x60; (the headless POST returns &#x60;missingPermissions&#x60;). If the platform refuses a permission your app is not approved for, the redirect carries &#x60;error&#x3D;oauth_app_scope_not_allowed&#x60;. The account remembers the app, and token refresh, publishing and inbox run on it; reconnecting through another app, or without one, moves the account to that app.
+func (r ConnectAPIGetConnectUrlRequest) OauthAppId(oauthAppId string) ConnectAPIGetConnectUrlRequest {
+	r.oauthAppId = &oauthAppId
 	return r
 }
 
@@ -3067,6 +3357,9 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
 	if r.reconnectAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "reconnectAccountId", r.reconnectAccountId, "form", "")
+	}
+	if r.oauthAppId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "oauthAppId", r.oauthAppId, "form", "")
 	}
 	if r.expectedPlatformUserId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "expectedPlatformUserId", r.expectedPlatformUserId, "form", "")
@@ -4075,6 +4368,140 @@ func (a *ConnectAPIService) GetLinkedInOrganizationsExecute(r ConnectAPIGetLinke
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIGetOAuthAppRequest struct {
+	ctx        context.Context
+	ApiService *ConnectAPIService
+	appId      string
+}
+
+func (r ConnectAPIGetOAuthAppRequest) Execute() (*CreateOAuthApp201Response, *http.Response, error) {
+	return r.ApiService.GetOAuthAppExecute(r)
+}
+
+/*
+GetOAuthApp Get an OAuth app
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param appId
+	@return ConnectAPIGetOAuthAppRequest
+*/
+func (a *ConnectAPIService) GetOAuthApp(ctx context.Context, appId string) ConnectAPIGetOAuthAppRequest {
+	return ConnectAPIGetOAuthAppRequest{
+		ApiService: a,
+		ctx:        ctx,
+		appId:      appId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateOAuthApp201Response
+func (a *ConnectAPIService) GetOAuthAppExecute(r ConnectAPIGetOAuthAppRequest) (*CreateOAuthApp201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateOAuthApp201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetOAuthApp")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/oauth-apps/{appId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"appId"+"}", url.PathEscape(parameterValueToString(r.appId, "appId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7119,6 +7546,150 @@ func (a *ConnectAPIService) ListLinkedInOrganizationsExecute(r ConnectAPIListLin
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIListOAuthAppsRequest struct {
+	ctx        context.Context
+	ApiService *ConnectAPIService
+	limit      *int32
+	cursor     *string
+}
+
+func (r ConnectAPIListOAuthAppsRequest) Limit(limit int32) ConnectAPIListOAuthAppsRequest {
+	r.limit = &limit
+	return r
+}
+
+// &#x60;pagination.nextCursor&#x60; from the previous page.
+func (r ConnectAPIListOAuthAppsRequest) Cursor(cursor string) ConnectAPIListOAuthAppsRequest {
+	r.cursor = &cursor
+	return r
+}
+
+func (r ConnectAPIListOAuthAppsRequest) Execute() (*ListOAuthApps200Response, *http.Response, error) {
+	return r.ApiService.ListOAuthAppsExecute(r)
+}
+
+/*
+ListOAuthApps List your OAuth apps
+
+Your own OAuth apps on social platforms. A connect runs on one when it passes its id as `oauthAppId`: the consent screen then shows your app's name and logo, and the platform's rate limits and quotas are your app's. Add as many as you need, any number per platform. Also lists, in `platforms`, which platforms accept your own app and what to set up on each. Pages are ordered by id: pass `pagination.nextCursor` back as `cursor` until it is null. Like every OAuth-app call, it needs the account owner or a full-access team member, on a session or a full-scope API key.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIListOAuthAppsRequest
+*/
+func (a *ConnectAPIService) ListOAuthApps(ctx context.Context) ConnectAPIListOAuthAppsRequest {
+	return ConnectAPIListOAuthAppsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListOAuthApps200Response
+func (a *ConnectAPIService) ListOAuthAppsExecute(r ConnectAPIListOAuthAppsRequest) (*ListOAuthApps200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListOAuthApps200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ListOAuthApps")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/oauth-apps"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 50
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIListPinterestBoardsForSelectionRequest struct {
 	ctx           context.Context
 	ApiService    *ConnectAPIService
@@ -9185,6 +9756,142 @@ func (a *ConnectAPIService) StartMicrosoftAdminConsentExecute(r ConnectAPIStartM
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPITestOAuthAppRequest struct {
+	ctx        context.Context
+	ApiService *ConnectAPIService
+	appId      string
+}
+
+func (r ConnectAPITestOAuthAppRequest) Execute() (*CreateOAuthApp201Response, *http.Response, error) {
+	return r.ApiService.TestOAuthAppExecute(r)
+}
+
+/*
+TestOAuthApp Check an OAuth app's keys
+
+Checks the saved keys with the platform again and records the outcome in `status` and `lastError`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param appId
+	@return ConnectAPITestOAuthAppRequest
+*/
+func (a *ConnectAPIService) TestOAuthApp(ctx context.Context, appId string) ConnectAPITestOAuthAppRequest {
+	return ConnectAPITestOAuthAppRequest{
+		ApiService: a,
+		ctx:        ctx,
+		appId:      appId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateOAuthApp201Response
+func (a *ConnectAPIService) TestOAuthAppExecute(r ConnectAPITestOAuthAppRequest) (*CreateOAuthApp201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateOAuthApp201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.TestOAuthApp")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/oauth-apps/{appId}/test"
+	localVarPath = strings.Replace(localVarPath, "{"+"appId"+"}", url.PathEscape(parameterValueToString(r.appId, "appId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIUpdateConnectWelcomeScreenRequest struct {
 	ctx                               context.Context
 	ApiService                        *ConnectAPIService
@@ -9703,6 +10410,153 @@ func (a *ConnectAPIService) UpdateLinkedInOrganizationExecute(r ConnectAPIUpdate
 		}
 		if localVarHTTPResponse.StatusCode == 409 {
 			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIUpdateOAuthAppRequest struct {
+	ctx                   context.Context
+	ApiService            *ConnectAPIService
+	appId                 string
+	updateOAuthAppRequest *UpdateOAuthAppRequest
+}
+
+func (r ConnectAPIUpdateOAuthAppRequest) UpdateOAuthAppRequest(updateOAuthAppRequest UpdateOAuthAppRequest) ConnectAPIUpdateOAuthAppRequest {
+	r.updateOAuthAppRequest = &updateOAuthAppRequest
+	return r
+}
+
+func (r ConnectAPIUpdateOAuthAppRequest) Execute() (*CreateOAuthApp201Response, *http.Response, error) {
+	return r.ApiService.UpdateOAuthAppExecute(r)
+}
+
+/*
+UpdateOAuthApp Update an OAuth app
+
+Renames the app or rotates its secret. A new secret is checked with the platform before it is saved, and takes effect for every account on the app at once; their tokens keep working. The client ID cannot change: a different client ID is a different app, so add it and reconnect the accounts through it.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param appId
+	@return ConnectAPIUpdateOAuthAppRequest
+*/
+func (a *ConnectAPIService) UpdateOAuthApp(ctx context.Context, appId string) ConnectAPIUpdateOAuthAppRequest {
+	return ConnectAPIUpdateOAuthAppRequest{
+		ApiService: a,
+		ctx:        ctx,
+		appId:      appId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateOAuthApp201Response
+func (a *ConnectAPIService) UpdateOAuthAppExecute(r ConnectAPIUpdateOAuthAppRequest) (*CreateOAuthApp201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateOAuthApp201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.UpdateOAuthApp")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/oauth-apps/{appId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"appId"+"}", url.PathEscape(parameterValueToString(r.appId, "appId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateOAuthAppRequest == nil {
+		return localVarReturnValue, nil, reportError("updateOAuthAppRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateOAuthAppRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
