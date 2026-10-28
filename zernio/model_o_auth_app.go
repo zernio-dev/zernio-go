@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.392.0
+API version: 1.393.0
 Contact: support@zernio.com
 */
 
@@ -39,8 +39,9 @@ type OAuthApp struct {
 	// Connected accounts currently running on this app.
 	AccountCount int32 `json:"accountCount"`
 	// The OAuth redirect URI to allow in your app's settings on the platform.
-	RedirectUri string    `json:"redirectUri"`
-	CreatedAt   time.Time `json:"createdAt"`
+	RedirectUri string           `json:"redirectUri"`
+	Webhook     *OAuthAppWebhook `json:"webhook,omitempty"`
+	CreatedAt   time.Time        `json:"createdAt"`
 }
 
 type _OAuthApp OAuthApp
@@ -349,6 +350,38 @@ func (o *OAuthApp) SetRedirectUri(v string) {
 	o.RedirectUri = v
 }
 
+// GetWebhook returns the Webhook field value if set, zero value otherwise.
+func (o *OAuthApp) GetWebhook() OAuthAppWebhook {
+	if o == nil || IsNil(o.Webhook) {
+		var ret OAuthAppWebhook
+		return ret
+	}
+	return *o.Webhook
+}
+
+// GetWebhookOk returns a tuple with the Webhook field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OAuthApp) GetWebhookOk() (*OAuthAppWebhook, bool) {
+	if o == nil || IsNil(o.Webhook) {
+		return nil, false
+	}
+	return o.Webhook, true
+}
+
+// HasWebhook returns a boolean if a field has been set.
+func (o *OAuthApp) HasWebhook() bool {
+	if o != nil && !IsNil(o.Webhook) {
+		return true
+	}
+
+	return false
+}
+
+// SetWebhook gets a reference to the given OAuthAppWebhook and assigns it to the Webhook field.
+func (o *OAuthApp) SetWebhook(v OAuthAppWebhook) {
+	o.Webhook = &v
+}
+
 // GetCreatedAt returns the CreatedAt field value
 func (o *OAuthApp) GetCreatedAt() time.Time {
 	if o == nil {
@@ -397,6 +430,9 @@ func (o OAuthApp) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["accountCount"] = o.AccountCount
 	toSerialize["redirectUri"] = o.RedirectUri
+	if !IsNil(o.Webhook) {
+		toSerialize["webhook"] = o.Webhook
+	}
 	toSerialize["createdAt"] = o.CreatedAt
 	return toSerialize, nil
 }
