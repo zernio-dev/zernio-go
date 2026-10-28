@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.395.1
+API version: 1.395.2
 Contact: support@zernio.com
 */
 
@@ -1271,9 +1271,9 @@ Created `PAUSED` unless `status: ACTIVE`. The new ad group has no ad
 yet, so it will not appear in GET /v1/ads/tree (built purely from `ads`
 rows) until one is added; use GET /v1/ads/ad-sets to see it in the
 meantime. It can be read, edited and deleted through
-`/v1/ads/ad-sets/{adSetId}` right away (targeting, schedule, name);
-its `status`, `budget` and bid fields return 409
-`invalid_resource_state` until it has an ad.
+`/v1/ads/ad-sets/{adSetId}` right away (targeting, schedule, name,
+`status`, `budget` and bid fields). A budget on an ad group that spends
+its campaign budget returns 422.
 
 **Idempotency:** send an `Idempotency-Key` header to make retries safe.
 
