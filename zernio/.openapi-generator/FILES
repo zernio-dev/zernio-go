@@ -130,6 +130,7 @@ model_ad_rule_action_one_of.go
 model_ad_rule_action_one_of_1.go
 model_ad_rule_action_one_of_2.go
 model_ad_rule_action_one_of_3.go
+model_ad_rule_activity_entry.go
 model_ad_rule_condition.go
 model_ad_rule_conditions.go
 model_ad_rule_evaluation.go
@@ -140,6 +141,7 @@ model_ad_rule_run.go
 model_ad_rule_run_evaluation.go
 model_ad_rule_run_evaluation_actions_inner.go
 model_ad_rule_run_evaluation_notification.go
+model_ad_rule_run_evaluation_rule.go
 model_ad_rule_schedule.go
 model_ad_schedule_window.go
 model_ad_status.go
@@ -1571,6 +1573,7 @@ model_list_ad_keywords_200_response.go
 model_list_ad_labels_200_response.go
 model_list_ad_labels_200_response_data_inner.go
 model_list_ad_negative_keyword_lists_200_response.go
+model_list_ad_rule_activity_200_response.go
 model_list_ad_rule_runs_200_response.go
 model_list_ad_rules_200_response.go
 model_list_ad_sets_200_response.go

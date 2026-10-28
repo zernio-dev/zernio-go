@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.389.0
+API version: 1.390.0
 Contact: support@zernio.com
 */
 
@@ -20,6 +20,7 @@ var _ MappedNullable = &AdRuleRunEvaluation{}
 
 // AdRuleRunEvaluation The matched objects with their condition values, and what each action did.
 type AdRuleRunEvaluation struct {
+	Rule            *AdRuleRunEvaluationRule          `json:"rule,omitempty"`
 	Today           *string                           `json:"today,omitempty"`
 	Timezone        *string                           `json:"timezone,omitempty"`
 	TimezoneAssumed *bool                             `json:"timezoneAssumed,omitempty"`
@@ -44,6 +45,38 @@ func NewAdRuleRunEvaluation() *AdRuleRunEvaluation {
 func NewAdRuleRunEvaluationWithDefaults() *AdRuleRunEvaluation {
 	this := AdRuleRunEvaluation{}
 	return &this
+}
+
+// GetRule returns the Rule field value if set, zero value otherwise.
+func (o *AdRuleRunEvaluation) GetRule() AdRuleRunEvaluationRule {
+	if o == nil || IsNil(o.Rule) {
+		var ret AdRuleRunEvaluationRule
+		return ret
+	}
+	return *o.Rule
+}
+
+// GetRuleOk returns a tuple with the Rule field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleRunEvaluation) GetRuleOk() (*AdRuleRunEvaluationRule, bool) {
+	if o == nil || IsNil(o.Rule) {
+		return nil, false
+	}
+	return o.Rule, true
+}
+
+// HasRule returns a boolean if a field has been set.
+func (o *AdRuleRunEvaluation) HasRule() bool {
+	if o != nil && !IsNil(o.Rule) {
+		return true
+	}
+
+	return false
+}
+
+// SetRule gets a reference to the given AdRuleRunEvaluationRule and assigns it to the Rule field.
+func (o *AdRuleRunEvaluation) SetRule(v AdRuleRunEvaluationRule) {
+	o.Rule = &v
 }
 
 // GetToday returns the Today field value if set, zero value otherwise.
@@ -291,6 +324,9 @@ func (o AdRuleRunEvaluation) MarshalJSON() ([]byte, error) {
 
 func (o AdRuleRunEvaluation) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Rule) {
+		toSerialize["rule"] = o.Rule
+	}
 	if !IsNil(o.Today) {
 		toSerialize["today"] = o.Today
 	}
