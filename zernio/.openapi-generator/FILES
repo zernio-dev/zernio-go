@@ -28,7 +28,7 @@ api_connected_apps.go
 api_contacts.go
 api_conversions.go
 api_creator_campaigns.go
-api_creator_portal_public.go
+api_creator_portal.go
 api_custom_fields.go
 api_discord.go
 api_email.go

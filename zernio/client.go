@@ -105,7 +105,7 @@ type APIClient struct {
 
 	CreatorCampaignsAPI *CreatorCampaignsAPIService
 
-	CreatorPortalPublicAPI *CreatorPortalPublicAPIService
+	CreatorPortalAPI *CreatorPortalAPIService
 
 	CustomFieldsAPI *CustomFieldsAPIService
 
@@ -264,7 +264,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.ContactsAPI = (*ContactsAPIService)(&c.common)
 	c.ConversionsAPI = (*ConversionsAPIService)(&c.common)
 	c.CreatorCampaignsAPI = (*CreatorCampaignsAPIService)(&c.common)
-	c.CreatorPortalPublicAPI = (*CreatorPortalPublicAPIService)(&c.common)
+	c.CreatorPortalAPI = (*CreatorPortalAPIService)(&c.common)
 	c.CustomFieldsAPI = (*CustomFieldsAPIService)(&c.common)
 	c.DiscordAPI = (*DiscordAPIService)(&c.common)
 	c.EmailAPI = (*EmailAPIService)(&c.common)

@@ -872,18 +872,18 @@ func main() {
 | `client.CreatorCampaignsAPI.SettleCampaignParticipant(ctx)` | Settle campaign participant |
 | `client.CreatorCampaignsAPI.SuspendCampaignParticipant(ctx)` | Suspend campaign participant |
 
-### Creator Portal (public)
+### Creator Portal
 | Method | Description |
 |--------|-------------|
-| `client.CreatorPortal(public)API.CreateCreatorPayoutLogin(ctx)` | Open the creator's Stripe dashboard |
-| `client.CreatorPortal(public)API.GetCreatorPayoutStatement(ctx)` | Download a payout statement |
-| `client.CreatorPortal(public)API.GetCreatorPayouts(ctx)` | List a creator's earnings history |
-| `client.CreatorPortal(public)API.GetCreatorPortal(ctx)` | Read a creator invite or participant page |
-| `client.CreatorPortal(public)API.JoinCreatorCampaign(ctx)` | Join a campaign |
-| `client.CreatorPortal(public)API.RecoverCreatorPortalLinks(ctx)` | Email a creator their campaign links |
-| `client.CreatorPortal(public)API.StartCreatorConnect(ctx)` | Start connecting a creator account |
-| `client.CreatorPortal(public)API.StartCreatorPayouts(ctx)` | Start payout onboarding |
-| `client.CreatorPortal(public)API.SubmitCreatorPost(ctx)` | Submit a post |
+| `client.CreatorPortalAPI.CreateCreatorPayoutLogin(ctx)` | Open the creator's Stripe dashboard |
+| `client.CreatorPortalAPI.GetCreatorPayoutStatement(ctx)` | Download a payout statement |
+| `client.CreatorPortalAPI.GetCreatorPayouts(ctx)` | List a creator's earnings history |
+| `client.CreatorPortalAPI.GetCreatorPortal(ctx)` | Read a creator invite or participant page |
+| `client.CreatorPortalAPI.JoinCreatorCampaign(ctx)` | Join a campaign |
+| `client.CreatorPortalAPI.RecoverCreatorPortalLinks(ctx)` | Email a creator their campaign links |
+| `client.CreatorPortalAPI.StartCreatorConnect(ctx)` | Start connecting a creator account |
+| `client.CreatorPortalAPI.StartCreatorPayouts(ctx)` | Start payout onboarding |
+| `client.CreatorPortalAPI.SubmitCreatorPost(ctx)` | Submit a post |
 
 ### Custom Fields
 | Method | Description |
