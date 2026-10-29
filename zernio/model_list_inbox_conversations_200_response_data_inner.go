@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.413.3
+API version: 1.414.0
 Contact: support@zernio.com
 */
 
@@ -22,10 +22,12 @@ var _ MappedNullable = &ListInboxConversations200ResponseDataInner{}
 // ListInboxConversations200ResponseDataInner struct for ListInboxConversations200ResponseDataInner
 type ListInboxConversations200ResponseDataInner struct {
 	// Opaque conversation identifier. Pass it back verbatim to any /v1/inbox/conversations/{conversationId} route; do not assume a fixed format.
-	Id                 *string        `json:"id,omitempty"`
-	Platform           *string        `json:"platform,omitempty"`
-	AccountId          *string        `json:"accountId,omitempty"`
-	AccountUsername    *string        `json:"accountUsername,omitempty"`
+	Id              *string `json:"id,omitempty"`
+	Platform        *string `json:"platform,omitempty"`
+	AccountId       *string `json:"accountId,omitempty"`
+	AccountUsername *string `json:"accountUsername,omitempty"`
+	// The bare Facebook Page id behind the account, for Facebook and Instagram connected through Facebook Login. Null when the account has no Facebook Page.
+	PageId             NullableString `json:"pageId,omitempty"`
 	ParticipantId      *string        `json:"participantId,omitempty"`
 	ParticipantName    *string        `json:"participantName,omitempty"`
 	ParticipantPicture NullableString `json:"participantPicture,omitempty"`
@@ -196,6 +198,49 @@ func (o *ListInboxConversations200ResponseDataInner) HasAccountUsername() bool {
 // SetAccountUsername gets a reference to the given string and assigns it to the AccountUsername field.
 func (o *ListInboxConversations200ResponseDataInner) SetAccountUsername(v string) {
 	o.AccountUsername = &v
+}
+
+// GetPageId returns the PageId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListInboxConversations200ResponseDataInner) GetPageId() string {
+	if o == nil || IsNil(o.PageId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PageId.Get()
+}
+
+// GetPageIdOk returns a tuple with the PageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListInboxConversations200ResponseDataInner) GetPageIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PageId.Get(), o.PageId.IsSet()
+}
+
+// HasPageId returns a boolean if a field has been set.
+func (o *ListInboxConversations200ResponseDataInner) HasPageId() bool {
+	if o != nil && o.PageId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPageId gets a reference to the given NullableString and assigns it to the PageId field.
+func (o *ListInboxConversations200ResponseDataInner) SetPageId(v string) {
+	o.PageId.Set(&v)
+}
+
+// SetPageIdNil sets the value for PageId to be an explicit nil
+func (o *ListInboxConversations200ResponseDataInner) SetPageIdNil() {
+	o.PageId.Set(nil)
+}
+
+// UnsetPageId ensures that no value is present for PageId, not even an explicit nil
+func (o *ListInboxConversations200ResponseDataInner) UnsetPageId() {
+	o.PageId.Unset()
 }
 
 // GetParticipantId returns the ParticipantId field value if set, zero value otherwise.
@@ -807,6 +852,9 @@ func (o ListInboxConversations200ResponseDataInner) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.AccountUsername) {
 		toSerialize["accountUsername"] = o.AccountUsername
+	}
+	if o.PageId.IsSet() {
+		toSerialize["pageId"] = o.PageId.Get()
 	}
 	if !IsNil(o.ParticipantId) {
 		toSerialize["participantId"] = o.ParticipantId

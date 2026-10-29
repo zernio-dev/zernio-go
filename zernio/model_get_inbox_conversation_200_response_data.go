@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.413.3
+API version: 1.414.0
 Contact: support@zernio.com
 */
 
@@ -24,10 +24,12 @@ type GetInboxConversation200ResponseData struct {
 	Id              *string `json:"id,omitempty"`
 	AccountId       *string `json:"accountId,omitempty"`
 	AccountUsername *string `json:"accountUsername,omitempty"`
-	Platform        *string `json:"platform,omitempty"`
-	Status          *string `json:"status,omitempty"`
-	ParticipantName *string `json:"participantName,omitempty"`
-	ParticipantId   *string `json:"participantId,omitempty"`
+	// The bare Facebook Page id behind the account, for Facebook and Instagram connected through Facebook Login. Null when the account has no Facebook Page.
+	PageId          NullableString `json:"pageId,omitempty"`
+	Platform        *string        `json:"platform,omitempty"`
+	Status          *string        `json:"status,omitempty"`
+	ParticipantName *string        `json:"participantName,omitempty"`
+	ParticipantId   *string        `json:"participantId,omitempty"`
 	// X verified badge type. Only present for X conversations.
 	ParticipantVerifiedType NullableString `json:"participantVerifiedType,omitempty"`
 	// WhatsApp only. Meta business-scoped user ID (BSUID), the stable identity anchor; present when Meta has sent it for this participant.
@@ -154,6 +156,49 @@ func (o *GetInboxConversation200ResponseData) HasAccountUsername() bool {
 // SetAccountUsername gets a reference to the given string and assigns it to the AccountUsername field.
 func (o *GetInboxConversation200ResponseData) SetAccountUsername(v string) {
 	o.AccountUsername = &v
+}
+
+// GetPageId returns the PageId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetInboxConversation200ResponseData) GetPageId() string {
+	if o == nil || IsNil(o.PageId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PageId.Get()
+}
+
+// GetPageIdOk returns a tuple with the PageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetInboxConversation200ResponseData) GetPageIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PageId.Get(), o.PageId.IsSet()
+}
+
+// HasPageId returns a boolean if a field has been set.
+func (o *GetInboxConversation200ResponseData) HasPageId() bool {
+	if o != nil && o.PageId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPageId gets a reference to the given NullableString and assigns it to the PageId field.
+func (o *GetInboxConversation200ResponseData) SetPageId(v string) {
+	o.PageId.Set(&v)
+}
+
+// SetPageIdNil sets the value for PageId to be an explicit nil
+func (o *GetInboxConversation200ResponseData) SetPageIdNil() {
+	o.PageId.Set(nil)
+}
+
+// UnsetPageId ensures that no value is present for PageId, not even an explicit nil
+func (o *GetInboxConversation200ResponseData) UnsetPageId() {
+	o.PageId.Unset()
 }
 
 // GetPlatform returns the Platform field value if set, zero value otherwise.
@@ -633,6 +678,9 @@ func (o GetInboxConversation200ResponseData) ToMap() (map[string]interface{}, er
 	}
 	if !IsNil(o.AccountUsername) {
 		toSerialize["accountUsername"] = o.AccountUsername
+	}
+	if o.PageId.IsSet() {
+		toSerialize["pageId"] = o.PageId.Get()
 	}
 	if !IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
