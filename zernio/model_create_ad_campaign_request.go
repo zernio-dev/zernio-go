@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -35,7 +35,7 @@ type CreateAdCampaignRequest struct {
 	PromotedObject           *AdPromotedObject `json:"promotedObject,omitempty"`
 	// Every platform buys at auction by default, so this only needs sending on Meta, and only to choose RESERVED. `AUCTION` is accepted on every platform and changes nothing. `RESERVED` (Reach & Frequency) is Meta-only and is rejected with a 400 elsewhere. SKAdNetwork app promotion requires AUCTION.
 	BuyingType *string `json:"buyingType,omitempty"`
-	// Meta and ChatGPT (OpenAI). Runs campaign validation without creating or persisting a campaign; Idempotency-Key storage is bypassed. Returns HTTP 200 with validateOnly true and status VALIDATED. OpenAI has no dry-run, so there Zernio checks the budget, goal and conversion event itself. `true` on any other platform returns 501 `feature_not_available` (same as POST /v1/ads/create); `false` is ignored.
+	// Meta and ChatGPT (OpenAI). Runs campaign validation without creating or persisting a campaign; Idempotency-Key storage is bypassed. Returns HTTP 200 with validateOnly true and status VALIDATED.  OpenAI has no dry-run, so Zernio checks the budget, goal and conversion event itself. `true` on any other platform returns 501 `feature_not_available` (same as POST /v1/ads/create); `false` is ignored.
 	ValidateOnly        *bool    `json:"validateOnly,omitempty"`
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
 	// Campaign-level (CBO) budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Requires budgetType.
@@ -48,9 +48,9 @@ type CreateAdCampaignRequest struct {
 	EndDate *time.Time `json:"endDate,omitempty"`
 	// Google only (400 elsewhere). Written on the new campaign.
 	LocationTargetingType *GoogleLocationTargetingType `json:"locationTargetingType,omitempty"`
-	// Campaign bid strategy. Meta stores `bid_strategy` alongside the budget, so this REQUIRES `budgetAmount` + `budgetType` on the same request; sending it without a campaign budget is a 400. A campaign carrying a strategy without its `bid_amount` makes every ad set created under it fail with an error that names the ad set (code 100, subcode 1815857), so the bad state is rejected up front rather than accepted. To bid at ad-set level on Meta, set the strategy there instead. On Google: LOWEST_COST_WITHOUT_CAP = Maximize Conversions, COST_CAP + bidAmount = Target CPA, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS, LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling; portfolioBidStrategyId attaches a portfolio strategy instead.
+	// Campaign bid strategy.  **Meta** stores `bid_strategy` alongside the budget, so this REQUIRES `budgetAmount` + `budgetType` on the same request (400 without a campaign budget).  A campaign carrying a strategy without its `bid_amount` makes every ad set under it fail (code 100, subcode 1815857), so that state is rejected up front. To bid at ad-set level, set the strategy there instead.  **Google:**  - LOWEST_COST_WITHOUT_CAP = Maximize Conversions - COST_CAP + bidAmount = Target CPA - LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS - LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling - portfolioBidStrategyId attaches a portfolio strategy instead.
 	BidStrategy *string `json:"bidStrategy,omitempty"`
-	// Whole currency units (USD: 5 = $5.00). Required for LOWEST_COST_WITH_BID_CAP and COST_CAP; ignored otherwise. On Meta, validated here but NOT stored: the campaign object has no bid_amount field, only bid_strategy lives on it, and the amount takes effect once an ad set joins this campaign (existingCampaignId on POST /v1/ads/create) and supplies its own bidAmount there. On Google, stored directly on the campaign's bidding strategy.
+	// Whole currency units (USD: 5 = $5.00). Required for LOWEST_COST_WITH_BID_CAP and COST_CAP; ignored otherwise.  - Meta: validated here but NOT stored, since the campaign object only has bid_strategy. The amount takes effect once an ad set joins this campaign (existingCampaignId on POST /v1/ads/create) and supplies its own bidAmount there. - Google: stored directly on the campaign's bidding strategy.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Decimal ROAS multiplier (2.0 = 2.0x). Required for LOWEST_COST_WITH_MIN_ROAS.
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`

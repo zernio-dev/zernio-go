@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -36,7 +36,7 @@ type SearchAdTargeting200ResponseResultsInner struct {
 	Status *string `json:"status,omitempty"`
 	// ISO-3166 alpha-2 of the country a sub-country geo result (city, region, zip, metro) belongs to, when the platform reports it (Meta does). Useful to know whether a location falls under the EU DSA disclosure rules before creating the ad.
 	CountryCode *string `json:"countryCode,omitempty"`
-	// On Reddit `community` results: Reddit's own subreddit id (the `id` is the name). Otherwise only on `country` results: the platform's own id for the country, which `id` replaced with the ISO code (TikTok's native location_id, a GeoNames id such as 2635167 for GB; Meta's country key; Google's geo target constant id; X's targeting value; LinkedIn's geo URN). Use it to match a country against what the platform reports back, e.g. `location_ids` in a TikTok `nativeSettings` read.
+	// The platform's own id for the result.  - Reddit `community` results: Reddit's own subreddit id (the `id` is the name). - `country` results: the platform's own id for the country, which `id` replaced with the ISO code. TikTok's native location_id (a GeoNames id such as 2635167 for GB), Meta's country key, Google's geo target constant id, X's targeting value, LinkedIn's geo URN. - Other results: absent.  Use it to match a country against what the platform reports back, e.g. `location_ids` in a TikTok `nativeSettings` read.
 	PlatformId *string `json:"platformId,omitempty"`
 }
 

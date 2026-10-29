@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -31,7 +31,7 @@ type CheckVerification200Response struct {
 	// Accepted deliveries (initial send + resends); each bills one verification fee.
 	SendCount  *int32     `json:"sendCount,omitempty"`
 	LastSentAt *time.Time `json:"lastSentAt,omitempty"`
-	// WhatsApp only, returned by GET /v1/verify/verifications/{verificationId} (null on create and check responses): what Meta reported for the latest send, null until it reports. A code that never reached the recipient (for example a number not on WhatsApp) reads failed, with the Meta error in deliveryErrorCode. failed does not settle the verification: Meta can report failed and later deliver the same message. Reported for at least an hour after the send, well past any code's expiry.
+	// WhatsApp only. What Meta reported for the latest send, null until it reports. Returned by GET /v1/verify/verifications/{verificationId} (null on create and check responses).  A code that never reached the recipient (for example a number not on WhatsApp) reads failed, with the Meta error in deliveryErrorCode. failed does not settle the verification: Meta can report failed and later deliver the same message.  Reported for at least an hour after the send, well past any code's expiry.
 	DeliveryStatus NullableString `json:"deliveryStatus,omitempty"`
 	// Meta error code when deliveryStatus is failed (e.g. 131026, message undeliverable).
 	DeliveryErrorCode *int32     `json:"deliveryErrorCode,omitempty"`

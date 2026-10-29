@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the CreateStandaloneAdRequestBrandIdentity type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreateStandaloneAdRequestBrandIdentity{}
 
-// CreateStandaloneAdRequestBrandIdentity TikTok only. Synthetic Brand Identity used when the ad attributes to a CUSTOMIZED_USER (instead of a real TT_USER @username). Required on the FIRST CUSTOMIZED_USER ad on a `tiktokads` SocialAccount with no cached identity; omit on subsequent ads (the identity is cached on the account after first creation). Non-TikTok platforms ignore this field.  Alternative: configure once via `PATCH /v1/connect/tiktok-ads`, then create ads without this field.
+// CreateStandaloneAdRequestBrandIdentity TikTok only; non-TikTok platforms ignore this field. Synthetic Brand Identity used when the ad attributes to a CUSTOMIZED_USER (instead of a real TT_USER @username).  Required on the FIRST CUSTOMIZED_USER ad on a `tiktokads` SocialAccount with no cached identity. Omit it on later ads: the identity is cached on the account after first creation.  Alternative: configure once via `PATCH /v1/connect/tiktok-ads`, then create ads without this field.
 type CreateStandaloneAdRequestBrandIdentity struct {
 	// Brand name shown above the ad on TikTok.
 	DisplayName string `json:"displayName"`

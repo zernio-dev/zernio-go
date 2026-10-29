@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -36,7 +36,7 @@ type WebhookPayloadAccountAdsInitialSyncCompletedSync struct {
 	ErrorCode *string `json:"errorCode,omitempty"`
 	// Platform-native error subcode if parsed.
 	ErrorSubcode *string `json:"errorSubcode,omitempty"`
-	// Stable category for UX branching. New values may be added; existing ones are stable. Mapping:   - `token_invalid`: access token is expired or revoked. Reconnect.   - `permission_denied`: token lacks required scope, or the user has no role     on the Business Manager that owns the ad account. Reconnect with full     permissions, or have an admin grant access.   - `no_ad_accounts`: token is valid but sees zero ad accounts. The user     needs to connect a Business Manager that owns ad accounts.   - `rate_limited`: platform throttled us. Sync will retry automatically.   - `discovery_failed`: any other platform-side failure. Inspect `error`.   - `unknown`: classifier could not categorize the failure.
+	// Stable category for UX branching. New values may be added; existing ones are stable.  - `token_invalid`: access token is expired or revoked. Reconnect. - `permission_denied`: token lacks a required scope, or the user has no role on the Business Manager that owns the ad account. Reconnect with full permissions, or have an admin grant access. - `no_ad_accounts`: token is valid but sees zero ad accounts. The user needs to connect a Business Manager that owns ad accounts. - `rate_limited`: the platform throttled us. Sync retries automatically. - `discovery_failed`: any other platform-side failure. Inspect `error`. - `unknown`: the classifier could not categorize the failure.
 	ErrorCategory *string `json:"errorCategory,omitempty"`
 }
 

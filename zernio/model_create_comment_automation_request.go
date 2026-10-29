@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -25,11 +25,11 @@ type CreateCommentAutomationRequest struct {
 	ProfileId string `json:"profileId"`
 	// Instagram, Facebook, TikTok, Threads, LinkedIn or YouTube account ID. On the last four the automation only posts the public reply. X accounts are refused (400, code platform_not_supported) while X comment polling is off.
 	AccountId string `json:"accountId"`
-	// What fires the automation. 'comment' (keyword comment on a post), 'live_comment' (keyword comment on an Instagram live broadcast), 'story_reply' (keyword reply to an Instagram story) or 'story_mention' (a story mentioning the Instagram account). For 'story_reply', platformPostId is the story media id (omit for any story). Every trigger but 'comment' is Instagram only; reply-only platforms accept 'comment' only.
+	// What fires the automation:  - 'comment': keyword comment on a post. - 'live_comment': keyword comment on an Instagram live broadcast. - 'story_reply': keyword reply to an Instagram story. platformPostId is the story media id (omit for any story). - 'story_mention': a story mentioning the Instagram account.  Every trigger but 'comment' is Instagram only; reply-only platforms accept 'comment' only.
 	Trigger *string `json:"trigger,omitempty"`
 	// Platform media/post ID (or story media id when trigger=story_reply). Omit for an account-wide (any-post / any-story) automation.
 	PlatformPostId *string `json:"platformPostId,omitempty"`
-	// Zernio post ID (24 hexadecimal characters); platform IDs return 400. Optional and never required. Use it INSTEAD of platformPostId to bind a per-post automation to a not-yet-published Zernio post: the automation stays pending and arms itself when that post publishes. For a post already live on the platform, pass platformPostId alone and omit this.
+	// Zernio post ID (24 hexadecimal characters); platform IDs return 400. Optional and never required.  Use it INSTEAD of platformPostId to bind a per-post automation to a not-yet-published Zernio post: the automation stays pending and arms itself when that post publishes. For a post already live on the platform, pass platformPostId alone and omit this.
 	PostId *string `json:"postId,omitempty" validate:"regexp=^[a-fA-F0-9]{24}$"`
 	// Post content snippet for display
 	PostTitle *string `json:"postTitle,omitempty"`
@@ -63,7 +63,7 @@ type CreateCommentAutomationRequest struct {
 	DmDelaySeconds *int32 `json:"dmDelaySeconds,omitempty"`
 	// Seconds to wait before posting the public comment reply. Omit or send 0 to post it right after the DM (the default). The reply never goes out before the DM, so a value below dmDelaySeconds is raised to it. Ignored when trigger=story_reply, which has no public reply.
 	CommentReplyDelaySeconds *int32 `json:"commentReplyDelaySeconds,omitempty"`
-	// Also fire these keywords on a plain inbound DM, so the automation answers people who message the keyword instead of commenting it. Requires at least one keyword (an empty keyword list means 'match anything', which would answer every inbound message) and is rejected on story_reply automations, which already trigger on DMs. Dedup is per door: a contact who already received the DM from their comment can still receive it from a DM.
+	// Also fire these keywords on a plain inbound DM, so the automation answers people who message the keyword instead of commenting it.  - Requires at least one keyword (an empty list means 'match anything', which would answer every inbound message). - Rejected on story_reply automations, which already trigger on DMs. - Dedup is per door: a contact who already received the DM from their comment can still receive it from a DM.
 	AlsoMatchInDms *bool                          `json:"alsoMatchInDms,omitempty"`
 	Audience       *CommentAutomationAudience     `json:"audience,omitempty"`
 	FollowGate     *CommentAutomationFollowGate   `json:"followGate,omitempty"`

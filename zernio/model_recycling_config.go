@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -19,7 +19,7 @@ import (
 // checks if the RecyclingConfig type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &RecyclingConfig{}
 
-// RecyclingConfig Configure automatic post recycling (reposting at regular intervals). After the post is published, the system creates new scheduled copies at the specified interval until expiration conditions are met. Supports weekly or monthly intervals. Maximum 10 active recycling posts per account. YouTube and TikTok platforms are excluded from recycling. Content variations are recommended for X and Pinterest to avoid duplicate flags.
+// RecyclingConfig Automatic post recycling (reposting at regular intervals). After the post is published, the system creates new scheduled copies at the specified interval until expiration conditions are met.  - Weekly or monthly intervals. - Maximum 10 active recycling posts per account. - YouTube and TikTok are excluded. - Content variations are recommended for X and Pinterest to avoid duplicate flags.
 type RecyclingConfig struct {
 	// Set to false to disable recycling on this post
 	Enabled *bool `json:"enabled,omitempty"`
@@ -33,7 +33,7 @@ type RecyclingConfig struct {
 	ExpireCount NullableInt32 `json:"expireCount,omitempty"`
 	// Stop recycling after this date, regardless of count. Send null on update to clear this limit.
 	ExpireDate NullableTime `json:"expireDate,omitempty"`
-	// Array of content variations for recycled copies. On each recycle, the next variation is used in round-robin order. Recommended for X and Pinterest to avoid duplicate content flags. If omitted, the original post content is used for all recycled copies. Send an empty array [] to clear existing variations. Must have 2+ entries when setting variations. Platform-level customContent still overrides the base content per platform.
+	// Content variations for recycled copies. Each recycle uses the next variation, in round-robin order. Recommended for X and Pinterest to avoid duplicate content flags.  - If omitted, the original post content is used for all recycled copies. - Send an empty array [] to clear existing variations. - Must have 2+ entries when setting variations. - Platform-level customContent still overrides the base content per platform.
 	ContentVariations []string `json:"contentVariations,omitempty"`
 }
 

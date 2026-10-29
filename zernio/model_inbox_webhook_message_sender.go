@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ var _ MappedNullable = &InboxWebhookMessageSender{}
 type InboxWebhookMessageSender struct {
 	// Sender's platform identifier. For WhatsApp this is the phone number (without leading `+`) when available, otherwise the `businessScopedUserId`. For other platforms, the platform's own user ID.
 	Id string `json:"id"`
-	// Zernio CRM Contact id for this sender, when one exists (joined via the ContactChannel mapping). Lets integrators link a message straight to a Contact without a follow-up Contacts API call. Omitted when the sender isn't a tracked contact (e.g. outgoing messages where the sender is the business, or first-touch messages before the contact is created).
+	// Zernio CRM Contact id for this sender, when one exists (joined via the ContactChannel mapping). Lets integrators link a message straight to a Contact without a follow-up Contacts API call.  Omitted when the sender isn't a tracked contact (e.g. outgoing messages where the sender is the business, or first-touch messages before the contact is created).
 	ContactId *string `json:"contactId,omitempty"`
 	Name      *string `json:"name,omitempty"`
 	Username  *string `json:"username,omitempty"`

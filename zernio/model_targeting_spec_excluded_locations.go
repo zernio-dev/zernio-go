@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the TargetingSpecExcludedLocations type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &TargetingSpecExcludedLocations{}
 
-// TargetingSpecExcludedLocations Geo to exclude from the audience. Mirrors the inclusion geo shape: excluded cities can carry a radius catchment and excluded custom (lat/lng) pins are supported, both on Meta (excluded_geo_locations). Google (Search, Display, Performance Max) excludes countries, regions, cities and zips as negative location criteria; countryGroups, places, neighborhoods, customLocations and a city radius return 400 there, and Demand Gen returns 400 for any exclusion.
+// TargetingSpecExcludedLocations Geo to exclude from the audience. Mirrors the inclusion geo shape.  - Meta (excluded_geo_locations): excluded cities can carry a radius catchment, and excluded custom (lat/lng) pins are supported. - Google (Search, Display, Performance Max): excludes countries, regions, cities and zips as negative location criteria. countryGroups, places, neighborhoods, customLocations and a city radius return 400. - Google Demand Gen: returns 400 for any exclusion.
 type TargetingSpecExcludedLocations struct {
 	Countries []string `json:"countries,omitempty"`
 	// Meta only. Continents and trade blocs to exclude (`excluded_geo_locations.country_groups`).

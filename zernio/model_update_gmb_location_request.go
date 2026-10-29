@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &UpdateGmbLocationRequest{}
 // UpdateGmbLocationRequest struct for UpdateGmbLocationRequest
 type UpdateGmbLocationRequest struct {
 	SelectedLocationId string `json:"selectedLocationId"`
-	// Optional but recommended. The Google Business Profile Account resource name (\"accounts/123\") that owns the new location (from GET gmb-locations). When provided, the location is resolved directly instead of by enumerating the account, which is required for accounts with many locations. Named `googleAccountId` to disambiguate from the path `accountId` (the Zernio account). The legacy field name `accountId` is still accepted for backwards compatibility.
+	// Optional but recommended. The Google Business Profile Account resource name (\"accounts/123\") that owns the new location (from GET gmb-locations).  When provided, the location is resolved directly instead of by enumerating the account, which is required for accounts with many locations.  Named `googleAccountId` to disambiguate from the path `accountId` (the Zernio account). The legacy field name `accountId` is still accepted for backwards compatibility.
 	GoogleAccountId *string `json:"googleAccountId,omitempty"`
 }
 

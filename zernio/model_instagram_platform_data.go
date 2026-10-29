@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -31,12 +31,12 @@ type InstagramPlatformData struct {
 	// Optional first comment to add after the post is created (not applied to Stories)
 	FirstComment *string                           `json:"firstComment,omitempty"`
 	TrialParams  *InstagramPlatformDataTrialParams `json:"trialParams,omitempty"`
-	// Tag Instagram users by username. The tag shape depends on the media: photos require x/y coordinates, Reels and videos take username only (coordinates are ignored), stories accept optional coordinates. For carousels, use mediaIndex to target specific slides (defaults to 0); video slides take username-only tags. Photo tags without valid coordinates are skipped.
+	// Tag Instagram users by username. The tag shape depends on the media:  - Photos: require x/y coordinates. Photo tags without valid coordinates are skipped. - Reels and videos: username only (coordinates are ignored). - Stories: optional coordinates. - Carousels: use mediaIndex to target specific slides (defaults to 0); video slides take username-only tags.
 	UserTags []InstagramPlatformDataUserTagsInner `json:"userTags,omitempty"`
 	// Custom name for original audio in Reels. Replaces the default \"Original Audio\" label. Can only be set once. Unrelated to audioConfiguration, which attaches a catalog track.
 	AudioName          *string                                  `json:"audioName,omitempty"`
 	AudioConfiguration *InstagramPlatformDataAudioConfiguration `json:"audioConfiguration,omitempty"`
-	// Publish the video without sound. Applies to Reels, Stories, and video carousel slides; ignored for images. Instagram has no mute parameter, so we strip the audio track from the file before handing it to Instagram: the published video is permanently silent and the original audio cannot be restored from Instagram. If the audio cannot be stripped the post fails rather than publishing with sound; videos above 200MB cannot be muted at all, so mute them before uploading. Unrelated to audioConfiguration.videoVolume, which only lowers the original sound when a catalog track is attached.
+	// Publish the video without sound. Applies to Reels, Stories, and video carousel slides; ignored for images.  Instagram has no mute parameter, so we strip the audio track from the file before handing it to Instagram. The published video is permanently silent, and the original audio cannot be restored from Instagram.  - If the audio cannot be stripped, the post fails rather than publishing with sound. - Videos above 200MB cannot be muted at all, so mute them before uploading.  Unrelated to audioConfiguration.videoVolume, which only lowers the original sound when a catalog track is attached.
 	MuteAudio *bool `json:"muteAudio,omitempty"`
 	// Millisecond offset from video start for the Reel cover frame. Ignored when instagramThumbnail or reelCover is provided. Defaults to 0.
 	ThumbOffset *int32 `json:"thumbOffset,omitempty"`
@@ -48,11 +48,11 @@ type InstagramPlatformData struct {
 	IsAiGenerated *bool `json:"isAiGenerated,omitempty"`
 	// When true, Instagram shows the \"Paid partnership\" label on the post. Applies to feed posts, Reels, and carousels; not supported on Stories (400). Requires an Instagram account connected via Facebook Login; classic Instagram Login accounts get a 400 (instagram_paid_partnership_requires_facebook_login). Implied when brandedContentSponsors is set.
 	IsPaidPartnership *bool `json:"isPaidPartnership,omitempty"`
-	// Up to 2 brands to tag as sponsors, each an Instagram username (leading @ optional) or a numeric Instagram user ID. Usernames are resolved at publish time via the Business Discovery API on the publishing account; a sponsor that cannot be resolved (private, personal, or nonexistent account) fails the post with a user error naming it. Sponsors must be professional (Business or Creator) accounts. A brand that has pre-approved the creator shows as \"Paid partnership with @brand\" immediately; otherwise the plain label shows and the brand receives an approval request. Sets isPaidPartnership. Same login and content-type rules as isPaidPartnership.
+	// Up to 2 brands to tag as sponsors, each an Instagram username (leading @ optional) or a numeric Instagram user ID. Sponsors must be professional (Business or Creator) accounts.  - Usernames are resolved at publish time via the Business Discovery API on the publishing account. A sponsor that cannot be resolved (private, personal, or nonexistent account) fails the post with a user error naming it. - A brand that has pre-approved the creator shows as \"Paid partnership with @brand\" immediately; otherwise the plain label shows and the brand receives an approval request.  Sets isPaidPartnership. Same login and content-type rules as isPaidPartnership.
 	BrandedContentSponsors []string `json:"brandedContentSponsors,omitempty"`
-	// When false, comments are turned off on the post right after it is published (Meta exposes this as comment_enabled on the media object). Applies to feed posts, Reels, and carousels; ignored for Stories, which have no comments. Works with both Instagram connection methods. Best-effort: if the toggle fails after a successful publish, the post still succeeds and stays live with comments on.
+	// When false, comments are turned off on the post right after it is published (Meta's comment_enabled on the media object).  - Applies to feed posts, Reels and carousels; ignored for Stories, which have no comments. - Works with both Instagram connection methods. - Best-effort: if the toggle fails after a successful publish, the post still succeeds and stays live with comments on.
 	CommentsEnabled *bool `json:"commentsEnabled,omitempty"`
-	// Tags the post with a location. The ID of a Facebook Page that has location data (digits only); it is sent to Instagram as location_id. Applies to feed posts, Reels, and the carousel as a whole; Stories and individual carousel slides are unsupported (a Story with locationId is rejected with a 400). A Page without location data or that does not exist fails the post with a user error at publish time.
+	// Tags the post with a location: the ID of a Facebook Page that has location data (digits only), sent to Instagram as location_id.  - Applies to feed posts, Reels, and the carousel as a whole. - Stories and individual carousel slides are unsupported (a Story with locationId is rejected with a 400). - A Page without location data, or that does not exist, fails the post with a user error at publish time.
 	LocationId *string `json:"locationId,omitempty" validate:"regexp=^[0-9]+$"`
 }
 

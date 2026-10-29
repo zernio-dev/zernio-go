@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -19,7 +19,7 @@ import (
 // checks if the MetaLeadForm type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &MetaLeadForm{}
 
-// MetaLeadForm A Meta Lead Gen form as Graph returns it, in Meta's own snake_case. Read through GET /v1/ads/lead-forms/{formId}. Every setting POST /v1/ads/lead-forms writes is present here, so a form can be diffed against what was created and drift from edits made in Meta's form builder is detectable. A compound field is omitted entirely when the form has no value for it, and `fields` narrows the selection.
+// MetaLeadForm A Meta Lead Gen form as Graph returns it, in Meta's own snake_case. Read through GET /v1/ads/lead-forms/{formId}.  Every setting POST /v1/ads/lead-forms writes is present here, so you can diff a form against what was created and detect drift from edits made in Meta's form builder.  A compound field is omitted entirely when the form has no value for it, and `fields` narrows the selection.
 type MetaLeadForm struct {
 	Id   *string `json:"id,omitempty"`
 	Name *string `json:"name,omitempty"`

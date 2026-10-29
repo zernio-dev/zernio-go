@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -524,7 +524,7 @@ func (r AdInsightsAPIGetAdAnalyticsRequest) ToDate(toDate string) AdInsightsAPIG
 	return r
 }
 
-// Comma-separated breakdown dimensions.  **Meta**: age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset.  **TikTok**: gender, age, country (or country_code), publisher_platform (or platform), ac, language, placement. TikTok serves at most 365 days per breakdown, so a longer range is read over its last 365 days and &#x60;analytics.breakdownsRange&#x60; says which window.  **LinkedIn** (firmographics): job_title, job_function, seniority, industry, company, company_size, country, region. Rows carry the raw pivot &#x60;value&#x60; plus a resolved &#x60;name&#x60;. LinkedIn serves these aggregated over the whole range, delays the data 12-24h, and omits segments with fewer than 3 events.  A known dimension the platform cannot break down by is listed in &#x60;analytics.unsupportedBreakdowns&#x60; instead of being dropped (with guidance in &#x60;analytics.breakdownHints&#x60; where there is an alternative); the rest of the response is unchanged. An unknown name returns 400. A TikTok dimension that fails is listed in &#x60;analytics.breakdownErrors&#x60; and the response stays 200. Metrics TikTok refuses for a dimension are listed in &#x60;analytics.breakdownDroppedMetrics&#x60;, and the row values derived from them are null.
+// Comma-separated breakdown dimensions.  - **Meta**: age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset. - **TikTok**: gender, age, country (or country_code), publisher_platform (or platform), ac, language, placement. TikTok serves at most 365 days per breakdown, so a longer range is read over its last 365 days and &#x60;analytics.breakdownsRange&#x60; says which window. - **LinkedIn** (firmographics): job_title, job_function, seniority, industry, company, company_size, country, region. Rows carry the raw pivot &#x60;value&#x60; plus a resolved &#x60;name&#x60;. Data is aggregated over the whole range, delayed 12-24h, and omits segments with fewer than 3 events.  **Errors:**  - A known dimension the platform cannot break down by is listed in &#x60;analytics.unsupportedBreakdowns&#x60; instead of being dropped (with guidance in &#x60;analytics.breakdownHints&#x60; where there is an alternative); the rest of the response is unchanged. - An unknown name returns 400. - A TikTok dimension that fails is listed in &#x60;analytics.breakdownErrors&#x60; and the response stays 200. - Metrics TikTok refuses for a dimension are listed in &#x60;analytics.breakdownDroppedMetrics&#x60;, and the row values derived from them are null.
 func (r AdInsightsAPIGetAdAnalyticsRequest) Breakdowns(breakdowns string) AdInsightsAPIGetAdAnalyticsRequest {
 	r.breakdowns = &breakdowns
 	return r
@@ -539,17 +539,17 @@ GetAdAnalytics Get ad analytics
 
 Returns one ad's performance summary and daily timeline, with optional audience breakdowns on Meta, TikTok and LinkedIn.
 
-Includes summary metrics, a daily timeline
-over the requested date range, and optional demographic breakdowns (Meta, TikTok and LinkedIn only).
-If no date range is provided, defaults to the last 90 days. Date range is capped at 730 days max.
+It includes summary metrics, a daily timeline over the requested date range, and optional demographic breakdowns (Meta, TikTok and LinkedIn only). If no date range is provided, defaults to the last 90 days. Date range is capped at 730 days max.
 
-History: when an ad account connects, Zernio imports its last 90 days of metrics. `summary`
-and `daily` come from those synced metrics, so they hold no data for days before that.
-Breakdowns are read live from the platform over the requested range, so they are not limited
-by the import.
-When the ad belongs to a Meta ad account, a range reaching further back answers `202` with `backfillPending: true` and the
-covered part while the older days (up to 730 days back) are imported in the background;
-repeat the request until it returns 200.
+### History
+
+When an ad account connects, Zernio imports its last 90 days of metrics.
+
+- `summary` and `daily` come from those synced metrics, so they hold no data for days before that.
+- Breakdowns are read live from the platform over the requested range, so they are not limited by the import.
+
+When the ad belongs to a Meta ad account, a range reaching further back answers `202` with `backfillPending: true` and the covered part, while the older days (up to 730 days back) are imported in the background. Repeat the request until it returns 200.
+
 Other platforms never return `202`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -947,13 +947,14 @@ GetAdsSearchTerms Google Ads search terms report
 
 Shows the actual Google searches that triggered your ads, with spend and results, so you can spot wasted spend and add negative keywords.
 
-The actual search queries that triggered your ads, with matched-keyword
-status and spend metrics, the raw material for wasted-spend analysis and
-negative-keyword lists. Reads Google's `search_term_view`, cached for
-the quota window; defaults to the last 30 days. Rows are ordered by
-cost, descending. Draws on the shared Google Ads operations budget.
-The response carries `cachedAt` and `stale`, set when a quota-exhausted
-call falls back to the last-good copy instead of a live read.
+Each row is a search query with its matched-keyword status and spend metrics: the raw material for wasted-spend analysis and negative-keyword lists.
+
+- Reads Google's `search_term_view`, cached for the quota window.
+- Defaults to the last 30 days.
+- Rows are ordered by cost, descending.
+- Draws on the shared Google Ads operations budget.
+
+The response carries `cachedAt` and `stale`, set when a quota-exhausted call falls back to the last-good copy instead of a live read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdInsightsAPIGetAdsSearchTermsRequest
@@ -1152,7 +1153,7 @@ func (r AdInsightsAPIGetCampaignAnalyticsRequest) ToDate(toDate string) AdInsigh
 	return r
 }
 
-// Comma-separated breakdown dimensions.  **Meta**: age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset.  **TikTok**: gender, age, country (or country_code), publisher_platform (or platform), ac, language, placement. TikTok serves at most 365 days per breakdown, so a longer range is read over its last 365 days and &#x60;analytics.breakdownsRange&#x60; says which window.  **LinkedIn** (firmographics): job_title, job_function, seniority, industry, company, company_size, country, region. Rows carry the raw pivot &#x60;value&#x60; plus a resolved &#x60;name&#x60;. LinkedIn serves these aggregated over the whole range, delays the data 12-24h, and omits segments with fewer than 3 events.  A known dimension the platform cannot break down by is listed in &#x60;analytics.unsupportedBreakdowns&#x60; instead of being dropped (with guidance in &#x60;analytics.breakdownHints&#x60; where there is an alternative); the rest of the response is unchanged. An unknown name returns 400. A TikTok dimension that fails is listed in &#x60;analytics.breakdownErrors&#x60; and the response stays 200. Metrics TikTok refuses for a dimension are listed in &#x60;analytics.breakdownDroppedMetrics&#x60;, and the row values derived from them are null.
+// Comma-separated breakdown dimensions.  - **Meta**: age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset. - **TikTok**: gender, age, country (or country_code), publisher_platform (or platform), ac, language, placement. TikTok serves at most 365 days per breakdown, so a longer range is read over its last 365 days and &#x60;analytics.breakdownsRange&#x60; says which window. - **LinkedIn** (firmographics): job_title, job_function, seniority, industry, company, company_size, country, region. Rows carry the raw pivot &#x60;value&#x60; plus a resolved &#x60;name&#x60;. Aggregated over the whole range, delayed 12-24h, omitting segments with fewer than 3 events.  **Errors and gaps:**  - A known dimension the platform cannot break down by is listed in &#x60;analytics.unsupportedBreakdowns&#x60; instead of dropped (with guidance in &#x60;analytics.breakdownHints&#x60; where an alternative exists); the rest of the response is unchanged. - An unknown name returns 400. - A TikTok dimension that fails is listed in &#x60;analytics.breakdownErrors&#x60; and the response stays 200. - Metrics TikTok refuses for a dimension are listed in &#x60;analytics.breakdownDroppedMetrics&#x60;, and row values derived from them are null.
 func (r AdInsightsAPIGetCampaignAnalyticsRequest) Breakdowns(breakdowns string) AdInsightsAPIGetCampaignAnalyticsRequest {
 	r.breakdowns = &breakdowns
 	return r
@@ -1167,28 +1168,37 @@ GetCampaignAnalytics Get campaign analytics
 
 Returns a campaign's performance summary and daily timeline, with optional breakdowns by age, gender and other audience dimensions.
 
-Returns performance analytics for a whole campaign in one call: summary metrics, a daily
-timeline over the requested date range (summed across the campaign's ads), and optional
-demographic breakdowns. Breakdowns are fetched live from Meta, TikTok or LinkedIn at the campaign
-level (one call per dimension, no per-ad fan-out), so an agency dashboard gets campaign-level
-age/gender/placement/etc. without summing thousands of per-ad reads. `campaignId` is the platform campaign id; pass
-`platform` when a campaign id could be ambiguous across platforms. If no date range is provided,
-defaults to the last 90 days. Date range is capped at 730 days max.
+One call returns analytics for a whole campaign:
 
-History: when an ad account connects, Zernio imports its last 90 days of metrics. `summary`
-and `daily` come from those synced metrics, so they hold no data for days before that.
-Breakdowns and Google's impression share are read live from the platform over the requested
-range, so they are not limited by the import.
-When the campaign belongs to a Meta ad account, a range reaching further back answers `202` with `backfillPending: true` and the
-covered part while the older days (up to 730 days back) are imported in the background;
-repeat the request until it returns 200.
-Other platforms never return `202`.
+- summary metrics
+- a daily timeline over the requested date range (summed across the campaign's ads)
+- optional demographic breakdowns
 
-Google adds searchImpressionShare, searchBudgetLostImpressionShare,
-searchRankLostImpressionShare, searchTopImpressionShare and searchAbsoluteTopImpressionShare
-under analytics.summary for the requested inclusive range. These ratios are queried
-together without daily segmentation and cached for 10 minutes. Unavailable values are
-null. analytics.impressionShareCache reports cachedAt and stale independently of synced metrics.
+Breakdowns are fetched live from Meta, TikTok or LinkedIn at the campaign level (one call per dimension, no per-ad fan-out). So an agency dashboard gets campaign-level age/gender/placement/etc. without summing thousands of per-ad reads.
+
+`campaignId` is the platform campaign id; pass `platform` when a campaign id could be ambiguous across platforms.
+
+If no date range is provided, it defaults to the last 90 days. The date range is capped at 730 days max.
+
+### History
+
+When an ad account connects, Zernio imports its last 90 days of metrics. `summary` and `daily` come from those synced metrics, so they hold no data for days before that.
+
+Breakdowns and Google's impression share are read live from the platform over the requested range, so they are not limited by the import.
+
+When the campaign belongs to a Meta ad account, a range reaching further back answers `202` with `backfillPending: true` and the covered part. The older days (up to 730 days back) are imported in the background; repeat the request until it returns 200. Other platforms never return `202`.
+
+### Google impression share
+
+Google adds these under analytics.summary for the requested inclusive range:
+
+- searchImpressionShare
+- searchBudgetLostImpressionShare
+- searchRankLostImpressionShare
+- searchTopImpressionShare
+- searchAbsoluteTopImpressionShare
+
+These ratios are queried together without daily segmentation and cached for 10 minutes. Unavailable values are null. analytics.impressionShareCache reports cachedAt and stale independently of synced metrics.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Platform campaign id (platformCampaignId).
@@ -1397,7 +1407,40 @@ func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) Execute() (*GetTik
 /*
 GetTikTokSmartPlusMaterialReport Per-creative performance inside TikTok Smart+ ads
 
-Breaks a Smart+ ad (or ad group) down by creative material, one row per Spark post, video or image, from TikTok's Smart+ material report. For a Spark post `tiktokItemId` is the TikTok post id. Conversion metrics are TikTok web (pixel) events. `purchases`, `purchaseValue` and `roas` come from Complete Payment, or from Place an Order (legacy ON_WEB_ORDER pixels) when that reports more; the two are never summed. TikTok allows two dimensions per report, so rows are keyed by the Smart+ ad (`level=ad`) or by the ad group (`level=adGroup`), not both. A row is identified by `smartPlusAdId` + `materialId` at `level=ad` and by `adGroupId` + `materialId` at `level=adGroup`; each appears once across all pages. Rows are sorted by `spend` descending, then the Smart+ ad or ad group id, then `materialId`, and the full result is cached for 10 minutes per account, advertiser and query, so pages read within that window are consistent and `totalRows` counts distinct rows. When the result spans more than one TikTok page it is read per Smart+ ad (or ad group) listed on the advertiser, every status included, and those reads can return more rows than TikTok's unfiltered report declares, so `totalRows` can be larger than that count; when the unfiltered report fits one page (100 rows or fewer) it is served as is. Each TikTok read is checked against the row count it declares itself, and a short read is retried once. A shortfall of at most 2 rows (or 1% of the rows, whichever is more) is served with `missingRows` set to that number; a larger one answers 502 instead of a short result. Metrics TikTok returns empty come back as null.
+Breaks a Smart+ ad (or ad group) down by creative material, one row per Spark post, video or image, from TikTok's Smart+ material report. For a Spark post `tiktokItemId` is the TikTok post id.
+
+### Metrics
+
+Conversion metrics are TikTok web (pixel) events. `purchases`, `purchaseValue` and `roas` come from Complete Payment, or from Place an Order (legacy ON_WEB_ORDER pixels) when that reports more; the two are never summed.
+
+Metrics TikTok returns empty come back as null.
+
+### Rows
+
+TikTok allows two dimensions per report, so rows are keyed by the Smart+ ad (`level=ad`) or by the ad group (`level=adGroup`), not both.
+
+- At `level=ad` a row is identified by `smartPlusAdId` + `materialId`.
+- At `level=adGroup` a row is identified by `adGroupId` + `materialId`.
+
+Each row appears once across all pages.
+
+### Sorting and paging
+
+Rows are sorted by `spend` descending, then the Smart+ ad or ad group id, then `materialId`.
+
+The full result is cached for 10 minutes per account, advertiser and query. So pages read within that window are consistent and `totalRows` counts distinct rows.
+
+### How rows are read
+
+- When the unfiltered report fits one page (100 rows or fewer), it is served as is.
+- When the result spans more than one TikTok page, it is read per Smart+ ad (or ad group) listed on the advertiser, every status included. Those reads can return more rows than TikTok's unfiltered report declares, so `totalRows` can be larger than that count.
+
+### Short reads
+
+Each TikTok read is checked against the row count it declares itself, and a short read is retried once.
+
+- A shortfall of at most 2 rows (or 1% of the rows, whichever is more) is served with `missingRows` set to that number.
+- A larger one answers 502 instead of a short result.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest
@@ -1856,12 +1899,12 @@ ListLocalServicesLeads Google Local Services Ads leads
 
 Lists the calls, messages and bookings your Google Local Services Ads generated, newest first.
 
-Leads generated by Local Services Ads (phone calls, messages, bookings),
-read live from Google's `local_services_lead` resource, newest first.
-No persistence: Google is the source of truth and lead/credit statuses
-keep changing server-side. Google never returns healthcare-category
-leads, and `WIPED_OUT` leads arrive with contact erased (`contact` is
-null). Draws on the shared Google Ads operations budget.
+Leads (phone calls, messages, bookings) are read live from Google's `local_services_lead` resource.
+
+- No persistence: Google is the source of truth, and lead/credit statuses keep changing server-side.
+- Google never returns healthcare-category leads.
+- `WIPED_OUT` leads arrive with contact erased (`contact` is null).
+- Draws on the shared Google Ads operations budget.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdInsightsAPIListLocalServicesLeadsRequest
@@ -2227,48 +2270,62 @@ func (r AdInsightsAPIQueryAdInsightsRequest) Execute() (*QueryAdInsights200Respo
 /*
 QueryAdInsights Flexible live insights query
 
-Runs a custom performance query against Meta, Google Ads or TikTok and returns the platform's rows as is, for reports the fixed endpoints don't cover.
+Runs a custom performance query against Meta, Google Ads or TikTok and returns the platform's rows as is, for reports the fixed endpoints don't cover. The account's platform picks the contract.
 
-The account's platform picks the contract:
+### Meta (facebook/instagram)
 
-**Meta (facebook/instagram)**: forwards caller-chosen `fields`, `breakdowns` and `filtering`
-to any Meta insights node and returns Meta's rows verbatim. `objectId` (required) selects the
-node; `level` sets row granularity. Semantic validation is Meta's: an unknown field or invalid
-breakdown combination returns a 400 carrying Meta's message. For long ranges or agency-scale
-accounts prefer the async variant (POST /v1/ads/insights/reports).
+Forwards caller-chosen `fields`, `breakdowns` and `filtering` to any Meta insights node and returns Meta's rows verbatim.
 
-**Google Ads (googleads)**: raw GAQL passthrough. Send any read-only GAQL SELECT via `query`
-(campaign/keyword/search-term/geo/demographic/asset/shopping resources, `change_event`, any
-`segments.*`) and rows come back verbatim (camelCase, counters as strings). Results are paged
-at a fixed 10,000 rows; follow `paging.nextPageToken` with `pageToken`. `adAccountId` (alias `customerId`) is only
-needed when the connection has several Google Ads accounts. Semantic validation is Google's:
-an invalid query returns a 400 carrying Google's message (note: selecting `segments.date`
-requires a finite date filter).
+- `objectId` (required) selects the node.
+- `level` sets row granularity.
 
-Queries run against Google Ads API **v25**, so write GAQL against the v25 field reference.
-One exception is translated for backward compatibility: the legacy `campaign.start_date` /
-`campaign.end_date` (removed by Google in v23) are rewritten to `campaign.start_date_time` /
-`campaign.end_date_time`, and rows still carry `campaign.startDate` / `campaign.endDate` as
-`YYYY-MM-DD`. In WHERE, `=`, `<`, `<=`, `>`, `>=`, `BETWEEN` and `IS [NOT] NULL` against a
-`'YYYY-MM-DD'` literal are translated; any other form returns Google's 400. New code should
-select the `_date_time` fields directly.
+Semantic validation is Meta's: an unknown field or invalid breakdown combination returns a 400 carrying Meta's message. For long ranges or agency-scale accounts, prefer the async variant (POST /v1/ads/insights/reports).
 
-**TikTok (tiktok/tiktokads)**: passthrough of TikTok's synchronous report
-(`/report/integrated/get/`). Send `adAccountId`, `dataLevel`, `dimensions`, `metrics`,
-`fromDate`/`toDate` (TikTok caps the span at 365 days) and optionally `filtering` in the same
-`[{"field", "operator", "value"}]` shape as Meta (operator is TikTok's `filter_type`, e.g. `IN`;
-array values are JSON-encoded for TikTok). Rows come back verbatim as
-`{ dimensions, metrics }` with page-number paging.
+### Google Ads (googleads)
 
-*De-duplicated reach across a set of campaigns, ad groups or ads*: filter the set and group by
-`country_code` instead of the entity id. TikTok then counts each person once across the whole
-set and range, per country. Example, two campaigns for a month:
-`dataLevel=AUCTION_CAMPAIGN&dimensions=country_code&metrics=reach,impressions,frequency&fromDate=2026-09-01&toDate=2026-09-30&filtering=[{"field":"campaign_ids","operator":"IN","value":["1876574798182050","1876575504573650"]}]`.
-For a set of ads use `dataLevel=AUCTION_AD` with `ad_ids`. A filter on a finer entity than
-`dataLevel` (e.g. `ad_ids` at `AUCTION_CAMPAIGN`) returns 400: TikTok would otherwise widen it to
-every parent entity containing those ids. When the set delivers in several countries, reach is
-per country; summing the rows counts a person reached in two countries twice.
-`AUCTION_ADVERTISER` rejects entity filters.
+Raw GAQL passthrough. Send any read-only GAQL SELECT via `query` (campaign/keyword/search-term/geo/demographic/asset/shopping resources, `change_event`, any `segments.*`). Rows come back verbatim (camelCase, counters as strings).
+
+- Results are paged at a fixed 10,000 rows; follow `paging.nextPageToken` with `pageToken`.
+- `adAccountId` (alias `customerId`) is only needed when the connection has several Google Ads accounts.
+
+Semantic validation is Google's: an invalid query returns a 400 carrying Google's message (note: selecting `segments.date` requires a finite date filter).
+
+#### GAQL version
+
+Queries run against Google Ads API **v25**, so write GAQL against the v25 field reference. One exception is translated for backward compatibility:
+
+- The legacy `campaign.start_date` / `campaign.end_date` (removed by Google in v23) are rewritten to `campaign.start_date_time` / `campaign.end_date_time`.
+- Rows still carry `campaign.startDate` / `campaign.endDate` as `YYYY-MM-DD`.
+- In WHERE, `=`, `<`, `<=`, `>`, `>=`, `BETWEEN` and `IS [NOT] NULL` against a `'YYYY-MM-DD'` literal are translated; any other form returns Google's 400.
+
+New code should select the `_date_time` fields directly.
+
+### TikTok (tiktok/tiktokads)
+
+Passthrough of TikTok's synchronous report (`/report/integrated/get/`). Send:
+
+- `adAccountId`
+- `dataLevel`
+- `dimensions`
+- `metrics`
+- `fromDate`/`toDate` (TikTok caps the span at 365 days)
+- optionally `filtering`, in the same `[{"field", "operator", "value"}]` shape as Meta (operator is TikTok's `filter_type`, e.g. `IN`; array values are JSON-encoded for TikTok)
+
+Rows come back verbatim as `{ dimensions, metrics }` with page-number paging.
+
+#### De-duplicated reach across a set of campaigns, ad groups or ads
+
+Filter the set and group by `country_code` instead of the entity id. TikTok then counts each person once across the whole set and range, per country.
+
+Example, two campaigns for a month:
+
+`dataLevel=AUCTION_CAMPAIGN&dimensions=country_code&metrics=reach,impressions,frequency&fromDate=2026-09-01&toDate=2026-09-30&filtering=[{"field":"campaign_ids","operator":"IN","value":["1876574798182050","1876575504573650"]}]`
+
+- For a set of ads use `dataLevel=AUCTION_AD` with `ad_ids`.
+- A filter on a finer entity than `dataLevel` (e.g. `ad_ids` at `AUCTION_CAMPAIGN`) returns 400: TikTok would otherwise widen it to every parent entity containing those ids.
+- `AUCTION_ADVERTISER` rejects entity filters.
+
+When the set delivers in several countries, reach is per country: summing the rows counts a person reached in two countries twice.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdInsightsAPIQueryAdInsightsRequest

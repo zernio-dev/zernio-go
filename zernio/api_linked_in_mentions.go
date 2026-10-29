@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -37,7 +37,7 @@ func (r LinkedInMentionsAPIGetLinkedInMentionsRequest) Url(url string) LinkedInM
 	return r
 }
 
-// Deprecated: omit it. When sent for a person it overrides the mention text, and LinkedIn renders the mention only if it is exactly the person&#39;s first name, last name or full name (case-sensitive). When omitted the real name is read from LinkedIn. Ignored for org mentions, which always use the organization&#39;s LinkedIn name.
+// Deprecated: omit it. When omitted, the real name is read from LinkedIn. Ignored for org mentions, which always use the organization&#39;s LinkedIn name.  When sent for a person, it overrides the mention text, and LinkedIn renders the mention only if it is exactly the person&#39;s first name, last name or full name (case-sensitive).
 // Deprecated
 func (r LinkedInMentionsAPIGetLinkedInMentionsRequest) DisplayName(displayName string) LinkedInMentionsAPIGetLinkedInMentionsRequest {
 	r.displayName = &displayName
@@ -53,20 +53,36 @@ GetLinkedInMentions Resolve LinkedIn mention
 
 Converts a LinkedIn profile or company URL to a URN for @mentions in posts.
 
-You usually do not need this endpoint. Put the profile or company URL inside `@[...]` in the post `content` (for example `@[https://www.linkedin.com/in/vincentjong]`) and the post resolves it for you, using LinkedIn's own name. Use this endpoint to preview what a URL resolves to, or to get ready-made `@[Name](urn)` markup, which still works in `content` and is published exactly as written.
+You usually do not need this endpoint. Put the profile or company URL inside `@[...]` in the post `content` (for example `@[https://www.linkedin.com/in/vincentjong]`) and the post resolves it for you, using LinkedIn's own name.
 
-Example:
-- Resolve: GET /v1/accounts/{id}/linkedin-mentions?url=linkedin.com/in/vincentjong
-- Returns: mentionFormat: "@[Vincent Jong](urn:li:person:xxx)"
-- Use in post content: "Great talk with @[Vincent Jong](urn:li:person:xxx) today!"
+Use this endpoint to preview what a URL resolves to, or to get ready-made `@[Name](urn)` markup, which still works in `content` and is published exactly as written.
 
-Important: The mentions array field in POST /v1/posts is stored for reference only and does NOT trigger @mentions on LinkedIn. Write the mention in the content text.
+### Example
 
-Requirements:
-- Resolving a profile URL to a person mention requires the LinkedIn account to be admin of at least one organization: both endpoints that resolve a profile URL to a member URN take an organization you administer. A resolved person mention publishes from any account. Organization mentions (e.g. @Microsoft) have no such requirement.
-- The two are not scoped alike. peopleTypeahead?q=organizationFollowers only returns that organization's followers; vanityUrl?q=vanityUrlAsOrganization does not, and its resolvable set is opaque. A 404 here does not mean the person is unknown to you or unknown to LinkedIn: a live public profile can 404 with no reason given.
-- displayName is deprecated and ignored in practice: the endpoint reads the person's real name from LinkedIn itself. LinkedIn renders a person mention as a link only when the mention text is the person's first name, last name or full name (case-sensitive).
+1. Resolve: GET /v1/accounts/{id}/linkedin-mentions?url=linkedin.com/in/vincentjong
+2. Returns: mentionFormat: "@[Vincent Jong](urn:li:person:xxx)"
+3. Use in post content: "Great talk with @[Vincent Jong](urn:li:person:xxx) today!"
+
+Important: the mentions array field in POST /v1/posts is stored for reference only and does NOT trigger @mentions on LinkedIn. Write the mention in the content text.
+
+### Requirements
+
+- Resolving a profile URL to a person mention requires the LinkedIn account to be admin of at least one organization: both endpoints that resolve a profile URL to a member URN take an organization you administer.
+- A resolved person mention publishes from any account. Organization mentions (e.g. @Microsoft) have no such requirement.
 - Person mentions DO work when published from personal profiles (the URN only needs to be valid). The limitation is only in the resolution step (URL to URN), not in publishing.
+
+### Why a profile can 404
+
+The two resolution endpoints are not scoped alike:
+
+- peopleTypeahead?q=organizationFollowers only returns that organization's followers.
+- vanityUrl?q=vanityUrlAsOrganization does not, and its resolvable set is opaque.
+
+A 404 here does not mean the person is unknown to you or unknown to LinkedIn: a live public profile can 404 with no reason given.
+
+### Display name
+
+displayName is deprecated and ignored in practice: the endpoint reads the person's real name from LinkedIn itself. LinkedIn renders a person mention as a link only when the mention text is the person's first name, last name or full name (case-sensitive).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The LinkedIn account ID

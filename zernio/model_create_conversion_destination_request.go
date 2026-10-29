@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,7 @@ type CreateConversionDestinationRequest struct {
 	// Ad account ID. For LinkedIn: numeric (e.g. \"5123456\") or full `urn:li:sponsoredAccount:{id}` URN. For Google: numeric customer ID (e.g. \"1234567890\") or `customers/{id}` form.
 	AdAccountId string `json:"adAccountId"`
 	Name        string `json:"name"`
-	// Conversion type. For LinkedIn: a unified standard event name (e.g. \"Purchase\", \"Lead\", \"AddToCart\") or a LinkedIn rule type enum (e.g. \"PURCHASE\", \"QUALIFIED_LEAD\"). For Google: a unified standard event name (Purchase, Subscribe, CompleteRegistration, Lead, Schedule) or a Google ConversionActionCategory enum value directly (e.g. \"PURCHASE\", \"SUBSCRIBE_PAID\", \"SIGNUP\", \"IMPORTED_LEAD\", \"BOOK_APPOINTMENT\"). Unknown values pass through to the platform.
+	// Conversion type. Unknown values pass through to the platform.  - LinkedIn: a unified standard event name (e.g. \"Purchase\", \"Lead\", \"AddToCart\") or a LinkedIn rule type enum (e.g. \"PURCHASE\", \"QUALIFIED_LEAD\"). - Google: a unified standard event name (Purchase, Subscribe, CompleteRegistration, Lead, Schedule) or a Google ConversionActionCategory enum value directly (e.g. \"PURCHASE\", \"SUBSCRIBE_PAID\", \"SIGNUP\", \"IMPORTED_LEAD\", \"BOOK_APPOINTMENT\").
 	Type string `json:"type"`
 	// LinkedIn only.
 	AttributionType *string `json:"attributionType,omitempty"`
@@ -36,7 +36,7 @@ type CreateConversionDestinationRequest struct {
 	// LinkedIn only. DYNAMIC (default) uses the per-event `value` from `sendConversions`. FIXED uses the rule's `value` field. NO_VALUE drops monetary value entirely.
 	ValueType *string                                  `json:"valueType,omitempty"`
 	Value     *CreateConversionDestinationRequestValue `json:"value,omitempty"`
-	// LinkedIn only. Controls campaign association at rule-creation time: - ALL_CAMPAIGNS: associate the rule with every active,   paused, and draft campaign in the ad account - OBJECTIVE_BASED: associate only campaigns whose   objective matches the rule's type - NONE: don't auto-associate. Manage associations via   the `/associations` endpoints below. Note: auto-association runs once at create time; new campaigns added after the rule still need explicit association.
+	// LinkedIn only. Controls campaign association at rule-creation time:  - ALL_CAMPAIGNS: associate the rule with every active, paused, and draft campaign in the ad account. - OBJECTIVE_BASED: associate only campaigns whose objective matches the rule's type. - NONE: don't auto-associate. Manage associations via the `/associations` endpoints below.  Auto-association runs once at create time; campaigns added after the rule still need explicit association.
 	AutoAssociationType *string `json:"autoAssociationType,omitempty"`
 	// Google Ads only. Whether to count multiple conversions from the same click (MANY_PER_CLICK) or at most one (ONE_PER_CLICK). Defaults to MANY_PER_CLICK if omitted.
 	CountingType *string `json:"countingType,omitempty"`

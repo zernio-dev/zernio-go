@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -26,9 +26,9 @@ type CreateInviteTokenRequest struct {
 	Scope string `json:"scope"`
 	// Required if scope is 'profiles'. Array of profile IDs to grant access to.
 	ProfileIds []string `json:"profileIds,omitempty"`
-	// Org role granted to the invitee. Defaults to 'member'. 'admin' can manage the team (invite/remove members, change roles and access) and billing, but not ownership transfer or account deletion. 'billing_admin' (displayed as Billing Manager) manages billing only. 'viewer' creates a read-only member who can view everything in their profile scope but cannot perform any content mutation (publish, edit, delete, connect accounts).
+	// Org role granted to the invitee. Defaults to 'member'.  - 'admin': manages the team (invite/remove members, change roles and access) and billing, but not ownership transfer or account deletion. - 'billing_admin' (displayed as Billing Manager): manages billing only. - 'viewer': a read-only member who can view everything in their profile scope but cannot perform any content mutation (publish, edit, delete, connect accounts).
 	Role *string `json:"role,omitempty"`
-	// Resource groups the invitee may not use once they join (the same groups as restricted API keys). Their dashboard hides those sections and every API request into a disabled group, with any credential they hold, is refused with 403. Omitted or empty means full access. Groups the caller lacks themselves are always added.
+	// Resource groups the invitee may not use once they join (the same groups as restricted API keys). Omitted or empty means full access.  Their dashboard hides those sections, and every API request into a disabled group, with any credential they hold, is refused with 403. Groups the caller lacks themselves are always added.
 	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
 	// Deprecated. Use role 'viewer' instead. When true, the invite is created with role 'viewer'. Cannot be combined with role 'billing_admin' or 'admin'.
 	// Deprecated

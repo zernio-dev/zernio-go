@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the SendConversionsRequestConsent type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &SendConversionsRequestConsent{}
 
-// SendConversionsRequestConsent Batch-level user consent. Required by Google for EEA/UK events under the Feb 2026 restrictions. On Meta, any DENIED flag enables Limited Data Use on every event in the batch (data_processing_options [\"LDU\"] with geolocation, country 0 / state 0); GRANTED or absent consent sends events with Meta's default processing. On Reddit, `adUserData: DENIED` drops every user field from the events. Ignored by LinkedIn.
+// SendConversionsRequestConsent Batch-level user consent. Required by Google for EEA/UK events under the Feb 2026 restrictions.  - **Meta:** any DENIED flag enables Limited Data Use on every event in the batch (data_processing_options [\"LDU\"] with geolocation, country 0 / state 0). GRANTED or absent consent sends events with Meta's default processing. - **Reddit:** `adUserData: DENIED` drops every user field from the events. - **LinkedIn:** ignored.
 type SendConversionsRequestConsent struct {
 	AdUserData        *string `json:"adUserData,omitempty"`
 	AdPersonalization *string `json:"adPersonalization,omitempty"`

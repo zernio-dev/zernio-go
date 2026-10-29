@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ type BoostPost201Response struct {
 	Ad                     *Ad                     `json:"ad,omitempty"`
 	Message                *string                 `json:"message,omitempty"`
 	InstagramVideoFallback *InstagramVideoFallback `json:"instagramVideoFallback,omitempty"`
-	// Present with instagramVideoFallback: one human-readable line saying how the Instagram video was boosted. On Meta also present, as an entry starting with `activation_failed:`, when Meta refused the final switch to ACTIVE of the campaign, ad set or ad this boost created: nothing was deleted, `message` says not everything is ACTIVE, and the entry names what was kept PAUSED and what was switched ACTIVE, and quotes Meta's error and the status calls that switch the PAUSED ones on later. A retry without Idempotency-Key inside the 10-minute dedup window that finds the stored ad PAUSED although it asks for ACTIVE gets a `replayed_paused:` entry with the same status calls instead.
+	// Human-readable notes about the boost.  - **With instagramVideoFallback:** one line saying how the Instagram video was boosted. - **`activation_failed:` (Meta):** Meta refused the final switch to ACTIVE of the campaign, ad set or ad this boost created. Nothing was deleted and `message` says not everything is ACTIVE. - **`activation_failed:` content:** names what was kept PAUSED and what was switched ACTIVE, and quotes Meta's error and the status calls that switch the PAUSED ones on later. - **`replayed_paused:`:** a retry without Idempotency-Key inside the 10-minute dedup window found the stored ad PAUSED although it asks for ACTIVE. Carries the same status calls.
 	Warnings []string `json:"warnings,omitempty"`
 }
 

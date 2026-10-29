@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -1824,7 +1824,11 @@ func (r AccountSettingsAPISetMessengerGetStartedRequest) Execute() (*UpdateYoutu
 /*
 SetMessengerGetStarted Set FB Get Started button
 
-Set the Get Started button shown on a Facebook page's Messenger welcome screen. Meta requires it before a persistent menu can be set. Tapping it sends a postback with `payload`, which arrives as a `message.received` webhook carrying it in `metadata.postbackPayload`. Use `zernio:workflow:<workflowId>` to start a workflow on the tap; the workflow must be active on this account and profile.
+Set the Get Started button shown on a Facebook page's Messenger welcome screen. Meta requires it before a persistent menu can be set.
+
+Tapping it sends a postback with `payload`, which arrives as a `message.received` webhook carrying it in `metadata.postbackPayload`.
+
+Use `zernio:workflow:<workflowId>` to start a workflow on the tap; the workflow must be active on this account and profile.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -2118,7 +2122,11 @@ func (r AccountSettingsAPISetMessengerIceBreakersRequest) Execute() (*UpdateYout
 /*
 SetMessengerIceBreakers Set FB ice breakers
 
-Set up to 4 ice breakers per locale for a Facebook page (Meta's `ice_breakers` Messenger Profile field). One entry must use locale `default`. A tap sends a postback with the question's `payload`, which arrives as `message.received` with `metadata.postbackPayload`; use `zernio:workflow:<workflowId>` to start a workflow (it must be active on this account and profile). Replaces every locale already set.
+Set up to 4 ice breakers per locale for a Facebook page (Meta's `ice_breakers` Messenger Profile field). Replaces every locale already set.
+
+- One entry must use locale `default`.
+- A tap sends a postback with the question's `payload`, which arrives as `message.received` with `metadata.postbackPayload`.
+- Use `zernio:workflow:<workflowId>` to start a workflow (it must be active on this account and profile).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -2265,7 +2273,10 @@ func (r AccountSettingsAPISetMessengerMenuRequest) Execute() (*http.Response, er
 /*
 SetMessengerMenu Set persistent menu
 
-Set the persistent menu for a Facebook Messenger or Instagram account. Max 3 top-level items, max 5 nested items. On Facebook, Meta only shows a persistent menu on a page that has a Get Started button, so set one first with PUT /v1/accounts/{accountId}/messenger-get-started. A postback button whose payload is `zernio:workflow:<workflowId>` starts that workflow when tapped; the workflow must be active on this account and profile.
+Set the persistent menu for a Facebook Messenger or Instagram account. Max 3 top-level items, max 5 nested items.
+
+- On Facebook, Meta only shows a persistent menu on a page that has a Get Started button. Set one first with PUT /v1/accounts/{accountId}/messenger-get-started.
+- A postback button whose payload is `zernio:workflow:<workflowId>` starts that workflow when tapped. The workflow must be active on this account and profile.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId

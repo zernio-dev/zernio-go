@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the SendInboxMessageRequestInteractiveActionOneOf9 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &SendInboxMessageRequestInteractiveActionOneOf9{}
 
-// SendInboxMessageRequestInteractiveActionOneOf9 Carousel action. `type` on the parent must be `carousel`. Carries 2-10 cards, either all product cards (`type: \"product\"`, all referencing the same `catalog_id`) or media cards (any other `type`, e.g. `cta_url`, with a required image/video `header` on each card). `card_index` (0-9, non-repeating) is auto-filled sequentially when omitted. Product carousels require a Meta catalog connected to the WhatsApp Business Account in Commerce Manager; media carousels do not.
+// SendInboxMessageRequestInteractiveActionOneOf9 Carousel action. `type` on the parent must be `carousel`. Carries 2-10 cards, either:  - all product cards (`type: \"product\"`, all referencing the same `catalog_id`); or - media cards (any other `type`, e.g. `cta_url`), each with a required image/video `header`.  `card_index` (0-9, non-repeating) is auto-filled sequentially when omitted.  Product carousels require a Meta catalog connected to the WhatsApp Business Account in Commerce Manager; media carousels do not.
 type SendInboxMessageRequestInteractiveActionOneOf9 struct {
 	Cards []SendInboxMessageRequestInteractiveActionOneOf9CardsInner `json:"cards"`
 }

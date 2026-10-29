@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the CreateStandaloneAdRequestDynamicCreative type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreateStandaloneAdRequestDynamicCreative{}
 
-// CreateStandaloneAdRequestDynamicCreative Meta only. Dynamic Creative: supply a POOL of assets and Meta auto-combines and optimises them into the best-performing variations within a single ad (mapped to the creative's `asset_feed_spec`). When set, the top-level single-creative fields (`imageUrl`, `headline`, `body`, `linkUrl`, `callToAction`) are ignored. Mutually exclusive with the `creatives[]` multi-creative shape. Exactly ONE of `imageUrls` / `videoUrls` is required (Meta allows one ad format per asset feed; sending both → 400). Limits remain 10 images or videos and 5 bodies, titles or descriptions. The ad set is created with `is_dynamic_creative: true`. Combining this field with `adSetId` returns 400: omit `adSetId` to create a new dynamic ad set. Multiple headlines go in `titles`; multiple primary texts go in `bodies`.
+// CreateStandaloneAdRequestDynamicCreative Meta only. Dynamic Creative: supply a POOL of assets and Meta auto-combines and optimises them into the best-performing variations within a single ad (mapped to the creative's `asset_feed_spec`).  - The top-level single-creative fields (`imageUrl`, `headline`, `body`, `linkUrl`, `callToAction`) are ignored when this is set. - Mutually exclusive with the `creatives[]` multi-creative shape. - Exactly ONE of `imageUrls` / `videoUrls` is required (Meta allows one ad format per asset feed; sending both → 400). - Limits remain 10 images or videos and 5 bodies, titles or descriptions. - Multiple headlines go in `titles`; multiple primary texts go in `bodies`. - The ad set is created with `is_dynamic_creative: true`. Combining this field with `adSetId` returns 400: omit `adSetId` to create a new dynamic ad set.
 type CreateStandaloneAdRequestDynamicCreative struct {
 	// Pool of image URLs (1-10). Uploaded to the ad account and referenced by hash in the asset feed. Mutually exclusive with `videoUrls`.
 	ImageUrls []string `json:"imageUrls,omitempty"`

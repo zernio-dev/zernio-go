@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the YouTubePlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &YouTubePlatformData{}
 
-// YouTubePlatformData Videos under 3 min auto-detected as Shorts. Custom thumbnails for regular videos only. Scheduled videos are uploaded immediately with the specified visibility. There is no description field here: the video description comes from the post content, or from customContent on this platform target when set, and is truncated to 5000 characters.
+// YouTubePlatformData YouTube video settings.  - Videos under 3 min are auto-detected as Shorts. - Custom thumbnails work for regular videos only. - Scheduled videos are uploaded immediately with the specified visibility. - There is no description field here: the description comes from the post content, or from customContent on this platform target when set, truncated to 5000 characters.
 type YouTubePlatformData struct {
 	// Video title. Defaults to first line of content or \"Untitled Video\". Must be ≤ 100 characters.
 	Title *string `json:"title,omitempty"`

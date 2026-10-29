@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -31,7 +31,7 @@ type MetaLeadFormPlatformData struct {
 	ThankYouButtonText    *string                               `json:"thankYouButtonText,omitempty"`
 	// Meta thank_you_page.button_type. Defaults to VIEW_WEBSITE. Case-insensitive, sent to Meta in uppercase. CALL_BUSINESS requires businessPhoneNumber and countryCode (a 400 otherwise). Meta rejects MESSAGE_BUSINESS on thank-you pages with (#100) This button type is not yet supported for Thank You Page.
 	ThankYouButtonType *string `json:"thankYouButtonType,omitempty"`
-	// International E.164 number the CALL_BUSINESS thank-you button dials (Meta thank_you_page.business_phone_number). It must start with + and the country calling code matching countryCode; spaces, dashes, dots and parentheses are stripped, and a local number such as 2025550123 is a 400. Required when thankYouButtonType is CALL_BUSINESS and a 400 with any other button type. Accepted only inside platformSpecificData: a top-level businessPhoneNumber is a 400.
+	// International E.164 number the CALL_BUSINESS thank-you button dials (Meta thank_you_page.business_phone_number).  - Must start with + and the country calling code matching countryCode. Spaces, dashes, dots and parentheses are stripped; a local number such as 2025550123 is a 400. - Required when thankYouButtonType is CALL_BUSINESS; a 400 with any other button type. - Accepted only inside platformSpecificData; a top-level businessPhoneNumber is a 400.
 	BusinessPhoneNumber *string `json:"businessPhoneNumber,omitempty"`
 	// ISO 3166-1 alpha-2 country of businessPhoneNumber (Meta thank_you_page.country_code), sent in uppercase. Required when thankYouButtonType is CALL_BUSINESS and a 400 with any other button type. Accepted only inside platformSpecificData: a top-level countryCode is a 400.
 	CountryCode        *string `json:"countryCode,omitempty" validate:"regexp=^[A-Za-z]{2}$"`
@@ -40,7 +40,7 @@ type MetaLeadFormPlatformData struct {
 	ThankYouEnableMessenger *bool `json:"thankYouEnableMessenger,omitempty"`
 	// Set true for a higher-intent form (adds a review step before submit).
 	IsOptimizedForQuality *bool `json:"isOptimizedForQuality,omitempty"`
-	// Requires the lead to verify their phone number over SMS before the form submits (Meta is_phone_sms_verify_enabled). Only meaningful on a form with a PHONE question. Meta can restrict this parameter to apps holding a capability: when it does, the create fails with a 422 naming platformSpecificData.isPhoneSmsVerifyEnabled, and the toggle then has to be set in Meta's form builder.
+	// Requires the lead to verify their phone number over SMS before the form submits (Meta is_phone_sms_verify_enabled). Only meaningful on a form with a PHONE question.  Meta can restrict this parameter to apps holding a capability. When it does, the create fails with a 422 naming platformSpecificData.isPhoneSmsVerifyEnabled, and the toggle must then be set in Meta's form builder.
 	IsPhoneSmsVerifyEnabled          *bool                                     `json:"isPhoneSmsVerifyEnabled,omitempty"`
 	BlockDisplayForNonTargetedViewer *bool                                     `json:"blockDisplayForNonTargetedViewer,omitempty"`
 	QuestionPageCustomHeadline       *string                                   `json:"questionPageCustomHeadline,omitempty"`

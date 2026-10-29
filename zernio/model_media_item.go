@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -24,13 +24,13 @@ type MediaItem struct {
 	Type *string `json:"type,omitempty"`
 	// A media item with a null, missing or empty url is dropped, unless it names a connected file with `fileId` + `accountId`.
 	Url *string `json:"url,omitempty"`
-	// A file of a connected Google Drive or OneDrive account (see the Files endpoints). The file is copied into Zernio media storage when the post is created and the item is stored as a plain `url`; a folder, an undownloadable file or an unknown id fails the request with a 4xx naming `mediaItems[i].fileId`. Requires `accountId`.
+	// A file of a connected Google Drive or OneDrive account (see the Files endpoints). Requires `accountId`.  The file is copied into Zernio media storage when the post is created, and the item is stored as a plain `url`. A folder, an undownloadable file or an unknown id fails the request with a 4xx naming `mediaItems[i].fileId`.
 	FileId *string `json:"fileId,omitempty"`
 	// The connected Google or Microsoft account the `fileId` belongs to (must have the `files` area). Required with `fileId`.
 	AccountId *string `json:"accountId,omitempty"`
 	// Optional title for the media item. Used as the document title for LinkedIn PDF/carousel posts. If omitted, falls back to the post title, then the filename.
 	Title *string `json:"title,omitempty"`
-	// Accessibility alternative text for an image, applied on every platform that supports it: Instagram (feed images only, not Reels/Stories), Facebook, Threads, X (max 1000 chars), LinkedIn, Bluesky, and Pinterest (max 500 chars). Ignored on platforms without alt-text support (TikTok, YouTube, Snapchat, Telegram, Reddit, Google Business Profile, WhatsApp) and on video items where the platform does not accept it. Set once per image; the same value is sent to each selected platform.
+	// Accessibility alternative text for an image. Set once per image; the same value is sent to each selected platform.  - Applied on: Instagram (feed images only, not Reels/Stories), Facebook, Threads, X (max 1000 chars), LinkedIn, Bluesky, Pinterest (max 500 chars). - Ignored on platforms without alt-text support (TikTok, YouTube, Snapchat, Telegram, Reddit, Google Business Profile, WhatsApp) and on video items where the platform does not accept it.
 	AltText  *string `json:"altText,omitempty"`
 	Filename *string `json:"filename,omitempty"`
 	// Optional file size in bytes
@@ -41,7 +41,7 @@ type MediaItem struct {
 	Thumbnail *string `json:"thumbnail,omitempty"`
 	// Custom cover image URL for Instagram Reels. Can also be set via platformSpecificData.instagramThumbnail or platformSpecificData.reelCover. Resolution order: this field > platformSpecificData.instagramThumbnail > platformSpecificData.reelCover > platformSpecificData.thumbnailUrl (legacy).
 	InstagramThumbnail *string `json:"instagramThumbnail,omitempty"`
-	// Subtitle (closed caption) files for a video item, in SRT or WebVTT. Each language may appear once per video. Sent to YouTube, Facebook videos, LinkedIn, X and Bluesky; ignored with a warning on every other platform. Zernio downloads each file when the post is created or updated and converts it to the format each platform requires. Per-platform rules: YouTube takes every track; Facebook takes every track, up to 200 KB each; Bluesky takes every track, up to 20 KB each after conversion to WebVTT; X takes the first track only (one subtitle per video); LinkedIn takes the first English track only. Tracks a platform cannot take are skipped and reported in the response warnings. A file that is unreachable, redirects, exceeds 1 MB, is not valid SRT or WebVTT, or is over a platform limit is rejected with a 400 (code INVALID_SUBTITLES). If a platform rejects a file at publish time, the post is still published, without subtitles.
+	// Subtitle (closed caption) files for a video item, in SRT or WebVTT. Each language may appear once per video. Zernio downloads each file when the post is created or updated and converts it to the format each platform requires.  Sent to YouTube, Facebook videos, LinkedIn, X and Bluesky; ignored with a warning elsewhere. Per platform:  - YouTube: every track. - Facebook: every track, up to 200 KB each. - Bluesky: every track, up to 20 KB each after conversion to WebVTT. - X: the first track only (one subtitle per video). - LinkedIn: the first English track only.  Tracks a platform cannot take are skipped and reported in the response warnings.  A file that is unreachable, redirects, exceeds 1 MB, is not valid SRT or WebVTT, or is over a platform limit is rejected with a 400 (code INVALID_SUBTITLES). If a platform rejects a file at publish time, the post still publishes, without subtitles.
 	Subtitles []MediaSubtitle `json:"subtitles,omitempty"`
 	// Internal flag indicating the image was resized for TikTok
 	TiktokProcessed *bool `json:"tiktokProcessed,omitempty"`

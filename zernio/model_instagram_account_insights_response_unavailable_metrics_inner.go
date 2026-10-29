@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &InstagramAccountInsightsResponseUnavailableMetricsInner{
 type InstagramAccountInsightsResponseUnavailableMetricsInner struct {
 	// The requested metric name.
 	Metric *string `json:"metric,omitempty"`
-	// \"not_enrolled\": the account is not enrolled in the program behind this metric. \"permission_missing\": the connected user lacks access to this metric. \"unsupported_metric\": the platform does not accept this metric name on the API version Zernio uses. \"no_data\": the platform returned no bucket for this metric over the requested range. \"unreadable_value\": the platform returned a value shape Zernio cannot read, so no total is reported. \"mixed_currency\": readable values disagree on currency or unit within the range. \"upstream_error\": any other platform failure.  \"no_data\" is the common case in practice. The others are defensive: \"not_enrolled\" and \"unsupported_metric\" in particular have not been observed on live Facebook traffic, since a non-enrolled Page returns zeros rather than an error and metric names are validated before any platform call.
+	// Why the metric is unavailable:  - \"not_enrolled\": the account is not enrolled in the program behind this metric. - \"permission_missing\": the connected user lacks access to this metric. - \"unsupported_metric\": the platform does not accept this metric name on the API version Zernio uses. - \"no_data\": the platform returned no bucket for this metric over the requested range. - \"unreadable_value\": the platform returned a value shape Zernio cannot read, so no total is reported. - \"mixed_currency\": readable values disagree on currency or unit within the range. - \"upstream_error\": any other platform failure.  \"no_data\" is the common case in practice. The others are defensive: \"not_enrolled\" and \"unsupported_metric\" in particular have not been observed on live Facebook traffic, since a non-enrolled Page returns zeros rather than an error and metric names are validated before any platform call.
 	Reason *string `json:"reason,omitempty"`
 	// Platform-provided explanation when available (access tokens redacted), otherwise Zernio copy.
 	Message *string `json:"message,omitempty"`

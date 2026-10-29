@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -32,7 +32,7 @@ type AdCampaign struct {
 	PlatformCampaignStatus NullableString `json:"platformCampaignStatus,omitempty"`
 	// Only on GET /v1/ads/campaigns with `live=true`. When `platformCampaignStatus` was read from the platform; null when this campaign could not be read live.
 	StatusReadAt NullableTime `json:"statusReadAt,omitempty"`
-	// TikTok only, only on GET /v1/ads/campaigns with `live=true` and only on campaigns read live. A fixed subset of TikTok's campaign/get record, not the whole record: campaign_id, operation_status, objective_type, budget_mode (BUDGET_MODE_INFINITE means no campaign budget, so budget lives on the ad groups), budget, and budget_optimize_on, each with TikTok's own value and present only when TikTok returns it. Plus advertiser_currency and advertiser_timezone from TikTok's advertiser/info. Whether the campaign is Upgraded Smart+ is `isSmartPlus`.
+	// TikTok only, only on GET /v1/ads/campaigns with `live=true` and only on campaigns read live. A fixed subset of TikTok's campaign/get record, not the whole record, each field with TikTok's own value and present only when TikTok returns it:  - campaign_id, operation_status, objective_type - budget_mode (BUDGET_MODE_INFINITE means no campaign budget, so budget lives on the ad groups) - budget and budget_optimize_on  Plus advertiser_currency and advertiser_timezone from TikTok's advertiser/info. Whether the campaign is Upgraded Smart+ is `isSmartPlus`.
 	NativeSettings map[string]interface{} `json:"nativeSettings,omitempty"`
 	// Only on GET /v1/ads/campaigns with `live=true`. When `nativeSettings` was read from the platform. Null whenever native settings were not read now.
 	ConfigReadAt NullableTime `json:"configReadAt,omitempty"`

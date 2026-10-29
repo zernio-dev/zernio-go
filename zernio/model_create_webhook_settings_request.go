@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,7 @@ type CreateWebhookSettingsRequest struct {
 	IsActive *bool `json:"isActive,omitempty"`
 	// Custom headers to include in webhook requests
 	CustomHeaders map[string]string `json:"customHeaders,omitempty"`
-	// Resource groups this subscription does not receive (opt-out denylist). Omit or send an empty array to receive every event in `events`. Listing a group here drops its events before delivery and on every replay path. Set at creation it applies to everything this subscription ever receives; changed later via PUT it applies to events emitted after the change, with a five-minute tail for events already queued (see that operation). When the caller is a restricted (zrk_) key, that key's own disabled groups are unioned into whatever you send here, so a restricted key can never create a subscription wider than itself.
+	// Resource groups this subscription does not receive (opt-out denylist). Omit or send an empty array to receive every event in `events`.  - Listing a group here drops its events before delivery and on every replay path. - Set at creation, it applies to everything this subscription ever receives. - Changed later via PUT, it applies to events emitted after the change, with a five-minute tail for events already queued (see that operation). - For a restricted (zrk_) key, that key's own disabled groups are unioned into whatever you send here, so a restricted key can never create a subscription wider than itself.
 	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
 	// Profiles this subscription receives events for. Omit or send an empty array to receive every profile. Every id must be a profile in your team, otherwise the request fails with 404 `profile_not_found` and nothing is created. Typical use is routing the profile that holds test accounts to a staging endpoint.
 	ProfileIds []string `json:"profileIds,omitempty"`

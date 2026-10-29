@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,7 @@ type ApiKey struct {
 	ProfileIds []ApiKeyProfileIdsInner `json:"profileIds,omitempty"`
 	// 'read-write' allows all operations, 'read' restricts to GET requests only
 	Permission *string `json:"permission,omitempty"`
-	// Resource groups this key can NOT access (opt-out denylist). Absent or empty means legacy full access. A key with any group disabled is a restricted key (zrk_ prefix) and can never manage API keys, invites, or member identity. Each operation's group is published as x-resource-group. With 'messages' disabled, the key cannot read or send direct messages through any API surface, and it cannot create or edit a webhook subscription broader than itself: it cannot subscribe to, test-fire, redeliver, or read delivery logs for message events. Subscriptions created earlier, from the dashboard, or with a full-access key keep delivering whatever their own `disabledResourceGroups` allows, so restricting an existing integration end to end means restricting the subscription too. OAuth connector tokens (AI assistants and MCP clients) resolve against the same registry, but their groups are not settable yet: treat an authorized connector as full access.
+	// Resource groups this key can NOT access (opt-out denylist). Absent or empty means legacy full access. Each operation's group is published as x-resource-group.  A key with any group disabled is a restricted key (zrk_ prefix) and can never manage API keys, invites, or member identity.  With 'messages' disabled, the key cannot read or send direct messages through any API surface. It also cannot create or edit a webhook subscription broader than itself: no subscribing to, test-firing, redelivering, or reading delivery logs for message events.  Subscriptions created earlier, from the dashboard, or with a full-access key keep delivering whatever their own `disabledResourceGroups` allows. To restrict an existing integration end to end, restrict the subscription too.  OAuth connector tokens (AI assistants and MCP clients) resolve against the same registry, but their groups are not settable yet: treat an authorized connector as full access.
 	DisabledResourceGroups []string         `json:"disabledResourceGroups,omitempty"`
 	CreatedBy              *ApiKeyCreatedBy `json:"createdBy,omitempty"`
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -56,9 +56,11 @@ func (r LedgerAPIGetLedgerBalancesRequest) Execute() (*GetLedgerBalances200Respo
 GetLedgerBalances Get ledger balances
 
 Returns the balance of each bucket (for example accruing, owed, payable) for one ledger scope.
-A scope owned by another team returns an empty balances object. A profile-scoped key (or a
-member limited to some profiles) only reads `campaign` and `participant` scopes of campaigns
-under its profiles; any other scope returns an empty balances object.
+
+These return an empty balances object:
+
+- A scope owned by another team.
+- For a profile-scoped key (or a member limited to some profiles), any scope other than `campaign` and `participant` scopes of campaigns under its profiles.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return LedgerAPIGetLedgerBalancesRequest
@@ -236,10 +238,17 @@ func (r LedgerAPIListLedgerEntriesRequest) Execute() (*ListLedgerEntries200Respo
 /*
 ListLedgerEntries List ledger entries
 
-Lists ledger entries for your team, newest first. Filter by scope (matches either side of the entry),
-kind, or the reference that caused the entry. A profile-scoped key (or a member limited to some
-profiles) only sees entries of campaigns under its profiles and of their participants; operator
-and platform scopes stay hidden from it.
+Lists ledger entries for your team, newest first.
+
+### Filters
+
+- scope (matches either side of the entry)
+- kind
+- the reference that caused the entry
+
+### Profile-scoped access
+
+A profile-scoped key (or a member limited to some profiles) only sees entries of campaigns under its profiles and of their participants. Operator and platform scopes stay hidden from it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return LedgerAPIListLedgerEntriesRequest

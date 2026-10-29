@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the SlackPlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &SlackPlatformData{}
 
-// SlackPlatformData Slack message settings. Posts mrkdwn text (up to 40,000 chars; Slack truncates beyond that) to the channel fixed by the connected account, with up to 10 media files per post uploaded via Slack's file API (the text becomes the caption). The target channel is chosen at connect time (one connected account per channel), so channelId is NOT accepted here (a 400 is returned); connect the desired channel via /v1/connect/slack and target its accountId. Messages over 4,000 characters cannot be edited later (Slack's edit limit is stricter than its post limit).
+// SlackPlatformData Slack message settings. Posts mrkdwn text (up to 40,000 chars; Slack truncates beyond that) to the channel fixed by the connected account. Up to 10 media files per post are uploaded via Slack's file API (the text becomes the caption).  The channel is chosen at connect time (one connected account per channel), so channelId is NOT accepted here (400). Connect the desired channel via /v1/connect/slack and target its accountId.  Messages over 4,000 characters cannot be edited later (Slack's edit limit is stricter than its post limit).
 type SlackPlatformData struct {
 	// Parent message ts to post this message as a thread reply (e.g. \"1503435956.000247\").
 	ThreadTs *string `json:"threadTs,omitempty"`

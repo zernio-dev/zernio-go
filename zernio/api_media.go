@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -172,13 +172,35 @@ func (r MediaAPIPrepareMediaRequest) Execute() (*PrepareMedia200Response, *http.
 /*
 PrepareMedia Prepare media for a platform
 
-Turn any image or video into a version the target platform accepts, using the same per-platform processing Zernio runs before publishing. Each team can prepare up to 60 files per hour; past that the endpoint answers 429 with `retryAfterSeconds`.
+Turn any image or video into a version the target platform accepts, using the same per-platform processing Zernio runs before publishing.
 
-What each target does to a video: `instagram`, `facebook_reel` re-encode to H.264 Main 4.1, 30 fps, 1080 wide (HDR sources only get the size step, so they are not flattened to SDR). `instagram_story` re-encodes a video over 100MB to fit 60 seconds and 100MB. `facebook_story` reframes anything wider than 9:16 onto a 1080x1920 canvas with a blurred background (Facebook otherwise publishes such stories with 0 seconds of video and no error). `threads` re-encodes to the conservative H.264 Baseline profile Threads processes reliably. `bluesky` re-encodes to 1080 wide and at most 180 seconds, then compresses under 50MB if the result is still larger. `telegram` compresses to 50MB and moves the index to the start of the file. The other targets compress only when the file is over the platform limit.
+Each team can prepare up to 60 files per hour; past that the endpoint answers 429 with `retryAfterSeconds`.
 
-Images are converted to a format the platform ingests (Instagram takes only JPEG, LinkedIn and Google Business reject WebP and AVIF) and compressed under its size limit; `telegram` also fits the width plus height limit and `googlebusiness` enlarges images under its minimum size.
+### Video, per target
 
-When the file already complies, `changed` is false and `url` is the input URL (after redirects). Otherwise `url` points to the prepared file in Zernio storage, kept under the same retention as uploaded media. The request is synchronous: a long video can take a few minutes. Videos over 200MB are refused with 413, and a video URL whose host sends no Content-Length is refused with 400.
+- `instagram`, `facebook_reel`: re-encode to H.264 Main 4.1, 30 fps, 1080 wide (HDR sources only get the size step, so they are not flattened to SDR).
+- `instagram_story`: re-encodes a video over 100MB to fit 60 seconds and 100MB.
+- `facebook_story`: reframes anything wider than 9:16 onto a 1080x1920 canvas with a blurred background (Facebook otherwise publishes such stories with 0 seconds of video and no error).
+- `threads`: re-encodes to the conservative H.264 Baseline profile Threads processes reliably.
+- `bluesky`: re-encodes to 1080 wide and at most 180 seconds, then compresses under 50MB if the result is still larger.
+- `telegram`: compresses to 50MB and moves the index to the start of the file.
+- Other targets compress only when the file is over the platform limit.
+
+### Images
+
+Images are converted to a format the platform ingests (Instagram takes only JPEG; LinkedIn and Google Business reject WebP and AVIF) and compressed under its size limit.
+
+- `telegram` also fits the width plus height limit.
+- `googlebusiness` enlarges images under its minimum size.
+
+### Result
+
+When the file already complies, `changed` is false and `url` is the input URL (after redirects). Otherwise `url` points to the prepared file in Zernio storage, kept under the same retention as uploaded media.
+
+The request is synchronous: a long video can take a few minutes.
+
+- Videos over 200MB are refused with 413.
+- A video URL whose host sends no Content-Length is refused with 400.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MediaAPIPrepareMediaRequest

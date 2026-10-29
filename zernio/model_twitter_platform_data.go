@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -21,16 +21,16 @@ var _ MappedNullable = &TwitterPlatformData{}
 // TwitterPlatformData X-specific post options. The article field creates a long-form X Article and is mutually exclusive with tweet media and tweet-only options. Geo-restriction applies at the media level: media is hidden outside the specified countries while tweet text remains visible.
 type TwitterPlatformData struct {
 	Article *XArticle `json:"article,omitempty"`
-	// ID of an existing tweet to reply to. The published tweet will appear as a reply in that tweet's thread. For threads, only the first tweet replies to the target; subsequent tweets chain normally. X only permits replying to your own posts or posts you are mentioned in; replying to an arbitrary other account's post is rejected by X.
+	// ID of an existing tweet to reply to. The published tweet appears as a reply in that tweet's thread. For threads, only the first tweet replies to the target; subsequent tweets chain normally.  X only permits replying to your own posts or posts you are mentioned in; replying to an arbitrary other account's post is rejected by X.
 	ReplyToTweetId *string `json:"replyToTweetId,omitempty"`
-	// ID (or full status URL) of an existing tweet to quote-repost. The published tweet becomes a quote tweet of the target. Mutually exclusive with media and poll. X only permits quoting your own posts or posts you are mentioned in / part of the conversation thread of; quoting an arbitrary other account's post is rejected by X. Billed at the standard create rate ($0.015), unlike pasting a tweet URL into the text which is billed at the URL rate ($0.20). For threads, applies to the first tweet only.
+	// ID (or full status URL) of an existing tweet to quote-repost. The published tweet becomes a quote tweet of the target. For threads, applies to the first tweet only.  - Mutually exclusive with media and poll. - X only permits quoting your own posts, or posts you are mentioned in or part of the conversation thread of. Quoting an arbitrary other account's post is rejected by X. - Billed at the standard create rate ($0.015), unlike pasting a tweet URL into the text, which is billed at the URL rate ($0.20).
 	QuoteTweetId *string `json:"quoteTweetId,omitempty"`
 	// Controls who can reply to the tweet. \"following\" allows only people you follow, \"mentionedUsers\" allows only mentioned users, \"subscribers\" allows only subscribers, \"verified\" allows only verified users. Omit for default (everyone can reply). For threads, applies to the first tweet only. Cannot be combined with replyToTweetId.
 	ReplySettings *string `json:"replySettings,omitempty"`
 	// Complete sequence of tweets in a thread. The first item becomes the root tweet, subsequent items are chained as replies. When threadItems is provided, the top-level content field is used only for display and search purposes, it is NOT published. You must include your first tweet as threadItems[0].
 	ThreadItems []TwitterPlatformDataThreadItemsInner `json:"threadItems,omitempty"`
 	Poll        *TwitterPlatformDataPoll              `json:"poll,omitempty"`
-	// Uploads the video with X's amplify_video media category instead of the standard tweet_video. Applied only when the connected X account has a paid X subscription; on other accounts the flag is accepted and ignored. It is not required to post long videos. The standard tweet_video path already publishes videos well past 140 seconds on free accounts, and maximum duration is set by X per account, not by Zernio. Zernio enforces only the 512 MB file-size limit. Some accounts additionally require X's long-video API allowlisting, without which X rejects an amplify_video upload.
+	// Uploads the video with X's amplify_video media category instead of the standard tweet_video. Applied only when the connected X account has a paid X subscription; on other accounts the flag is accepted and ignored.  It is not required to post long videos. The standard tweet_video path already publishes videos well past 140 seconds on free accounts, and maximum duration is set by X per account, not by Zernio. Zernio enforces only the 512 MB file-size limit.  Some accounts additionally require X's long-video API allowlisting, without which X rejects an amplify_video upload.
 	LongVideo      *bool           `json:"longVideo,omitempty"`
 	GeoRestriction *GeoRestriction `json:"geoRestriction,omitempty"`
 	// When true, the post is labeled by X as a paid partnership / paid promotion. For threads, applies to the root tweet only. Field availability may depend on your X API access tier.

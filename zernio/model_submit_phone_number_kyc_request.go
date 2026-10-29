@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ var _ MappedNullable = &SubmitPhoneNumberKycRequest{}
 type SubmitPhoneNumberKycRequest struct {
 	ProfileId string `json:"profileId"`
 	Country   string `json:"country"`
-	// Idempotency token for this submission attempt. Once the number has been ordered, a retry with the same token returns that same number instead of ordering another. A submission that fails before the number is ordered releases the token, so you can correct your details and re-submit with it. Omit it and every call provisions a new number.
+	// Idempotency token for this submission attempt. Omit it and every call provisions a new number.  - Once the number has been ordered, a retry with the same token returns that number instead of ordering another. - A submission that fails before the number is ordered releases the token, so you can correct your details and re-submit with it.
 	SubmissionId *string `json:"submissionId,omitempty"`
 	// Provision several same-country numbers from one submission (1-5). The single verification covers all of them; each number is billed only when it activates. Numbers that fail to order are skipped (best-effort). With `areaCode`, a quantity above that area's live stock is rejected with a 400.
 	Quantity *int32 `json:"quantity,omitempty"`
@@ -34,11 +34,11 @@ type SubmitPhoneNumberKycRequest struct {
 	ReuseOptionId *string `json:"reuseOptionId,omitempty"`
 	// Legacy fallback for `reuseOptionId`: the source phone number (GET reusable.options[].fromPhoneNumber). Ambiguous when a number labels two verifications, so prefer `reuseOptionId`. Omitted = the approved default. No match = 409.
 	ReuseFrom *string `json:"reuseFrom,omitempty"`
-	// Area code (NDC) the number must be in. Hard constraint: an empty area pool fails with 409 code AREA_CODE_UNAVAILABLE instead of ordering from another area. Omit for any area. Options come from GET /v1/phone-numbers/availability (areaOptions); the purchase 202 kycUrl echoes the areaCode picked at purchase time so it can be passed here.
+	// Area code (NDC) the number must be in. Omit for any area.  Hard constraint: an empty area pool fails with 409 code AREA_CODE_UNAVAILABLE instead of ordering from another area.  Options come from GET /v1/phone-numbers/availability (areaOptions). The purchase 202 kycUrl echoes the areaCode picked at purchase time so it can be passed here.
 	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
 	// Exact number to order, in E.164, taken from GET /v1/phone-numbers/available. It is ordered as is or the request fails with 409 code phone_number_unavailable; another number is never substituted and a pre-order is never placed. Requires quantity 1 (or omitted). Omit to let the carrier pick a number in the area.
 	PhoneNumber *string `json:"phoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
-	// With areaCode: pre-order that area when it has no stock (an area listed in soldOutAreas with preOrderable true) instead of failing with AREA_CODE_UNAVAILABLE. The carrier sources a number in that area. Without areaCode it accepts the pre-order a previous submit offered with 409 code area_pre_order_available (a geographic-match country whose address area has no stock): resend the same body with preOrder true and the order is placed for that area. A whole pair with no stock is pre-ordered without either flag.
+	// Pre-order a number when the requested area has no stock.  - With areaCode: pre-order that area when it has no stock (listed in soldOutAreas with preOrderable true) instead of failing with AREA_CODE_UNAVAILABLE. The carrier sources a number in that area. - Without areaCode: accepts the pre-order a previous submit offered with 409 code area_pre_order_available (a geographic-match country whose address area has no stock). Resend the same body with preOrder true and the order is placed for that area.  A whole pair with no stock is pre-ordered without either flag.
 	PreOrder *bool `json:"preOrder,omitempty"`
 	// End user's legal first name. Required when the country has an action/ID-verification (Onfido) requirement.
 	EndUserFirstName *string `json:"endUserFirstName,omitempty"`

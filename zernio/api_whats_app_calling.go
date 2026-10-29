@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -960,11 +960,11 @@ func (r WhatsAppCallingAPIGetWhatsAppCallRecordingRequest) Execute() (*GetWhatsA
 GetWhatsAppCallRecording Get a call recording
 
 Resolves a fresh, playable MP3 URL for the call's recording.
-Provider-signed recording URLs expire ~10 minutes after signing, so the
-`recordingUrl` stored on the call is usually stale by the time it is
-played; this endpoint re-signs on demand. Default responds `302 Found`
-redirecting to the fresh URL (point an `<audio>` element or a link
-straight at this endpoint); pass `as=json` to receive `{ url }` instead.
+
+Provider-signed recording URLs expire ~10 minutes after signing, so the `recordingUrl` stored on the call is usually stale by the time it is played. This endpoint re-signs on demand.
+
+- Default: responds `302 Found` redirecting to the fresh URL (point an `<audio>` element or a link straight at this endpoint).
+- Pass `as=json` to receive `{ url }` instead.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id
@@ -1086,13 +1086,11 @@ func (r WhatsAppCallingAPIGetWhatsAppCallingRequest) Execute() (*GetWhatsAppCall
 /*
 GetWhatsAppCalling Get calling config for a number
 
-The WhatsApp Business Calling configuration of this number, keyed the
-same way as the POST/PATCH/DELETE below (full read-write on one
-sub-resource). Encrypted secrets are never returned; only a boolean
-saying whether a SIP password is stored. The account-scoped read
-(`GET /v1/whatsapp/calling?accountId=`) remains for callers that only
-know the account id, and additionally carries account-level
-extras (billing eligibility, current-period spend).
+The WhatsApp Business Calling configuration of this number, keyed the same way as the POST/PATCH/DELETE below (full read-write on one sub-resource).
+
+Encrypted secrets are never returned; only a boolean saying whether a SIP password is stored.
+
+The account-scoped read (`GET /v1/whatsapp/calling?accountId=`) remains for callers that only know the account id. It additionally carries account-level extras (billing eligibility, current-period spend).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id Phone number record ID (from GET /v1/phone-numbers).
@@ -1213,14 +1211,15 @@ func (r WhatsAppCallingAPIGetWhatsAppCallingConfigRequest) Execute() (*GetWhatsA
 /*
 GetWhatsAppCallingConfig Get calling config for an account
 
-Returns the local calling configuration snapshot for the connected
-WhatsApp account: whether calling is enabled, the forward-to
-destination URI, recording opt-in state, the phone number record id
-(use as `{id}` on the read-write calling sub-resource at
-/v1/phone-numbers/{id}/whatsapp/calling) and whether SIP digest
-credentials are stored (the encrypted password itself is never
-returned). Also carries account-level extras (billing eligibility,
-current-period spend) that the number-keyed GET does not.
+Returns the local calling configuration snapshot for the connected WhatsApp account:
+
+- whether calling is enabled;
+- the forward-to destination URI;
+- recording opt-in state;
+- the phone number record id (use as `{id}` on the read-write calling sub-resource at /v1/phone-numbers/{id}/whatsapp/calling);
+- whether SIP digest credentials are stored (the encrypted password itself is never returned).
+
+It also carries account-level extras (billing eligibility, current-period spend) that the number-keyed GET does not.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppCallingAPIGetWhatsAppCallingConfigRequest
@@ -1335,7 +1334,7 @@ func (r WhatsAppCallingAPIInitiateWhatsAppCallRequest) InitiateWhatsAppCallReque
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r WhatsAppCallingAPIInitiateWhatsAppCallRequest) IdempotencyKey(idempotencyKey string) WhatsAppCallingAPIInitiateWhatsAppCallRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -1669,11 +1668,10 @@ func (r WhatsAppCallingAPIStartWhatsAppCallerIdVerificationRequest) Execute() (*
 /*
 StartWhatsAppCallerIdVerification Start caller-ID verification for a customer-brought number
 
-Customer-brought (BYO) WhatsApp numbers cannot present themselves as
-caller ID on `tel:` call forwards until verified (carrier
-anti-spoofing); until then forwarded calls show a Zernio number
-(`callerIdMode: platform` on the calling config). This sends a
-one-time code to the number by SMS or voice call. Re-POST to resend.
+Sends a one-time code to a customer-brought (BYO) WhatsApp number by SMS or voice call, to verify it as caller ID. Re-POST to resend.
+
+BYO numbers cannot present themselves as caller ID on `tel:` call forwards until verified (carrier anti-spoofing). Until then forwarded calls show a Zernio number (`callerIdMode: platform` on the calling config).
+
 Zernio-purchased numbers never need this and get a 400.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

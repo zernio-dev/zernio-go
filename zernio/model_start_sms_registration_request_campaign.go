@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the StartSmsRegistrationRequestCampaign type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &StartSmsRegistrationRequestCampaign{}
 
-// StartSmsRegistrationRequestCampaign Required for 10DLC. What you'll send and how recipients opt in/out. The opt-in/opt-out/help auto-responses (`optinMessage`, `optoutMessage`, `helpMessage`) are optional: when omitted, a compliant, brand-named template with the carrier-required disclosures is generated for you. If you do send them, they must name the registered brand and carry the disclosures. Submissions that don't are rewritten to the compliant template before the campaign is filed.
+// StartSmsRegistrationRequestCampaign Required for 10DLC. What you'll send and how recipients opt in/out.  The opt-in/opt-out/help auto-responses (`optinMessage`, `optoutMessage`, `helpMessage`) are optional. When omitted, a compliant, brand-named template with the carrier-required disclosures is generated for you.  If you send them, they must name the registered brand and carry the disclosures. Submissions that don't are rewritten to the compliant template before the campaign is filed.
 type StartSmsRegistrationRequestCampaign struct {
 	Usecase string `json:"usecase"`
 	// The concrete kinds of messages a MIXED campaign sends (the carrier registry requires 2-5, and reviewers match them against the sample messages). Omitted: a default pair is applied for MIXED.

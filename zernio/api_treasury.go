@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -332,7 +332,7 @@ func (r TreasuryAPICreateTopupRequest) CreateTopupRequest(createTopupRequest Cre
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r TreasuryAPICreateTopupRequest) IdempotencyKey(idempotencyKey string) TreasuryAPICreateTopupRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -486,7 +486,7 @@ func (r TreasuryAPICreateTransferRequest) CreateTransferRequest(createTransferRe
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r TreasuryAPICreateTransferRequest) IdempotencyKey(idempotencyKey string) TreasuryAPICreateTransferRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -499,11 +499,27 @@ func (r TreasuryAPICreateTransferRequest) Execute() (*TreasuryTransfer, *http.Re
 /*
 CreateTransfer Create a transfer
 
-Moves money from your balance to a payee. The payee receives the full `amountCents`; Zernio's fee (4%, 50 cent minimum) is added on top,
-so your balance is debited `totalCents` = `amountCents` + `feeCents`.
-Returns 402 when the balance does not cover the amount plus the fee, or when it is negative after a dispute or refund of a card top-up ("Your balance is negative after a dispute or refund of a card top-up. Add funds to cover it before sending transfers."), and 409 when the payee has not finished onboarding or the Idempotency-Key is still processing.
-Needs an owner, admin or billing admin, signed in or through a full-access key they created: a profile-scoped key answers 403.
-A same-key retry never makes the transfer twice within Stripe's 24-hour idempotency window and answers 409 while another request is still waiting on Stripe for it; a transfer Stripe has not confirmed after 24 hours answers 409 until the daily reconciliation marks it paid (Stripe made it) or failed (it did not).
+Moves money from your balance to a payee.
+
+### Fee
+
+The payee receives the full `amountCents`. Zernio's fee (4%, 50 cent minimum) is added on top, so your balance is debited `totalCents` = `amountCents` + `feeCents`.
+
+### Who can call it
+
+Needs an owner, admin or billing admin, signed in or through a full-access key they created. A profile-scoped key answers 403.
+
+### Errors
+
+- 402: the balance does not cover the amount plus the fee.
+- 402: the balance is negative after a dispute or refund of a card top-up ("Your balance is negative after a dispute or refund of a card top-up. Add funds to cover it before sending transfers.").
+- 409: the payee has not finished onboarding, or the Idempotency-Key is still processing.
+
+### Retries
+
+A same-key retry never makes the transfer twice within Stripe's 24-hour idempotency window. It answers 409 while another request is still waiting on Stripe for it.
+
+A transfer Stripe has not confirmed after 24 hours answers 409 until the daily reconciliation marks it paid (Stripe made it) or failed (it did not).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return TreasuryAPICreateTransferRequest
@@ -666,7 +682,20 @@ func (r TreasuryAPIGetBalanceRequest) Execute() (*GetBalance200Response, *http.R
 /*
 GetBalance Get balance
 
-Returns the balance you can transfer, card top-ups still on hold, top-ups still waiting for payment, and your latest top-ups. Card top-ups become available after 7 days. A transfer debits its amount plus the fee added on top; the payee receives the full amount. A card dispute or refund on a top-up is debited from the available balance and can make it negative; transfers are refused until it is positive again. A profile-scoped key answers 403, since the balance belongs to the whole team.
+Returns your team's balance:
+
+- the balance you can transfer
+- card top-ups still on hold
+- top-ups still waiting for payment
+- your latest top-ups
+
+Card top-ups become available after 7 days.
+
+A transfer debits its amount plus the fee added on top; the payee receives the full amount.
+
+A card dispute or refund on a top-up is debited from the available balance and can make it negative. Transfers are refused until it is positive again.
+
+A profile-scoped key answers 403, since the balance belongs to the whole team.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return TreasuryAPIGetBalanceRequest

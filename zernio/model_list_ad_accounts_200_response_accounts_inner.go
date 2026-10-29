@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -37,9 +37,9 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	Timezone *string `json:"timezone,omitempty"`
 	// Reddit only. Reddit's ad account type, forwarded unchanged.
 	Type *string `json:"type,omitempty"`
-	// Meta only. Meta's `disable_reason` code, forwarded unchanged. Present when `accountStatus` is `2` (DISABLED) and Meta gives a reason, which is what separates a policy action from a payment problem. Meta does not publish a stable list of values for this field, so none are enumerated here: resolve the code against Meta's own ad account reference. Absent when Meta reports no reason, or when the connected token cannot read the field.
+	// Meta only. Meta's `disable_reason` code, forwarded unchanged.  Present when `accountStatus` is `2` (DISABLED) and Meta gives a reason; this separates a policy action from a payment problem. Absent when Meta reports no reason, or the connected token cannot read the field.  Meta publishes no stable list of values, so none are enumerated here: resolve the code against Meta's own ad account reference.
 	DisableReason *int32 `json:"disableReason,omitempty"`
-	// TikTok only. Total balance the advertiser can spend (cash plus grant), in whole units of `currency`. Read from the Business Center balance when the connection has a finance role there, which is the only TikTok source that counts cash held in a shared payment portfolio; otherwise TikTok's advertiser-level balance, which can read 0 for a cash-funded advertiser.
+	// TikTok only. Total balance the advertiser can spend (cash plus grant), in whole units of `currency`.  Read from the Business Center balance when the connection has a finance role there: the only TikTok source that counts cash held in a shared payment portfolio. Otherwise TikTok's advertiser-level balance, which can read 0 for a cash-funded advertiser.
 	Balance *float32 `json:"balance,omitempty"`
 	// TikTok only. Cash part of `balance`, in whole units of `currency`. Absent when the connection has no finance role in the advertiser's Business Center.
 	CashBalance *float32 `json:"cashBalance,omitempty"`
@@ -54,13 +54,13 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	// Meta only. Meta's `funding_source` ID for the ad account, forwarded unchanged. ABSENT both when this connection's token cannot see billing and when the account has no payment method; read `billingStatus` to tell the two apart.
 	FundingSource        *string                                                     `json:"fundingSource,omitempty"`
 	FundingSourceDetails *ListAdAccounts200ResponseAccountsInnerFundingSourceDetails `json:"fundingSourceDetails,omitempty"`
-	// Meta only. Whether the ad account has a payment method, derived as follows: - `missing` when `accountStatus` is `3` (UNSETTLED) or `9` (IN_GRACE_PERIOD),   when `disableReason` is `3` (RISK_PAYMENT), or when the connected person   has the MANAGE task on the account (admin, who always sees billing) and   Meta returns no funding source. Ad creation on such an account fails at   the ad step with Meta code 100 / subcode 1359188: add a payment method in   Meta's Billing & payments center. - `ok` when Meta returns a funding source. This is presence, not validity:   Meta can still refuse the card or balance at ad creation. - `unknown` when the connected person is not an admin of the account, or   the token cannot read the billing fields.
+	// Meta only. Whether the ad account has a payment method:  - `missing`: `accountStatus` is `3` (UNSETTLED) or `9` (IN_GRACE_PERIOD), `disableReason` is `3` (RISK_PAYMENT), or the connected person has the MANAGE task on the account (admin, who always sees billing) and Meta returns no funding source. - `missing`, effect: ad creation fails at the ad step with Meta code 100 / subcode 1359188. Add a payment method in Meta's Billing & payments center. - `ok`: Meta returns a funding source. This is presence, not validity: Meta can still refuse the card or balance at ad creation. - `unknown`: the connected person is not an admin of the account, or the token cannot read the billing fields.
 	BillingStatus *string `json:"billingStatus,omitempty"`
 	// Meta and X only. Whether the account can create/run ads now. Always present on every Meta and X account. Absent (treat as true) on other platforms.
 	Selectable *bool `json:"selectable,omitempty"`
 	// Meta and X only. Always present on every Meta and X account. Human-readable reason when selectable is false; null when selectable.
 	UnusableReason NullableString `json:"unusableReason,omitempty"`
-	// Always present. True when the ad account is in this connection's ad-account selection, or when the connection has no selection (then every ad account is usable). For a posting account (e.g. facebook, twitter) the selection of its ads connection applies. Unrelated to `selectable`, which is the platform's own status. Writes to an ad account with `selected: false` answer 403 `ad_account_not_selected`; `inScopeOnly=true` lists only the selected ones.
+	// Always present. True when the ad account is in this connection's ad-account selection, or when the connection has no selection (then every ad account is usable).  - For a posting account (e.g. facebook, twitter), the selection of its ads connection applies. - Unrelated to `selectable`, which is the platform's own status. - Writes to an ad account with `selected: false` answer 403 `ad_account_not_selected`. - `inScopeOnly=true` lists only the selected ones.
 	Selected *bool `json:"selected,omitempty"`
 }
 

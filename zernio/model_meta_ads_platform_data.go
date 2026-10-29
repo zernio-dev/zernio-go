@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -21,16 +21,16 @@ var _ MappedNullable = &MetaAdsPlatformData{}
 // MetaAdsPlatformData Meta (facebook/instagram) options for platformSpecificData on POST /v1/ads/boost and /v1/ads/create. Unknown keys are rejected, not dropped.
 type MetaAdsPlatformData struct {
 	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
-	// Whole currency units (USD: 5 = $5.00). Required when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP. May also be sent alone, WITHOUT bidStrategy, to set the cap on an ad set joining a COST_CAP / LOWEST_COST_WITH_BID_CAP campaign (the strategy is inherited from the campaign). On POST /v1/ads/create that shape requires existingCampaignId and is a 400 otherwise; on POST /v1/ads/boost it is promoted to LOWEST_COST_WITH_BID_CAP.
+	// Whole currency units (USD: 5 = $5.00). Required when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP.  May also be sent alone, WITHOUT bidStrategy, to set the cap on an ad set joining a COST_CAP / LOWEST_COST_WITH_BID_CAP campaign (the strategy is inherited from the campaign):  - POST /v1/ads/create: that shape requires existingCampaignId and is a 400 otherwise. - POST /v1/ads/boost: it is promoted to LOWEST_COST_WITH_BID_CAP.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Decimal ROAS multiplier (2.0 = 2.0x). Required when bidStrategy is LOWEST_COST_WITH_MIN_ROAS; sending it without bidStrategy is a 400.
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
-	// Meta daily_min_spend_target on the ad set being created: the least it should spend per day, in whole currency units. It reserves a share of a CAMPAIGN budget, so it requires budgetLevel campaign or an existingCampaignId whose campaign has the budget (Advantage campaign budget / CBO); with an ad-set budget it is a 400, because Meta rejects a spend limit on an ad set that owns its budget. A target, not a guarantee. Mutually exclusive with lifetimeMinSpendTarget: the flavour must match the campaign budget type. Rejected with 400 on POST /v1/ads/boost and in adSetId attach mode: use PUT /v1/ads/ad-sets/{adSetId} for an ad set that already exists.
+	// Meta daily_min_spend_target on the ad set being created: the least it should spend per day, in whole currency units. A target, not a guarantee.  - It reserves a share of a CAMPAIGN budget, so it requires budgetLevel campaign or an existingCampaignId whose campaign has the budget (Advantage campaign budget / CBO). With an ad-set budget it is a 400 (Meta rejects a spend limit on an ad set that owns its budget). - Mutually exclusive with lifetimeMinSpendTarget: the flavour must match the campaign budget type. - Rejected with 400 on POST /v1/ads/boost and in adSetId attach mode: use PUT /v1/ads/ad-sets/{adSetId} for an existing ad set.
 	DailyMinSpendTarget *float32 `json:"dailyMinSpendTarget,omitempty"`
 	// Meta lifetime_min_spend_target: the lifetime-budget flavour of dailyMinSpendTarget, in whole currency units. Same rules and same rejections.
 	LifetimeMinSpendTarget *float32               `json:"lifetimeMinSpendTarget,omitempty"`
 	CustomerLifecycle      *MetaCustomerLifecycle `json:"customerLifecycle,omitempty"`
-	// Dayparting on the ad set being created (Meta `adset_schedule` with `pacing_type: [\"day_parting\"]`). Meta runs a schedule only on a LIFETIME budget, so a daily budget (on the ad set, or on the campaign joined with `existingCampaignId`) is a 400 with `param: platformSpecificData.adSchedule`. Also a 400 when empty, in adSetId attach mode and with `buyingType: RESERVED`. Change it later with `PUT /v1/ads/ad-sets/{adSetId}`.
+	// Dayparting on the ad set being created (Meta `adset_schedule` with `pacing_type: [\"day_parting\"]`). Change it later with `PUT /v1/ads/ad-sets/{adSetId}`.  A 400 with `param: platformSpecificData.adSchedule` when:  - the budget is daily (on the ad set, or on the campaign joined with `existingCampaignId`): Meta runs a schedule only on a LIFETIME budget. - the value is empty. - in adSetId attach mode. - with `buyingType: RESERVED`.
 	AdSchedule []MetaAdScheduleInner `json:"adSchedule,omitempty"`
 }
 

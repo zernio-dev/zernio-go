@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -164,7 +164,7 @@ func (r RCSAPICreateRcsAgentRequest) CreateRcsAgentRequest(createRcsAgentRequest
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r RCSAPICreateRcsAgentRequest) IdempotencyKey(idempotencyKey string) RCSAPICreateRcsAgentRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -177,11 +177,12 @@ func (r RCSAPICreateRcsAgentRequest) Execute() (*CreateRcsAgent201Response, *htt
 /*
 CreateRcsAgent Request an RCS agent
 
-Requests a new agent for a profile, with a new company (`brand`) or an existing one
-(`brandId`, skips vetting when it is already verified). The request lands in our review:
-nothing is filed with the carriers or billed until we submit it. A profile can hold several agents.
-Requires usage-based billing and a card on file. Send an `Idempotency-Key` header to make
-retries safe.
+Requests a new agent for a profile, with a new company (`brand`) or an existing one (`brandId`, skips vetting when it is already verified). A profile can hold several agents.
+
+The request lands in our review: nothing is filed with the carriers or billed until we submit it.
+
+- Requires usage-based billing and a card on file.
+- Send an `Idempotency-Key` header to make retries safe.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return RCSAPICreateRcsAgentRequest
@@ -1205,10 +1206,11 @@ func (r RCSAPIRequestRcsAgentLaunchRequest) Execute() (*CreateRcsAgent201Respons
 RequestRcsAgentLaunch Send the launch filing
 
 Sends the launch details the carriers review (campaign, consent and a public test video).
-US agents send them once they are in `testing`; we review them before they reach the
-carriers. Agents in other markets send them while still in review (`requested`,
-`changes_requested` or `brand_vetting`), because we file everything with the carriers at
-once; this saves the details without changing the status.
+
+### When to send
+
+- **US agents**: send them once they are in `testing`. We review them before they reach the carriers.
+- **Other markets**: send them while still in review (`requested`, `changes_requested` or `brand_vetting`), because we file everything with the carriers at once. This saves the details without changing the status.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param agentId
@@ -1338,7 +1340,7 @@ func (r RCSAPISendRcsMessageRequest) SendRcsMessageRequest(sendRcsMessageRequest
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r RCSAPISendRcsMessageRequest) IdempotencyKey(idempotencyKey string) RCSAPISendRcsMessageRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -1351,14 +1353,22 @@ func (r RCSAPISendRcsMessageRequest) Execute() (*SendSms200Response, *http.Respo
 /*
 SendRcsMessage Send an RCS message
 
-Sends from one of your agents. Use `text` for a plain message or `content` for rich
-content (card, carousel, media, suggestion chips). Before launch an agent only reaches
-test phones that accepted the invite. With the agent's `smsFallbackFrom` set, phones
-without RCS get `fallbackText` (default: the message's readable text) as SMS.
+Sends an RCS message from one of your agents.
 
-Replies and status arrive as webhooks with `platform: "rcs"`: `message.received`
-(a tapped chip carries its postback in `metadata.postbackPayload`), `message.delivered`,
-`message.read` and `message.failed`. Send an `Idempotency-Key` header to make retries safe.
+- Use `text` for a plain message or `content` for rich content (card, carousel, media, suggestion chips).
+- Before launch an agent only reaches test phones that accepted the invite.
+- With the agent's `smsFallbackFrom` set, phones without RCS get `fallbackText` (default: the message's readable text) as SMS.
+
+Send an `Idempotency-Key` header to make retries safe.
+
+### Webhooks
+
+Replies and status arrive as webhooks with `platform: "rcs"`:
+
+- `message.received` (a tapped chip carries its postback in `metadata.postbackPayload`)
+- `message.delivered`
+- `message.read`
+- `message.failed`
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return RCSAPISendRcsMessageRequest

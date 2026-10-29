@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -176,10 +176,11 @@ func (r CreatorPortalAPIGetCreatorPayoutStatementRequest) Execute() (*os.File, *
 /*
 GetCreatorPayoutStatement Download a payout statement
 
-A PDF statement of one paid payout to this creator: who paid, the campaign, the date, the
-amount and the Stripe transfer id. It is a statement of a payment, not a tax invoice. Only
-for a paid payout of this participant; anything else answers 404. About 60 downloads per
-participant every 10 minutes.
+A PDF statement of one paid payout to this creator: who paid, the campaign, the date, the amount and the Stripe transfer id. It is a statement of a payment, not a tax invoice.
+
+Only for a paid payout of this participant; anything else answers 404.
+
+About 60 downloads per participant every 10 minutes.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param token A participant token or an open invite token. A malformed token answers 404 like an unknown one.
@@ -460,12 +461,14 @@ func (r CreatorPortalAPIGetCreatorPortalRequest) Execute() (*GetCreatorPortal200
 /*
 GetCreatorPortal Read a creator invite or participant page
 
-What a creator sees behind a campaign link, with no API key. `token` is either an open
-invite token (from `POST /v1/creator-campaigns/{campaignId}/invite-link`), which answers
-`kind: invite` with the campaign only, or a participant token (from an invite or a join),
-which answers `kind: participant` with the creator's connected accounts, latest 100
-submissions, earnings and payout setup. Reading a participant page also re-checks the
-creator's connected accounts. Never cached.
+What a creator sees behind a campaign link, with no API key. Never cached.
+
+`token` is one of:
+
+- An open invite token (from `POST /v1/creator-campaigns/{campaignId}/invite-link`): answers `kind: invite` with the campaign only.
+- A participant token (from an invite or a join): answers `kind: participant` with the creator's connected accounts, latest 100 submissions, earnings and payout setup.
+
+Reading a participant page also re-checks the creator's connected accounts.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param token A participant token or an open invite token. A malformed token answers 404 like an unknown one.
@@ -585,10 +588,11 @@ func (r CreatorPortalAPIJoinCreatorCampaignRequest) Execute() (*JoinCreatorCampa
 /*
 JoinCreatorCampaign Join a campaign
 
-Accepts a participant invite, or joins through an open invite link. With a participant
-token the body is ignored and the invite is accepted. With an open invite token a new
-participant is created from `displayName` (required) and `email` (optional), and a fresh
-participant token comes back: keep it, it is the creator's only key to their page.
+Accepts a participant invite, or joins through an open invite link.
+
+- Participant token: the body is ignored and the invite is accepted.
+- Open invite token: a new participant is created from `displayName` (required) and `email` (optional), and a fresh participant token comes back. Keep it: it is the creator's only key to their page.
+
 Open-link joins are limited to about 20 per IP address and 60 per link every 10 minutes.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -743,11 +747,11 @@ func (r CreatorPortalAPIRecoverCreatorPortalLinksRequest) Execute() (*RecoverCre
 /*
 RecoverCreatorPortalLinks Email a creator their campaign links
 
-For a creator who lost their link. Emails every personal participant link held by `email`
-in one message, optionally only the one for `campaignId`. Removed participants and draft
-campaigns are left out. Always answers 202 with the same body, so the answer never tells
-whether the address has links. Limited to 5 requests per hour per email address and 5 per
-hour per IP address.
+For a creator who lost their link. Emails every personal participant link held by `email` in one message, optionally only the one for `campaignId`.
+
+- Removed participants and draft campaigns are left out.
+- Always answers 202 with the same body, so the answer never tells whether the address has links.
+- Limited to 5 requests per hour per email address and 5 per hour per IP address.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CreatorPortalAPIRecoverCreatorPortalLinksRequest

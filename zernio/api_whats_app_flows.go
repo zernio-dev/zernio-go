@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -818,13 +818,16 @@ func (r WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest) Execute() (*GetWha
 /*
 GetWhatsAppFlowsEncryptionKey Get Flows encryption key status
 
-Read the RSA business public key registered on the phone number for WhatsApp Flows
-endpoint encryption. Only one key is active per phone number at a time. Flows that
-use flow_action: data_exchange (an endpoint-backed flow) stop working at runtime
-until the endpoint serves the matching private key, and Meta rejects publish with
-error code 139002 ("Missing Flows Signed Public Key") when no key is registered.
-`registered` reflects whether a key is present, never `signatureStatus` alone:
-Meta reports an unregistered key as MISMATCH rather than a null/absent value.
+Read the RSA business public key registered on the phone number for WhatsApp Flows endpoint encryption. Only one key is active per phone number at a time.
+
+### Why the key matters
+
+- Flows that use flow_action: data_exchange (an endpoint-backed flow) stop working at runtime until the endpoint serves the matching private key.
+- Meta rejects publish with error code 139002 ("Missing Flows Signed Public Key") when no key is registered.
+
+### Reading the status
+
+`registered` reflects whether a key is present, never `signatureStatus` alone. Meta reports an unregistered key as MISMATCH rather than a null/absent value.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest
@@ -982,11 +985,11 @@ func (r WhatsAppFlowsAPIListWhatsAppFlowResponsesRequest) Execute() (*ListWhatsA
 /*
 ListWhatsAppFlowResponses List flow responses
 
-List the responses customers submitted when completing a flow (parsed from the
-nfm_reply messages received via webhook), newest first. Scope to a single flow
-with `flowId`, which matches responses whose flow_token carries the `<flowId>:`
-prefix that Zernio stamps on auto-generated tokens at send time. Responses sent
-with a custom integrator-supplied flow_token are not attributed to a flow.
+List the responses customers submitted when completing a flow (parsed from the nfm_reply messages received via webhook), newest first.
+
+Scope to a single flow with `flowId`. It matches responses whose flow_token carries the `<flowId>:` prefix that Zernio stamps on auto-generated tokens at send time.
+
+Responses sent with a custom integrator-supplied flow_token are not attributed to a flow.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppFlowsAPIListWhatsAppFlowResponsesRequest
@@ -1619,11 +1622,10 @@ func (r WhatsAppFlowsAPISetWhatsAppFlowsEncryptionKeyRequest) Execute() (*Update
 /*
 SetWhatsAppFlowsEncryptionKey Register a Flows encryption key
 
-Register (or replace) the RSA business public key for WhatsApp Flows endpoint
-encryption on the phone number. Uploading a new key replaces the previous one:
-only one key is active per phone number. The corresponding private key must be
-served by the flow's endpoint, or endpoint-backed flows (flow_action:
-data_exchange) will fail at runtime even though the key is registered.
+Register (or replace) the RSA business public key for WhatsApp Flows endpoint encryption on the phone number.
+
+- Uploading a new key replaces the previous one: only one key is active per phone number.
+- The corresponding private key must be served by the flow's endpoint. Otherwise endpoint-backed flows (flow_action: data_exchange) will fail at runtime even though the key is registered.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppFlowsAPISetWhatsAppFlowsEncryptionKeyRequest

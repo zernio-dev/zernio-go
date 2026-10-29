@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -39,17 +39,17 @@ type CreateAdCreativeRequest struct {
 	// Existing library image hash (POST /v1/ads/images or GET /v1/ads/images).
 	ImageHash     *string                                     `json:"imageHash,omitempty"`
 	CarouselCards []CreateAdCreativeRequestCarouselCardsInner `json:"carouselCards,omitempty"`
-	// Only with `carouselCards` (a 400 without them). Sets `link_data.multi_share_optimized`: `false` keeps the cards in the order given, and Meta then takes at most 5 cards, so `false` with more than 5 cards is a 400; `true` lets Meta reorder them for performance. Omitted, nothing is sent and Meta's default (`true`) applies.
+	// Only with `carouselCards` (a 400 without them). Sets `link_data.multi_share_optimized`:  - `false`: keeps the cards in the order given. Meta then takes at most 5 cards, so `false` with more than 5 cards is a 400. - `true`: lets Meta reorder them for performance. - Omitted: nothing is sent and Meta's default (`true`) applies.
 	OptimizeCardOrder *bool `json:"optimizeCardOrder,omitempty"`
 	// Appended to every outbound URL (e.g. utm_source=fb).
 	UrlTags *string `json:"urlTags,omitempty"`
-	// Not supported. Meta validates creative_sourcing_spec.promotion_metadata_spec on the create call and then discards it, so a Promotion set through the Marketing API never reaches the creative. Any object is rejected with 400 invalid_field_value. Send null or omit the field, and set the Promotion on the ad in Ads Manager. Verified on 2026-09-11 across Graph v19.0 to v25.0 and every write path.
+	// Not supported. Any object is rejected with 400 invalid_field_value. Send null or omit the field, and set the Promotion on the ad in Ads Manager.  Meta validates creative_sourcing_spec.promotion_metadata_spec on the create call and then discards it, so a Promotion set through the Marketing API never reaches the creative. Verified on 2026-09-11 across Graph v19.0 to v25.0 and every write path.
 	Promotion map[string]interface{} `json:"promotion,omitempty"`
 	// Meta only. Applied to each new creative, including standalone and attach shapes. With creatives[], these are defaults; an item replaces the whole feature map, including an empty map. auto_promotion_tag is an Advantage+ enhancement, not the Ads Manager Promotion setting.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Meta only. Multi-advertiser ads: whether Meta may show this ad alongside other advertisers' in one unit. Meta auto-enrols since Aug 2024, so send OPT_OUT to leave. It is a top-level creative field, NOT a `creativeFeatures` key, and Meta rejects it there.
 	MultiAdvertiser *string `json:"multiAdvertiser,omitempty"`
-	// Meta only. Meta's \"Ad includes media created or edited with AI\" disclosure, the checkbox in Ads Manager, stored on the creative as `generative_asset_spec.transparency_metadata.self_disclosure`. OPT_IN checks it, OPT_OUT explicitly declares no AI media, omitted leaves Meta's default. Applied to each new creative, including standalone, creatives[] and attach shapes, and preserved when a creative is rebuilt. This sets the disclosure on the ad; whether and when the viewer-facing label renders is Meta's decision.
+	// Meta only. Meta's \"Ad includes media created or edited with AI\" disclosure (the Ads Manager checkbox), stored on the creative as `generative_asset_spec.transparency_metadata.self_disclosure`.  - OPT_IN: checks it. - OPT_OUT: explicitly declares no AI media. - Omitted: leaves Meta's default.  Applied to each new creative (standalone, creatives[] and attach shapes) and preserved when a creative is rebuilt. This sets the disclosure on the ad; whether and when the viewer-facing label renders is Meta's decision.
 	AiDisclosure *string `json:"aiDisclosure,omitempty"`
 }
 

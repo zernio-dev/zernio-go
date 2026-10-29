@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &TikTokPlatformData{}
 
 // TikTokPlatformData Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars. privacyLevel must match creator_info options. Both camelCase and snake_case accepted.  Creator Inbox (draft mode): Set draft: true to send content to the TikTok Creator Inbox instead of publishing immediately. The creator receives an inbox notification and completes the post using TikTok's editing flow. This maps to TikTok's post_mode: \"MEDIA_UPLOAD\" internally.  Important: The field publish_type is NOT supported. Use draft: true for Creator Inbox flow.  Photo drafts use the /v2/post/publish/content/init/ endpoint with post_mode: \"MEDIA_UPLOAD\". Video drafts use the dedicated /v2/post/publish/inbox/video/init/ endpoint.  When draft: true, the video.upload scope is required. When draft is false or omitted (direct post), the video.publish scope is required. For Creator Inbox, TikTok app version must be 31.8 or higher.
 type TikTokPlatformData struct {
-	// When true, sends the post to the TikTok Creator Inbox as a draft instead of publishing immediately. The creator receives an inbox notification to complete posting via TikTok's editing flow. Maps to TikTok API post_mode: \"MEDIA_UPLOAD\" (photos) or the dedicated inbox endpoint (videos). When false or omitted, publishes directly via post_mode: \"DIRECT_POST\". Note: publish_type is not a supported field. Use this field instead.
+	// When true, sends the post to the TikTok Creator Inbox as a draft instead of publishing immediately. The creator gets an inbox notification to complete posting via TikTok's editing flow.  - true: maps to TikTok API post_mode: \"MEDIA_UPLOAD\" (photos) or the dedicated inbox endpoint (videos). - false or omitted: publishes directly via post_mode: \"DIRECT_POST\".  publish_type is not a supported field; use this field instead.
 	Draft *bool `json:"draft,omitempty"`
 	// One of the values returned by the TikTok creator info API for the account. Accounts connected through the TikTok for Business app publish videos as public only: a non-public value on a video post is rejected at creation unless draft is true (photo posts keep every level).
 	PrivacyLevel *string `json:"privacyLevel,omitempty"`
@@ -44,7 +44,7 @@ type TikTokPlatformData struct {
 	MediaType *string `json:"mediaType,omitempty"`
 	// Optional for video posts. Timestamp in milliseconds to select which frame to use as thumbnail (defaults to 1000ms/1 second). Ignored when videoCoverImageUrl is provided.
 	VideoCoverTimestampMs *int32 `json:"videoCoverTimestampMs,omitempty"`
-	// Optional for video posts. URL of a custom thumbnail image (JPG, PNG, or WebP, max 20MB). Any downloadable URL works: we rehost it ourselves. The image is stitched as a single frame at the start of the video to serve as the cover. Accounts connected through the TikTok for Business app hand it to TikTok as the cover instead, with no stitching, falling back to videoCoverTimestampMs without it. Overrides videoCoverTimestampMs when provided.
+	// Optional for video posts. URL of a custom thumbnail image (JPG, PNG, or WebP, max 20MB). Any downloadable URL works: we rehost it ourselves. Overrides videoCoverTimestampMs when provided.  The image is stitched as a single frame at the start of the video to serve as the cover. Accounts connected through the TikTok for Business app instead hand it to TikTok as the cover, with no stitching, falling back to videoCoverTimestampMs without it.
 	VideoCoverImageUrl *string `json:"videoCoverImageUrl,omitempty"`
 	// Optional for photo carousels. Index of image to use as cover, 0-based (defaults to 0/first image).
 	PhotoCoverIndex *int32 `json:"photoCoverIndex,omitempty"`
@@ -53,9 +53,9 @@ type TikTokPlatformData struct {
 	MusicSoundInfo *TikTokPlatformDataMusicSoundInfo `json:"musicSoundInfo,omitempty"`
 	// Volume of the video's own sound when a commercial track is attached (0 to 100). Requires musicSoundInfo. Video posts only. Omitted, TikTok keeps its API default of 0 and the video's own audio is muted under the track (the TikTok app uses 50).
 	VideoOriginalSoundVolume *int32 `json:"videoOriginalSoundVolume,omitempty"`
-	// Set true to disclose AI-generated content. Accounts connected through the TikTok for Business app carry the disclosure on video posts only: the business photo endpoint has no AI disclosure field, so true on a direct photo post is rejected at creation rather than published undisclosed. Send draft true to publish such a photo post and set the disclosure in the TikTok app.
+	// Set true to disclose AI-generated content.  Accounts connected through the TikTok for Business app carry the disclosure on video posts only. The business photo endpoint has no AI disclosure field, so true on a direct photo post is rejected at creation rather than published undisclosed.  To publish such a photo post, send draft true and set the disclosure in the TikTok app.
 	VideoMadeWithAi *bool `json:"videoMadeWithAi,omitempty"`
-	// Location tag to attach, as the id of a result from GET /v1/accounts/{accountId}/tiktok/locations. Accounts connected through the TikTok for Business app and video posts only: a developer-app account rejects the post at publish time with a message that says so, and a direct photo post is rejected at creation since the business photo endpoint has no location field. Requires locationName. Ignored on drafts, where TikTok ignores every post_info field.
+	// Location tag to attach, as the id of a result from GET /v1/accounts/{accountId}/tiktok/locations. Requires locationName. Ignored on drafts, where TikTok ignores every post_info field.  Accounts connected through the TikTok for Business app and video posts only:  - A developer-app account rejects the post at publish time with a message that says so. - A direct photo post is rejected at creation, since the business photo endpoint has no location field.
 	LocationId *string `json:"locationId,omitempty"`
 	// Display name of the location tag, as returned next to its id. Required with locationId; a locationId without it is rejected at creation.
 	LocationName *string `json:"locationName,omitempty"`

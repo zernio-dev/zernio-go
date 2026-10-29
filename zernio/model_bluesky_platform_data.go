@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &BlueskyPlatformData{}
 
 // BlueskyPlatformData Bluesky post settings. Supports text posts with up to 4 images or a single video. threadItems creates a reply chain (Bluesky thread). Images exceeding 1MB are automatically compressed. Alt text supported via mediaItem properties. Use langs to tag post language for feed-generator filtering.
 type BlueskyPlatformData struct {
-	// Language(s) of the post text as 1-3 BCP-47 codes (e.g. \"pt\", \"en-US\"), written to the post record's langs field. Bluesky feed generators filter on this field, so posts without it never appear in language-scoped feeds. Can only be set at creation (Bluesky has no post editing). When threadItems is used, every item in the thread carries the same langs. When omitted, the account's default (set via PATCH /v1/accounts/{accountId}/bluesky-settings) applies; with no default either, the field is absent from the record.
+	// Language(s) of the post text as 1-3 BCP-47 codes (e.g. \"pt\", \"en-US\"), written to the post record's langs field. Bluesky feed generators filter on it, so posts without it never appear in language-scoped feeds.  - Can only be set at creation (Bluesky has no post editing). - With threadItems, every item in the thread carries the same langs. - When omitted, the account's default (set via PATCH /v1/accounts/{accountId}/bluesky-settings) applies. With no default either, the field is absent from the record.
 	Langs []string `json:"langs,omitempty"`
 	// Complete sequence of posts in a Bluesky thread. The first item becomes the root post, subsequent items are chained as replies. When threadItems is provided, the top-level content field is used only for display and search purposes, it is NOT published. You must include your first post as threadItems[0].
 	ThreadItems []TwitterPlatformDataThreadItemsInner `json:"threadItems,omitempty"`

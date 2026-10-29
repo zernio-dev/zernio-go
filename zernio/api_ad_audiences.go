@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -44,15 +44,24 @@ AddUsersToAdAudience Add users to audience
 
 Uploads customer emails (and phone numbers on Meta) to a customer list audience, hashed before they are sent.
 
-Data is SHA256-hashed server-side before sending to the platform.
-Email is used on every platform; phone is used on Meta only (other platforms ignore it). On TikTok and Pinterest,
-the first upload also provisions the audience (deferred create). LinkedIn uploads are full-replace. Max 10,000 users per request.
-On Reddit, emails are lowercased and trimmed before hashing, duplicates are sent once, and the upload goes out
-in batches of 2,500. Reddit matches by email only: rows without a valid email count in `numInvalid`, and a
-request where no row has one is a 400. Reddit audiences need the `redditads` connection, not the Reddit posting account (422).
+Data is SHA256-hashed server-side before sending to the platform. Max 10,000 users per request.
 
-customer_list only. A LinkedIn `company_list` audience takes company rows, not people: send those to
-`POST /v1/ads/audiences/{audienceId}/companies`. This endpoint 422s for every other audience type.
+### Per-platform behavior
+
+- **All platforms**: email is used everywhere. Phone is used on Meta only (other platforms ignore it).
+- **TikTok and Pinterest**: the first upload also provisions the audience (deferred create).
+- **LinkedIn**: uploads are full-replace.
+- **Reddit**: see below.
+
+### Reddit
+
+- Emails are lowercased and trimmed before hashing, duplicates are sent once, and the upload goes out in batches of 2,500.
+- Reddit matches by email only: rows without a valid email count in `numInvalid`, and a request where no row has one is a 400.
+- Reddit audiences need the `redditads` connection, not the Reddit posting account (422).
+
+### Audience types
+
+customer_list only. A LinkedIn `company_list` audience takes company rows, not people: send those to `POST /v1/ads/audiences/{audienceId}/companies`. This endpoint 422s for every other audience type.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param audienceId The Zernio audience id (the id field of GET /v1/ads/audiences), not the platform segment id.
@@ -190,46 +199,45 @@ CreateAdAudience Create custom audience
 
 Creates a custom audience from a customer list, website visitors, a lookalike, or people who engaged with your content.
 
-`customer_list` is supported on Meta, Google, X, LinkedIn, TikTok, Pinterest, and Reddit.
-`website` (pixel/tag visitors) is supported on Meta, TikTok, Pinterest, Google, and Reddit.
-`lookalike` is supported on Meta, TikTok, Pinterest and Google (Reddit's API cannot create one).
-Reddit audience names need at least 3 characters.
-`meta_engagement` is Meta-only, `tiktok_engagement` TikTok-only, `pinterest_engagement` Pinterest-only;
-`company_list`, `engagement` and `website_retargeting` are LinkedIn-only. A type sent to a platform
-that does not support it is a 422 `FEATURE_NOT_AVAILABLE`.
+### Audience types by platform
 
-Per-platform rules for `website`:
+- `customer_list`: Meta, Google, X, LinkedIn, TikTok, Pinterest, and Reddit.
+- `website` (pixel/tag visitors): Meta, TikTok, Pinterest, Google, and Reddit.
+- `lookalike`: Meta, TikTok, Pinterest and Google (Reddit's API cannot create one).
+- `meta_engagement`: Meta-only.
+- `tiktok_engagement`: TikTok-only.
+- `pinterest_engagement`: Pinterest-only.
+- `company_list`, `engagement` and `website_retargeting`: LinkedIn-only.
 
-  - Meta: `pixelId` required, `retentionDays` 1-180, optional `urlContains` or raw `rule`. `event` is not accepted.
-  - TikTok: `pixelId` required, `retentionDays` one of 7, 14, 30, 60, 90, 180. `event` is a TikTok pixel event
-    (default `PAGE BROWSE`; also `CLICK BUTTON`, `PIXEL SUBMIT FORM`, `CONTACT`, `DOWNLOAD`,
-    `PIXEL ADD PAYMENT INFO`, `COMPLETE PAYMENT`, `INITIATE CHECKOUT`, `COMPLETE REGISTRATION`,
-    `PRODUCT DETAIL PAGE BROWSE`, `PIXEL SEARCH`, `PIXEL ADD TO CART`, `PLACE AN ORDER`,
-    `PIXEL ADD TO WISHLIST`, `PIXEL SUBSCRIBE`), optional `urlContains`.
-  - Pinterest: `pixelId` is the Pinterest tag id, `retentionDays` 1-540, optional `event` (e.g. `checkout`, `addtocart`).
-    Pinterest matches URLs exactly, so `urlContains` is a 400 there.
-  - Google: no `pixelId` (the account's Google tag is used), `retentionDays` 1-540, `urlContains`
-    defaults to `/` (all visitors). Built as a rule-based user list with prepopulation requested.
-  - Reddit: `pixelId` is the Reddit pixel id, `retentionDays` 1-90. `event` is a Reddit conversion event
-    (`PAGE_VISIT` by default; also `VIEW_CONTENT`, `SEARCH`, `ADD_TO_CART`, `ADD_TO_WISHLIST`, `PURCHASE`,
-    `LEAD`, `SIGN_UP`); any other value is sent as a custom event name. `urlContains` and `rule` are a 400.
+A type sent to a platform that does not support it is a 422 `FEATURE_NOT_AVAILABLE`. Reddit audience names need at least 3 characters.
 
-Per-platform rules for `lookalike`: Meta takes `ratio` (0.01-0.20); Pinterest takes `ratio` in whole
-percents (0.01-0.10) and `country` US, CA or GB; TikTok and Google take `size` (narrow, balanced, broad)
-instead of `ratio`. TikTok needs a seed with at least 1,000 matched people.
-`saved_targeting` stores a reusable TargetingSpec (no member upload, no adAccountId) that you reference later via
-`savedTargetingId` on `POST /v1/ads/create`.
+### Per-platform rules for `website`
 
-How the audience gets filled depends on the type:
+- Meta: `pixelId` required, `retentionDays` 1-180, optional `urlContains` or raw `rule`. `event` is not accepted.
+- TikTok: `pixelId` required, `retentionDays` one of 7, 14, 30, 60, 90, 180. `event` is a TikTok pixel event (see below), optional `urlContains`.
+- Pinterest: `pixelId` is the Pinterest tag id, `retentionDays` 1-540, optional `event` (e.g. `checkout`, `addtocart`). Pinterest matches URLs exactly, so `urlContains` is a 400 there.
+- Google: no `pixelId` (the account's Google tag is used), `retentionDays` 1-540, `urlContains` defaults to `/` (all visitors). Built as a rule-based user list with prepopulation requested.
+- Reddit: `pixelId` is the Reddit pixel id, `retentionDays` 1-90. `event` is a Reddit conversion event (see below); any other value is sent as a custom event name. `urlContains` and `rule` are a 400.
 
-  - `customer_list` is created empty. Add members with `POST /v1/ads/audiences/{audienceId}/users`.
-    On TikTok and Pinterest the audience is provisioned lazily on that first upload (until then its status is `pending`).
-  - `company_list` is filled AT CREATION from the `companies` array below, which is required. To change the list
-    afterwards send the new full list to `POST /v1/ads/audiences/{audienceId}/companies` (a replace, not a merge).
-    The `/users` endpoint rejects these audiences with a 422.
-  - `website`, `website_retargeting`, `engagement`, `meta_engagement`, `tiktok_engagement`, `pinterest_engagement`
-    and `lookalike` fill themselves from the pixel,
-    engagement source or seed audience you point them at. They take no member upload at all.
+TikTok pixel events: `PAGE BROWSE` (default), `CLICK BUTTON`, `PIXEL SUBMIT FORM`, `CONTACT`, `DOWNLOAD`, `PIXEL ADD PAYMENT INFO`, `COMPLETE PAYMENT`, `INITIATE CHECKOUT`, `COMPLETE REGISTRATION`, `PRODUCT DETAIL PAGE BROWSE`, `PIXEL SEARCH`, `PIXEL ADD TO CART`, `PLACE AN ORDER`, `PIXEL ADD TO WISHLIST`, `PIXEL SUBSCRIBE`.
+
+Reddit conversion events: `PAGE_VISIT` (default), `VIEW_CONTENT`, `SEARCH`, `ADD_TO_CART`, `ADD_TO_WISHLIST`, `PURCHASE`, `LEAD`, `SIGN_UP`.
+
+### Per-platform rules for `lookalike`
+
+- Meta: `ratio` (0.01-0.20).
+- Pinterest: `ratio` in whole percents (0.01-0.10) and `country` US, CA or GB.
+- TikTok and Google: `size` (narrow, balanced, broad) instead of `ratio`. TikTok needs a seed with at least 1,000 matched people.
+
+### Saved targeting
+
+`saved_targeting` stores a reusable TargetingSpec (no member upload, no adAccountId) that you reference later via `savedTargetingId` on `POST /v1/ads/create`.
+
+### How the audience gets filled
+
+- `customer_list` is created empty. Add members with `POST /v1/ads/audiences/{audienceId}/users`. On TikTok and Pinterest the audience is provisioned lazily on that first upload (until then its status is `pending`).
+- `company_list` is filled AT CREATION from the `companies` array below, which is required. To change the list afterwards, send the new full list to `POST /v1/ads/audiences/{audienceId}/companies` (a replace, not a merge). The `/users` endpoint rejects these audiences with a 422.
+- `website`, `website_retargeting`, `engagement`, `meta_engagement`, `tiktok_engagement`, `pinterest_engagement` and `lookalike` fill themselves from the pixel, engagement source or seed audience you point them at. They take no member upload at all.
 
 Create is not idempotent, never auto-retry.
 
@@ -371,14 +379,19 @@ DeleteAdAudience Delete custom audience
 
 Removes a custom audience from its ad platform (archiving it where the platform does not delete).
 
-Removes the audience on its ad platform, then deletes the Zernio record. Meta, Google, TikTok,
-LinkedIn list and engagement segments, X, and Reddit are deleted; Pinterest audiences and LinkedIn
-`website_retargeting` segments are archived, which is how those platforms remove them.
-`saved_targeting` audiences exist only on Zernio, so only the local record is removed.
+Removes the audience on its ad platform, then deletes the Zernio record.
 
-If the platform refuses, the error is returned and the Zernio record is kept, so a retry is
-safe. An audience the platform no longer has counts as removed. Google Ads does not allow
-removing lookalike lists through its API, so those return 422 `FEATURE_NOT_AVAILABLE`.
+### By platform
+
+- Deleted: Meta, Google, TikTok, LinkedIn list and engagement segments, X, and Reddit.
+- Archived (how those platforms remove them): Pinterest audiences and LinkedIn `website_retargeting` segments.
+- Local only: `saved_targeting` audiences exist only on Zernio, so only the local record is removed.
+
+Google Ads does not allow removing lookalike lists through its API, so those return 422 `FEATURE_NOT_AVAILABLE`.
+
+### Failures and retries
+
+If the platform refuses, the error is returned and the Zernio record is kept, so a retry is safe. An audience the platform no longer has counts as removed.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param audienceId
@@ -980,26 +993,22 @@ func (r AdAudiencesAPIReplaceAdAudienceCompaniesRequest) Execute() (*ReplaceAdAu
 /*
 ReplaceAdAudienceCompanies Replace audience companies
 
-Upload the company rows of a LinkedIn `company_list` audience (account-based marketing).
-LinkedIn-only, every other platform returns 422.
+Upload the company rows of a LinkedIn `company_list` audience (account-based marketing). LinkedIn-only, every other platform returns 422.
 
-A LinkedIn audience segment holds exactly one uploaded list, so the list you send here
-REPLACES the segment's list instead of being appended to it: always send the full set of
-companies. LinkedIn returns only the identifier of the uploaded file, never its rows, so the
-merge cannot be done for you, keep the source list on your side.
+The initial list is sent with `companies` on `POST /v1/ads/audiences`; this endpoint is for every change after that.
 
-How the matching behaves:
+### Send the full list every time
 
-  - Rows are plain text (not hashed), matched against LinkedIn's own company graph.
-  - Matching is asynchronous: LinkedIn takes up to 48h for a new audience and up to 24h for a
-    later update, and the audience stays `processing` meanwhile.
-  - LinkedIn does not document how quickly companies dropped from the list stop being targeted,
-    so treat removals as eventual rather than immediate.
-  - LinkedIn recommends at least 1,000 companies for a usable match rate, and caps a list at
-    300,000.
+A LinkedIn audience segment holds exactly one uploaded list, so the list you send here REPLACES the segment's list instead of being appended to it. Always send the full set of companies.
 
-The initial list is sent with `companies` on `POST /v1/ads/audiences`; this endpoint is for
-every change after that.
+LinkedIn returns only the identifier of the uploaded file, never its rows, so the merge cannot be done for you. Keep the source list on your side.
+
+### How the matching behaves
+
+- Rows are plain text (not hashed), matched against LinkedIn's own company graph.
+- Matching is asynchronous: LinkedIn takes up to 48h for a new audience and up to 24h for a later update, and the audience stays `processing` meanwhile.
+- LinkedIn does not document how quickly companies dropped from the list stop being targeted, so treat removals as eventual rather than immediate.
+- LinkedIn recommends at least 1,000 companies for a usable match rate, and caps a list at 300,000.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param audienceId The Zernio audience id (the id field of GET /v1/ads/audiences), not the platform segment id.
@@ -1138,13 +1147,17 @@ UpdateAdAudience Update an audience
 
 Renames or redescribes an audience, or replaces a saved targeting audience's rules; platform audience rules cannot change.
 
-`saved_targeting` audiences accept `name`, `description`, and `spec`
-(full replacement, no merge, Zernio-only, no platform call). Platform audiences
-(uploaded/website/lookalike) accept `name` and `description` only, updated on the
-platform first and then mirrored locally; their rules are immutable, so `spec` returns
-400 for them. Platform audience updates are Meta-only for now (other platforms return
-501). Ads already created from a saved_targeting audience are unaffected, they snapshot
-the targeting at creation.
+### `saved_targeting` audiences
+
+They accept `name`, `description`, and `spec`. `spec` is a full replacement (no merge), Zernio-only, with no platform call.
+
+Ads already created from a saved_targeting audience are unaffected: they snapshot the targeting at creation.
+
+### Platform audiences (uploaded/website/lookalike)
+
+- They accept `name` and `description` only, updated on the platform first and then mirrored locally.
+- Their rules are immutable, so `spec` returns 400 for them.
+- Platform audience updates are Meta-only for now (other platforms return 501).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param audienceId

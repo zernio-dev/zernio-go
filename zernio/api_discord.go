@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -2780,22 +2780,21 @@ func (r DiscordAPISendDiscordDirectMessageRequest) Execute() (*SendDiscordDirect
 /*
 SendDiscordDirectMessage Send a Discord Direct Message
 
-Send a 1:1 Direct Message from the bot to a Discord user (by snowflake ID).
-Supports the same payload shape as channel posts: content, embeds, media
-attachments, and TTS.
+Send a 1:1 Direct Message from the bot to a Discord user (by snowflake ID). Supports the same payload shape as channel posts: content, embeds, media attachments, and TTS.
 
-Constraints (Discord platform limits):
-  - The bot can only DM users it shares at least one guild with.
-  - If the recipient has DMs disabled for non-friends, Discord returns 403
-    (surfaces as a 502 platform error).
-  - `content` capped at 2,000 chars.
-  - At least one of `content`, `embeds`, or `attachments` is required.
-  - The recipient must be identified by Discord snowflake ID (not username).
+### Constraints (Discord platform limits)
 
-This is a dedicated endpoint rather than a `POST /v1/posts` variant because
-DMs are 1:1 operational messages (onboarding, billing reminders, support
-pings) with a different lifecycle than scheduled channel posts. DMs are
-not persisted to `Post` / `ExternalPost` and are always sent immediately.
+- The bot can only DM users it shares at least one guild with.
+- If the recipient has DMs disabled for non-friends, Discord returns 403 (surfaces as a 502 platform error).
+- `content` capped at 2,000 chars.
+- At least one of `content`, `embeds`, or `attachments` is required.
+- The recipient must be identified by Discord snowflake ID (not username).
+
+### Why a separate endpoint
+
+This is a dedicated endpoint rather than a `POST /v1/posts` variant because DMs are 1:1 operational messages (onboarding, billing reminders, support pings) with a different lifecycle than scheduled channel posts.
+
+DMs are not persisted to `Post` / `ExternalPost` and are always sent immediately.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return DiscordAPISendDiscordDirectMessageRequest

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -201,16 +201,28 @@ CreateRfPrediction Create reach-frequency prediction
 
 Quotes the reach or budget for a Meta reach and frequency campaign over a date range, without buying anything.
 
-This is a QUOTE, nothing is bought and no ad entities are created.
-Provide a date range plus exactly one of `budgetAmount` (Meta predicts reach) or `reach`
-(Meta predicts the budget). The response carries the estimate and its allowed bounds
-(min/max budget and reach). Predictions expire on their own; to buy, reserve one via
-POST /v1/ads/rf-predictions/{predictionId}/reserve and pass the RESERVED id to
-POST /v1/ads/create with `buyingType: "RESERVED"`.
+This is a QUOTE: nothing is bought and no ad entities are created. Provide a date range plus exactly one of:
 
-Reservation campaigns reject automatic placements. Top-level `placements` wins; when it is
-omitted, `targeting.placements` is used; when neither is set, placements default to
-Facebook feed (+ Instagram stream when a linked IG professional account resolves).
+- `budgetAmount`: Meta predicts reach
+- `reach`: Meta predicts the budget
+
+The response carries the estimate and its allowed bounds (min/max budget and reach).
+
+### Buying
+
+Predictions expire on their own. To buy:
+
+1. Reserve one via POST /v1/ads/rf-predictions/{predictionId}/reserve.
+2. Pass the RESERVED id to POST /v1/ads/create with `buyingType: "RESERVED"`.
+
+### Placements
+
+Reservation campaigns reject automatic placements.
+
+- Top-level `placements` wins.
+- When it is omitted, `targeting.placements` is used.
+- When neither is set, placements default to Facebook feed (+ Instagram stream when a linked IG professional account resolves).
+
 Instagram placements require that IG account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

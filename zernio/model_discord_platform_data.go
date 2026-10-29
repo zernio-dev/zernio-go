@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the DiscordPlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &DiscordPlatformData{}
 
-// DiscordPlatformData Discord message settings. Supports plain text (2,000 chars), rich embeds (up to 10), native polls, forum posts, threads, and announcement crossposts. Media attachments support images (JPEG, PNG, GIF, WebP), videos (MP4), and documents (up to 10 files, 25 MB each). Webhook identity (username + avatar) can be customized per-account via PATCH /v1/connect/discord or per-post via webhookUsername/webhookAvatarUrl.
+// DiscordPlatformData Discord message settings.  - Content: plain text (2,000 chars), rich embeds (up to 10), native polls, forum posts, threads, and announcement crossposts. - Media: images (JPEG, PNG, GIF, WebP), videos (MP4), and documents (up to 10 files, 25 MB each). - Webhook identity (username + avatar): customize per account via PATCH /v1/connect/discord, or per post via webhookUsername/webhookAvatarUrl.
 type DiscordPlatformData struct {
 	// Target channel snowflake ID. Determines which channel in the connected server receives the message.
 	ChannelId string `json:"channelId"`

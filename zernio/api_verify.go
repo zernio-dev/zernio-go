@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -183,36 +183,29 @@ func (r VerifyAPICreateVerificationRequest) Execute() (*Verification, *http.Resp
 /*
 CreateVerification Send a verification code
 
-Generate a one-time code, deliver it to the recipient, and store only
-its hash. Check the user-typed code with
-POST /v1/verify/verifications/{verificationId}/check.
+Generate a one-time code, deliver it to the recipient, and store only its hash. Check the user-typed code with POST /v1/verify/verifications/{verificationId}/check.
 
-Re-POSTing for the same (channel, to) while a verification is active
-RESENDS a fresh code on the existing verification (200 with
-`resend: true`) instead of creating a new one; resends are limited to
-one per 60 seconds (429 with `retryAfterSeconds` inside the cooldown).
-The stored brandName/codeLength/ttlMinutes win on a resend.
+### Resends
 
-Codes deliver from a number on your account (`from` optional when
-you own exactly one number on the channel), always with a fixed
-template:
+Re-POSTing for the same (channel, to) while a verification is active RESENDS a fresh code on the existing verification (200 with `resend: true`) instead of creating a new one.
 
-  - `sms`: from an SMS-enabled number. Each accepted send bills one
-    verification fee plus the standard message rate.
+Resends are limited to one per 60 seconds (429 with `retryAfterSeconds` inside the cooldown). The stored brandName/codeLength/ttlMinutes win on a resend.
 
-  - `whatsapp`: from a connected WhatsApp number, as a Meta
-    AUTHENTICATION template with a copy-code button. The first
-    WhatsApp verification on a WhatsApp Business Account creates the
-    `zernio_verify_code` template there and answers 422
-    `template_pending` until Meta approves it (usually minutes; retry
-    after `retryAfterSeconds`). Meta fixes the message text, so
-    `brandName` is not shown and the code's validity is not stated in
-    the message (`ttlMinutes` is still enforced). Each accepted send
-    bills one verification fee; Meta bills its authentication rate to
-    your WhatsApp Business Account.
+### Channels
 
-    @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-    @return VerifyAPICreateVerificationRequest
+Codes deliver from a number on your account (`from` optional when you own exactly one number on the channel), always with a fixed template.
+
+- `sms`: from an SMS-enabled number. Each accepted send bills one verification fee plus the standard message rate.
+- `whatsapp`: from a connected WhatsApp number, as a Meta AUTHENTICATION template with a copy-code button. Each accepted send bills one verification fee; Meta bills its authentication rate to your WhatsApp Business Account.
+
+### WhatsApp template
+
+The first WhatsApp verification on a WhatsApp Business Account creates the `zernio_verify_code` template there. It answers 422 `template_pending` until Meta approves it (usually minutes; retry after `retryAfterSeconds`).
+
+Meta fixes the message text, so `brandName` is not shown and the code's validity is not stated in the message (`ttlMinutes` is still enforced).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return VerifyAPICreateVerificationRequest
 */
 func (a *VerifyAPIService) CreateVerification(ctx context.Context) VerifyAPICreateVerificationRequest {
 	return VerifyAPICreateVerificationRequest{

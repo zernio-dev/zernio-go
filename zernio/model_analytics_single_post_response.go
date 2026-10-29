@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ type AnalyticsSinglePostResponse struct {
 	PostId *string `json:"postId,omitempty"`
 	// Original Zernio post ID if scheduled via Zernio
 	LatePostId NullableString `json:"latePostId,omitempty"`
-	// Overall post status. \"partial\" when some platforms published and others failed. While any platform is still pending or processing, the post's own status is returned instead (usually scheduled or publishing), even if another platform already published. A post with no published or failed platform (for example every platform cancelled) returns its own status with syncStatus unavailable and no platformAnalytics.
+	// Overall post status. \"partial\" when some platforms published and others failed.  While any platform is still pending or processing, the post's own status is returned instead (usually scheduled or publishing), even if another platform already published.  A post with no published or failed platform (for example every platform cancelled) returns its own status with syncStatus unavailable and no platformAnalytics.
 	Status            *string             `json:"status,omitempty"`
 	Content           *string             `json:"content,omitempty"`
 	ScheduledFor      *time.Time          `json:"scheduledFor,omitempty"`
@@ -41,7 +41,7 @@ type AnalyticsSinglePostResponse struct {
 	// Cover image URL. Facebook and Instagram covers whose Meta CDN link expired are re-read from Meta and served from Zernio storage, so that URL does not expire and can be cached.
 	ThumbnailUrl NullableString `json:"thumbnailUrl,omitempty"`
 	MediaType    NullableString `json:"mediaType,omitempty"`
-	// All media items for this post. Carousel posts contain one entry per slide. Facebook and Instagram images and video covers whose Meta CDN links expired are re-read and served from Zernio storage (non-expiring). Facebook and Instagram video file URLs, and LinkedIn media URLs, stay the platform's signed links and are refreshed on read once they lapse.
+	// All media items for this post. Carousel posts have one entry per slide.  - Facebook and Instagram images and video covers whose Meta CDN links expired are re-read and served from Zernio storage (non-expiring). - Facebook and Instagram video file URLs, and LinkedIn media URLs, stay the platform's signed links and are refreshed on read once they lapse.
 	MediaItems []AnalyticsSinglePostResponseMediaItemsInner `json:"mediaItems,omitempty"`
 	// Instagram only: the platform media product type (e.g. FEED, REELS, STORY, AD). Absent when the platform did not report it.
 	MediaProductType *string `json:"mediaProductType,omitempty"`

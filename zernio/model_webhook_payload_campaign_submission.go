@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -21,11 +21,11 @@ import (
 // checks if the WebhookPayloadCampaignSubmission type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadCampaignSubmission{}
 
-// WebhookPayloadCampaignSubmission Webhook payload for `campaign_submission.received`, `campaign_submission.flagged`, `campaign_submission.pending_review`, `campaign_submission.approved` and `campaign_submission.rejected`. `received` fires for every accepted submission; `flagged` fires when a submission gains a flag it did not carry before (at submission or on a later sync), and `submission.flags` lists every flag it carries; `pending_review` fires when the submission becomes ready for the operator's review; `approved` and `rejected` fire on the operator's decision.
+// WebhookPayloadCampaignSubmission Webhook payload for campaign submission events:  - `campaign_submission.received`: fires for every accepted submission. - `campaign_submission.flagged`: fires when a submission gains a flag it did not carry before (at submission or on a later sync). `submission.flags` lists every flag it carries. - `campaign_submission.pending_review`: fires when the submission becomes ready for the operator's review. - `campaign_submission.approved` and `campaign_submission.rejected`: fire on the operator's decision.
 type WebhookPayloadCampaignSubmission struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery. It identifies the event only, never an account or other resource.
 	Id string `json:"id"`
-	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Present on every event tied to a profile and absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once. Use it to route the event to your tenant without storing Zernio profile ids.
+	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Use it to route the event to your tenant without storing Zernio profile ids.  Present on every event tied to a profile, absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once.
 	Profiles []WebhookProfilesInner `json:"profiles,omitempty"`
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
 	Test        *bool                                       `json:"test,omitempty"`

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -41,7 +41,17 @@ func (r ContactsAPIBulkCreateContactsRequest) Execute() (*BulkCreateContacts200R
 /*
 BulkCreateContacts Bulk create contacts
 
-Import up to 1000 contacts at a time. Skips duplicates, merging any new tags onto the existing contact. accountId is required whenever contacts carry a platformIdentifier (or a row-level accountId); platform is always derived from the resolved account, never used to decide whether channels are created, and a mismatched platform 404s as account not found. When accountId is set, each contact must carry a platformIdentifier; a row missing it is rejected individually (reported in errors[], HTTP 200), not a 400 for the whole import. On phone platforms (whatsapp, sms) the platformIdentifier is normalized to digits and a value that is not phone-shaped is rejected per contact and reported in errors[], not imported.
+Import up to 1000 contacts at a time. Skips duplicates, merging any new tags onto the existing contact.
+
+### Accounts and platform
+
+- accountId is required whenever contacts carry a platformIdentifier (or a row-level accountId).
+- platform is always derived from the resolved account, never used to decide whether channels are created. A mismatched platform 404s as account not found.
+
+### Per-contact validation
+
+- When accountId is set, each contact must carry a platformIdentifier. A row missing it is rejected individually (reported in errors[], HTTP 200), not a 400 for the whole import.
+- On phone platforms (whatsapp, sms) the platformIdentifier is normalized to digits. A value that is not phone-shaped is rejected per contact and reported in errors[], not imported.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ContactsAPIBulkCreateContactsRequest

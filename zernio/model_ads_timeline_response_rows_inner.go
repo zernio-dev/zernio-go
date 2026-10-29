@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ var _ MappedNullable = &AdsTimelineResponseRowsInner{}
 // AdsTimelineResponseRowsInner struct for AdsTimelineResponseRowsInner
 type AdsTimelineResponseRowsInner struct {
 	Date *string `json:"date,omitempty"`
-	// ISO 4217 currency of every money field in this row (spend, cpc, cpm, costPerConversion, purchaseValue, actionValues). An account whose ad accounts bill in different currencies gets one row per currency for that day, never a sum across currencies. Null when the currency of the ad accounts in this row is unknown. Added 2026-10-23.
+	// ISO 4217 currency of every money field in this row (spend, cpc, cpm, costPerConversion, purchaseValue, actionValues). Null when the currency of the row's ad accounts is unknown. Added 2026-10-23.  An account whose ad accounts bill in different currencies gets one row per currency for that day, never a sum across currencies.
 	Currency NullableString `json:"currency,omitempty"`
 	// Native currency units (matches /ads/tree convention), in `currency`.
 	Spend       *float32 `json:"spend,omitempty"`

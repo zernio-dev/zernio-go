@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -51,26 +51,47 @@ BulkUploadPosts Bulk upload from CSV
 
 Create multiple posts by uploading a CSV file. Use dryRun=true to validate without creating posts.
 
-CSV columns:
-- Required: `platforms`, `profiles`, and a schedule (one of `schedule_time`, a `schedule_time_<platform>` override, `publish_now=true`, `use_queue=true`, or `is_draft=true`).
-- Content: at least one of `post_content`, `title`, or `media_urls` is required.
-- Aliases: a handful of columns accept the JSON field name from POST /v1/posts, since integrators infer the CSV shape from that endpoint's body. When both are present the real CSV column wins, unless it is blank for that row, in which case the alias value is used.
-  - `content` aliases `post_content`
-  - `timezone` aliases `tz`
-  - `scheduledFor` aliases `schedule_time`
-  - `mediaUrls` aliases `media_urls`
+### Required columns
 
-- Per-platform overrides use three dynamic column prefixes, one column per platform (e.g. `schedule_time_instagram`, `custom_content_tiktok`, `custom_media_youtube`): `schedule_time_<platform>`, `custom_content_<platform>`, `custom_media_<platform>`.
+- `platforms`, `profiles`, and a schedule: one of `schedule_time`, a `schedule_time_<platform>` override, `publish_now=true`, `use_queue=true`, or `is_draft=true`.
+- Content: at least one of `post_content`, `title`, or `media_urls`.
+
+### Aliases
+
+A handful of columns accept the JSON field name from POST /v1/posts, since integrators infer the CSV shape from that endpoint's body. When both are present the real CSV column wins, unless it is blank for that row, in which case the alias value is used.
+
+- `content` aliases `post_content`
+- `timezone` aliases `tz`
+- `scheduledFor` aliases `schedule_time`
+- `mediaUrls` aliases `media_urls`
+
+### Per-platform overrides
+
+Three dynamic column prefixes, one column per platform (e.g. `schedule_time_instagram`, `custom_content_tiktok`, `custom_media_youtube`):
+
+- `schedule_time_<platform>`
+- `custom_content_<platform>`
+- `custom_media_<platform>`
+
+### Other columns and warnings
+
 - Any other column is not read. It does not error, but it is reported in the response's `warnings` array as `unknown_columns:<a,b,c>` (see BulkUploadResult), so a misnamed or unsupported column is never silently dropped.
 - The `hashtags` and `mentions` columns are stored on the post but not added to the caption. Put them in `post_content` (or a `custom_content_<platform>` column). A filled column adds `not_added_to_caption:<columns>` to `warnings`.
-- Timezone: `tz` sets the zone `schedule_time` is read in. A row without `tz` uses its profile's `timezone` (when all its target profiles share one), else UTC.
-- Row limits: 5000 rows is a hard cap that returns 400 above it. 500 rows is only an advisory threshold, it adds `rows_exceed_advisory_limit:500` to `warnings` and the request still processes.
 
-Example row (header + one data row):
-```
-post_content,platforms,profiles,schedule_time,tz
-"Hello world",instagram,MyProfile,2026-09-01 10:00,America/New_York
-```
+### Timezone
+
+`tz` sets the zone `schedule_time` is read in. A row without `tz` uses its profile's `timezone` (when all its target profiles share one), else UTC.
+
+### Row limits
+
+- 5000 rows is a hard cap that returns 400 above it.
+- 500 rows is only an advisory threshold: it adds `rows_exceed_advisory_limit:500` to `warnings` and the request still processes.
+
+### Example
+
+Header + one data row:
+
+``` post_content,platforms,profiles,schedule_time,tz "Hello world",instagram,MyProfile,2026-09-01 10:00,America/New_York ```
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PostsAPIBulkUploadPostsRequest
@@ -247,13 +268,13 @@ func (r PostsAPICreatePostRequest) CreatePostRequest(createPostRequest CreatePos
 	return r
 }
 
-// Optional client-generated key (a UUID per logical post) that makes retries safe. Reuse it on every retry of the same post, especially after a 5xx or a timeout. A retry with the same key within 24 hours returns the original post (HTTP 200) whatever its body; while the original is still being processed it returns 409 &#x60;idempotency_conflict&#x60; with &#x60;Retry-After&#x60;. Longer than 255 characters returns 400. Takes precedence over &#x60;x-request-id&#x60;. See the operation description for the full contract.
+// Optional client-generated key (a UUID per logical post) that makes retries safe. Reuse it on every retry of the same post, especially after a 5xx or a timeout.  - A retry with the same key within 24 hours returns the original post (HTTP 200), whatever its body. - While the original is still processing, it returns 409 &#x60;idempotency_conflict&#x60; with &#x60;Retry-After&#x60;. - Longer than 255 characters returns 400.  Takes precedence over &#x60;x-request-id&#x60;. See the operation description for the full contract.
 func (r PostsAPICreatePostRequest) IdempotencyKey(idempotencyKey string) PostsAPICreatePostRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
-// Optional client-generated request identifier. A request with the same value as an earlier one within 24 hours that also matches its content fingerprint (same account, content and media URLs) returns the original post (HTTP 200) instead of a duplicate-content 409. It does not protect a retry whose body differs; use &#x60;Idempotency-Key&#x60; for that. SDKs set it automatically. See the operation description for the full idempotency contract.
+// Optional client-generated request identifier. SDKs set it automatically.  A request with the same value as an earlier one within 24 hours that also matches its content fingerprint (same account, content and media URLs) returns the original post (HTTP 200) instead of a duplicate-content 409.  It does not protect a retry whose body differs; use &#x60;Idempotency-Key&#x60; for that. See the operation description for the full idempotency contract.
 func (r PostsAPICreatePostRequest) XRequestId(xRequestId string) PostsAPICreatePostRequest {
 	r.xRequestId = &xRequestId
 	return r
@@ -279,9 +300,36 @@ See each platform's schema for media constraints.
 
 ## LinkedIn @mentions
 
-Put the profile or company URL inside `@[...]` in `content`, or in a LinkedIn entry's `customContent`: `@[https://www.linkedin.com/in/jane-doe]` or `@[https://www.linkedin.com/company/acme]`. The post is published with LinkedIn's real name and link, and no lookup call is needed first. Custom text is optional, as in `@[Jane](https://www.linkedin.com/in/jane-doe)`: for a person it must be the first name, last name or full name, for a company the exact company name, both case-sensitive. Any other text is replaced with LinkedIn's name and a `warnings` entry is returned (`linkedin_mention_name_replaced`). `@[Text](urn:li:person:ID)` markup, as returned by `GET /v1/accounts/{accountId}/linkedin-mentions`, is published exactly as you wrote it: it is not looked up, checked or changed, so its text must already be LinkedIn's name.
+Mention a person or company by putting its LinkedIn URL inside `@[...]`, in `content` or in a LinkedIn entry's `customContent`. The post is published with LinkedIn's real name and link, with no lookup call first.
 
-Resolving a person's profile URL needs one of your LinkedIn accounts to administer a Page; publishing does not. Only profile and company URLs can fail. A scheduled or published post is rejected when one cannot be resolved: `400` with code `linkedin_mentions_invalid`, `429` with `rate_limited` (LinkedIn is rate limiting), `401` with `reconnect_required` (expired token) or a retryable `503` with `temporarily_unavailable` (LinkedIn did not answer within 8 seconds in total). Each failing mention is listed under `details.mentions[]` (`LinkedInMentionIssue`) with its own code: `linkedin_mention_unresolvable`, `linkedin_mention_requires_page_admin` or `linkedin_mention_name_unavailable` (LinkedIn withheld the name and none was given). A post can resolve at most 10 profile or company URL mentions across its shared content and LinkedIn entries: more is a `400` with `linkedin_mentions_limit_exceeded`. Drafts never fail on a mention: unresolved ones (and more than 10) stay as written and come back as `warnings`. A draft is checked again when it is scheduled. On platforms other than LinkedIn, `@[linkedin.com/in/jane]` is posted as its text, or as the vanity (`jane`) when you wrote no text, and `@[Text](urn:li:...)` as `Text`.
+- Person: `@[https://www.linkedin.com/in/jane-doe]`
+- Company: `@[https://www.linkedin.com/company/acme]`
+- Your own text: `@[Jane](https://www.linkedin.com/in/jane-doe)`. For a person it must be the first, last or full name, for a company the exact company name, both case-sensitive. Other text is replaced with LinkedIn's name and returns a `linkedin_mention_name_replaced` warning.
+- `@[Text](urn:li:person:ID)`, as returned by `GET /v1/accounts/{accountId}/linkedin-mentions`: published exactly as written, with no lookup, so its text must already be LinkedIn's name.
+
+A post can resolve at most 10 profile or company URL mentions across its shared content and LinkedIn entries. Resolving a person's profile URL needs one of your LinkedIn accounts to administer a Page; publishing does not.
+
+### When a mention can't be resolved
+
+Only profile and company URLs can fail. A scheduled or published post is rejected with:
+
+- `400` `linkedin_mentions_invalid`: a URL could not be resolved
+- `400` `linkedin_mentions_limit_exceeded`: more than 10 URL mentions
+- `401` `reconnect_required`: the LinkedIn token expired
+- `429` `rate_limited`: LinkedIn is rate limiting
+- `503` `temporarily_unavailable` (retryable): LinkedIn did not answer within 8 seconds in total
+
+`details.mentions[]` (`LinkedInMentionIssue`) lists each failing mention with its own code:
+
+- `linkedin_mention_unresolvable`
+- `linkedin_mention_requires_page_admin`
+- `linkedin_mention_name_unavailable`: LinkedIn withheld the name and none was given
+
+Drafts never fail on a mention: unresolved ones (and more than 10) stay as written and come back as `warnings`. A draft is checked again when it is scheduled.
+
+### On other platforms
+
+`@[linkedin.com/in/jane]` is posted as its text, or as the vanity (`jane`) when you wrote no text, and `@[Text](urn:li:...)` as `Text`.
 
 ## Scheduling
 
@@ -293,31 +341,55 @@ Pick one of:
 
 With none of them and `isDraft` unset, the post is saved as a draft. `platforms` is required unless the post is a draft.
 
-Precedence: `isDraft: true` wins over `publishNow` and `scheduledFor` (the post is saved, never published), and `publishNow: true` wins over `scheduledFor`. A `scheduledFor` already in the past is not rejected: the post is published synchronously in the same request, exactly like `publishNow`.
+Precedence:
+
+- `isDraft: true` wins over `publishNow` and `scheduledFor` (the post is saved, never published).
+- `publishNow: true` wins over `scheduledFor`.
+- A `scheduledFor` already in the past is not rejected: the post is published synchronously in the same request, exactly like `publishNow`.
 
 ## Idempotency
 
-Three layers of duplicate-protection apply, so safe-to-retry callers (network blips, n8n / Zapier retries, etc.) don't accidentally double-post.
+Three layers of duplicate-protection apply, so safe-to-retry callers (network blips, n8n / Zapier retries, etc.) don't accidentally double-post. They are checked in this order:
 
-**1. `Idempotency-Key` (recommended for retries, 24-hour window).**
-Send an `Idempotency-Key` header (a UUID per logical post, up to 255 characters) and reuse it when you retry after a 5xx, a timeout or a dropped connection. A retry with the same key within 24 hours returns **HTTP 200** with the original post in the `post` field, and no new post is created. The match is on the key alone, not on the body: a retry returns the original post even if its body differs (for example a re-uploaded media URL). It covers drafts, and a post that was saved even though the original response was a 5xx or timed out.
+1. An `Idempotency-Key` match (200)
+2. Same-`x-request-id` retries (200)
+3. The content-hash dedup (409)
 
-If the first request is still being processed, the retry gets **HTTP 409** with `code: idempotency_conflict` and a `Retry-After` header; retry after that delay. If the first request failed without creating a post, the retry is processed as a new request. Keys are scoped to your user. Never reuse a key for a different post: that post would not be created, and the earlier one would be returned instead.
+### 1. `Idempotency-Key` (recommended for retries, 24-hour window)
 
-**2. `x-request-id` retry detection (24-hour window).**
-If a request carries the same `x-request-id` as an earlier one AND collides with it on the content fingerprint below (same account, content and media URLs), we return **HTTP 200** with the original post in the `post` field (or **HTTP 202** with `postId` if the original is still being saved) instead of a 409. A request with the same `x-request-id` but different content is a new post. When both headers are sent, `Idempotency-Key` wins and `x-request-id` is ignored for matching.
+Send an `Idempotency-Key` header (a UUID per logical post, up to 255 characters). Reuse it when you retry after a 5xx, a timeout or a dropped connection.
+
+A retry with the same key within 24 hours returns **HTTP 200** with the original post in the `post` field, and no new post is created.
+
+The match is on the key alone, not on the body: a retry returns the original post even if its body differs (for example a re-uploaded media URL).
+
+It covers drafts, and a post that was saved even though the original response was a 5xx or timed out.
+
+- If the first request is still being processed, the retry gets **HTTP 409** with `code: idempotency_conflict` and a `Retry-After` header; retry after that delay.
+- If the first request failed without creating a post, the retry is processed as a new request.
+
+Keys are scoped to your user. Never reuse a key for a different post: that post would not be created, and the earlier one would be returned instead.
+
+### 2. `x-request-id` retry detection (24-hour window)
+
+A request may carry the same `x-request-id` as an earlier one AND collide with it on the content fingerprint below (same account, content and media URLs).
+
+Then we return **HTTP 200** with the original post in the `post` field (or **HTTP 202** with `postId` if the original is still being saved) instead of a 409.
+
+A request with the same `x-request-id` but different content is a new post. When both headers are sent, `Idempotency-Key` wins and `x-request-id` is ignored for matching.
 
 The official Zernio SDKs auto-generate a unique `x-request-id` per call. On a generic HTTP client (curl, n8n's HTTP node, Zapier, custom code), either:
 
 - Set a unique `x-request-id` per logical call (UUIDv4 is fine)
 - Or omit the header, and we'll treat each request as new
 
-**3. Content-hash dedup (24-hour window).**
-Independently, we hash `(platform, accountId, content + media URLs)` and reject duplicates within 24 hours with **HTTP 409**. This catches genuine "same content posted twice to the same account" cases regardless of `x-request-id`. The response carries `error`, `accountId`, `platform`, and `existingPostId` so you can find the original.
+### 3. Content-hash dedup (24-hour window)
+
+Independently, we hash `(platform, accountId, content + media URLs)` and reject duplicates within 24 hours with **HTTP 409**. This catches genuine "same content posted twice to the same account" cases regardless of `x-request-id`.
+
+The response carries `error`, `accountId`, `platform`, and `existingPostId` so you can find the original.
 
 To intentionally re-post identical content within 24h, change something (the caption, the media, the account), because the dedup is keyed on the full content fingerprint.
-
-Order: an `Idempotency-Key` match (200) is checked first, then same-`x-request-id` retries (200), then the content-hash dedup (409).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PostsAPICreatePostRequest
@@ -494,9 +566,31 @@ func (r PostsAPIDeletePostRequest) Execute() (*PostDeleteResponse, *http.Respons
 /*
 DeletePost Delete post
 
-Delete a post from Zernio. Any status except `published` can be deleted: `draft`, `scheduled`, `publishing`, `failed`, `partial` and `cancelled`. Published posts cannot be deleted; use the Unpublish endpoint instead. Upload quota is automatically refunded for draft and scheduled posts.
+Delete a post from Zernio. Upload quota is automatically refunded for draft and scheduled posts.
 
-Deleting a `publishing` or `partial` post is how you stop entries that are still pending, for example entries held on a disconnected account. It removes the whole post record from Zernio, including the entries that were already published, but it does not remove anything already live on a platform (use Unpublish for that first if needed). An entry that a worker has already started sending when you delete may still go out, or may fail because media uploaded to Zernio and not used by another post is deleted with the post. Analytics for entries already published are removed too. Deleting also frees the content for re-creation, so the same caption and media are no longer reported as a duplicate.
+Any status except `published` can be deleted:
+
+- `draft`
+- `scheduled`
+- `publishing`
+- `failed`
+- `partial`
+- `cancelled`
+
+Published posts cannot be deleted; use the Unpublish endpoint instead.
+
+### Stopping pending entries
+
+Deleting a `publishing` or `partial` post is how you stop entries that are still pending, for example entries held on a disconnected account.
+
+It removes the whole post record from Zernio, including the entries that were already published. It does not remove anything already live on a platform (use Unpublish for that first if needed).
+
+An entry that a worker has already started sending when you delete may still go out. It may also fail, because media uploaded to Zernio and not used by another post is deleted with the post.
+
+### Side effects
+
+- Analytics for entries already published are removed too.
+- Deleting frees the content for re-creation, so the same caption and media are no longer reported as a duplicate.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
@@ -649,13 +743,12 @@ func (r PostsAPIEditPostRequest) Execute() (*EditPost200Response, *http.Response
 /*
 EditPost Edit published post
 
-Edit the text of an already-published post. Supported on X, Discord,
-Facebook, Reddit, LinkedIn, Telegram, Pinterest, Google Business Profile, YouTube,
-and Slack. When a post was published to several accounts on the same platform,
-pass `accountId` to pick which account's copy to edit (without it the request
-returns 409). Each platform enforces its own rules:
+Edit the text of an already-published post. Supported on X, Discord, Facebook, Reddit, LinkedIn, Telegram, Pinterest, Google Business Profile, YouTube, and Slack.
+
+When a post was published to several accounts on the same platform, pass `accountId` to pick which account's copy to edit (without it the request returns 409). Each platform enforces its own rules.
 
 **X**
+
 - Connected X account must have an active X Premium subscription
 - Must be within 1 hour of original publish time
 - Maximum 5 edits per tweet (enforced by X)
@@ -663,66 +756,61 @@ returns 409). Each platform enforces its own rules:
 - X assigns a NEW post ID on edit, returned as `id`
 
 **Discord**
+
 - No time limit and no premium requirement
 - The message ID is unchanged after the edit
 
 **Facebook**
-  - Graph only permits editing a post that the same app created, so this works on
-    posts published through Zernio and is rejected for posts created in Meta
-    Business Suite / Composer or by another tool
-  - Media cannot be swapped, only the message text
-  - Reactions, comments, and shares are preserved. The post ID is unchanged
+
+- Graph only permits editing a post that the same app created. This works on posts published through Zernio and is rejected for posts created in Meta Business Suite / Composer or by another tool
+- Media cannot be swapped, only the message text
+- Reactions, comments, and shares are preserved. The post ID is unchanged
 
 **Reddit**
+
 - Self-posts only. A link post has no editable body and is rejected before the write
 - Body only. Reddit exposes no API to edit a post title, ever
 - The post ID is unchanged
 
 **LinkedIn**
-  - Text only, no time limit. Media, polls, articles, and reshare targets cannot be
-    changed
-  - Works for member and organization posts published through this API. The post
-    keeps its ID and LinkedIn shows an "edited" marker
-  - Text is limited to 3,000 characters; mentions and hashtags are preserved
+
+- Text only, no time limit. Media, polls, articles, and reshare targets cannot be changed
+- Works for member and organization posts published through this API. The post keeps its ID and LinkedIn shows an "edited" marker
+- Text is limited to 3,000 characters; mentions and hashtags are preserved
 
 **Telegram**
-  - No time limit; messages published through Zernio are editable indefinitely
-  - Text posts: edits the message text (up to 4096 characters)
-  - Media posts: edits the caption only (up to 1024 characters). The media itself
-    cannot be swapped
-  - For albums, the caption shown on the album (its first message) is edited
-  - The message ID is unchanged
+
+- No time limit; messages published through Zernio are editable indefinitely
+- Text posts: edits the message text (up to 4096 characters)
+- Media posts: edits the caption only (up to 1024 characters). The media itself cannot be swapped
+- For albums, the caption shown on the album (its first message) is edited
+- The message ID is unchanged
 
 **Pinterest**
-  - Description only, maximum 800 characters. Media, link, and board cannot be
-    changed, and a pin title derived from the old content's first line at publish
-    stays as-is
-  - Pinterest's pin-update endpoint is currently in closed beta; until the app is
-    allowlisted by Pinterest, edits are rejected with a "beta feature not yet
-    enabled" error
-  - The pin ID is unchanged
+
+- Description only, maximum 800 characters. Media, link, and board cannot be changed, and a pin title derived from the old content's first line at publish stays as-is
+- Pinterest's pin-update endpoint is currently in closed beta. Until the app is allowlisted by Pinterest, edits are rejected with a "beta feature not yet enabled" error
+- The pin ID is unchanged
 
 **Google Business Profile**
-  - Post body (summary) text only. Call-to-action, event/offer fields, and media are
-    untouched
-  - No time limit and no edit limit. The post ID is unchanged
-  - The post must still exist on Google: a post deleted from the Business Profile
-    dashboard, or an event/offer post past its end date, returns a 404
+
+- Post body (summary) text only. Call-to-action, event/offer fields, and media are untouched
+- No time limit and no edit limit. The post ID is unchanged
+- The post must still exist on Google: a post deleted from the Business Profile dashboard, or an event/offer post past its end date, returns a 404
 
 **YouTube**
-  - `content` replaces the video description only. The title is unchanged, even if
-    it was originally derived from the content's first line at publish time
-  - Title, tags, thumbnail, and privacy edits belong to `POST /v1/posts/{postId}/update-metadata`
-  - No time window and no edit cap. The video ID is unchanged
+
+- `content` replaces the video description only. The title is unchanged, even if it was originally derived from the content's first line at publish time
+- Title, tags, thumbnail, and privacy edits belong to `POST /v1/posts/{postId}/update-metadata`
+- No time window and no edit cap. The video ID is unchanged
 
 **Slack**
-  - Text only, up to 4,000 characters. Media cannot be swapped, and media posts
-    whose share message reference never resolved cannot be edited
-  - No time limit unless workspace admins restrict message editing
-  - The message ID is unchanged
 
-Media edits are not supported on any platform. The post record in Zernio is updated
-with the new content and an edit-history entry.
+- Text only, up to 4,000 characters. Media cannot be swapped, and media posts whose share message reference never resolved cannot be edited
+- No time limit unless workspace admins restrict message editing
+- The message ID is unchanged
+
+Media edits are not supported on any platform. The post record in Zernio is updated with the new content and an edit-history entry.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
@@ -1041,19 +1129,19 @@ func (r PostsAPIListPostsRequest) Offset(offset int32) PostsAPIListPostsRequest 
 	return r
 }
 
-// Opaque cursor from a previous response&#39;s &#x60;pagination.nextCursor&#x60;. Returns the page that follows it in the same &#x60;sortBy&#x60; order, and takes precedence over &#x60;page&#x60; and &#x60;offset&#x60;. Each cursor page costs the same however deep it is, unlike &#x60;page&#x60;/&#x60;offset&#x60;, which get slower the further you go; prefer it to walk a long history. Send the same filters and &#x60;sortBy&#x60; as the request that issued it: a cursor from another &#x60;sortBy&#x60; returns 400. Not available with &#x60;sortBy&#x3D;status&#x60; or &#x60;sortBy&#x3D;platform&#x60;, or with &#x60;source&#x3D;external&#x60;.
+// Opaque cursor from a previous response&#39;s &#x60;pagination.nextCursor&#x60;. Returns the next page in the same &#x60;sortBy&#x60; order and takes precedence over &#x60;page&#x60; and &#x60;offset&#x60;.  Each cursor page costs the same however deep it is, unlike &#x60;page&#x60;/&#x60;offset&#x60;, which get slower the further you go. Prefer it to walk a long history.  - Send the same filters and &#x60;sortBy&#x60; as the request that issued it. A cursor from another &#x60;sortBy&#x60; returns 400. - Not available with &#x60;sortBy&#x3D;status&#x60; or &#x60;sortBy&#x3D;platform&#x60;, or with &#x60;source&#x3D;external&#x60;.
 func (r PostsAPIListPostsRequest) Cursor(cursor string) PostsAPIListPostsRequest {
 	r.cursor = &cursor
 	return r
 }
 
-// Comma-separated list of post fields to return. Each post then carries &#x60;_id&#x60; plus only these fields, which makes large pages much cheaper: leave out &#x60;platforms&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60; or &#x60;metadata&#x60; when you do not need them. Accepted: &#x60;userId&#x60;, &#x60;title&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60;, &#x60;platforms&#x60;, &#x60;scheduledFor&#x60;, &#x60;timezone&#x60;, &#x60;status&#x60;, &#x60;tags&#x60;, &#x60;hashtags&#x60;, &#x60;mentions&#x60;, &#x60;visibility&#x60;, &#x60;metadata&#x60;, &#x60;recycling&#x60;, &#x60;recycledFromPostId&#x60;, &#x60;queuedFromProfile&#x60;, &#x60;queueId&#x60;, &#x60;createdAt&#x60;, &#x60;updatedAt&#x60;. An unknown field returns 400 naming it. &#x60;fields&#x3D;_id&#x60; returns ids only. Omit it (or send it empty) for the full post. Not available with &#x60;source&#x3D;external&#x60;.
+// Comma-separated list of post fields to return. Each post then carries &#x60;_id&#x60; plus only these fields, which makes large pages much cheaper: leave out &#x60;platforms&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60; or &#x60;metadata&#x60; when you do not need them.  Accepted: &#x60;userId&#x60;, &#x60;title&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60;, &#x60;platforms&#x60;, &#x60;scheduledFor&#x60;, &#x60;timezone&#x60;, &#x60;status&#x60;, &#x60;tags&#x60;, &#x60;hashtags&#x60;, &#x60;mentions&#x60;, &#x60;visibility&#x60;, &#x60;metadata&#x60;, &#x60;recycling&#x60;, &#x60;recycledFromPostId&#x60;, &#x60;queuedFromProfile&#x60;, &#x60;queueId&#x60;, &#x60;createdAt&#x60;, &#x60;updatedAt&#x60;.  An unknown field returns 400 naming it. &#x60;fields&#x3D;_id&#x60; returns ids only. Omit it (or send it empty) for the full post. Not available with &#x60;source&#x3D;external&#x60;.
 func (r PostsAPIListPostsRequest) Fields(fields string) PostsAPIListPostsRequest {
 	r.fields = &fields
 	return r
 }
 
-// Only posts whose &#x60;updatedAt&#x60; is at or after this ISO 8601 timestamp, an offset or &#x60;Z&#x60; required. &#x60;updatedAt&#x60; moves when the post or any of its platforms changes (an edit, a status change, a platform publishing or failing), so to keep a copy in sync, send the time of your previous sync instead of reading every page again. Combines with the other filters and with &#x60;cursor&#x60;. Deleted posts are not returned. Not available with &#x60;source&#x3D;external&#x60;.
+// Only posts whose &#x60;updatedAt&#x60; is at or after this ISO 8601 timestamp (an offset or &#x60;Z&#x60; required).  &#x60;updatedAt&#x60; moves when the post or any of its platforms changes (an edit, a status change, a platform publishing or failing). To keep a copy in sync, send the time of your previous sync instead of reading every page again.  Combines with the other filters and with &#x60;cursor&#x60;. Deleted posts are not returned. Not available with &#x60;source&#x3D;external&#x60;.
 func (r PostsAPIListPostsRequest) UpdatedSince(updatedSince time.Time) PostsAPIListPostsRequest {
 	r.updatedSince = &updatedSince
 	return r
@@ -2220,26 +2308,33 @@ func (r PostsAPIUpdatePostRequest) Execute() (*PostUpdateResponse, *http.Respons
 /*
 UpdatePost Update post
 
-Update an existing post. Draft, scheduled, failed, partial, and cancelled posts can be edited.
-Published posts can only have their recycling config updated.
+Update an existing post. Draft, scheduled, failed, partial, and cancelled posts can be edited. Published posts can only have their recycling config updated.
 
-To promote a draft to scheduled, send `isDraft: false` together with `scheduledFor` (or `publishNow: true`,
-or `queuedFromProfile`). If `isDraft` is omitted the post keeps its current draft status, so sending only
-`scheduledFor` to a draft returns 200 but the post remains a draft.
+To promote a draft to scheduled, send `isDraft: false` together with `scheduledFor` (or `publishNow: true`, or `queuedFromProfile`). If `isDraft` is omitted the post keeps its current draft status, so sending only `scheduledFor` to a draft returns 200 but the post remains a draft.
 
-Non-draft updates run the same per-platform validation as post creation (media requirements, platform-specific
-field rules, etc.) against the resulting platforms, returning 400 on failure.
+Non-draft updates run the same per-platform validation as post creation (media requirements, platform-specific field rules, etc.) against the resulting platforms, returning 400 on failure.
 
 ## LinkedIn @mentions
 
-Profile and company URLs written as `@[https://www.linkedin.com/in/jane-doe]` or
-`@[Jane](https://www.linkedin.com/company/acme)` in the `content` or LinkedIn `customContent` you send are
-resolved to LinkedIn's name and link, exactly as on `POST /v1/posts` (see Create post for the rules). Only what
-the request sends is looked up: an update of the schedule, status or media makes no LinkedIn call, and
-`@[Text](urn:li:...)` markup is stored as written. Moving a draft out of draft also resolves the stored
-`content` and the stored `customContent` of its LinkedIn entries, and saves the result. A mention that cannot be resolved on a non-draft returns `400` `linkedin_mentions_invalid`, `429`
-`rate_limited`, `401` `reconnect_required` or a retryable `503` `temporarily_unavailable`, with each mention
-under `details.mentions[]` (`LinkedInMentionIssue`). Drafts get `warnings` instead.
+Profile and company URLs in the `content` or LinkedIn `customContent` you send are resolved to LinkedIn's name and link, exactly as on `POST /v1/posts` (see Create post for the rules). For example:
+
+- `@[https://www.linkedin.com/in/jane-doe]`
+- `@[Jane](https://www.linkedin.com/company/acme)`
+
+Only what the request sends is looked up: an update of the schedule, status or media makes no LinkedIn call, and `@[Text](urn:li:...)` markup is stored as written.
+
+Moving a draft out of draft also resolves the stored `content` and the stored `customContent` of its LinkedIn entries, and saves the result.
+
+### When a mention can't be resolved
+
+On a non-draft, the request returns one of these, with each mention under `details.mentions[]` (`LinkedInMentionIssue`):
+
+- `400` `linkedin_mentions_invalid`
+- `429` `rate_limited`
+- `401` `reconnect_required`
+- `503` `temporarily_unavailable` (retryable)
+
+Drafts get `warnings` instead.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
@@ -2430,20 +2525,16 @@ func (r PostsAPIUpdatePostMetadataRequest) Execute() (*UpdatePostMetadata200Resp
 /*
 UpdatePostMetadata Update post metadata
 
-Updates metadata of a published video on the specified platform without re-uploading.
-Currently only supported for YouTube. At least one updatable field is required.
+Updates metadata of a published video on the specified platform without re-uploading. Currently only supported for YouTube. At least one updatable field is required.
 
-Two modes:
+### Two modes
 
- 1. Post-based (video published through Zernio): pass the Zernio postId in the URL and platform in the body.
+1. Post-based (video published through Zernio): pass the Zernio postId in the URL and platform in the body.
+2. Direct video ID (video uploaded outside Zernio, e.g. directly to YouTube): use _ as the postId, and pass videoId + accountId + platform in the body. The accountId is the Zernio account ID for the connected YouTube channel.
 
- 2. Direct video ID (video uploaded outside Zernio, e.g. directly to YouTube): use _ as the postId,
-    and pass videoId + accountId + platform in the body. The accountId is the Zernio account ID
-    for the connected YouTube channel.
-
-    @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-    @param postId Zernio post ID, or \"_\" when using direct video ID mode
-    @return PostsAPIUpdatePostMetadataRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param postId Zernio post ID, or \"_\" when using direct video ID mode
+	@return PostsAPIUpdatePostMetadataRequest
 */
 func (a *PostsAPIService) UpdatePostMetadata(ctx context.Context, postId string) PostsAPIUpdatePostMetadataRequest {
 	return PostsAPIUpdatePostMetadataRequest{

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -29,7 +29,7 @@ type CheckPhoneNumberAvailability200Response struct {
 	AddressConstraint *string `json:"addressConstraint,omitempty"`
 	// For `geo` only: the area(s) the registered address must be in.
 	Areas []string `json:"areas,omitempty"`
-	// Live inventory grouped by area code. For US and CA this is the full country inventory (every area code with stock, recognizable metros listed first, then alphabetical); other countries are ordered largest stock first; they list the areas in the latest inventory page (up to 500 numbers, which for most countries is the entire pool). Empty when out of stock (or the area lookup failed). Pass a chosen `ndc` as `areaCode` on POST /v1/phone-numbers/purchase (or on the KYC submit for regulated countries) to require that area. Equal to `areaAvailability.inStock`.
+	// Live inventory grouped by area code. Empty when out of stock (or the area lookup failed). Equal to `areaAvailability.inStock`.  - US and CA: the full country inventory (every area code with stock), recognizable metros first, then alphabetical. - Other countries: largest stock first, listing the areas in the latest inventory page (up to 500 numbers, which for most countries is the entire pool).  Pass a chosen `ndc` as `areaCode` on POST /v1/phone-numbers/purchase (or on the KYC submit for regulated countries) to require that area.
 	AreaOptions []CheckPhoneNumberAvailability200ResponseAreaOptionsInner `json:"areaOptions,omitempty"`
 	// Every area of the country's numbering plan with nothing deliverable now: `areaAvailability.preOrder` plus `areaAvailability.outOfStock`, kept for older clients. Pass one as `areaCode` with `preOrder: true` on the KYC submit when `preOrderable` is true, or watch it with POST /v1/phone-numbers/stock-watches.
 	SoldOutAreas     []CheckPhoneNumberAvailability200ResponseSoldOutAreasInner `json:"soldOutAreas,omitempty"`

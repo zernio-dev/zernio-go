@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -23,13 +23,13 @@ type GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner struct
 	Id *string `json:"id,omitempty"`
 	// On Instagram and Facebook a shared reel, post or ad reaches Zernio with no type of its own (Meta's `unsupported_type`) and is resolved from the media's Content-Type at ingest into `image`, `video`, `audio` or `file` with `originalType: \"unsupported_type\"`. `unsupported_type` is returned only when the CDN could not be classified in time.
 	Type *string `json:"type,omitempty"`
-	// Instagram and Facebook only, and present only when it differs from `type`. Meta's own type before normalization: `ig_reel` and `reel` become `video`, while `ig_post`, `post`, `ig_story` and `story_mention` become `share`. A story mention is `type: \"share\"` with `originalType: \"story_mention\"`; render on this field, since `share` alone is ambiguous. `originalType: \"unsupported_type\"` marks a share Meta did not classify, resolved by content type: `refreshUrl` cannot re-mint it (Meta answers `is_unsupported` with no attachments for the message node), so download it when the `message.received` webhook arrives.
+	// Instagram and Facebook only, and present only when it differs from `type`. Meta's own type before normalization:  - `ig_reel` and `reel` become `video`. - `ig_post`, `post`, `ig_story` and `story_mention` become `share`.  A story mention is `type: \"share\"` with `originalType: \"story_mention\"`. Render on this field, since `share` alone is ambiguous.  `originalType: \"unsupported_type\"` marks a share Meta did not classify, resolved by content type. `refreshUrl` cannot re-mint it (Meta answers `is_unsupported` with no attachments for the message node), so download it when the `message.received` webhook arrives.
 	OriginalType *string `json:"originalType,omitempty"`
 	// MIME type of the media when Zernio knows it. On Instagram and Facebook it is set for shares resolved by content type (`originalType: \"unsupported_type\"`).
 	MimeType *string `json:"mimeType,omitempty"`
 	// Direct media link. On Instagram and Facebook this is a signed Meta CDN url that EXPIRES: use it now, do not store it. Persist `refreshUrl` instead.
 	Url *string `json:"url,omitempty"`
-	// Instagram and Facebook only. Endpoint that resolves this attachment to a working url every time, re-minting it from Meta when the stored one has expired. Safe to store and render indefinitely, except for an attachment with `originalType: \"unsupported_type\"`: Meta cannot re-serve those, so the endpoint answers 404 once the url has expired.
+	// Instagram and Facebook only. Endpoint that resolves this attachment to a working url every time, re-minting it from Meta when the stored one has expired. Safe to store and render indefinitely.  Exception: an attachment with `originalType: \"unsupported_type\"`. Meta cannot re-serve those, so the endpoint answers 404 once the url has expired.
 	RefreshUrl NullableString `json:"refreshUrl,omitempty"`
 	Filename   NullableString `json:"filename,omitempty"`
 	PreviewUrl NullableString `json:"previewUrl,omitempty"`

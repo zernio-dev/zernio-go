@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,7 @@ type WebhookPayloadMessageSentMessageAttachmentsInner struct {
 	Type string `json:"type"`
 	// Instagram and Facebook only, and present only when it differs from `type`. Meta's own attachment type before Zernio normalized it. See the same field on message.received for the full mapping.
 	OriginalType *string `json:"originalType,omitempty"`
-	// Where to fetch the attachment. For outgoing messages this is the media URL as sent, so for WhatsApp it is the URL you supplied when publishing (WhatsApp sends media by link), not a Zernio endpoint, and it needs no Zernio credentials. Contrast the inbound direction: `message.received` attachment URLs on WhatsApp point at the authenticated `GET /v1/whatsapp/media/{mediaId}`.  As on `message.received`, webhook attachments carry no `refreshUrl`: that field is stamped only on the REST read. Resolve Instagram and Facebook media through `GET /v1/inbox/conversations/{conversationId}/messages/{messageId}/attachments/{index}?accountId={accountId}`.
+	// Where to fetch the attachment. For outgoing messages this is the media URL as sent. On WhatsApp it is the URL you supplied when publishing (WhatsApp sends media by link), not a Zernio endpoint, and it needs no Zernio credentials.  Contrast the inbound direction: `message.received` attachment URLs on WhatsApp point at the authenticated `GET /v1/whatsapp/media/{mediaId}`.  As on `message.received`, webhook attachments carry no `refreshUrl`: that field is stamped only on the REST read. Resolve Instagram and Facebook media through `GET /v1/inbox/conversations/{conversationId}/messages/{messageId}/attachments/{index}?accountId={accountId}`.
 	Url string `json:"url"`
 	// Additional attachment metadata
 	Payload map[string]interface{} `json:"payload,omitempty"`

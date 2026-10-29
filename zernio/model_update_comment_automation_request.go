@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,7 @@ type UpdateCommentAutomationRequest struct {
 	ExcludeKeywords []string `json:"excludeKeywords,omitempty"`
 	// Only with matchMode=word: also fire on close misspellings of a keyword (one edit for 4-7 character keywords, two from 8 up). Keywords shorter than 4 characters are never fuzzy-matched.
 	TypoTolerance *bool `json:"typoTolerance,omitempty"`
-	// Re-binds the automation to another post: the platform media/post ID (or story media id when trigger=story_reply). postId, platformPostId and postTitle move as a unit: sending any of them replaces all three, and an omitted one is cleared. Send all three as null (or empty) to make it account-wide (any post / any story). Omit all three to keep the current binding. 409 when another active automation already owns the new post.
+	// Re-binds the automation to another post: the platform media/post ID (or story media id when trigger=story_reply). 409 when another active automation already owns the new post.  postId, platformPostId and postTitle move as a unit:  - Sending any of them replaces all three; an omitted one is cleared. - All three null (or empty): account-wide (any post / any story). - All three omitted: keeps the current binding.
 	PlatformPostId NullableString `json:"platformPostId,omitempty"`
 	// Zernio post ID (24 hexadecimal characters); platform IDs return 400. Use it INSTEAD of platformPostId to bind to a not-yet-published Zernio post: the automation stays pending and arms itself when that post publishes. Moves as a unit with platformPostId and postTitle (see platformPostId).
 	PostId NullableString `json:"postId,omitempty" validate:"regexp=^[a-fA-F0-9]{24}$"`

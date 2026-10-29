@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,7 @@ type InstagramAccountInsightsResponseMetricsValue struct {
 	Values []InstagramAccountInsightsResponseMetricsValueValuesInner `json:"values,omitempty"`
 	// Breakdown values (only for total_value with breakdown)
 	Breakdowns []InstagramAccountInsightsResponseMetricsValueBreakdownsInner `json:"breakdowns,omitempty"`
-	// Present on monetary metrics only. The scale of \"total\" and of every \"values[].value\", exactly as the platform returned them.  \"micro_amount\": the platform returned an object shape carrying a micro amount, and the values are that integer, summed, unconverted. Zernio does not publish a divisor because Meta does not document one; divide by the scale you have verified against the Page's own Meta Business Suite export. On Facebook Page insights this is always content_monetization_earnings.  \"unspecified\": the platform returned a bare number with no unit metadata. It is passed through as-is; the platform does not state whether it is major or minor currency units. On Facebook Page insights this is always monetization_approximate_earnings.
+	// Present on monetary metrics only. The scale of \"total\" and of every \"values[].value\", exactly as the platform returned them.  - \"micro_amount\": the platform returned an object carrying a micro amount; values are that integer, summed, unconverted. Zernio publishes no divisor because Meta documents none: divide by the scale you verified against the Page's own Meta Business Suite export. On Facebook Page insights this is always content_monetization_earnings. - \"unspecified\": the platform returned a bare number with no unit metadata, passed through as-is; the platform does not state whether it is major or minor currency units. On Facebook Page insights this is always monetization_approximate_earnings.
 	Unit *string `json:"unit,omitempty"`
 	// ISO 4217 currency of a monetary metric, or null when the platform omitted it. Always null on monetization_approximate_earnings, which Meta returns as a bare number with no currency; always present on content_monetization_earnings.
 	Currency NullableString `json:"currency,omitempty"`

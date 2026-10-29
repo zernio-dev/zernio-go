@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the LinkedInPlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &LinkedInPlatformData{}
 
-// LinkedInPlatformData Up to 20 images, no multi-video. Single PDF supported (max 100MB). Link previews auto-generated when no media attached. Use organizationUrn for multi-org posting. Geo-restriction only works for organization pages (not personal profiles) and requires the targeted audience to exceed 300 followers. Polls are supported via the poll object: 2-4 options, cannot be combined with media or reshareUrl, cannot be edited after publishing, and API-created polls are non-sponsored only.
+// LinkedInPlatformData LinkedIn post options.  - Media: up to 20 images, no multi-video. A single PDF is supported (max 100MB). Link previews are auto-generated when no media is attached. - Use organizationUrn for multi-org posting. - Geo-restriction only works for organization pages (not personal profiles) and requires the targeted audience to exceed 300 followers. - Polls, via the poll object: 2-4 options, cannot be combined with media or reshareUrl, cannot be edited after publishing. API-created polls are non-sponsored only.
 type LinkedInPlatformData struct {
 	// Title displayed on LinkedIn document (PDF/carousel) posts. Required by LinkedIn for document posts. If omitted, falls back to the media item title, then the filename.
 	DocumentTitle *string `json:"documentTitle,omitempty"`
@@ -29,7 +29,7 @@ type LinkedInPlatformData struct {
 	// Set to true to disable automatic link previews for URLs in the post content (default is false)
 	DisableLinkPreview *bool                         `json:"disableLinkPreview,omitempty"`
 	Audience           *LinkedInPlatformDataAudience `json:"audience,omitempty"`
-	// LinkedIn post link to repost (use the post's \"Copy link to post\" action), or a urn:li:share / urn:li:ugcPost / urn:li:groupPost URN. The published post is always a reshare authored by your account with the original embedded underneath: with content your text is the commentary (LinkedIn's \"repost with your thoughts\"), and with no content it publishes as a text-free reshare. A text-free reshare is NOT LinkedIn's one-click \"Repost\" (the feed treatment where the original author stays the author); LinkedIn's API exposes no way to create that, so the post still appears authored by you with the original embedded. Mutually exclusive with media. Works on personal profiles and organization pages.
+	// LinkedIn post link to repost (use the post's \"Copy link to post\" action), or a urn:li:share / urn:li:ugcPost / urn:li:groupPost URN. Mutually exclusive with media. Works on personal profiles and organization pages.  The published post is always a reshare authored by your account with the original embedded underneath. With content, your text is the commentary (LinkedIn's \"repost with your thoughts\"); with no content it publishes as a text-free reshare.  A text-free reshare is NOT LinkedIn's one-click \"Repost\" (the feed treatment where the original author stays the author). LinkedIn's API exposes no way to create that, so the post still appears authored by you with the original embedded.
 	ReshareUrl     *string                   `json:"reshareUrl,omitempty"`
 	GeoRestriction *GeoRestriction           `json:"geoRestriction,omitempty"`
 	Poll           *LinkedInPlatformDataPoll `json:"poll,omitempty"`

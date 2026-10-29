@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &UpdateAdCampaignStatus200Response{}
 type UpdateAdCampaignStatus200Response struct {
 	// The campaign's delivery status derived from its switch as read back (`paused` when the switch is off). Echoes the request when the platform could not be read.
 	Status *string `json:"status,omitempty"`
-	// The campaign's own switch as read back from the platform, in the raw platform vocabulary (Meta effective_status, TikTok ENABLE / DISABLE, Google ENABLED / PAUSED, ChatGPT (OpenAI) status, Reddit configured_status). Null when the platform could not be read, which is always the case on Pinterest, LinkedIn and X (no single-campaign read).
+	// The campaign's own switch as read back from the platform, in the raw platform vocabulary: Meta effective_status, TikTok ENABLE / DISABLE, Google ENABLED / PAUSED, ChatGPT (OpenAI) status, Reddit configured_status.  Null when the platform could not be read, which is always the case on Pinterest, LinkedIn and X (no single-campaign read).
 	PlatformCampaignStatus NullableString `json:"platformCampaignStatus,omitempty"`
 	// When the switch was read back. Null when it could not be read.
 	StatusReadAt NullableTime `json:"statusReadAt,omitempty"`

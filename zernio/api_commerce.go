@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -1272,20 +1272,21 @@ func (r CommerceAPICreateCommerceCatalogSyncRequest) Execute() (*CreateCommerceC
 /*
 CreateCommerceCatalogSync Sync a store into a Meta catalog
 
-Keeps a Meta product catalog in sync with the store, for catalog ads
-(`goal: catalog_sales`) and Shops. The first full run starts right
-away in the background; `runStatus` and the item counts report its
-outcome. Every active product variant that is published to the online
-store and has an image becomes a catalog item, grouped by product
-(`item_group_id`). After that, product changes on the store update
-the catalog within minutes, and a daily full run removes items for
-products or variants the store no longer has. Items are namespaced to
-the store, so a catalog can take several stores and a run never
-touches items it did not create.
+Keeps a Meta product catalog in sync with the store, for catalog ads (`goal: catalog_sales`) and Shops.
 
-`catalogAccountId` is a connected facebook, instagram or metaads
-account whose Meta login can manage the catalog (the catalog_management
-permission); find catalogs with `GET /v1/ads/catalogs`.
+### How the sync runs
+
+1. The first full run starts right away in the background; `runStatus` and the item counts report its outcome.
+2. After that, product changes on the store update the catalog within minutes.
+3. A daily full run removes items for products or variants the store no longer has.
+
+Every active product variant that is published to the online store and has an image becomes a catalog item, grouped by product (`item_group_id`).
+
+Items are namespaced to the store, so a catalog can take several stores and a run never touches items it did not create.
+
+### Catalog account
+
+`catalogAccountId` is a connected facebook, instagram or metaads account whose Meta login can manage the catalog (the catalog_management permission). Find catalogs with `GET /v1/ads/catalogs`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPICreateCommerceCatalogSyncRequest
@@ -2085,11 +2086,11 @@ func (r CommerceAPICreateCommerceProductRequest) Execute() (*CreateCommerceProdu
 /*
 CreateCommerceProduct Create a product
 
-Creates a product with its options and variants. `status` defaults to
-`draft`: no platform offers a sandbox for product writes, so nothing
-goes on sale unless you ask for `active`. A product without `options`
-has exactly one variant. Images are fetched by the platform from the
-given URLs and may appear on the product a few seconds later.
+Creates a product with its options and variants.
+
+- `status` defaults to `draft`: no platform offers a sandbox for product writes, so nothing goes on sale unless you ask for `active`.
+- A product without `options` has exactly one variant.
+- Images are fetched by the platform from the given URLs and may appear on the product a few seconds later.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPICreateCommerceProductRequest
@@ -5677,13 +5678,14 @@ func (r CommerceAPIGetCommerceStoreRequest) Execute() (*GetCommerceStore200Respo
 /*
 GetCommerceStore Get a store
 
-Returns the connected store with its currency, country and the
-`capabilities` it supports, so an integration can tell up front which
-Commerce operations the store serves. On Shopify, stock, sales
-channels, discounts, navigation, metaobjects, markets, marketing and
-image removal need permissions the store owner approves separately:
-`missingCapabilities` lists what is not granted yet and
-`grantPermissionsUrl` is the page where the owner approves it.
+Returns the connected store with its currency, country and the `capabilities` it supports, so an integration can tell up front which Commerce operations the store serves.
+
+### Shopify permissions
+
+On Shopify, these need permissions the store owner approves separately: stock, sales channels, discounts, navigation, metaobjects, markets, marketing and image removal.
+
+- `missingCapabilities` lists what is not granted yet.
+- `grantPermissionsUrl` is the page where the owner approves it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPIGetCommerceStoreRequest
@@ -7422,7 +7424,25 @@ func (r CommerceAPIListCommerceOrdersRequest) Execute() (*ListCommerceOrders200R
 /*
 ListCommerceOrders List orders
 
-The store's orders in one format for every platform, with what an invoice needs: line items with unit prices, discounts and tax per line, shipping and fee lines, billing details, payment status and refunds. Newest order first; with `updatedAfter`, oldest change first, so a sync can page forward from its last seen `updatedAt`. Start each sync a few minutes before the last `updatedAt` you saw and drop duplicates by `id`, since an order edited while you page can shift the list. Shopify returns at most 25 orders per page and, unless the store was granted access to all orders, only the last 60 days. Buyer fields (`customer` and addresses) are null when the store's approval does not cover buyer data. Needs orders.read.
+The store's orders in one format for every platform, with what an invoice needs. Needs orders.read.
+
+Each order includes:
+
+- line items with unit prices, discounts and tax per line
+- shipping and fee lines
+- billing details
+- payment status and refunds
+
+### Ordering and syncing
+
+Newest order first. With `updatedAfter`, oldest change first, so a sync can page forward from its last seen `updatedAt`.
+
+Start each sync a few minutes before the last `updatedAt` you saw and drop duplicates by `id`, since an order edited while you page can shift the list.
+
+### Limits
+
+- Shopify returns at most 25 orders per page and, unless the store was granted access to all orders, only the last 60 days.
+- Buyer fields (`customer` and addresses) are null when the store's approval does not cover buyer data.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPIListCommerceOrdersRequest
@@ -8043,11 +8063,10 @@ func (r CommerceAPIListCommerceProductsRequest) Execute() (*ListCommerceProducts
 ListCommerceProducts List products
 
 Lists the store's products with their variants, options and images.
-Cursor-paginated: pass `limit` (1-100, default 20) and the `cursor`
-from a previous response's `nextCursor`, which is null on the last page.
-Filter with `status` and/or `query` (the platform's product search
-syntax, passed through verbatim). A status the platform has no
-equivalent of returns an empty page.
+
+- Cursor-paginated: pass `limit` (1-100, default 20) and the `cursor` from a previous response's `nextCursor`, which is null on the last page.
+- Filter with `status` and/or `query` (the platform's product search syntax, passed through verbatim).
+- A status the platform has no equivalent of returns an empty page.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPIListCommerceProductsRequest

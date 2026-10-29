@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -165,28 +165,28 @@ Returns detailed health info for a specific account including token status, perm
 
 A failing or stalled analytics sync (see `analyticsSync`) raises a healthy account to at least `warning`.
 
-On Facebook, Instagram and Threads the token is also probed live. A probe Meta refuses with a
-dead-token error sets `tokenStatus.valid` to `false` and names Meta's code, subcode and
-fbtrace in `issues`, unless an analytics sync succeeded with that token in the last six
-hours: then the token stays `valid` and `issues` reports the probe as inconclusive, since
-Meta answers a transient 190 to live tokens now and then. Neither verdict disconnects the
-account; that happens only when a real operation fails, and `account.disconnected` is sent.
+### Facebook, Instagram and Threads
 
-For WhatsApp accounts the response also includes `platformConnection`, a live probe of the
-Meta link behind the channel (the same read as `GET /v1/whatsapp/number-info`). The OAuth
-token can be perfectly valid while Meta refuses to serve the phone-number object (for
-example after a phone-side coexistence disconnect), so `tokenStatus` alone is not a
-liveness signal for WhatsApp. When the Meta link is dead, `platformConnection.status` is
-`disconnected` and the overall `status` is `error`. When Meta reports that the number's
-inbound message webhook does not reach Zernio, `platformConnection.inboundWebhookSubscribed`
-is `false`, an entry is added to `issues`, and the overall `status` is at least `warning`.
+The token is also probed live. A probe Meta refuses with a dead-token error sets `tokenStatus.valid` to `false` and names Meta's code, subcode and fbtrace in `issues`.
 
-For the standalone ads connections (`googleads`, `redditads`) a connection that cannot serve
-requests until a fresh OAuth repairs it adds an entry to `issues` and a recommendation to call
-`GET /v1/connect/{platform}/ads`, whose `authUrl` reconnects the same account. On `redditads`
-this is a connection authorized before Zernio needed a Reddit permission it now uses (for
-example `adsconversions`): Reddit refuses those requests until the user reconnects and allows
-every permission on Reddit's consent screen.
+The exception: if an analytics sync succeeded with that token in the last six hours, the token stays `valid` and `issues` reports the probe as inconclusive, since Meta answers a transient 190 to live tokens now and then.
+
+Neither verdict disconnects the account. That happens only when a real operation fails, and `account.disconnected` is sent.
+
+### WhatsApp
+
+The response also includes `platformConnection`, a live probe of the Meta link behind the channel (the same read as `GET /v1/whatsapp/number-info`).
+
+The OAuth token can be perfectly valid while Meta refuses to serve the phone-number object (for example after a phone-side coexistence disconnect). So `tokenStatus` alone is not a liveness signal for WhatsApp.
+
+- When the Meta link is dead, `platformConnection.status` is `disconnected` and the overall `status` is `error`.
+- When Meta reports that the number's inbound message webhook does not reach Zernio, `platformConnection.inboundWebhookSubscribed` is `false`, an entry is added to `issues`, and the overall `status` is at least `warning`.
+
+### Standalone ads connections (`googleads`, `redditads`)
+
+A connection that cannot serve requests until a fresh OAuth repairs it adds an entry to `issues`. It also adds a recommendation to call `GET /v1/connect/{platform}/ads`, whose `authUrl` reconnects the same account.
+
+On `redditads` this is a connection authorized before Zernio needed a Reddit permission it now uses (for example `adsconversions`). Reddit refuses those requests until the user reconnects and allows every permission on Reddit's consent screen.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The account ID to check
@@ -322,24 +322,23 @@ func (r AccountsAPIGetAccountPostsRequest) Execute() (*GetAccountPosts200Respons
 /*
 GetAccountPosts List posts published on the platform
 
-Returns the 25 most recent posts that exist on the platform for a connected account, read
-live from the platform API. This covers everything on the account, including posts that
-were never created through Zernio.
+Returns the 25 most recent posts that exist on the platform for a connected account, read live from the platform API. This covers everything on the account, including posts that were never created through Zernio.
 
-Use it to obtain the platform's own post id, which the analytics endpoints take as input.
-On YouTube the returned `id` is the video ID that `GET /v1/analytics/youtube/daily-views`,
-`/video-retention` and `/demographics` expect as `videoId`, so this endpoint is what backs
-a video picker in your own UI.
+Use it to obtain the platform's own post id, which the analytics endpoints take as input. On YouTube the returned `id` is the video ID that `GET /v1/analytics/youtube/daily-views`, `/video-retention` and `/demographics` expect as `videoId`, so this endpoint is what backs a video picker in your own UI.
 
-Not every field applies to every platform: `reactionCount` is Facebook and LinkedIn,
-`shareCount` is platform dependent, `cid` is the Bluesky content id needed to reply,
-`subreddit` is Reddit only, and `title`, `description`, `link`, `boardId` and
-`boardOwnerUsername` are Pinterest only (the native Pin values; `message` keeps title and
-description joined). Absent fields are omitted from the response.
+### Platform-specific fields
 
-The account's token is refreshed before the call when it has expired. When the refresh
-cannot recover it, the response is a 401 with code `TOKEN_EXPIRED` and the account has to
-be reconnected.
+Not every field applies to every platform. Absent fields are omitted from the response.
+
+- `reactionCount`: Facebook and LinkedIn.
+- `shareCount`: platform dependent.
+- `cid`: the Bluesky content id needed to reply.
+- `subreddit`: Reddit only.
+- `title`, `description`, `link`, `boardId` and `boardOwnerUsername`: Pinterest only (the native Pin values; `message` keeps title and description joined).
+
+### Expired tokens
+
+The account's token is refreshed before the call when it has expired. When the refresh cannot recover it, the response is a 401 with code `TOKEN_EXPIRED` and the account has to be reconnected.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -1104,29 +1103,28 @@ func (r AccountsAPIGetInstagramFollowStatusRequest) Execute() (*GetInstagramFoll
 /*
 GetInstagramFollowStatus Check whether an Instagram user follows the account
 
-Resolves the follow relationship between an Instagram user and the connected
-account, plus their public profile counters.
+Resolves the follow relationship between an Instagram user and the connected account, plus their public profile counters.
 
-`userId` is the Instagram-scoped id (IGSID) Meta gives you on a webhook:
-`sender.id` on `message.received`, `comment.author.id` on `comment.received`.
+`userId` is the Instagram-scoped id (IGSID) Meta gives you on a webhook: `sender.id` on `message.received`, `comment.author.id` on `comment.received`.
 
-**Meta only answers for people who have MESSAGED the account.** Commenting grants
-no consent, so a commenter who has never DMed you is unresolvable - that is a
-platform rule, not a limitation of this endpoint. When it cannot be resolved the
-response is still `200` with `isFollower: null` and an `unavailableReason`, because
-"unknown" is a normal state to branch on:
+### When it cannot be resolved
 
-  - `consent_required` - the user has never messaged this account.
-  - `dm_access_disabled` - the account owner turned off Instagram Direct API access.
-  - `not_messageable` - the id is not a messaging-scoped id.
-  - `error` - a transient Graph API failure.
+**Meta only answers for people who have MESSAGED the account.** Commenting grants no consent, so a commenter who has never DMed you is unresolvable. That is a platform rule, not a limitation of this endpoint.
 
-To gate a comment automation on this, use the automation's `audience` rules instead
-of calling this per comment - they run the same lookup only on comments that
-actually match a keyword, and can ask the commenter to confirm with one tap.
+When it cannot be resolved the response is still `200` with `isFollower: null` and an `unavailableReason`, because "unknown" is a normal state to branch on:
 
-Answers are cached briefly per (account, user). Pass `refresh=true` right after
-asking someone to follow, so a follow from a moment ago is visible.
+- `consent_required`: the user has never messaged this account.
+- `dm_access_disabled`: the account owner turned off Instagram Direct API access.
+- `not_messageable`: the id is not a messaging-scoped id.
+- `error`: a transient Graph API failure.
+
+### Gating comment automations
+
+To gate a comment automation on this, use the automation's `audience` rules instead of calling this per comment. They run the same lookup only on comments that actually match a keyword, and can ask the commenter to confirm with one tap.
+
+### Caching
+
+Answers are cached briefly per (account, user). Pass `refresh=true` right after asking someone to follow, so a follow from a moment ago is visible.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Instagram account ID
@@ -1562,22 +1560,21 @@ func (r AccountsAPIGrantBusinessPartnerRequest) Execute() (*GrantBusinessPartner
 GrantBusinessPartner Share the Page with a partner business
 
 Grants a partner business portfolio tasks on the Facebook Page behind this account.
-With `ADVERTISE`, the partner can run ads for the Page from ad accounts in its own
-portfolio, which is how an integrator advertises for an end user without touching
-the end user's ad accounts.
 
-Meta only lets a user token share a Page that a business portfolio owns. A Page
-outside any portfolio must first be claimed into one at business.facebook.com; this
-endpoint answers `422` until that is done. Meta refuses a second grant to a portfolio
-that already has access instead of replacing its tasks, so that case answers `200`
-with `alreadyShared: true` and the tasks the partner currently holds. To change a
-partner's tasks, revoke and grant again.
+With `ADVERTISE`, the partner can run ads for the Page from ad accounts in its own portfolio. This is how an integrator advertises for an end user without touching the end user's ad accounts.
 
-After the grant, the partner assigns its own people to the Page with
-`POST /v1/ads/page-users`; Meta does not assign partner admins automatically.
-The Instagram professional account linked to the Page is returned in `page` so the
-partner can reference it; Meta exposes no API to share Instagram accounts, that is
-done in Business Settings.
+### Responses
+
+- `422`: the Page is outside any business portfolio. Meta only lets a user token share a Page that a portfolio owns, so claim it into one at business.facebook.com first.
+- `200` with `alreadyShared: true` and the tasks the partner currently holds: the portfolio already has access. Meta refuses a second grant instead of replacing its tasks.
+
+To change a partner's tasks, revoke and grant again.
+
+### After the grant
+
+The partner assigns its own people to the Page with `POST /v1/ads/page-users`; Meta does not assign partner admins automatically.
+
+The Instagram professional account linked to the Page is returned in `page` so the partner can reference it. Meta exposes no API to share Instagram accounts; that is done in Business Settings.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Zernio SocialAccount id of the Facebook or Instagram account.
@@ -1775,19 +1772,19 @@ func (r AccountsAPIListAccountsRequest) IncludeOverLimit(includeOverLimit bool) 
 	return r
 }
 
-// When true, leaves out accounts the dashboard does not show as connections: posting accounts with &#x60;enabled: false&#x60; (ads accounts are always kept, whatever their &#x60;enabled&#x60; value) and the internal &#x60;sms&#x60; and &#x60;phone&#x60; accounts behind each phone number. Applied before pagination, so page totals and &#x60;statusCounts&#x60; count only the remaining accounts. Sandbox accounts added by &#x60;includeSandbox&#x60; are appended after this filter. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
+// When true, leaves out accounts the dashboard does not show as connections:  - posting accounts with &#x60;enabled: false&#x60; (ads accounts are always kept, whatever their &#x60;enabled&#x60; value); - the internal &#x60;sms&#x60; and &#x60;phone&#x60; accounts behind each phone number.  Applied before pagination, so page totals and &#x60;statusCounts&#x60; count only the remaining accounts. Sandbox accounts added by &#x60;includeSandbox&#x60; are appended after this filter. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
 func (r AccountsAPIListAccountsRequest) ExcludeHidden(excludeHidden bool) AccountsAPIListAccountsRequest {
 	r.excludeHidden = &excludeHidden
 	return r
 }
 
-// When true, also lists the accounts creators connected to your creator campaigns. They sit on creator profiles, which &#x60;GET /v1/profiles&#x60; does not list, and are left out by default. Asking for one creator profile by &#x60;profileId&#x60; lists its accounts either way. Applied before pagination. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
+// When true, also lists the accounts creators connected to your creator campaigns. They sit on creator profiles, which &#x60;GET /v1/profiles&#x60; does not list, and are left out by default.  Asking for one creator profile by &#x60;profileId&#x60; lists its accounts either way. Applied before pagination. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
 func (r AccountsAPIListAccountsRequest) IncludeCreatorAccounts(includeCreatorAccounts bool) AccountsAPIListAccountsRequest {
 	r.includeCreatorAccounts = &includeCreatorAccounts
 	return r
 }
 
-// When true, appends the shared WhatsApp sandbox account and the iMessage sandbox account to the list when they are active, honouring &#x60;platform&#x60; but no other filter. Ignored on a paginated request (page, limit or cursor) and together with &#x60;perProfile&#x60;. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
+// When true, appends the shared WhatsApp sandbox account and the iMessage sandbox account to the list when they are active, honouring &#x60;platform&#x60; but no other filter.  Ignored on a paginated request (page, limit or cursor) and together with &#x60;perProfile&#x60;. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
 func (r AccountsAPIListAccountsRequest) IncludeSandbox(includeSandbox bool) AccountsAPIListAccountsRequest {
 	r.includeSandbox = &includeSandbox
 	return r
@@ -1837,9 +1834,13 @@ func (r AccountsAPIListAccountsRequest) Execute() (*AccountsListResponse, *http.
 ListAccounts List accounts
 
 Returns connected accounts. Only includes accounts within the plan limit by default. Follower data requires analytics add-on.
-Supports optional server-side pagination. When omitted, returns all accounts (backward-compatible).
-Cursor paging: send `limit` alone for the first page, then pass `pagination.nextCursor` back as `cursor` until it is null. Pages are ordered by account id, so accounts added or removed between calls never shift a page. Cannot be combined with `page`, `sort` or `perProfile`.
-Offset paging: send `page` and `limit` together. Out-of-range page/limit values are rejected with 400 rather than silently clamped.
+
+### Pagination
+
+Server-side pagination is optional. When omitted, returns all accounts (backward-compatible).
+
+- Cursor paging: send `limit` alone for the first page, then pass `pagination.nextCursor` back as `cursor` until it is null. Pages are ordered by account id, so accounts added or removed between calls never shift a page. Cannot be combined with `page`, `sort` or `perProfile`.
+- Offset paging: send `page` and `limit` together. Out-of-range page/limit values are rejected with 400 rather than silently clamped.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AccountsAPIListAccountsRequest
@@ -2204,7 +2205,15 @@ func (r AccountsAPIListTikTokCommercialMusicRequest) Execute() (*ListTikTokComme
 /*
 ListTikTokCommercialMusic List trending commercial music
 
-Returns the 100 currently trending tracks of TikTok's Commercial Music Library for a TikTok account connected through the TikTok for Business app. Send a track's clip.id as tiktokSettings.musicSoundInfo.musicSoundId when creating a post; fall back to id only when the track has no clip. Both publish, but with the full-track id TikTok has shown viewers "This song is not available in your country" on the sound page (observed from Germany, 2026-10-06), while the clip id gave a working sound page for the same track. The list is not paged; countryCode selects the country chart.
+Returns the 100 currently trending tracks of TikTok's Commercial Music Library for a TikTok account connected through the TikTok for Business app.
+
+The list is not paged; countryCode selects the country chart.
+
+### Using a track in a post
+
+Send a track's clip.id as tiktokSettings.musicSoundInfo.musicSoundId when creating a post. Fall back to id only when the track has no clip.
+
+Both publish, but with the full-track id TikTok has shown viewers "This song is not available in your country" on the sound page (observed from Germany, 2026-10-06). The clip id gave a working sound page for the same track.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The TikTok account ID
@@ -2618,7 +2627,11 @@ func (r AccountsAPISearchTikTokLocationsRequest) Execute() (*SearchTikTokLocatio
 /*
 SearchTikTokLocations Search TikTok location tags
 
-Searches the location tags a TikTok account connected through the TikTok for Business app can attach to a video post. Send a result's id and name as tiktokSettings.locationId and locationName when creating a post. TikTok answers the 20 closest matches and fills the list with fuzzy matches when nothing matches, so an unrelated result does not mean the place is missing.
+Searches the location tags a TikTok account connected through the TikTok for Business app can attach to a video post.
+
+Send a result's id and name as tiktokSettings.locationId and locationName when creating a post.
+
+TikTok answers the 20 closest matches and fills the list with fuzzy matches when nothing matches, so an unrelated result does not mean the place is missing.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The TikTok account ID
@@ -2751,12 +2764,14 @@ UpdateAccount Update account
 
 Updates a connected account's display name or username override.
 
-For X accounts on usage-based billing, also accepts an `xCapabilities`
-object to toggle background API operations that incur X API pass-through costs.
-Both fields are opt-in (default `false`). When off, no analytics syncs or DM
-polling are performed for that account, and no API call is metered for those
-operations. Publishing and deleting posts are always available regardless of
-these toggles. Setting `xCapabilities` on a non-X account returns 400.
+### X capabilities
+
+For X accounts on usage-based billing, also accepts an `xCapabilities` object to toggle background API operations that incur X API pass-through costs.
+
+- Both fields are opt-in (default `false`).
+- When off, no analytics syncs or DM polling are performed for that account, and no API call is metered for those operations.
+- Publishing and deleting posts are always available regardless of these toggles.
+- Setting `xCapabilities` on a non-X account returns 400.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId

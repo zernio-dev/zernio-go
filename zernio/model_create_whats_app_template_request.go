@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -40,7 +40,7 @@ type CreateWhatsAppTemplateRequest struct {
 	LibraryTemplateBodyInputs map[string]interface{} `json:"library_template_body_inputs,omitempty"`
 	// Optional button customizations for library templates. Each item specifies button type and configuration (e.g., URL, phone number, quick reply).
 	LibraryTemplateButtonInputs []CreateWhatsAppTemplateRequestLibraryTemplateButtonInputsInner `json:"library_template_button_inputs,omitempty"`
-	// Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 (create only) keeps the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
+	// Delivery validity window in seconds: a message not delivered within it is dropped. Range by category:  - AUTHENTICATION: 30 to 900. - UTILITY: 30 to 43200 (12h). - MARKETING: 43200 to 2592000 (30 days).  -1 (create only) keeps the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
 	MessageSendTtlSeconds *int32 `json:"message_send_ttl_seconds,omitempty"`
 }
 

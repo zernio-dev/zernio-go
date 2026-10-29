@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -274,15 +274,21 @@ GetRedditPostComments Get the comments of a Reddit post
 
 Temporarily unavailable: Reddit has blocked third-party apps from its API, so this endpoint returns 503 `PLATFORM_DISABLED` until Reddit restores access. Reddit Ads is not affected.
 
-Reads the comments of any Reddit post the connected account can see, for example one found
-through `/v1/reddit/feed` or `/v1/reddit/search`, straight from Reddit on every call. The tree
-comes flattened in thread order (a reply follows its parent); rebuild it from `parentId`, which
-is `t3_…` for a reply to the post and `t1_…` for a reply to a comment. Deleted and removed
-comments are passed through as Reddit sends them (`[deleted]` / `[removed]`). Where Reddit
-truncates a thread, the ids it left out are listed in `more`; `commentId` fetches one such
-comment with its replies. A post Reddit no longer serves answers 404 and a private subreddit
-403, both with `platform_api_error`. For comments on posts published through Zernio,
-`/v1/inbox/comments/{postId}` adds caching, moderation and replies.
+Reads the comments of any Reddit post the connected account can see, for example one found through `/v1/reddit/feed` or `/v1/reddit/search`, straight from Reddit on every call.
+
+### Thread shape
+
+- The tree comes flattened in thread order (a reply follows its parent).
+- Rebuild it from `parentId`, which is `t3_…` for a reply to the post and `t1_…` for a reply to a comment.
+- Deleted and removed comments are passed through as Reddit sends them (`[deleted]` / `[removed]`).
+- Where Reddit truncates a thread, the ids it left out are listed in `more`. `commentId` fetches one such comment with its replies.
+
+### Errors
+
+- 404 `platform_api_error`: Reddit no longer serves the post.
+- 403 `platform_api_error`: the subreddit is private.
+
+For comments on posts published through Zernio, `/v1/inbox/comments/{postId}` adds caching, moderation and replies.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId Reddit post id, with or without the `t3_` prefix (as `id` or `fullname` on RedditPost).

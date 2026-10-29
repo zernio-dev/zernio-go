@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -270,12 +270,31 @@ func (r AnalyticsAPIGetAnalyticsRequest) Execute() (*GetAnalytics200Response, *h
 GetAnalytics Get post analytics
 
 Returns analytics for posts. With postId, returns a single post. Without it, returns a paginated list with overview stats.
-Accepts both Zernio Post IDs and External Post IDs (auto-resolved). fromDate defaults to 90 days ago if omitted, max range 366 days.
-Single post lookups may return 202 (sync pending) or 424 (all platforms failed). For follower stats, use /v1/accounts/follower-stats.
 
-LinkedIn personal accounts: Analytics are only available for posts published through Zernio. LinkedIn's API only returns metrics for posts authored by the authenticated user. Organization/company page analytics work for all posts.
+- Accepts both Zernio Post IDs and External Post IDs (auto-resolved).
+- fromDate defaults to 90 days ago if omitted, max range 366 days.
+- Single post lookups may return 202 (sync pending) or 424 (all platforms failed).
+- For follower stats, use /v1/accounts/follower-stats.
 
-Facebook Page stories: stories on a connected Page, published through Zernio or natively, are collected while they are live and returned like any other post (platformPostUrl points to the story). Their lifetime metrics refresh about hourly, with a final reading shortly before the story expires at 24 hours; after that the values stay at that last reading. Mapping: impressions = story media views (Meta stopped accepting per-story impressions in October 2026, so impressions equals views), reach = unique story media viewers, views = story media views, likes = story reactions, comments = story replies, shares = story shares. Meta exposes no link-click metric for stories, so clicks is always 0. Metrics for a story published through Zernio are available on its Zernio post ID.
+### LinkedIn personal accounts
+
+Analytics are only available for posts published through Zernio. LinkedIn's API only returns metrics for posts authored by the authenticated user. Organization/company page analytics work for all posts.
+
+### Facebook Page stories
+
+Stories on a connected Page, published through Zernio or natively, are collected while they are live and returned like any other post (platformPostUrl points to the story). Metrics for a story published through Zernio are available on its Zernio post ID.
+
+Their lifetime metrics refresh about hourly, with a final reading shortly before the story expires at 24 hours. After that the values stay at that last reading.
+
+Mapping:
+
+- impressions = story media views (Meta stopped accepting per-story impressions in October 2026, so impressions equals views)
+- reach = unique story media viewers
+- views = story media views
+- likes = story reactions
+- comments = story replies
+- shares = story shares
+- clicks: always 0, because Meta exposes no link-click metric for stories
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetAnalyticsRequest
@@ -546,9 +565,16 @@ func (r AnalyticsAPIGetAnalyticsDashboardRequest) Execute() (*GetAnalyticsDashbo
 GetAnalyticsDashboard Get an analytics dashboard
 
 Everything an analytics dashboard needs in one call: window totals, follower growth, a per-day series, top posts, recent posts and, optionally, the same figures for the previous period.
-Daily and total metrics use received attribution: each day holds the engagement that arrived that day, on any post, so `totals` is always the sum of `daily`.
-`topPosts` and `recentPosts` list posts published in the window with their lifetime metrics. A post cross-posted to several platforms appears once per platform.
+
 All dates are UTC days.
+
+### Daily and total metrics
+
+Daily and total metrics use received attribution: each day holds the engagement that arrived that day, on any post. So `totals` is always the sum of `daily`.
+
+### Post lists
+
+`topPosts` and `recentPosts` list posts published in the window with their lifetime metrics. A post cross-posted to several platforms appears once per platform.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetAnalyticsDashboardRequest
@@ -737,64 +763,68 @@ func (r AnalyticsAPIGetAnalyticsDeltaRequest) Execute() (*AnalyticsDeltaResponse
 /*
 GetAnalyticsDelta Analytics changed since a cursor
 
-Cursor feed of the analytics snapshots that CHANGED, across every account you can
-read, in one paginated stream. Built for integrations that would otherwise call
-`GET /v1/analytics` once per connected account. Each page carries changes from
-many accounts at once, so your call count scales with how much actually changed
-rather than with how many accounts you have. Measured against a fleet of roughly
-1,600 connected accounts: about 1,599 per-account analytics calls an hour became
-about 205 delta calls an hour, a 7.8x reduction.
+Cursor feed of the analytics snapshots that CHANGED, across every account you can read, in one paginated stream. Built for integrations that would otherwise call `GET /v1/analytics` once per connected account.
 
-**Bootstrap once, then stay in sync.** Take the cursor FIRST: call this endpoint
-with NO `cursor` and it answers with an empty `data` array plus the feed's current
-position in `nextCursor`. Then load your baseline from `GET /v1/analytics`, the
-historical endpoint, because this one is a rolling 7-day change log and cannot
-replay history. Then resume from the cursor you took before the baseline. Taking
-the cursor afterwards instead drops every change that lands while the baseline is
-loading: it is in neither the row you already read nor the feed you resume behind
-it. The overlap this order creates is safe, because metrics are absolute values
-rather than increments, so draining it leaves every post on its newest value.
-`nextCursor` is present on every response, empty pages included, so you always
-have something to advance with.
+Each page carries changes from many accounts at once, so your call count scales with how much actually changed rather than with how many accounts you have.
 
-**Ordering.** Entries come back oldest first, in the order the feed received
-them. That order is NOT `syncedAt`: `syncedAt` is stamped when an account's sync
-cycle started, and a slow cycle writes its rows after a faster cycle that started
-later, so `syncedAt` can go backwards between consecutive entries. Do not sort,
-filter or resume on it. The cursor is the only stable position, and it is opaque:
-pass it back verbatim, and do not parse, construct or compare cursors.
+Measured against a fleet of roughly 1,600 connected accounts: about 1,599 per-account analytics calls an hour became about 205 delta calls an hour, a 7.8x reduction.
 
-**`hasMore: false` does not mean the feed ended.** This stream has no end and
-`nextCursor` is never null. `hasMore: true` means more changes are already
-waiting, so call again straight away. `hasMore: false` means you are caught up:
-keep the cursor and poll again on your normal interval.
+### Bootstrap once, then stay in sync
 
-**The newest changes settle before they are served.** The feed deliberately holds
-back its last few seconds of writes, so that a row can never become visible
-behind a cursor you have already advanced past. A read issued the instant an
-`analytics.synced` webhook lands will therefore often return an empty page for
-that account. Do not read an empty page as "nothing changed": poll again with the
-SAME cursor you last used rather than advancing.
+1. Take the cursor FIRST: call this endpoint with NO `cursor`. It answers with an empty `data` array plus the feed's current position in `nextCursor`.
+2. Load your baseline from `GET /v1/analytics`, the historical endpoint. This one is a rolling 7-day change log and cannot replay history.
+3. Resume from the cursor you took before the baseline.
 
-**Repeats inside one instant.** A sync cycle occasionally records the same post
-twice at the same feed position. When that happens the feed delivers one of those
-rows, not both. Measured over a day of production traffic, about 1.3% of rows
-fall in such a group and 99.4% of those groups are identical rows, so this is far
-more often deduplication than loss. Metrics are absolute values rather than
-increments, so a later entry for the same post supersedes an earlier one.
+Taking the cursor afterwards instead drops every change that lands while the baseline is loading: it is in neither the row you already read nor the feed you resume behind it.
 
-**Retention is 7 days.** Changes older than that leave the feed. A cursor older
-than 6 days is rejected with a `400` (a day of margin, because expiry is lazy).
-Recover the same way you bootstrapped: take a fresh cursor from a call to this
-endpoint with no `cursor`, then re-load from `GET /v1/analytics`, then resume
-from that cursor. A consumer that polls at least daily never reaches this.
+The overlap this order creates is safe. Metrics are absolute values rather than increments, so draining it leaves every post on its newest value.
 
-Pairs with the `analytics.synced` webhook, so changes can be read on notification
-instead of on a timer. That event carries no cursor of its own: keep using the
-`nextCursor` this endpoint gave you.
+`nextCursor` is present on every response, empty pages included, so you always have something to advance with.
 
-Requires the same analytics access as `GET /v1/analytics`, and shares the
-stricter per-second rate-limit window applied to analytics endpoints.
+### Ordering
+
+Entries come back oldest first, in the order the feed received them. That order is NOT `syncedAt`. `syncedAt` is stamped when an account's sync cycle started, and a slow cycle writes its rows after a faster cycle that started later, so `syncedAt` can go backwards between consecutive entries.
+
+Do not sort, filter or resume on `syncedAt`. The cursor is the only stable position, and it is opaque: pass it back verbatim, and do not parse, construct or compare cursors.
+
+### `hasMore: false` does not mean the feed ended
+
+This stream has no end and `nextCursor` is never null.
+
+- `hasMore: true`: more changes are already waiting, so call again straight away.
+- `hasMore: false`: you are caught up. Keep the cursor and poll again on your normal interval.
+
+### The newest changes settle before they are served
+
+The feed deliberately holds back its last few seconds of writes, so that a row can never become visible behind a cursor you have already advanced past.
+
+A read issued the instant an `analytics.synced` webhook lands will therefore often return an empty page for that account. Do not read an empty page as "nothing changed": poll again with the SAME cursor you last used rather than advancing.
+
+### Repeats inside one instant
+
+A sync cycle occasionally records the same post twice at the same feed position. When that happens the feed delivers one of those rows, not both.
+
+Measured over a day of production traffic, about 1.3% of rows fall in such a group and 99.4% of those groups are identical rows, so this is far more often deduplication than loss.
+
+Metrics are absolute values rather than increments, so a later entry for the same post supersedes an earlier one.
+
+### Retention is 7 days
+
+Changes older than that leave the feed. A cursor older than 6 days is rejected with a `400` (a day of margin, because expiry is lazy).
+
+Recover the same way you bootstrapped:
+
+1. Take a fresh cursor from a call to this endpoint with no `cursor`.
+2. Re-load from `GET /v1/analytics`.
+3. Resume from that cursor.
+
+A consumer that polls at least daily never reaches this.
+
+### Webhook and access
+
+Pairs with the `analytics.synced` webhook, so changes can be read on notification instead of on a timer. That event carries no cursor of its own: keep using the `nextCursor` this endpoint gave you.
+
+Requires the same analytics access as `GET /v1/analytics`, and shares the stricter per-second rate-limit window applied to analytics endpoints.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetAnalyticsDeltaRequest
@@ -1360,7 +1390,7 @@ func (r AnalyticsAPIGetDailyMetricsRequest) Source(source string) AnalyticsAPIGe
 	return r
 }
 
-// How each post&#39;s engagement is attributed to a day. \&quot;publish\&quot; (default) sums each post&#39;s lifetime total on its publish date. \&quot;received\&quot; buckets the per-day increase in engagement by the day it actually arrived (engagement-over-time), so engagement on older posts appears on the day it was gained rather than the post&#39;s publish date.
+// How each post&#39;s engagement is attributed to a day.  - \&quot;publish\&quot; (default): sums each post&#39;s lifetime total on its publish date. - \&quot;received\&quot;: buckets the per-day increase in engagement by the day it actually arrived (engagement-over-time), so engagement on older posts appears on the day it was gained rather than the post&#39;s publish date.
 func (r AnalyticsAPIGetDailyMetricsRequest) Attribution(attribution string) AnalyticsAPIGetDailyMetricsRequest {
 	r.attribution = &attribution
 	return r
@@ -1540,8 +1570,16 @@ func (r AnalyticsAPIGetFacebookDemographicsRequest) Execute() (*GetFacebookDemog
 GetFacebookDemographics Get Facebook Page demographics
 
 Returns the follower breakdown of a connected Facebook Page by country and/or city, from Meta's latest daily snapshot.
-Country keys are ISO 3166-1 alpha-2 codes; city keys are "City, Region, Country" strings as Meta returns them.
+
+### Keys
+
+- Country keys are ISO 3166-1 alpha-2 codes.
+- City keys are "City, Region, Country" strings as Meta returns them.
+
+### Limits
+
 Meta removed age and gender demographics for Pages (page_fans_gender_age) on November 15 2025 with no replacement, so only country and city are available.
+
 Meta reports small counts at a privacy floor, so the long tail can show identical low values.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -1698,7 +1736,7 @@ func (r AnalyticsAPIGetFacebookPageInsightsRequest) AccountId(accountId string) 
 	return r
 }
 
-// Comma-separated list of metrics. Defaults to \&quot;page_media_view,page_post_engagements,page_follows,followers_gained,followers_lost\&quot;.  Live Meta metrics (current names, post-Nov-2025):   - page_media_view       (replaces deprecated page_impressions)   - page_views_total   - page_post_engagements   - page_video_views   - page_video_view_time   - page_follows          (replaces deprecated page_fans)  Zernio-synthesized from daily follower snapshots (filling the Nov-2025 gap left by the page_fan_adds / page_fan_removes deprecation):   - followers_gained   - followers_lost  Monetization (opt-in, not in the defaults):   - content_monetization_earnings   - monetization_approximate_earnings  Each monetization metric is fetched with its own separate Graph call, so requesting both adds two calls. Values are approximate and Meta restates them after the fact.  content_monetization_earnings returns an object per day and always carries unit \&quot;micro_amount\&quot; plus an ISO 4217 \&quot;currency\&quot;. monetization_approximate_earnings returns a bare number per day, so its unit is always \&quot;unspecified\&quot; and its \&quot;currency\&quot; is always null. The two are on different scales and are not comparable to each other. Both keep their daily \&quot;values\&quot; on every metricType and are never rescaled by Zernio.  Earnings here are Page-level daily buckets and \&quot;total\&quot; is their sum. Meta does not document whether a bucket carries that day&#39;s earnings or a running total, and every Page measured so far earned exactly 0, so reconcile \&quot;total\&quot; against the Page&#39;s own Meta export before relying on it; the daily \&quot;values\&quot; are always returned for that purpose. Per-post lifetime earnings are served by GET /v1/analytics/facebook/post-earnings.  A Page that is not enrolled in monetization, or that earned nothing, returns normal daily buckets of 0 in \&quot;metrics\&quot;: Meta does not distinguish the two, so a 0 total here does NOT mean the Page is enrolled. \&quot;unavailableMetrics\&quot; covers the narrower case where Meta returned no bucket for the metric at all (\&quot;no_data\&quot;) or rejected the request outright, and the metric is then omitted from \&quot;metrics\&quot; rather than reported as 0.
+// Comma-separated list of metrics. Defaults to \&quot;page_media_view,page_post_engagements,page_follows,followers_gained,followers_lost\&quot;.  **Live Meta metrics** (current names, post-Nov-2025):  - page_media_view (replaces deprecated page_impressions) - page_views_total - page_post_engagements - page_video_views - page_video_view_time - page_follows (replaces deprecated page_fans)  **Zernio-synthesized** from daily follower snapshots (filling the Nov-2025 gap left by the page_fan_adds / page_fan_removes deprecation):  - followers_gained - followers_lost  **Monetization** (opt-in, not in the defaults):  - content_monetization_earnings: an object per day, always with unit \&quot;micro_amount\&quot; and an ISO 4217 \&quot;currency\&quot;. - monetization_approximate_earnings: a bare number per day; unit is always \&quot;unspecified\&quot; and \&quot;currency\&quot; always null.  Each monetization metric costs its own Graph call, so requesting both adds two calls. Values are approximate and Meta restates them later. The two are on different scales and not comparable. Both keep daily \&quot;values\&quot; on every metricType and are never rescaled by Zernio.  Earnings are Page-level daily buckets and \&quot;total\&quot; is their sum. Meta does not document whether a bucket is that day&#39;s earnings or a running total, and every Page measured so far earned exactly 0.  Reconcile \&quot;total\&quot; against the Page&#39;s Meta export before relying on it (daily \&quot;values\&quot; are always returned for this).  Per-post lifetime earnings: GET /v1/analytics/facebook/post-earnings.  A Page not enrolled in monetization, or that earned nothing, returns normal daily buckets of 0 in \&quot;metrics\&quot; (Meta does not distinguish them), so a 0 total does NOT mean the Page is enrolled.  \&quot;unavailableMetrics\&quot; covers the narrower case where Meta returned no bucket at all (\&quot;no_data\&quot;) or rejected the request; the metric is then omitted from \&quot;metrics\&quot; rather than reported as 0.
 func (r AnalyticsAPIGetFacebookPageInsightsRequest) Metrics(metrics string) AnalyticsAPIGetFacebookPageInsightsRequest {
 	r.metrics = &metrics
 	return r
@@ -1743,17 +1781,20 @@ func (r AnalyticsAPIGetFacebookPageInsightsRequest) Execute() (*InstagramAccount
 /*
 GetFacebookPageInsights Get Facebook Page insights
 
-Returns page-level Facebook insights (media views, views, post engagements, video metrics,
-follower counts). Response shape matches /v1/analytics/instagram/account-insights so the
-same client handling works across platforms.
-
-Metric names track the current (post-November 2025) Meta Graph API. The legacy
-page_impressions / page_fans / page_fan_adds / page_fan_removes metrics were deprecated
-by Meta on November 15, 2025 and are NOT accepted by this endpoint. Use the replacements
-below. Because Meta did not provide direct adds/removes replacements, Zernio synthesizes
-followers_gained / followers_lost from the daily follower snapshotter.
+Returns page-level Facebook insights (media views, views, post engagements, video metrics, follower counts). The response shape matches /v1/analytics/instagram/account-insights, so the same client handling works across platforms.
 
 Max 89 days, defaults to last 30 days.
+
+### Metric names
+
+Metric names track the current (post-November 2025) Meta Graph API. These legacy metrics were deprecated by Meta on November 15, 2025 and are NOT accepted by this endpoint:
+
+- page_impressions
+- page_fans
+- page_fan_adds
+- page_fan_removes
+
+Use the replacements below. Because Meta did not provide direct adds/removes replacements, Zernio synthesizes followers_gained / followers_lost from the daily follower snapshotter.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetFacebookPageInsightsRequest
@@ -1911,22 +1952,27 @@ func (r AnalyticsAPIGetFacebookPostEarningsRequest) Execute() (*FacebookPostEarn
 /*
 GetFacebookPostEarnings Get Facebook post monetization earnings
 
-Returns lifetime monetization earnings for ONE Facebook post, read live from Meta on every
-request.
+Returns lifetime monetization earnings for ONE Facebook post, read live from Meta on every request.
 
-Earnings are CUMULATIVE since the post was published, not earnings within a date range, so
-this endpoint takes no since/until and the totals must not be summed across dates or across
-posts. Page-level daily earnings live on /v1/analytics/facebook/page-insights.
+### Lifetime totals only
 
-A post on a Page that is not enrolled in monetization, or that earned nothing, returns
-"total": 0 rather than an error: Meta does not distinguish the two. A metric Meta returned no
-bucket for at all is reported in "unavailableMetrics" and omitted from "metrics", never as a 0.
+Earnings are CUMULATIVE since the post was published, not earnings within a date range. So this endpoint takes no since/until, and the totals must not be summed across dates or across posts. Page-level daily earnings live on /v1/analytics/facebook/page-insights.
+
+### Zeros and missing metrics
+
+- A post on a Page that is not enrolled in monetization, or that earned nothing, returns "total": 0 rather than an error: Meta does not distinguish the two.
+- A metric Meta returned no bucket for at all is reported in "unavailableMetrics" and omitted from "metrics", never as a 0.
 
 Amounts are the platform's raw numbers in the stated "unit" and are never rescaled by Zernio.
-Breakdown dimensions are not exposed and a "breakdown" param is rejected with 400. So are
-"since", "until", "period", and "metricType": scoping this endpoint to a window is not
-possible, and silently returning the lifetime total for one would let a caller sum a year of
-weekly requests into a figure ~52x the post's real earnings.
+
+### Rejected parameters
+
+These are rejected with 400:
+
+- "breakdown": breakdown dimensions are not exposed.
+- "since", "until", "period", and "metricType": scoping this endpoint to a window is not possible.
+
+Silently returning the lifetime total for a window would let a caller sum a year of weekly requests into a figure ~52x the post's real earnings.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetFacebookPostEarningsRequest
@@ -2801,9 +2847,14 @@ func (r AnalyticsAPIGetGoogleBusinessSearchKeywordsRequest) Execute() (*GetGoogl
 GetGoogleBusinessSearchKeywords Get Google Business Profile search keywords
 
 Returns search keywords that triggered impressions for a Google Business Profile location.
-Data is aggregated monthly. Keywords Google reports only as below a threshold have `impressions` 0 and `impressionsThreshold` set to that threshold.
+
+- Data is aggregated monthly.
+- Keywords Google reports only as below a threshold have `impressions` 0 and `impressionsThreshold` set to that threshold.
+- Max 18 months of historical data.
+
+### Paging
+
 Returns up to 100 keywords per page. When `nextPageToken` is not null, pass it as `pageToken` with the same `startMonth` and `endMonth` to get the next page.
-Max 18 months of historical data.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetGoogleBusinessSearchKeywordsRequest
@@ -2988,7 +3039,7 @@ func (r AnalyticsAPIGetInstagramAccountInsightsRequest) AccountId(accountId stri
 	return r
 }
 
-// Comma-separated list of metrics. Defaults to \&quot;reach,views,accounts_engaged,total_interactions\&quot;. Valid metrics: reach, views, accounts_engaged, total_interactions, comments, likes, saves, shares, replies, reposts, follows_and_unfollows, profile_links_taps, profile_views, website_clicks. Note: only \&quot;reach\&quot; supports metricType&#x3D;time_series. All other metrics (including follows_and_unfollows, profile_views and website_clicks) are total_value only. This is an Instagram Graph API limitation, not a Zernio limitation - the IG API does not return time-series data for these metrics. For a daily running follower count, use /v1/analytics/instagram/follower-history instead.
+// Comma-separated list of metrics. Defaults to \&quot;reach,views,accounts_engaged,total_interactions\&quot;.  Valid metrics: reach, views, accounts_engaged, total_interactions, comments, likes, saves, shares, replies, reposts, follows_and_unfollows, profile_links_taps, profile_views, website_clicks.  Only \&quot;reach\&quot; supports metricType&#x3D;time_series. All other metrics (including follows_and_unfollows, profile_views and website_clicks) are total_value only. This is an Instagram Graph API limitation, not a Zernio one: the IG API returns no time-series data for these metrics.  For a daily running follower count, use /v1/analytics/instagram/follower-history instead.
 func (r AnalyticsAPIGetInstagramAccountInsightsRequest) Metrics(metrics string) AnalyticsAPIGetInstagramAccountInsightsRequest {
 	r.metrics = &metrics
 	return r
@@ -3040,9 +3091,11 @@ func (r AnalyticsAPIGetInstagramAccountInsightsRequest) Execute() (*InstagramAcc
 GetInstagramAccountInsights Get Instagram insights
 
 Returns account-level Instagram insights such as reach, views, accounts engaged, and total interactions.
-These metrics reflect the entire account's performance across all content surfaces (feed, stories, explore, profile),
-and are fundamentally different from post-level metrics. Data may be delayed up to 48 hours.
-Max 90 days, defaults to last 30 days.
+
+These metrics reflect the entire account's performance across all content surfaces (feed, stories, explore, profile), and are fundamentally different from post-level metrics.
+
+- Data may be delayed up to 48 hours.
+- Max 90 days, defaults to last 30 days.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetInstagramAccountInsightsRequest
@@ -3632,9 +3685,11 @@ func (r AnalyticsAPIGetInstagramOnlineFollowersRequest) Execute() (*GetInstagram
 GetInstagramOnlineFollowers Get Instagram online followers
 
 Returns how many of an Instagram account's followers were online in each hour, for every day of the last 30 days that Meta has data for.
-Hour keys are "0" to "23" as Meta returns them. endTime is the end_time Meta returns for that day. Meta does not document the timezone of the hour keys.
-Data is delayed up to 48 hours, so the most recent days are left out until Meta fills them.
-Requires at least 100 followers; for smaller accounts days is empty.
+
+- Hour keys are "0" to "23" as Meta returns them. Meta does not document the timezone of the hour keys.
+- endTime is the end_time Meta returns for that day.
+- Data is delayed up to 48 hours, so the most recent days are left out until Meta fills them.
+- Requires at least 100 followers; for smaller accounts days is empty.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetInstagramOnlineFollowersRequest
@@ -3848,7 +3903,11 @@ func (r AnalyticsAPIGetLinkedInAggregateAnalyticsRequest) Execute() (*GetLinkedI
 /*
 GetLinkedInAggregateAnalytics Get LinkedIn aggregate stats
 
-Returns aggregate analytics across all posts for a LinkedIn personal account. Covers every post authored by the member, whether or not it was published through Zernio (LinkedIn aggregates by member, not by post). Org accounts should use /v1/analytics instead. Requires r_member_postAnalytics scope. Saves (POST_SAVE) and sends (POST_SEND) are available for personal accounts; organization pages always return 0 for these two metrics because LinkedIn does not expose them on the organization analytics endpoint.
+Returns aggregate analytics across all posts for a LinkedIn personal account. Requires r_member_postAnalytics scope.
+
+Covers every post authored by the member, whether or not it was published through Zernio (LinkedIn aggregates by member, not by post). Org accounts should use /v1/analytics instead.
+
+Saves (POST_SAVE) and sends (POST_SEND) are available for personal accounts. Organization pages always return 0 for these two metrics because LinkedIn does not expose them on the organization analytics endpoint.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The ID of the LinkedIn personal account
@@ -4032,9 +4091,19 @@ func (r AnalyticsAPIGetLinkedInDemographicsRequest) Execute() (*GetLinkedInDemog
 GetLinkedInDemographics Get LinkedIn organization follower demographics
 
 Returns the lifetime follower breakdown of a connected LinkedIn organization page by job function, seniority, industry and company size.
-Function, seniority and industry are labelled with LinkedIn's standardized names (English) and keep the LinkedIn URN in `id`. Company size is labelled as a range such as `2-10` or `10001+`.
+
+### Labels
+
+- Function, seniority and industry are labelled with LinkedIn's standardized names (English) and keep the LinkedIn URN in `id`.
+- Company size is labelled as a range such as `2-10` or `10001+`.
+
 LinkedIn returns at most the top 100 values per breakdown and leaves out followers whose profile lacks that field, so a breakdown does not add up to the follower count.
-Organization accounts only: a personal LinkedIn account answers 400 `personal_account_not_supported`. Requires the r_organization_social, r_organization_followers and r_organization_admin scopes (412 otherwise) and the Analytics add-on.
+
+### Requirements
+
+- Organization accounts only: a personal LinkedIn account answers 400 `personal_account_not_supported`.
+- Requires the r_organization_social, r_organization_followers and r_organization_admin scopes (412 otherwise).
+- Requires the Analytics add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetLinkedInDemographicsRequest
@@ -4754,12 +4823,14 @@ func (r AnalyticsAPIGetPostAuthenticityRequest) Execute() (*PostAuthenticity, *h
 /*
 GetPostAuthenticity Get a post's authenticity score
 
-Returns Zernio's authenticity score for a post: an integer from 0 to 100 where higher means the view
-pattern looks more like organic viewing. The score is ours. It is computed only from the verified
-samples we fetched from the platform, never from anything the creator or caller reported, and `reasons`
-lists each factor that lowered it with its weight in points. `confidence` (0 to 1) says how much data
-the score rests on. A stored score newer than 30 minutes is returned as is, otherwise it is recomputed.
-The `post.authenticity_changed` webhook fires when a score crosses 40.
+Returns Zernio's authenticity score for a post: an integer from 0 to 100 where higher means the view pattern looks more like organic viewing.
+
+The score is ours. It is computed only from the verified samples we fetched from the platform, never from anything the creator or caller reported.
+
+- `reasons` lists each factor that lowered it with its weight in points.
+- `confidence` (0 to 1) says how much data the score rests on.
+
+A stored score newer than 30 minutes is returned as is, otherwise it is recomputed. The `post.authenticity_changed` webhook fires when a score crosses 40.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId An external post id, a platform post id or a Zernio post id.
@@ -4933,11 +5004,14 @@ func (r AnalyticsAPIGetPostSamplesRequest) Execute() (*GetPostSamples200Response
 /*
 GetPostSamples Get post samples
 
-Returns the raw readings behind a post's numbers, oldest first. Each sample is one analytics sync: the
-views and engagement as the platform reported them at `syncedAt`. Zernio only stores what it fetched from
-the platform, so nothing here was self-reported. `shares` and `saves` are null on platforms that do not
-return that counter, which is different from a real zero. `watchSeconds` and `completionRate` are null
-when the platform gives no watch signal.
+Returns the raw readings behind a post's numbers, oldest first.
+
+Each sample is one analytics sync: the views and engagement as the platform reported them at `syncedAt`. Zernio only stores what it fetched from the platform, so nothing here was self-reported.
+
+### Null values
+
+- `shares` and `saves` are null on platforms that do not return that counter, which is different from a real zero.
+- `watchSeconds` and `completionRate` are null when the platform gives no watch signal.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetPostSamplesRequest
@@ -5513,30 +5587,33 @@ func (r AnalyticsAPIGetTikTokAccountInsightsRequest) Execute() (*InstagramAccoun
 /*
 GetTikTokAccountInsights Get TikTok account-level insights
 
-Returns account-level TikTok insights from /v2/user/info/ (live) plus historical
-time series joined from Zernio's daily snapshotter (AccountStats).
+Returns account-level TikTok insights from /v2/user/info/ (live) plus historical time series joined from Zernio's daily snapshotter (AccountStats).
 
-Response shape matches /v1/analytics/instagram/account-insights. Max 89 days,
-defaults to last 30 days. Requires the user.info.stats
-scope on the account (412 if missing).
+- Response shape matches /v1/analytics/instagram/account-insights.
+- Max 89 days, defaults to last 30 days.
+- Requires the user.info.stats scope on the account (412 if missing).
 
-Scope intentionally narrow: this ACCOUNT-level endpoint exposes only the four
-counter metrics below. These account-level figures are not on any public TikTok
-API, for any account type:
-  - account-level impressions / reach
-  - follower inflow / outflow breakdown
-  - account-level watch time and audience demographics
+### Why the scope is narrow
 
-TikTok's Research API doesn't expose them either, and is restricted to
-non-commercial academic use per TikTok's eligibility policy.
+This ACCOUNT-level endpoint intentionally exposes only the four counter metrics below. These account-level figures are not on any public TikTok API, for any account type:
 
-PER-VIDEO is a different story on the Business lane. An account connected through
-the TikTok for Business app reports profile views, website clicks, follows,
-full-watched rate, watch time, impression sources, viewer types and viewer
-countries per video on GET /v1/analytics?postId=..., roughly 24-48h after
-publishing and only for posts active in the last 7 days. Accounts on the original
-TikTok integration get the basic counters there (views, likes, comments, shares)
-and zeros for the rest; they must reconnect through the Business app.
+- account-level impressions / reach
+- follower inflow / outflow breakdown
+- account-level watch time and audience demographics
+
+TikTok's Research API doesn't expose them either, and is restricted to non-commercial academic use per TikTok's eligibility policy.
+
+### Per-video metrics
+
+PER-VIDEO is a different story on the Business lane. An account connected through the TikTok for Business app reports these per video on GET /v1/analytics?postId=...:
+
+- profile views, website clicks, follows
+- full-watched rate, watch time
+- impression sources, viewer types and viewer countries
+
+They arrive roughly 24-48h after publishing and only for posts active in the last 7 days.
+
+Accounts on the original TikTok integration get the basic counters there (views, likes, comments, shares) and zeros for the rest. They must reconnect through the Business app.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetTikTokAccountInsightsRequest
@@ -6081,7 +6158,7 @@ func (r AnalyticsAPIGetYouTubeDailyViewsRequest) FromDate(fromDate string) Analy
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to 3 days ago, the newest fully finalized day (YouTube finalizes analytics with a ~3-day delay). An explicit toDate is honored up to today: days inside the delay window are provisional and may still be revised by YouTube (see provisionalSince in the response), and days YouTube has not processed yet are omitted from dailyViews.
+// End date (YYYY-MM-DD). Defaults to 3 days ago, the newest fully finalized day (YouTube finalizes analytics with a ~3-day delay).  An explicit toDate is honored up to today. Days inside the delay window are provisional and may still be revised by YouTube (see provisionalSince in the response); days YouTube has not processed yet are omitted from dailyViews.
 func (r AnalyticsAPIGetYouTubeDailyViewsRequest) ToDate(toDate string) AnalyticsAPIGetYouTubeDailyViewsRequest {
 	r.toDate = &toDate
 	return r
@@ -6108,10 +6185,10 @@ func (r AnalyticsAPIGetYouTubeDailyViewsRequest) Execute() (*YouTubeDailyViewsRe
 /*
 GetYouTubeDailyViews Get YouTube daily views
 
-Returns daily view counts for a YouTube video including views, watch time, and subscriber changes.
-Requires yt-analytics.readonly scope (re-authorization may be needed). YouTube finalizes analytics
-with a ~3-day delay; by default only finalized days are returned, and an explicit endDate can reach
-into the delay window (see the endDate parameter). Max 90 days, defaults to last 30 days.
+Returns daily view counts for a YouTube video including views, watch time, and subscriber changes. Requires yt-analytics.readonly scope (re-authorization may be needed).
+
+- YouTube finalizes analytics with a ~3-day delay. By default only finalized days are returned; an explicit endDate can reach into the delay window (see the endDate parameter).
+- Max 90 days, defaults to last 30 days.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetYouTubeDailyViewsRequest
@@ -6358,11 +6435,12 @@ func (r AnalyticsAPIGetYouTubeDemographicsRequest) Execute() (*YouTubeDemographi
 /*
 GetYouTubeDemographics Get YouTube demographics
 
-Returns audience demographic insights for a YouTube channel, broken down by age, gender, and/or country.
-Pass videoId to get the audience profile of a single video instead of the whole channel.
-Age and gender values are viewer percentages (0-100). Country values are view counts.
-Data is based on signed-in viewers only, with a 2-3 day delay. YouTube suppresses demographics
-for videos with too few signed-in views, so low-traffic videos can return empty breakdowns.
+Returns audience demographic insights for a YouTube channel, broken down by age, gender, and/or country. Pass videoId to get the audience profile of a single video instead of the whole channel.
+
+- Age and gender values are viewer percentages (0-100).
+- Country values are view counts.
+
+Data is based on signed-in viewers only, with a 2-3 day delay. YouTube suppresses demographics for videos with too few signed-in views, so low-traffic videos can return empty breakdowns.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetYouTubeDemographicsRequest
@@ -6626,18 +6704,17 @@ func (r AnalyticsAPIGetYouTubeVideoRetentionRequest) Execute() (*YouTubeVideoRet
 /*
 GetYouTubeVideoRetention Get YouTube video retention curve
 
-Returns the audience retention curve for a single YouTube video, plus the video's
-duration for rendering the curve on a time axis. The curve has up to 100 points
-(elapsedVideoTimeRatio 0.01-1.0) aggregated over the whole date range; YouTube does
-not support per-day retention breakdowns.
+Returns the audience retention curve for a single YouTube video, plus the video's duration for rendering the curve on a time axis. Requires yt-analytics.readonly scope (re-authorization may be needed).
 
-audienceWatchRatio is the absolute share of viewers watching at that point in the
-video and can exceed 1 (rewinds and looping, common on Shorts). relativeRetentionPerformance
-compares against videos of similar length (0 = worst, 0.5 = median, 1 = best).
-YouTube returns an empty curve for videos with very few views or before analytics
-processing completes (2-3 day delay).
+### The curve
 
-Requires yt-analytics.readonly scope (re-authorization may be needed).
+- Up to 100 points (elapsedVideoTimeRatio 0.01-1.0), aggregated over the whole date range. YouTube does not support per-day retention breakdowns.
+- audienceWatchRatio: the absolute share of viewers watching at that point in the video. It can exceed 1 (rewinds and looping, common on Shorts).
+- relativeRetentionPerformance: compares against videos of similar length (0 = worst, 0.5 = median, 1 = best).
+
+### Empty curves
+
+YouTube returns an empty curve for videos with very few views or before analytics processing completes (2-3 day delay).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetYouTubeVideoRetentionRequest
@@ -7063,22 +7140,24 @@ func (r AnalyticsAPIListFacebookVisitorPostsRequest) Execute() (*ListFacebookVis
 /*
 ListFacebookVisitorPosts List visitor posts on a Facebook Page
 
-Returns the posts other people published on the connected Facebook Page,
-newest first. Zernio reads the Page feed (Graph `/{page-id}/feed`, which
-works on New Pages Experience Pages, unlike the deprecated `visitor_posts`
-edge) and drops the posts the Page published itself and the posts other
-people published on their own timeline that only tag the Page. A Page
-without visitor posts returns an empty `data` array.
+Returns the posts other people published on the connected Facebook Page, newest first. A Page without visitor posts returns an empty `data` array.
 
-Cursor-paginated: pass `nextCursor` from the previous response as
-`cursor` to read the next page. `limit` sets how many feed entries are
-scanned, so a page can hold fewer posts than `limit`, or none, while
-`nextCursor` is not null. `nextCursor` is null when there are no more
-pages, and the final page can come back empty.
+### What is returned
 
-Works on `facebook` accounts with a Page selected. Meta requires the `pages_read_user_content`
-permission, which Zernio requests with the comments scope: an account
-connected without it receives Meta's refusal as `platform_api_error`.
+Zernio reads the Page feed (Graph `/{page-id}/feed`, which works on New Pages Experience Pages, unlike the deprecated `visitor_posts` edge). It drops:
+
+- the posts the Page published itself
+- the posts other people published on their own timeline that only tag the Page
+
+### Pagination
+
+Cursor-paginated: pass `nextCursor` from the previous response as `cursor` to read the next page.
+
+`limit` sets how many feed entries are scanned, so a page can hold fewer posts than `limit`, or none, while `nextCursor` is not null. `nextCursor` is null when there are no more pages, and the final page can come back empty.
+
+### Requirements
+
+Works on `facebook` accounts with a Page selected. Meta requires the `pages_read_user_content` permission, which Zernio requests with the comments scope. An account connected without it receives Meta's refusal as `platform_api_error`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The ID of a connected Facebook Page account.
@@ -7305,10 +7384,14 @@ func (r AnalyticsAPIListPostAuthenticityRequest) Execute() (*ListPostAuthenticit
 /*
 ListPostAuthenticity List authenticity scores
 
-Lists the stored authenticity scores for one connected account, newest first. Scores are 0 to 100 and
-come from Zernio's own model over verified platform samples. Filter with `minScore` and `maxScore` to
-find posts that look inflated, and with `from` and `to` to bound when the score was computed. Requires
-the Analytics add-on.
+Lists the stored authenticity scores for one connected account, newest first. Requires the Analytics add-on.
+
+Scores are 0 to 100 and come from Zernio's own model over verified platform samples.
+
+### Filters
+
+- `minScore` and `maxScore`: find posts that look inflated.
+- `from` and `to`: bound when the score was computed.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIListPostAuthenticityRequest
@@ -7679,13 +7762,23 @@ func (r AnalyticsAPIOpenTrackingWindowRequest) Execute() (*TrackingWindowRespons
 /*
 OpenTrackingWindow Open a tracking window
 
-Starts watching a post's views and engagement. Zernio fetches the numbers from the platform itself on its
-regular analytics sync, so every reading is verified: it is a value we read from the platform, never one
-the creator or the caller reported. The window runs for `trackingDays` (30 by default, 90 at most) and
-ends with one final read, after which the `post.tracking_completed` webhook fires. Identify the post
-with `postId` (an external post id from Zernio), or with `accountId` together with the post's `url`.
-Opening a window for a post that is already tracked returns the existing window with `200`. A new
-window returns `201`.
+Starts watching a post's views and engagement.
+
+Zernio fetches the numbers from the platform itself on its regular analytics sync, so every reading is verified. It is a value we read from the platform, never one the creator or the caller reported.
+
+### The window
+
+- Runs for `trackingDays` (30 by default, 90 at most).
+- Ends with one final read, after which the `post.tracking_completed` webhook fires.
+
+### Identifying the post
+
+Send either `postId` (an external post id from Zernio), or `accountId` together with the post's `url`.
+
+### Responses
+
+- `201`: a new window was opened.
+- `200`: the post is already tracked; the existing window is returned.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIOpenTrackingWindowRequest
@@ -8007,10 +8100,14 @@ func (r AnalyticsAPIRunGoogleAnalyticsReportRequest) Execute() (*GoogleAnalytics
 RunGoogleAnalyticsReport Run a Google Analytics (GA4) report
 
 Runs a report on a connected GA4 property through Google's Data API (`runReport`).
+
 Pick any GA4 dimensions and metrics; filters and ordering use Google's own shapes.
-Identical requests on the same property are cached for 10 minutes. Google meters each
-property by quota tokens; when it is used up the request returns 429 until Google refills it
-(hourly quotas within the hour, daily ones at midnight Pacific time).
+
+### Caching and quota
+
+Identical requests on the same property are cached for 10 minutes.
+
+Google meters each property by quota tokens. When it is used up the request returns 429 until Google refills it (hourly quotas within the hour, daily ones at midnight Pacific time).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIRunGoogleAnalyticsReportRequest
@@ -8164,25 +8261,58 @@ func (r AnalyticsAPISyncExternalPostsRequest) Execute() (*SyncExternalPosts200Re
 /*
 SyncExternalPosts Sync an external post
 
-Fetch an account's latest external posts (published directly on the platform, not through Zernio) on demand, so a newly published post is retrievable within seconds instead of waiting for the background sync (which refreshes each account at most every ~90 minutes).
+Fetch an account's latest external posts (published directly on the platform, not through Zernio) on demand. A newly published post is then retrievable within seconds instead of waiting for the background sync, which refreshes each account at most every ~90 minutes.
 
 Primary use case: verifying a submitted post. When a user publishes on the platform and immediately pastes the post URL into your app, call this with `accountId` plus `url` (or `postId`) to confirm the post exists and return its metadata.
 
-Behavior:
+### Behavior
+
 - Account access and connection state are checked before any platform call, including requests inside the debounce window.
 - Inactive accounts or accounts marked `needsReconnection` return `409` with code `ads_connection_required`. Stop scheduled retries for that account until it is reconnected, then read `GET /v1/accounts` for its current account ID.
 - For connected accounts, we fetch the latest posts live from the platform, then match and return the submitted post.
 - Requests are debounced per account (~15s): if the account was synced inside that window, the live fetch is skipped.
 
-`accountId` is required, because a post URL or id alone cannot be resolved to an account, and the account must be connected to Zernio (we use its token to read the platform). Supported for every platform with a listing API (Instagram, Facebook, TikTok, YouTube, X, Threads, Pinterest, Reddit, Bluesky, Google Business Profile, and LinkedIn organization accounts).
+### Account and platforms
 
-LinkedIn personal profiles: LinkedIn has no listing API for personal profiles, so a `url` is REQUIRED and imports that single post. Pass any LinkedIn post URL (`linkedin.com/posts/…`, `linkedin.com/feed/update/urn:li:activity:…`) or a `urn:li:share:…` / `urn:li:ugcPost:…` URN. Works for posts published outside Zernio and before the account was connected, any age; the post must be authored by the connected member. Imported posts return full analytics (impressions, reach, reactions, comments, reshares, saves) and keep refreshing on the background analytics cycle, but carry no content/media (LinkedIn does not expose them for personal profiles). `publishedAt` comes from the post id: an activity URL (`linkedin.com/feed/update/urn:li:activity:…`) carries the publication time, while a `urn:li:share:…` / `urn:li:ugcPost:…` URN only carries the creation time, which is earlier for a post scheduled in another tool. Pass the activity URL for the exact publication date; importing it again for a post already imported by its URN corrects `publishedAt` on the same record. Right after an import, the per-post `GET /v1/analytics?postId=` read can show zeros for a few minutes while the metrics are ingested; this endpoint's response carries the fetched values immediately.
+`accountId` is required, because a post URL or id alone cannot be resolved to an account. The account must be connected to Zernio (we use its token to read the platform).
 
-TikTok Business accounts: a `postId` or TikTok `url` that the listing has not stored is fetched from TikTok and imported as an external post, at any age, with its current metrics.
+Supported for every platform with a listing API: Instagram, Facebook, TikTok, YouTube, X, Threads, Pinterest, Reddit, Bluesky, Google Business Profile, and LinkedIn organization accounts.
 
-`url` accepts any format the platform uses (e.g. `instagram.com/p/…`, `instagram.com/reel/…`, `youtu.be/…`, `youtube.com/shorts/…`, `tiktok.com/@user/video/…`, `vm.tiktok.com` short links, `pinterest.com/pin/…` on any regional domain, and `pin.it` short links). Pass `postId` (the platform media/video/pin id) as an alternative locator.
+### Locating the post
 
-Note: post-level analytics (reach, impressions) still carry the platform's own delay (e.g. ~24h on Instagram). This endpoint confirms the post exists and returns its metadata plus basic engagement (likes, comments), not delayed insights.
+`url` accepts any format the platform uses, for example:
+
+- `instagram.com/p/…`, `instagram.com/reel/…`
+- `youtu.be/…`, `youtube.com/shorts/…`
+- `tiktok.com/@user/video/…`, `vm.tiktok.com` short links
+- `pinterest.com/pin/…` on any regional domain, and `pin.it` short links
+
+Pass `postId` (the platform media/video/pin id) as an alternative locator.
+
+### LinkedIn personal profiles
+
+LinkedIn has no listing API for personal profiles, so a `url` is REQUIRED and imports that single post. Pass any LinkedIn post URL (`linkedin.com/posts/…`, `linkedin.com/feed/update/urn:li:activity:…`) or a `urn:li:share:…` / `urn:li:ugcPost:…` URN.
+
+It works for posts published outside Zernio and before the account was connected, at any age. The post must be authored by the connected member.
+
+Imported posts return full analytics (impressions, reach, reactions, comments, reshares, saves) and keep refreshing on the background analytics cycle. They carry no content/media, since LinkedIn does not expose them for personal profiles.
+
+`publishedAt` comes from the post id:
+
+- An activity URL (`linkedin.com/feed/update/urn:li:activity:…`) carries the publication time.
+- A `urn:li:share:…` / `urn:li:ugcPost:…` URN only carries the creation time, which is earlier for a post scheduled in another tool.
+
+Pass the activity URL for the exact publication date. Importing it again for a post already imported by its URN corrects `publishedAt` on the same record.
+
+Right after an import, the per-post `GET /v1/analytics?postId=` read can show zeros for a few minutes while the metrics are ingested. This endpoint's response carries the fetched values immediately.
+
+### TikTok Business accounts
+
+A `postId` or TikTok `url` that the listing has not stored is fetched from TikTok and imported as an external post, at any age, with its current metrics.
+
+### Analytics delay
+
+Post-level analytics (reach, impressions) still carry the platform's own delay (e.g. ~24h on Instagram). This endpoint confirms the post exists and returns its metadata plus basic engagement (likes, comments), not delayed insights.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPISyncExternalPostsRequest

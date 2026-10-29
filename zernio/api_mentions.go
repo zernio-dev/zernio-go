@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -68,21 +68,27 @@ func (r MentionsAPIListInboxMentionsRequest) Execute() (*ListInboxMentions200Res
 /*
 ListInboxMentions List mentions
 
-Returns mentions of your connected accounts from the last 7 days.
+Returns mentions of your connected accounts from the last 7 days. Requires Inbox addon.
 
-  - **LinkedIn**: organization mentions, delivered by webhooks and a background pull.
-  - **Instagram**: comment mentions (someone tags the account in a comment on their own media) and
-    caption mentions (someone tags it in their media caption), delivered by the Meta `mentions`
-    webhook. Only accounts connected through Facebook Login receive them; comments on the account's
-    own posts are never listed, even when they contain its @handle. Their text is read from Instagram
-    in the background after the first request, so `content` can be empty on the first read. Pass
-    `mediaId` and `commentId` to `POST /v1/inbox/mentions/reply` to answer one.
-  - **Facebook**: post mentions (someone tags the Page in a post) and comment mentions (someone tags
-    it in a comment), delivered by the Page `mention` webhook with their text. Comments on the Page's
-    own posts and anything the Page wrote itself are never listed. Facebook mentions cannot be replied
-    to through `POST /v1/inbox/mentions/reply`.
+### LinkedIn
 
-Requires Inbox addon.
+Organization mentions, delivered by webhooks and a background pull.
+
+### Instagram
+
+Comment mentions (someone tags the account in a comment on their own media) and caption mentions (someone tags it in their media caption), delivered by the Meta `mentions` webhook.
+
+- Only accounts connected through Facebook Login receive them.
+- Comments on the account's own posts are never listed, even when they contain its @handle.
+- Their text is read from Instagram in the background after the first request, so `content` can be empty on the first read.
+- Pass `mediaId` and `commentId` to `POST /v1/inbox/mentions/reply` to answer one.
+
+### Facebook
+
+Post mentions (someone tags the Page in a post) and comment mentions (someone tags it in a comment), delivered by the Page `mention` webhook with their text.
+
+- Comments on the Page's own posts and anything the Page wrote itself are never listed.
+- Facebook mentions cannot be replied to through `POST /v1/inbox/mentions/reply`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MentionsAPIListInboxMentionsRequest

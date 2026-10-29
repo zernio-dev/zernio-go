@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -399,7 +399,7 @@ func (r ReviewsAPIReplyToInboxReviewRequest) ReplyToInboxReviewRequest(replyToIn
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r ReviewsAPIReplyToInboxReviewRequest) IdempotencyKey(idempotencyKey string) ReviewsAPIReplyToInboxReviewRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -414,21 +414,21 @@ ReplyToInboxReview Reply to review
 
 Post a reply to a review. Requires accountId in request body.
 
-**Idempotency:** send an `Idempotency-Key` header to make retries safe
-(e.g. after a client-side timeout where delivery is unknown): same key +
-same body replays the original response (with `Idempotent-Replayed: true`)
-instead of sending the reply to the platform again; same key + different
-body returns 422; a key still in flight returns 409. Keys are retained for
-24 hours and are scoped to the credential and to this exact path, so
-reusing a key against a different reviewId returns 422 rather than
-replaying the other review's response.
+### Idempotency
 
-Only successful (2xx) responses are stored for replay. If the request
-throws or returns a non-2xx status the key is released, so the header
-protects the "request succeeded but the response was lost" case. After an
-ambiguous failure (a 5xx or a network timeout) fetch the review before
-retrying with the same key, and treat a missing reply as inconclusive
-rather than as proof nothing was sent.
+Send an `Idempotency-Key` header to make retries safe (e.g. after a client-side timeout where delivery is unknown).
+
+- Same key + same body: replays the original response (with `Idempotent-Replayed: true`) instead of sending the reply to the platform again.
+- Same key + different body: returns 422.
+- A key still in flight: returns 409.
+
+Keys are retained for 24 hours and are scoped to the credential and to this exact path. Reusing a key against a different reviewId returns 422 rather than replaying the other review's response.
+
+### Failed requests
+
+Only successful (2xx) responses are stored for replay. If the request throws or returns a non-2xx status the key is released, so the header protects the "request succeeded but the response was lost" case.
+
+After an ambiguous failure (a 5xx or a network timeout), fetch the review before retrying with the same key. Treat a missing reply as inconclusive rather than as proof nothing was sent.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param reviewId Review ID (URL-encoded for Google Business Profile)

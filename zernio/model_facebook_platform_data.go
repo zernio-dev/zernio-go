@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the FacebookPlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &FacebookPlatformData{}
 
-// FacebookPlatformData Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require a single vertical video (9:16). The Zernio API does not preflight Reel duration. Meta's Reels publishing guide documents 3-90 seconds. Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories. Draft, carousel, and colored-background text options live under facebookSettings, see FacebookSettings.
+// FacebookPlatformData Facebook post settings.  - Feed posts: up to 10 images (no mixed video+image). - Stories: single media (24h, no captions). - Reels: a single vertical video (9:16). The Zernio API does not preflight Reel duration; Meta's Reels publishing guide documents 3-90 seconds. - Geo-restriction: a hard visibility restriction (users outside the specified countries cannot see the post). Not supported for stories.  Draft, carousel and colored-background text options live under facebookSettings, see FacebookSettings.
 type FacebookPlatformData struct {
 	// Set to 'story' for Page Stories (24h ephemeral) or 'reel' for Reels (short vertical video). Defaults to feed post if omitted.
 	ContentType *string `json:"contentType,omitempty"`

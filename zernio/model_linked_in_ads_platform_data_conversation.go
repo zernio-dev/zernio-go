@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the LinkedInAdsPlatformDataConversation type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &LinkedInAdsPlatformDataConversation{}
 
-// LinkedInAdsPlatformDataConversation POST /v1/ads/create only. Conversation Ad: a choose-your-path message tree delivered to the member's LinkedIn inbox. Messages are flat nodes wired by local ids; each button either opens a url or leads to nextMessageId. Cycles, unknown ids and a missing firstMessageId return a 400. LinkedIn does not deliver message ads to EU members. Mutually exclusive with the other creative sources.
+// LinkedInAdsPlatformDataConversation POST /v1/ads/create only. Conversation Ad: a choose-your-path message tree delivered to the member's LinkedIn inbox.  - Messages are flat nodes wired by local ids. Each button either opens a url or leads to nextMessageId. - Cycles, unknown ids and a missing firstMessageId return a 400. - LinkedIn does not deliver message ads to EU members. - Mutually exclusive with the other creative sources.
 type LinkedInAdsPlatformDataConversation struct {
 	// InMail subject shown in the inbox.
 	Subject string `json:"subject"`

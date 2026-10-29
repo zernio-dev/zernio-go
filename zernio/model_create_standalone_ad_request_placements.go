@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the CreateStandaloneAdRequestPlacements type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreateStandaloneAdRequestPlacements{}
 
-// CreateStandaloneAdRequestPlacements Meta only. Manual ad placements. Omit for automatic placements (Meta's default, recommended for most cases, since Meta optimises delivery across all eligible surfaces). When set, restricts delivery to the chosen surfaces, mapped onto the ad set's `targeting.{publisher_platforms, facebook_positions, instagram_positions, messenger_positions, audience_network_positions, threads_positions, whatsapp_positions, device_platforms}`. Enum membership is validated here; Meta additionally enforces co-selection rules (e.g. some positions require their parent publisher platform) and returns an actionable error which we surface. Non-Meta platforms reject this field.
+// CreateStandaloneAdRequestPlacements Meta only; non-Meta platforms reject this field. Manual ad placements. Omit for automatic placements (Meta's default, recommended for most cases, since Meta optimises delivery across all eligible surfaces).  When set, restricts delivery to the chosen surfaces, mapped onto the ad set's `targeting.{publisher_platforms, facebook_positions, instagram_positions, messenger_positions, audience_network_positions, threads_positions, whatsapp_positions, device_platforms}`.  Enum membership is validated here. Meta additionally enforces co-selection rules (e.g. some positions require their parent publisher platform) and returns an actionable error, which we surface.
 type CreateStandaloneAdRequestPlacements struct {
 	// Top-level platforms to deliver on. A position field below is only honoured when its parent platform is included here.
 	PublisherPlatforms       []string `json:"publisherPlatforms,omitempty"`

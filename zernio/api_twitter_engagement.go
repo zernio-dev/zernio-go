@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -752,13 +752,20 @@ func (r TwitterEngagementAPISearchTweetsRequest) Execute() (*SearchTweets200Resp
 SearchTweets Search recent tweets
 
 Search public tweets from the last 7 days matching an X search query, e.g. to discover tweets to reply to.
-The query string is passed through to X unchanged and supports X's search operators
-(`from:user`, `-is:retweet`, `is:reply`, `lang:en`, `"exact phrase"`, `conversation_id:123`, boolean `OR`, ...).
+
+### Query syntax
+
+The query string is passed through to X unchanged and supports X's search operators: `from:user`, `-is:retweet`, `is:reply`, `lang:en`, `"exact phrase"`, `conversation_id:123`, boolean `OR`, ...
+
 Standalone operators like `is:` / `has:` / `lang:` must be combined with a keyword or `from:` clause.
+
+### Replying
 
 To reply to a found tweet, pass its `id` as the twitter platform entry's `platformSpecificData.replyToTweetId` when creating a post.
 
-Rate limit: 300 requests per 15-min window per connected account.
+### Rate limit
+
+300 requests per 15-min window per connected account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return TwitterEngagementAPISearchTweetsRequest

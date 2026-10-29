@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -35,7 +35,7 @@ func (r SupportAssistantAPIAskSupportQuestionRequest) AskSupportQuestionRequest(
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r SupportAssistantAPIAskSupportQuestionRequest) IdempotencyKey(idempotencyKey string) SupportAssistantAPIAskSupportQuestionRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -48,16 +48,19 @@ func (r SupportAssistantAPIAskSupportQuestionRequest) Execute() (*AskSupportQues
 /*
 AskSupportQuestion Ask a support question
 
-Asks the Zernio Support Assistant a question about your workspace. Each question
-starts a run that answers asynchronously: this returns 202 with a `runId`, and the
-answer arrives through the `support.run.completed` and `support.run.failed` webhooks.
-`GET /v1/support/runs/{runId}` is the fallback. Pass `threadId` to continue an earlier
-conversation, and `context` to point the assistant at a post, account, profile or a failed request (its `X-Request-Id`).
-When the assistant finds a problem on Zernio's side it opens a support ticket with
-the team (see `supportTicket` on the run) and the run ends as `needs_human`.
+Asks the Zernio Support Assistant a question about your workspace. Each question starts a run that answers asynchronously.
 
-**Pricing.** You pay per question, once it finishes. The exact amount charged is the
-run's `costUsd`.
+### How a run works
+
+1. This returns 202 with a `runId`.
+2. The answer arrives through the `support.run.completed` and `support.run.failed` webhooks. `GET /v1/support/runs/{runId}` is the fallback.
+3. When the assistant finds a problem on Zernio's side, it opens a support ticket with the team (see `supportTicket` on the run) and the run ends as `needs_human`.
+
+Pass `threadId` to continue an earlier conversation, and `context` to point the assistant at a post, account, profile or a failed request (its `X-Request-Id`).
+
+### Pricing
+
+You pay per question, once it finishes. The exact amount charged is the run's `costUsd`.
 
 | Question | You pay |
 | --- | --- |
@@ -67,13 +70,13 @@ run's `costUsd`.
 | Failed or expired | $0 |
 | All questions in a UTC month | At most $100 per account |
 
-Near its `maxCostUsd` a run stops investigating and answers with what it found so far,
-so it never charges more than the cap; with nothing to answer yet it fails and costs
-nothing. Charges appear as "Support API" on your invoice.
+Near its `maxCostUsd` a run stops investigating and answers with what it found so far, so it never charges more than the cap. With nothing to answer yet, it fails and costs nothing. Charges appear as "Support API" on your invoice.
 
-Requires an unrestricted API key, usage-based billing and a card on file. Limits per
-account: 3 active runs and $100 of runs per UTC month. Send an Idempotency-Key header
-to make retries safe.
+### Requirements and limits
+
+- Requires an unrestricted API key, usage-based billing and a card on file.
+- Limits per account: 3 active runs and $100 of runs per UTC month.
+- Send an Idempotency-Key header to make retries safe.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return SupportAssistantAPIAskSupportQuestionRequest
@@ -280,7 +283,11 @@ func (r SupportAssistantAPIGetSupportAnswerRequest) Execute() (*SupportRun, *htt
 /*
 GetSupportAnswer Get a support answer
 
-Returns a run started by your team, with the answer once it is ready. Prefer the `support.run.completed` and `support.run.failed` webhooks; use this as the fallback, waiting `pollAfterSeconds` between polls. `costUsd` is the amount billed for the question, never above `maxCostUsd`, and 0 for a failed run (pricing on Ask a support question).
+Returns a run started by your team, with the answer once it is ready.
+
+Prefer the `support.run.completed` and `support.run.failed` webhooks. Use this as the fallback, waiting `pollAfterSeconds` between polls.
+
+`costUsd` is the amount billed for the question, never above `maxCostUsd`, and 0 for a failed run (pricing on Ask a support question).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param runId
@@ -458,7 +465,12 @@ func (r SupportAssistantAPIListSupportAnswersRequest) Execute() (*ListSupportAns
 /*
 ListSupportAnswers List a thread's support answers
 
-Lists the runs of one thread that your team started, with each question and its answer, oldest first. Replies from the Zernio team after a support ticket arrive by email and are not included. Runs are kept for 90 days. Page through a long thread with `limit` and `cursor`: pass `nextCursor` as `cursor` until it is null.
+Lists the runs of one thread that your team started, with each question and its answer, oldest first.
+
+- Replies from the Zernio team after a support ticket arrive by email and are not included.
+- Runs are kept for 90 days.
+
+Page through a long thread with `limit` and `cursor`: pass `nextCursor` as `cursor` until it is null.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return SupportAssistantAPIListSupportAnswersRequest

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &WebhookPayloadMessageMetadata{}
 
 // WebhookPayloadMessageMetadata Platform-specific message context (present when the message is a quick reply tap, postback button tap, inline keyboard callback, a quote-reply to an earlier message, an inbound another app is answering under Meta's handover protocol, or a TikTok DM that is not plain text)
 type WebhookPayloadMessageMetadata struct {
-	// true when this inbound arrived on Meta's standby path because another app owned the conversation: Meta Business Agent on WhatsApp, another handover receiver (such as Page Inbox) on Facebook and Instagram. That app answers it, Zernio only observes, and no automation runs. On WhatsApp sending a reply takes control back; on Facebook, and on Instagram accounts connected through a Facebook Page, take control first with POST /v1/inbox/conversations/{conversationId}/thread-control; an Instagram Login connection cannot take or request and waits for the owner to pass it. See conversation.control_changed.
+	// true when this inbound arrived on Meta's standby path because another app owned the conversation: Meta Business Agent on WhatsApp, or another handover receiver (such as Page Inbox) on Facebook and Instagram. That app answers it; Zernio only observes and no automation runs. See conversation.control_changed.  To take control back:  - WhatsApp: sending a reply takes control back. - Facebook, and Instagram accounts connected through a Facebook Page: take control first with POST /v1/inbox/conversations/{conversationId}/thread-control. - Instagram Login connections: cannot take or request control; wait for the owner to pass it.
 	Standby *bool `json:"standby,omitempty"`
 	// Raw platform envelope id (WhatsApp `context.id`; Instagram and Facebook Messenger `reply_to.mid`) of the message this one is a quote-reply to, forwarded verbatim. It may not equal the stored id of that message (see `quotedMessage.platformMessageId`). On outgoing messages the same field appears on `message.sent`, but only on some surfaces: see WebhookPayloadMessageSent.metadata.quotedMessageId.
 	QuotedMessageId *string                                     `json:"quotedMessageId,omitempty"`
@@ -41,7 +41,7 @@ type WebhookPayloadMessageMetadata struct {
 	ButtonPayload *string `json:"buttonPayload,omitempty"`
 	// WhatsApp only. Raw `nfm_reply.response_json` string returned by a Flow submission. Useful if you need the exact wire payload; for typed access use `flowResponseData` instead.
 	FlowResponseJson *string `json:"flowResponseJson,omitempty"`
-	// WhatsApp only. Parsed Flow response JSON. Populated when `flowResponseJson` is valid JSON; otherwise omitted. Keys and value types depend on the specific Flow that was submitted. An `address_message` submission (`nfmReplyName: address_message`) carries the address fields (`name`, `address`, `city`, `state`, `in_pin_code`, ...), either at the top level or nested under `values`; read both.
+	// WhatsApp only. Parsed Flow response JSON, populated when `flowResponseJson` is valid JSON (otherwise omitted). Keys and value types depend on the Flow submitted.  An `address_message` submission (`nfmReplyName: address_message`) carries the address fields (`name`, `address`, `city`, `state`, `in_pin_code`, ...), either at the top level or nested under `values`; read both.
 	FlowResponseData map[string]interface{} `json:"flowResponseData,omitempty"`
 	// WhatsApp only. `nfm_reply.name` as Meta sent it, e.g. `flow` or `address_message`. Address submissions share the `nfm_reply` envelope with Flow submissions and are otherwise indistinguishable in `flowResponseData`; use this field to tell them apart.
 	NfmReplyName    *string                                       `json:"nfmReplyName,omitempty"`
@@ -54,18 +54,18 @@ type WebhookPayloadMessageMetadata struct {
 	Location            *WebhookPayloadMessageMetadataLocation `json:"location,omitempty"`
 	// WhatsApp only. Contact cards the user shared, forwarded verbatim from Meta. Read `contactsOrigin` before treating any number here as the sender's own.
 	Contacts []map[string]interface{} `json:"contacts,omitempty"`
-	// WhatsApp only. How the contact card was shared. `contact_request` means the user tapped a `request_contact_info` button, so the number is their own and consented. `other` means they picked a card from their address book: it may be anyone's, and must NOT be stored as the sender's identity. Omitted when Meta sends no origin.
+	// WhatsApp only. How the contact card was shared. Omitted when Meta sends no origin.  - `contact_request`: the user tapped a `request_contact_info` button, so the number is their own and consented. - `other`: they picked a card from their address book. It may be anyone's and must NOT be stored as the sender's identity.
 	ContactsOrigin *string                                  `json:"contactsOrigin,omitempty"`
 	StoryReply     *WebhookPayloadMessageMetadataStoryReply `json:"storyReply,omitempty"`
 	// Instagram only. True when the message was generated by an IG user mentioning the account in their own story (`story_mention` attachment type). Mutually exclusive in practice with `storyReply`.
 	IsStoryMention *bool                                  `json:"isStoryMention,omitempty"`
 	Referral       *WebhookPayloadMessageMetadataReferral `json:"referral,omitempty"`
-	// Present with `referral` whenever the referral is attributable: on Instagram and Facebook every forwarded referral (an `ad_id` or a `ref`), on WhatsApp a referral carrying `ctwa_clid`, `source_id`, `source_url` or `headline`. The same click enriched from your synced ads: the ad name, campaign, ad set and ad account Zernio holds for this ad ID. Built from this message's referral, so it follows a returning click, while the conversation's `adAttribution` keeps the first one.
+	// The click enriched from your synced ads: the ad name, campaign, ad set and ad account Zernio holds for this ad ID.  **Present with `referral`** whenever the referral is attributable:  - Instagram and Facebook: every forwarded referral (an `ad_id` or a `ref`). - WhatsApp: a referral carrying `ctwa_clid`, `source_id`, `source_url` or `headline`.  Built from this message's referral, so it follows a returning click, while the conversation's `adAttribution` keeps the first one.
 	Ad          *ConversationAdAttribution                `json:"ad,omitempty"`
 	Unsupported *WebhookPayloadMessageMetadataUnsupported `json:"unsupported,omitempty"`
-	// Instagram / Facebook Messenger only. Set when the message carries nothing an integrator can render (a `template` attachment with no text and no parseable content, or Meta's own `is_unsupported` flag). Sibling of `unsupported` above (WhatsApp only, carries Meta's error code/title/details and unsupported type): this field has no error envelope, only the boolean. Absence means \"not flagged\", never \"checked and renderable\".
+	// Instagram / Facebook Messenger only. Set when the message carries nothing an integrator can render: a `template` attachment with no text and no parseable content, or Meta's own `is_unsupported` flag.  Sibling of `unsupported` above (WhatsApp only, carries Meta's error code/title/details and unsupported type); this field has no error envelope, only the boolean.  Absence means \"not flagged\", never \"checked and renderable\".
 	NoRenderableContent *bool `json:"noRenderableContent,omitempty"`
-	// TikTok only. The message type as TikTok reports it, forwarded verbatim (for example image, video, sticker, share_post, emoji, reaction, template). Present on every TikTok DM that is not plain text; those arrive with text empty and, for image, video, share_post, sticker and emoji, an attachment (share_post as type share with the embed url and payload.videoId; sticker/emoji as type sticker, url signed and expiring).
+	// TikTok only. The message type as TikTok reports it, forwarded verbatim (for example image, video, sticker, share_post, emoji, reaction, template).  Present on every TikTok DM that is not plain text. Those arrive with text empty and, for image, video, share_post, sticker and emoji, an attachment:  - share_post: type share, with the embed url and payload.videoId. - sticker/emoji: type sticker, url signed and expiring.
 	TiktokMessageType *string `json:"tiktokMessageType,omitempty"`
 }
 

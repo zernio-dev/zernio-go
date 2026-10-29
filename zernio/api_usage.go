@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -545,40 +545,36 @@ func (r UsageAPIGetUsageRequest) Execute() (*GetUsage200Response, *http.Response
 /*
 GetUsage Usage snapshot (default) or billed-spend metering (with params)
 
-Dual-mode endpoint, selected by query params, and fully backward
-compatible:
+Dual-mode endpoint, selected by query params, and fully backward compatible.
 
-**Without metering params (the default):** the plan / quota / usage
-snapshot: plan name, billing period, limits, usage counts, access
-state. Identical to `GET /v1/usage-stats`. Existing integrations keep
-working unchanged.
+### Without metering params (the default)
 
-**With `range`, `granularity`, `from`, or `to`:** usage METERING:
-billed spend (USD) by product family (`accounts`, `numbers`,
-`imessage`, `calls`, `sms`, `messages`, `verify`, `dlc`, `xApi`, `ads`,
-`credits`, `other`) over the window, at
-`day` / `month` / `total` granularity, from the usage-based invoice
-breakdown (the CHARGE view, which always reconciles with what gets billed).
-Also served at `GET /v1/usage/daily`. Usage-based accounts only:
-legacy Stripe accounts get `{ "supported": false, "days": [] }`.
+Returns the plan / quota / usage snapshot: plan name, billing period, limits, usage counts, access state. Identical to `GET /v1/usage-stats`. Existing integrations keep working unchanged.
 
-**Attribution (metering mode):** `groupBy=profile|account` adds an
-`attribution` breakdown of the window's spend per profile or account,
-assembled from your own records and pro-rated against the invoice so
-`sum(groups) + unattributed` equals `totals` exactly. `profileId` /
-`accountId` instead project the whole payload (`days`, `totals`,
-`lineItems`) onto that one group; `peaks`, `callUsage` and `tax` are
-then `null` (team-level facts). Projected `days` spread the
-group's period share over each day (usage is attributed per period,
-not per day). Profile-scoped API keys and members only see their
-profiles' groups (`attribution.restricted: true`, with `totals`
-summing the visible groups). Credits, 10DLC fees and Verify are always
-unattributed. `profileId` / `accountId` on their own do not select
-metering mode: pair them with `range`.
+### With `range`, `granularity`, `from`, or `to`
 
-For per-domain consumption *volumes* use `GET /v1/usage/calls` and
-`GET /v1/usage/sms`. For the billing statement (balance, credits,
-caps, payment status) use `GET /v1/billing`.
+Returns usage METERING: billed spend (USD) by product family over the window, at `day` / `month` / `total` granularity. Product families: `accounts`, `numbers`, `imessage`, `calls`, `sms`, `messages`, `verify`, `dlc`, `xApi`, `ads`, `credits`, `other`.
+
+Data comes from the usage-based invoice breakdown (the CHARGE view, which always reconciles with what gets billed). Also served at `GET /v1/usage/daily`.
+
+Usage-based accounts only: legacy Stripe accounts get `{ "supported": false, "days": [] }`.
+
+### Attribution (metering mode)
+
+`groupBy=profile|account` adds an `attribution` breakdown of the window's spend per profile or account. It is assembled from your own records and pro-rated against the invoice so `sum(groups) + unattributed` equals `totals` exactly.
+
+`profileId` / `accountId` instead project the whole payload (`days`, `totals`, `lineItems`) onto that one group:
+
+- `peaks`, `callUsage` and `tax` are then `null` (team-level facts).
+- Projected `days` spread the group's period share over each day (usage is attributed per period, not per day).
+- `profileId` / `accountId` on their own do not select metering mode: pair them with `range`.
+
+Profile-scoped API keys and members only see their profiles' groups (`attribution.restricted: true`, with `totals` summing the visible groups). Credits, 10DLC fees and Verify are always unattributed.
+
+### Related endpoints
+
+- Per-domain consumption *volumes*: `GET /v1/usage/calls` and `GET /v1/usage/sms`.
+- The billing statement (balance, credits, caps, payment status): `GET /v1/billing`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return UsageAPIGetUsageRequest
@@ -749,28 +745,26 @@ func (r UsageAPIGetUsageStatsRequest) Execute() (*UsageStats, *http.Response, er
 /*
 GetUsageStats Get plan and usage snapshot (plan, limits, payment status)
 
-The plan / quota / payment-status snapshot: current plan name, billing
-period, plan limits, usage counts, and access state. Identical to a
-bare `GET /v1/usage` call (this path is its deprecated alias). For
-billed spend by product, call `GET /v1/usage` with `range` /
-`granularity` params. The statement view (balance, credits, caps,
-payment status) lives at `GET /v1/billing`.
+The plan / quota / payment-status snapshot: current plan name, billing period, plan limits, usage counts, and access state.
+
+Identical to a bare `GET /v1/usage` call (this path is its deprecated alias).
+
+### Related endpoints
+
+- Billed spend by product: call `GET /v1/usage` with `range` / `granularity` params.
+- The statement view (balance, credits, caps, payment status) lives at `GET /v1/billing`.
+
+### Response shape
 
 The response shape depends on the account's `billingSystem`:
 
-  - Stripe users: per-period `usage.uploads` / `usage.profiles` counters.
+- Stripe users: per-period `usage.uploads` / `usage.profiles` counters.
+- Usage-based billing users: `usage.connectedAccounts`, `usage.xApiCallsByOperation` (per-operation X API call counts; resolve keys via `GET /v1/billing/x-pricing`), plus a `spend` block with `currentPeriodCents`, `xSpendCents`, and `xSpendLimitCents`.
 
-  - Usage-based billing users: `usage.connectedAccounts`,
-    `usage.xApiCallsByOperation` (per-operation X API call counts;
-    resolve keys via `GET /v1/billing/x-pricing`), plus a `spend`
-    block with `currentPeriodCents`, `xSpendCents`, and
-    `xSpendLimitCents`. The legacy `usage.xApiCalls` 3-tier
-    aggregate is still emitted for back-compat but excludes the
-    $0.200 URL tier and any future tiers, so new clients should
-    consume `xApiCallsByOperation` only.
+The legacy `usage.xApiCalls` 3-tier aggregate is still emitted for back-compat. It excludes the $0.200 URL tier and any future tiers, so new clients should consume `xApiCallsByOperation` only.
 
-    @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-    @return UsageAPIGetUsageStatsRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return UsageAPIGetUsageStatsRequest
 
 Deprecated
 */

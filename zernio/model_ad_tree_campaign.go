@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ type AdTreeCampaign struct {
 	PlatformCampaignId *string `json:"platformCampaignId,omitempty"`
 	Platform           *string `json:"platform,omitempty"`
 	CampaignName       *string `json:"campaignName,omitempty"`
-	// Earliest `platformCreatedAt` (platform ad creation time; falls back to `createdAt`, Zernio's sync time, for ads synced before that field existed) across every ad in the campaign. Not the platform campaign's own creation time (Meta's `Campaign.created_time` etc. is not synced). A campaign created empty and populated later will show its first ad's time, not the campaign's. Usable for sorting \"most recently created\" without the numeric-campaign-id heuristic. Same source as `AdTreeAdSet.createdTime` and `Ad.platformCreatedAt`; mirrors `AdCampaign.earliestAd`.
+	// Earliest `platformCreatedAt` across every ad in the campaign (platform ad creation time; falls back to `createdAt`, Zernio's sync time, for ads synced before that field existed).  Not the platform campaign's own creation time (Meta's `Campaign.created_time` etc. is not synced). A campaign created empty and populated later shows its first ad's time, not the campaign's.  Usable for sorting \"most recently created\" without the numeric-campaign-id heuristic. Same source as `AdTreeAdSet.createdTime` and `Ad.platformCreatedAt`; mirrors `AdCampaign.earliestAd`.
 	CreatedTime NullableTime `json:"createdTime,omitempty"`
 	// Delivery status derived from child ad statuses. Distinct from `reviewStatus`, which reflects the platform-side review state.
 	Status *AdStatus `json:"status,omitempty"`
@@ -54,7 +54,7 @@ type AdTreeCampaign struct {
 	AccountId             *string        `json:"accountId,omitempty"`
 	// Profile the row belongs to: the profile of its owning connection (`accountId`); when that connection no longer exists, the requested profile (`profileId` filter) that reaches the row ad account, else the profile of the oldest connection of the row owner that reaches it.
 	ProfileId *string `json:"profileId,omitempty"`
-	// TikTok only. true when the campaign is an Upgraded Smart+ campaign (TikTok lists it on /smart_plus/campaign/get/), false when it is not. Set by ads sync, so the key is absent on other platforms and on TikTok campaigns not synced since this field shipped. On Smart+ objects Zernio can pause, resume, rename, delete and change the budget of the campaign and ad set, and pause or resume an ad; other edits answer 422 and belong in TikTok Ads Manager.
+	// TikTok only. true when the campaign is an Upgraded Smart+ campaign (TikTok lists it on /smart_plus/campaign/get/), false when it is not.  Set by ads sync, so the key is absent on other platforms and on TikTok campaigns not synced since this field shipped.  On Smart+ objects Zernio can pause, resume, rename, delete and change the budget of the campaign and ad set, and pause or resume an ad. Other edits answer 422 and belong in TikTok Ads Manager.
 	IsSmartPlus *bool `json:"isSmartPlus,omitempty"`
 	// Google-only. Raw campaign.advertising_channel_type (SEARCH, PERFORMANCE_MAX, LOCAL_SERVICES, VIDEO, DEMAND_GEN, DISPLAY, SHOPPING, ...). Serving surface, distinct from platformObjective (advertiser intent). Null/absent for non-Google platforms.
 	AdvertisingChannelType NullableString `json:"advertisingChannelType,omitempty"`

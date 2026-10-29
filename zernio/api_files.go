@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -42,16 +42,28 @@ func (r FilesAPICreateFilePickerSessionRequest) Execute() (*CreateFilePickerSess
 /*
 CreateFilePickerSession Create a hosted Google Picker session
 
-Google accounts are connected with `drive.file`, so Zernio opens only files it created or the user picked (see the Files tag). This is how your end user grants files: create a session, send the user to `url`, and they pick files in Google Picker on a Zernio-hosted page.
+Creates a hosted Google Picker session so your end user can grant Zernio access to Drive files.
+
+Google accounts are connected with `drive.file`, so Zernio opens only files it created or the user picked (see the Files tag).
+
+1. Create a session.
+2. Send the user to `url`.
+3. They pick files in Google Picker on a Zernio-hosted page.
+
+### Redirect
 
 When they finish, the browser is sent to `redirectUrl` with these query params added (existing params are kept):
 
-  - `status=picked`, `pickerSessionId`, `fileIds` (comma-separated Drive file ids, already checked against Drive), or
-  - `status=cancelled`, `pickerSessionId` when the user pressed Cancel.
+- `status=picked`, `pickerSessionId`, `fileIds` (comma-separated Drive file ids, already checked against Drive), or
+- `status=cancelled`, `pickerSessionId` when the user pressed Cancel.
 
 A `file.picked` webhook fires on every successful pick, so `redirectUrl` is optional for server-side integrations. Closing the picker without picking keeps the session open; the user can try again until it expires.
 
-The URL is single-use and expires after 30 minutes; create a new session for every pick. Google accounts only: Microsoft accounts answer 400 `platform_not_supported` because OneDrive needs no picker. Picks are permanent grants: once picked, a file stays readable through the Files endpoints until the user removes Zernio from their Google account.
+### Limits
+
+- The URL is single-use and expires after 30 minutes; create a new session for every pick.
+- Google accounts only: Microsoft accounts answer 400 `platform_not_supported` because OneDrive needs no picker.
+- Picks are permanent grants: once picked, a file stays readable through the Files endpoints until the user removes Zernio from their Google account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return FilesAPICreateFilePickerSessionRequest
@@ -847,7 +859,13 @@ func (r FilesAPIListFilesRequest) Execute() (*ListFiles200Response, *http.Respon
 /*
 ListFiles List files in a folder or search the drive
 
-Children of `folderId` (the root by default), folders first. With `q` and no `folderId` the whole drive is searched by name (on Google, every drive the app can see, shared drives included). The account must have been connected with `scopes=files` (412 `account_scope_missing` otherwise). Cursors are opaque and provider-issued. Google Drive returns only files Zernio created or the user picked (see the Files tag): an unpicked folder lists empty.
+Lists the children of `folderId` (the root by default), folders first.
+
+With `q` and no `folderId` the whole drive is searched by name (on Google, every drive the app can see, shared drives included).
+
+- The account must have been connected with `scopes=files` (412 `account_scope_missing` otherwise).
+- Cursors are opaque and provider-issued.
+- Google Drive returns only files Zernio created or the user picked (see the Files tag): an unpicked folder lists empty.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return FilesAPIListFilesRequest

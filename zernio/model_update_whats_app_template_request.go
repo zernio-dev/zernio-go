@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,7 @@ type UpdateWhatsAppTemplateRequest struct {
 	Language *string `json:"language,omitempty"`
 	// Updated template components. Optional when only message_send_ttl_seconds changes; at least one of the two is required.
 	Components []WhatsAppTemplateComponent `json:"components,omitempty"`
-	// Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 is not accepted here (Meta treats it as an empty edit); send a value in range. A TTL-only edit keeps an APPROVED template approved, no re-review. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
+	// Delivery validity window in seconds: a message not delivered within it is dropped. Range by category:  - AUTHENTICATION: 30 to 900. - UTILITY: 30 to 43200 (12h). - MARKETING: 43200 to 2592000 (30 days).  -1 is not accepted here (Meta treats it as an empty edit); send a value in range. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise.  A TTL-only edit keeps an APPROVED template approved, no re-review. If Meta later recategorises the template, it clears the TTL (read it back to check).
 	MessageSendTtlSeconds *int32 `json:"message_send_ttl_seconds,omitempty"`
 }
 

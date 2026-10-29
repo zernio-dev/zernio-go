@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -45,9 +45,9 @@ type AdTreeAdSet struct {
 	RoasAverageFloor NullableFloat32 `json:"roasAverageFloor,omitempty"`
 	// LinkedIn only. Effective cost model (billing event) of the LinkedIn campaign backing this ad set: CPM, CPC or CPV. Null for non-LinkedIn ad sets.
 	CostType NullableString `json:"costType,omitempty"`
-	// LinkedIn only. Why the LinkedIn campaign backing this ad set is (or is not) delivering. A LinkedIn Campaign maps to this ad-set node, so this is the level where LinkedIn's holds actually apply. Empty means no serving data, [\"RUNNABLE\"] means eligible to serve, anything else is a hold. See the `servingStatuses` field on `Ad` for the known values.
+	// LinkedIn only. Why the LinkedIn campaign backing this ad set is (or is not) delivering. A LinkedIn Campaign maps to this ad-set node, so this is the level where LinkedIn's holds apply.  - Empty: no serving data. - [\"RUNNABLE\"]: eligible to serve. - Anything else: a hold. See the `servingStatuses` field on `Ad` for the known values.
 	ServingStatuses []string `json:"servingStatuses,omitempty"`
-	// Meta only. Where the ad set stands in Meta's learning phase, as of the last sync: LEARNING while delivery is still being optimized (about 50 optimization events in 7 days end it), SUCCESS once it has left learning, FAIL when it could not gather enough events (Ads Manager's \"Learning limited\"). Null on other platforms and for ad sets not yet synced.
+	// Meta only. Where the ad set stands in Meta's learning phase, as of the last sync. Null on other platforms and for ad sets not yet synced.  - LEARNING: delivery is still being optimized (about 50 optimization events in 7 days end it). - SUCCESS: it has left learning. - FAIL: it could not gather enough events (Ads Manager's \"Learning limited\").
 	LearningStatus NullableString             `json:"learningStatus,omitempty"`
 	PromotedObject *AdTreeAdSetPromotedObject `json:"promotedObject,omitempty"`
 	// Meta only. Where the ad set sends people (Meta `destination_type`), e.g. WEBSITE, MESSENGER, WHATSAPP, INSTAGRAM_DIRECT, ON_AD. Meta answers UNDEFINED for an ad set with no explicit destination. As of the last sync; null on other platforms and for ad sets not yet synced.
@@ -58,7 +58,7 @@ type AdTreeAdSet struct {
 	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
 	// Meta only. Verified identity IDs per regional regulation role (Meta `regional_regulation_identities`), keyed by Meta's role name. IDs are strings because they can exceed a JSON number's precision. As of the last sync; null on other platforms, for ad sets not yet synced and when Meta reports none.
 	RegionalRegulationIdentities map[string]string `json:"regionalRegulationIdentities,omitempty"`
-	// Individual ads within this ad set (capped at 100). When the ad set has more than 100 ads these are the 100 highest-spending over the requested date range, so this array depends on `fromDate`/`toDate`; `adCount` is always the true ad set size. Returns a subset of Ad fields from the aggregation: `_id`, `name`, `platform`, `status`, `configuredStatus`, `reviewStatus`, `budget`, `metrics`, `creative`, `goal` and the `platform*` ids are always included; `targeting` and `schedule` may be absent. `configuredStatus` (the ad's own on/off toggle) and `reviewStatus` (the platform's review verdict) are part of this contract, not incidental: a rejected ad is only distinguishable from a healthy one through `reviewStatus`. When `timeIncrement=1&dailyLevel=ad`, each entry also carries a `daily[]` array of `AdDailyMetrics`.
+	// Individual ads within this ad set (capped at 100). With more than 100 ads these are the 100 highest-spending over the requested date range, so the array depends on `fromDate`/`toDate`. `adCount` is always the true ad set size.  A subset of Ad fields from the aggregation. Always included: `_id`, `name`, `platform`, `status`, `configuredStatus`, `reviewStatus`, `budget`, `metrics`, `creative`, `goal` and the `platform*` ids. `targeting` and `schedule` may be absent.  `configuredStatus` (the ad's own on/off toggle) and `reviewStatus` (the platform's review verdict) are part of this contract, not incidental: only `reviewStatus` distinguishes a rejected ad from a healthy one.  When `timeIncrement=1&dailyLevel=ad`, each entry also carries a `daily[]` array of `AdDailyMetrics`.
 	Ads []Ad `json:"ads,omitempty"`
 	// Per-day metric series for this ad set. Present only when `GET /v1/ads/tree` is called with `timeIncrement=1` and `dailyLevel` is `adset` or `ad`.
 	Daily []AdDailyMetrics `json:"daily,omitempty"`

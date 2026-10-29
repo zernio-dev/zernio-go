@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &ExternalPostMediaItem{}
 // ExternalPostMediaItem A media item on a native (external/synced) post, as carried by post.external.* webhook payloads. Distinct from the richer MediaItem used for Zernio-authored posts: external items are always already-published and limited to image or video. Kept as a separate schema so the generated SDK model does not collide with MediaItem.
 type ExternalPostMediaItem struct {
 	Type string `json:"type"`
-	// 'Direct URL to the media file. Null when the platform withholds it: check mediaStatus before downloading. Instagram omits the video file for Reels it flags as containing copyrighted material (its docs name audio as the usual cause), so type stays \"video\" while the file is permanently unreachable. For LinkedIn videos where the platform returns no file, url falls back to the cover image and the item carries mediaStatus: unavailable.'
+	// Direct URL to the media file. Null when the platform withholds it: check mediaStatus before downloading.  - Instagram omits the video file for Reels it flags as containing copyrighted material (its docs name audio as the usual cause). type stays \"video\" while the file is permanently unreachable. - LinkedIn videos with no file returned: url falls back to the cover image and the item carries mediaStatus: unavailable.
 	Url NullableString `json:"url"`
 	// Cover image. Still present when url is null.
 	Thumbnail *string `json:"thumbnail,omitempty"`

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the CommentAutomationRepeatPolicy type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CommentAutomationRepeatPolicy{}
 
-// CommentAutomationRepeatPolicy Whether a commenter can receive this automation's DM more than once.   * `once` (default) - one DM per person per door, ever.   * `every_comment` - every new matching comment is eligible again. One comment     is still answered at most once. `cooldownHours` suppresses a repeat sent to the     same person within that many hours.
+// CommentAutomationRepeatPolicy Whether a commenter can receive this automation's DM more than once.  - `once` (default): one DM per person per door, ever. - `every_comment`: every new matching comment is eligible again; one comment is still answered at most once. `cooldownHours` suppresses a repeat to the same person within that many hours.
 type CommentAutomationRepeatPolicy struct {
 	Mode string `json:"mode"`
 	// every_comment only (400 with once). Hours after a DM during which the same person is not DMed again.

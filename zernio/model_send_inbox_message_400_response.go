@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ type SendInboxMessage400Response struct {
 	Error *string `json:"error,omitempty"`
 	// Present on Meta and TikTok pass-through rejections: platform_error when the platform rejected the send (see platform/platformError below), invalid_request_error for validation failures.
 	Type *string `json:"type,omitempty"`
-	// Stable machine-readable reason. PLATFORM_LIMITATION covers a capability the platform does not offer (e.g. Bluesky and Reddit DMs reject media); MISSING_PARTICIPANT means the stored conversation has no recipient to send to; DIRECT_SEND_NOT_ELIGIBLE and DIRECT_SEND_BLOCKED mean the WhatsApp Business Account needs Meta to grant or restore Direct Send access; DIRECT_SEND_LIMITED is temporary, Meta lifts it on its own; platform_api_error means the platform itself rejected the send (see platformError).
+	// Stable machine-readable reason.  - PLATFORM_LIMITATION: a capability the platform does not offer (e.g. Bluesky and Reddit DMs reject media). - MISSING_PARTICIPANT: the stored conversation has no recipient to send to. - DIRECT_SEND_NOT_ELIGIBLE and DIRECT_SEND_BLOCKED: the WhatsApp Business Account needs Meta to grant or restore Direct Send access. - DIRECT_SEND_LIMITED: temporary; Meta lifts it on its own. - platform_api_error: the platform itself rejected the send (see platformError).
 	Code *string `json:"code,omitempty"`
 	// Present alongside code platform_api_error. The platform that rejected the send (e.g. instagram, facebook, whatsapp, tiktok).
 	Platform      *string                                   `json:"platform,omitempty"`

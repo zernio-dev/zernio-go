@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the OAuthAppWebhook type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &OAuthAppWebhook{}
 
-// OAuthAppWebhook Facebook and Instagram only: Meta delivers comments and messages to your app's own webhook, so set it to this callback URL and verify token on the app's webhook product (Page for Facebook, Instagram for Instagram) and subscribe the listed fields. Zernio checks each delivery against your app secret. Null on platforms with nothing to set up.
+// OAuthAppWebhook Facebook and Instagram only; null on platforms with nothing to set up. Meta delivers comments and messages to your app's own webhook.  Set this callback URL and verify token on the app's webhook product (Page for Facebook, Instagram for Instagram) and subscribe the listed fields. Zernio checks each delivery against your app secret.
 type OAuthAppWebhook struct {
 	CallbackUrl string                `json:"callbackUrl"`
 	VerifyToken string                `json:"verifyToken"`

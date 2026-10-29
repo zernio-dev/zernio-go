@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the UpdateAdSetRequestPlacements type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdSetRequestPlacements{}
 
-// UpdateAdSetRequestPlacements Meta only (400 elsewhere). Manual placements, same object and enums as `placements` on POST /v1/ads/create. Sending an object REPLACES the ad set's current placement set (`publisher_platforms`, every `*_positions` list and `device_platforms`); a position list you leave out is removed. `null` removes every placement key so Meta returns to automatic (Advantage+) placements. Omit to leave placements untouched. Meta enforces co-selection rules (e.g. a position needs its publisher platform) and its error is returned as is. Meta may also reject `null` or a narrower set when an ad's creative uses per-placement asset customization (`placementAssets`). An object with no non-empty list is a 400 (send `null` instead). Cannot be combined with `targeting.placements` (400).
+// UpdateAdSetRequestPlacements Meta only (400 elsewhere). Manual placements, with the same object and enums as `placements` on POST /v1/ads/create.  - **Object:** REPLACES the ad set's current placement set (`publisher_platforms`, every `*_positions` list and `device_platforms`). A position list you leave out is removed. An object with no non-empty list is a 400 (send `null` instead). - **`null`:** removes every placement key, so Meta returns to automatic (Advantage+) placements. - **Omitted:** placements are left untouched.  Meta enforces co-selection rules (e.g. a position needs its publisher platform) and its error is returned as is. Meta may also reject `null` or a narrower set when an ad's creative uses per-placement asset customization (`placementAssets`).  Cannot be combined with `targeting.placements` (400).
 type UpdateAdSetRequestPlacements struct {
 	PublisherPlatforms       []string `json:"publisherPlatforms,omitempty"`
 	FacebookPositions        []string `json:"facebookPositions,omitempty"`

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -42,22 +42,31 @@ func (r AdRulesAPICreateAdRuleRequest) Execute() (*CreateAdRule201Response, *htt
 /*
 CreateAdRule Create an ad rule
 
-Creates a rule that checks the campaigns or ad sets of one ad account on a schedule and acts on
-each one that meets every condition.
+Creates a rule that checks the campaigns or ad sets of one ad account on a schedule and acts on each one that meets every condition.
 
-Rules support Meta, Google, TikTok, LinkedIn, Pinterest, X and Reddit ads connections. Each
-campaign or ad set is evaluated on its own, over the ad account's calendar days, from the
-metrics Zernio syncs. A rule can notify (the `ad_rule.triggered` webhook), and take at most one of
-`pause`, `activate` and `adjust_budget`. After acting on an object, the rule leaves that object
-alone for `cooldownMinutes`; a rule that pauses, activates or adjusts budgets needs a cooldown at
-least as long as its schedule.
+Rules support Meta, Google, TikTok, LinkedIn, Pinterest, X and Reddit ads connections. Use `POST /v1/ads/rules/{ruleId}/preview` to see what a rule would match before enabling it.
 
-`activate` only reactivates objects a rule paused, never ones you paused yourself, and only once
-the cooldown has passed since that pause. If you reactivate and pause such an object yourself
-between two runs of a rule, Zernio cannot tell your pause from the rule's, and an `activate` rule
-may reactivate it.
+### Evaluation
 
-Use `POST /v1/ads/rules/{ruleId}/preview` to see what a rule would match before enabling it.
+Each campaign or ad set is evaluated on its own, over the ad account's calendar days, from the metrics Zernio syncs.
+
+### Actions
+
+A rule can notify (the `ad_rule.triggered` webhook), and take at most one of:
+
+- `pause`
+- `activate`
+- `adjust_budget`
+
+### Cooldown
+
+After acting on an object, the rule leaves that object alone for `cooldownMinutes`. A rule that pauses, activates or adjusts budgets needs a cooldown at least as long as its schedule.
+
+### How `activate` works
+
+`activate` only reactivates objects a rule paused, never ones you paused yourself, and only once the cooldown has passed since that pause.
+
+If you reactivate and pause such an object yourself between two runs of a rule, Zernio cannot tell your pause from the rule's, and an `activate` rule may reactivate it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdRulesAPICreateAdRuleRequest

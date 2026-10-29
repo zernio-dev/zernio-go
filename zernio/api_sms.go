@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -43,17 +43,17 @@ func (r SMSAPIAppealSmsRegistrationRequest) Execute() (*AppealSmsRegistration200
 /*
 AppealSmsRegistration Appeal a rejected campaign
 
-Appeals a rejected 10DLC campaign with the carrier registry. Only a
-registration that reached campaign creation can be appealed; a
-brand-level rejection should be fixed and re-verified instead. On
-success the registration returns to `pending`.
+Appeals a rejected 10DLC campaign with the carrier registry. On success the registration returns to `pending`.
 
-Content rejections (e.g. an opt-in flow without a verifiable form link,
-or unrealistic samples) should be FIXED in the same call: pass the
-corrected `messageFlow` / `sample1` / `sample2` and the campaign is
-updated before the appeal is filed, so the reviewer sees the new
-content. The current content is on `GET /v1/sms/registrations/{id}`
-(`campaignContent`).
+Only a registration that reached campaign creation can be appealed. A brand-level rejection should be fixed and re-verified instead.
+
+### Fixing content in the same call
+
+Content rejections (e.g. an opt-in flow without a verifiable form link, or unrealistic samples) should be FIXED in the same call.
+
+Pass the corrected `messageFlow` / `sample1` / `sample2` and the campaign is updated before the appeal is filed, so the reviewer sees the new content.
+
+The current content is on `GET /v1/sms/registrations/{id}` (`campaignContent`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id
@@ -178,18 +178,20 @@ func (r SMSAPICreateSmsSenderIdRequest) Execute() (*CreateSmsSenderId200Response
 /*
 CreateSmsSenderId Create an alphanumeric sender ID
 
-Registers an alphanumeric sender ID (e.g. `ZERNIO`), a branded `from`
-for one-way international SMS. No phone number purchase or carrier
-registration is needed; once created, pass it as `from` on
-`POST /v1/sms/messages`.
+Registers an alphanumeric sender ID (e.g. `ZERNIO`), a branded `from` for one-way international SMS.
 
-Constraints: 3-11 characters (letters, digits, spaces; at least one
-letter). Sends cannot reach the US, Canada, or Puerto Rico, are
-text-only, and recipients cannot reply. Sender IDs that impersonate
-well-known brands or institutions are rejected. Names are not
-exclusive: the same sender ID can be registered by any number of
-teams. Creating the same sender ID again is a no-op
-(re-activates it after a delete).
+No phone number purchase or carrier registration is needed. Once created, pass it as `from` on `POST /v1/sms/messages`.
+
+### Constraints
+
+- 3-11 characters (letters, digits, spaces; at least one letter).
+- Sends cannot reach the US, Canada, or Puerto Rico.
+- Sends are text-only, and recipients cannot reply.
+- Sender IDs that impersonate well-known brands or institutions are rejected.
+
+### Uniqueness
+
+Names are not exclusive: the same sender ID can be registered by any number of teams. Creating the same sender ID again is a no-op (re-activates it after a delete).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return SMSAPICreateSmsSenderIdRequest
@@ -317,13 +319,10 @@ func (r SMSAPIDeactivateSmsRegistrationRequest) Execute() (*DeactivateSmsRegistr
 /*
 DeactivateSmsRegistration Deactivate a brand/campaign registration
 
-Terminates the campaign with the carrier registry so the recurring
-monthly campaign fee stops (carriers bill the first 3 months of a
-campaign regardless). Numbers covered by it can no longer SEND texts
-(receiving is unaffected) until they're registered under a new brand.
-Irreversible: a deactivated campaign cannot be restored; texting again
-later requires a new registration (new one-time and review fees).
-Idempotent.
+Terminates the campaign with the carrier registry so the recurring monthly campaign fee stops (carriers bill the first 3 months of a campaign regardless). Idempotent.
+
+- Numbers covered by it can no longer SEND texts (receiving is unaffected) until they're registered under a new brand.
+- Irreversible: a deactivated campaign cannot be restored. Texting again later requires a new registration (new one-time and review fees).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id
@@ -693,23 +692,22 @@ func (r SMSAPIEnableSmsOnNumberRequest) Execute() (*EnableSmsOnNumber200Response
 /*
 EnableSmsOnNumber Enable SMS on a number
 
-Turns on SMS for one of your numbers. The number's real carrier
-capability is checked first: some number types can't do SMS at all
-(`smsCapable: false`), and a number still provisioning at the carrier
-returns `notReady: true` (try again once provisioning finishes).
+Turns on SMS for one of your numbers. Idempotent: re-running re-attempts any carrier-side setup that failed.
 
-US numbers additionally need a carrier registration before messages
-deliver; the response tells you which path applies:
-  - `alreadyRegistered: true`: a prior registration still covers this
-    number; SMS was reactivated.
-  - `reusable` set: you have an approved registration this number can
-    join in one click via
-    `POST /v1/phone-numbers/{id}/sms/reuse-registration`
-    (no new brand/campaign, no extra carrier fee).
-  - `needsRegistration: true` and no `reusable`: start one via
-    `POST /v1/sms/registrations`.
+### Carrier capability check
 
-Idempotent: re-running re-attempts any carrier-side setup that failed.
+The number's real carrier capability is checked first:
+
+- `smsCapable: false`: the number type can't do SMS at all.
+- `notReady: true`: the number is still provisioning at the carrier; try again once provisioning finishes.
+
+### US registration
+
+US numbers additionally need a carrier registration before messages deliver. The response tells you which path applies:
+
+- `alreadyRegistered: true`: a prior registration still covers this number; SMS was reactivated.
+- `reusable` set: you have an approved registration this number can join in one click via `POST /v1/phone-numbers/{id}/sms/reuse-registration` (no new brand/campaign, no extra carrier fee).
+- `needsRegistration: true` and no `reusable`: start one via `POST /v1/sms/registrations`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id Phone number record ID (from GET /v1/phone-numbers).
@@ -1461,12 +1459,15 @@ func (r SMSAPIPreflightSmsRegistrationRequest) Execute() (*PreflightSmsRegistrat
 /*
 PreflightSmsRegistration Pre-check a carrier registration
 
-Dry-run of `POST /v1/sms/registrations` for 10DLC: validates and
-composes the exact brand/campaign payloads a submission would store
-(branding, disclosures, auto-replies), runs deterministic compliance
-lints plus an AI reviewer over them, and returns the findings WITHOUT
-creating anything. Use it to fix issues before submitting; `block`
-severity findings indicate a near-certain carrier rejection.
+Dry-run of `POST /v1/sms/registrations` for 10DLC. It returns the findings WITHOUT creating anything.
+
+It does three things:
+
+1. Validates and composes the exact brand/campaign payloads a submission would store (branding, disclosures, auto-replies).
+2. Runs deterministic compliance lints over them.
+3. Runs an AI reviewer over them.
+
+Use it to fix issues before submitting. `block` severity findings indicate a near-certain carrier rejection.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return SMSAPIPreflightSmsRegistrationRequest
@@ -1852,16 +1853,16 @@ func (r SMSAPIRespondToSmsRegistrationReviewRequest) Execute() (*RespondToSmsReg
 /*
 RespondToSmsRegistrationReview Reply to a change request
 
-Replies to a reviewer change request on a registration in
-`changes_requested` state: a note, hosted document URLs (from
-`POST /v1/sms/opt-in-proof`), or both, sent together. When the request
-was written as points (`reviewRequest` on the registration), send one
-entry in `answers` per point. The registration
-returns to `requested` (back in review), and you do not need to resubmit the
-whole registration. A `rejected` registration can also be answered when
-we asked for changes to fix it (`reviewRequest` set); it stays `rejected`. To change the submitted brand/campaign fields
-themselves, resubmit via `POST /v1/sms/registrations` with
-`resubmitRequestId` instead.
+Replies to a reviewer change request on a registration in `changes_requested` state. Send a note, hosted document URLs (from `POST /v1/sms/opt-in-proof`), or both, sent together.
+
+When the request was written as points (`reviewRequest` on the registration), send one entry in `answers` per point.
+
+### What happens next
+
+- The registration returns to `requested` (back in review), and you do not need to resubmit the whole registration.
+- A `rejected` registration can also be answered when we asked for changes to fix it (`reviewRequest` set); it stays `rejected`.
+
+To change the submitted brand/campaign fields themselves, resubmit via `POST /v1/sms/registrations` with `resubmitRequestId` instead.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id
@@ -2110,7 +2111,7 @@ func (r SMSAPISendSmsRequest) SendSmsRequest(sendSmsRequest SendSmsRequest) SMSA
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r SMSAPISendSmsRequest) IdempotencyKey(idempotencyKey string) SMSAPISendSmsRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -2415,20 +2416,17 @@ func (r SMSAPIStartSmsRegistrationRequest) Execute() (*StartSmsRegistration200Re
 /*
 StartSmsRegistration Start a carrier registration
 
-Starts the US carrier registration that a number needs before SMS
-delivers: 10DLC (standard company or sole-proprietor) or toll-free
-verification. 10DLC needs `brand` + `campaign`; toll-free needs
-`tollFree`. Approval is asynchronous; poll
-`GET /v1/sms/registrations/{id}` (sole-prop registrations first need
-the OTP step: a code is texted to the brand's mobile number, submit it
-via `/verify-otp`).
+Starts the US carrier registration that a number needs before SMS delivers: 10DLC (standard company or sole-proprietor) or toll-free verification.
 
-Already have an approved registration? Add another number to it with
-`POST /v1/phone-numbers/{id}/sms/reuse-registration` instead
-of registering (and paying the carrier brand fee) again.
+- 10DLC needs `brand` + `campaign`.
+- Toll-free needs `tollFree`.
 
-Rather have your client fill in the legal business details? Create a
-share link with `POST /v1/sms/registrations/share`.
+Approval is asynchronous; poll `GET /v1/sms/registrations/{id}`. Sole-prop registrations first need the OTP step: a code is texted to the brand's mobile number, submit it via `/verify-otp`.
+
+### Alternatives
+
+- Already have an approved registration? Add another number to it with `POST /v1/phone-numbers/{id}/sms/reuse-registration` instead of registering (and paying the carrier brand fee) again.
+- Rather have your client fill in the legal business details? Create a share link with `POST /v1/sms/registrations/share`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return SMSAPIStartSmsRegistrationRequest
@@ -2563,12 +2561,11 @@ func (r SMSAPIUploadSmsOptInProofRequest) Execute() (*GetWhatsAppCallRecording20
 /*
 UploadSmsOptInProof Upload opt-in form proof for an appeal
 
-Hosts a screenshot (or PDF) of your SMS opt-in form and returns its
-public URL. Carrier reviewers reject campaigns whose consent can't be
-verified and ask for a "link/screenshot of the opt-in form". The
-registry has no attachment field, so include the returned URL inside
-the `messageFlow` you submit with the appeal
-(`POST /v1/sms/registrations/{id}/appeal`).
+Hosts a screenshot (or PDF) of your SMS opt-in form and returns its public URL.
+
+Carrier reviewers reject campaigns whose consent can't be verified and ask for a "link/screenshot of the opt-in form".
+
+The registry has no attachment field, so include the returned URL inside the `messageFlow` you submit with the appeal (`POST /v1/sms/registrations/{id}/appeal`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id
@@ -2707,12 +2704,11 @@ func (r SMSAPIUploadSmsOptInProofFileRequest) Execute() (*GetWhatsAppCallRecordi
 /*
 UploadSmsOptInProofFile Upload opt-in form proof
 
-Hosts a screenshot (or PDF) of your SMS opt-in form and returns its
-public URL. Include that URL in the campaign's `messageFlow` (the
-opt-in workflow text). The carrier registry has no attachment field,
-so reviewers verify consent by opening links in that answer. Works
-before a registration exists (use it when registering) and for
-appeals. `/v1/sms/registrations/{id}/opt-in-proof` is an alias.
+Hosts a screenshot (or PDF) of your SMS opt-in form and returns its public URL.
+
+Include that URL in the campaign's `messageFlow` (the opt-in workflow text). The carrier registry has no attachment field, so reviewers verify consent by opening links in that answer.
+
+Works before a registration exists (use it when registering) and for appeals. `/v1/sms/registrations/{id}/opt-in-proof` is an alias.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return SMSAPIUploadSmsOptInProofFileRequest

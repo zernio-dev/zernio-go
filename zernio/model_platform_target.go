@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.404.0
+API version: 1.405.0
 Contact: support@zernio.com
 */
 
@@ -29,29 +29,29 @@ type PlatformTarget struct {
 	CustomMedia   []MediaItem `json:"customMedia,omitempty"`
 	// Optional per-platform scheduled time override (uses post.scheduledFor when omitted)
 	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
-	// The platform-specific options stored on this target, echoed back as they were sent. Typed per platform on the way in (see the *PlatformData schemas on the request body); free-form on the way out, because a response is not guaranteed to match exactly one of those variants and generated clients that pick a variant by structure reject the entire response when it doesn't. Zernio's internal publishing state (snapshots, container ids, publish stage) is never returned here, and the key is omitted rather than sent as an empty object.
+	// The platform-specific options stored on this target, echoed back as sent.  Typed per platform on the way in (see the *PlatformData schemas on the request body); free-form on the way out. A response is not guaranteed to match exactly one variant, and generated clients that pick a variant by structure reject the entire response when it doesn't.  Zernio's internal publishing state (snapshots, container ids, publish stage) is never returned here. The key is omitted rather than sent as an empty object.
 	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
 	// Platform-specific status: pending, processing, uploading, published, failed, cancelled (removed from the platform via POST /v1/posts/{postId}/unpublish)
 	Status *string `json:"status,omitempty"`
 	// The native post ID on the platform (populated after successful publish)
 	PlatformPostId *string `json:"platformPostId,omitempty"`
-	// Public URL of the published post. Included in the response for immediate posts; for scheduled posts, fetch via GET /v1/posts/{postId} after publish time. Empty when the platform confirmed the publish without returning an id a permalink can be built from (TikTok returns a publish id for some uploads); the TikTok reconcile cron backfills it later. If TikTok never returns one, /v1/analytics reports that entry as syncStatus unavailable.
+	// Public URL of the published post. Included in the response for immediate posts; for scheduled posts, fetch via GET /v1/posts/{postId} after publish time.  Empty when the platform confirmed the publish without returning an id a permalink can be built from (TikTok returns a publish id for some uploads). The TikTok reconcile cron backfills it later. If TikTok never returns one, /v1/analytics reports that entry as syncStatus unavailable.
 	PlatformPostUrl NullableString `json:"platformPostUrl,omitempty"`
 	// Timestamp when the post was published to this platform. YouTube uploads a scheduled public video up to 15 minutes early as private with YouTube's own release time, so its entry is published with this set to scheduledFor, the moment the video goes public.
 	PublishedAt *time.Time `json:"publishedAt,omitempty"`
-	// Set when a post that was successfully published later disappears from the platform (deleted on-platform or taken down by the platform). status stays \"published\" (it reflects the publish outcome); poll this field to detect post-publish removals. Absent while the post is live, and cleared if the post reappears. Detection runs with the analytics sync, so expect up to a few hours of lag.
+	// Set when a successfully published post later disappears from the platform (deleted on-platform or taken down by the platform). Absent while the post is live, and cleared if it reappears.  status stays \"published\" (it reflects the publish outcome), so poll this field to detect post-publish removals. Detection runs with the analytics sync: expect up to a few hours of lag.
 	RemovedFromPlatformAt NullableTime `json:"removedFromPlatformAt,omitempty"`
-	// Present and true only when this Instagram reel was launched as a Trial through Zernio (created with platformSpecificData.trialParams). Use it to segment trial reels in analytics. Note: Instagram's Graph API exposes no readable trial field, so this reflects creation-time intent only. It indicates the reel STARTED as a trial, not whether or when it graduated.
+	// Present and true only when this Instagram reel was launched as a Trial through Zernio (created with platformSpecificData.trialParams). Use it to segment trial reels in analytics.  Instagram's Graph API exposes no readable trial field, so this reflects creation-time intent only: the reel STARTED as a trial, not whether or when it graduated.
 	IsTrialReel *bool `json:"isTrialReel,omitempty"`
 	// Graduation strategy the trial reel was launched with. Present only when isTrialReel is true.
 	TrialGraduationStrategy *string `json:"trialGraduationStrategy,omitempty"`
 	// Number of times the publishing pipeline claimed this target to publish it since it was created or last manually retried (a manual retry resets it, except on TikTok). Not the number of retries (see publishRetries).
 	PublishAttempts *int32 `json:"publishAttempts,omitempty"`
-	// Instagram only. Automatic re-sends of media_publish on the same container that Zernio scheduled after Meta answered a transient error (30 min, 2 h and 6 h after each failure, at most 3). While the target is still processing, the latest one may not have been sent yet. Not reset by a manual retry. Independent of publishAttempts, which counts publish-leg claims. Absent when none was scheduled.
+	// Instagram only. Automatic re-sends of media_publish on the same container that Zernio scheduled after Meta answered a transient error: 30 min, 2 h and 6 h after each failure, at most 3. Absent when none was scheduled.  While the target is still processing, the latest one may not have been sent yet. Not reset by a manual retry. Independent of publishAttempts, which counts publish-leg claims.
 	PublishRetries *int32 `json:"publishRetries,omitempty"`
 	// Human-readable error message when status is failed. Contains platform-specific error details explaining why the publish failed.
 	ErrorMessage *string `json:"errorMessage,omitempty"`
-	// Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), platform_rate_limit (platform throttling, retried automatically), quota_exhausted (a shared quota pool the integration draws on is empty, including our own capacity gate in front of one; not caused by your content or account, and safe to retry once the pool frees up), system_error (Zernio infra), unknown
+	// Error category for programmatic handling:  - `auth_expired`: token expired/revoked - `user_content`: wrong format/too long - `user_abuse`: rate limits/spam - `account_issue`: config problems - `platform_rejected`: policy violation - `platform_error`: 5xx/maintenance - `platform_rate_limit`: platform throttling, retried automatically - `quota_exhausted`: a shared quota pool the integration draws on is empty, including our own capacity gate in front of one. Not caused by your content or account, and safe to retry once the pool frees up. - `system_error`: Zernio infra - `unknown`
 	ErrorCategory *string `json:"errorCategory,omitempty"`
 	// Who caused the error: user (fix content/reconnect), platform (outage/API change), system (Zernio issue, rare)
 	ErrorSource   *string            `json:"errorSource,omitempty"`
