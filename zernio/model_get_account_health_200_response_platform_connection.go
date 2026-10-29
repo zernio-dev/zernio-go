@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.413.0
+API version: 1.413.1
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,7 @@ type GetAccountHealth200ResponsePlatformConnection struct {
 	// Meta's own `status` field from the phone-number node (for example CONNECTED), when the object was readable
 	PhoneStatus NullableString                                          `json:"phoneStatus,omitempty"`
 	MetaError   *GetAccountHealth200ResponsePlatformConnectionMetaError `json:"metaError,omitempty"`
-	// From the phone number's Meta health_status.  - `false`: Meta says Zernio is not subscribed to the message webhook for this number, so inbound messages are not delivered, though the number is CONNECTED and can still send. - `false`, fix: re-subscribe (reconnect the number). If it stays `false`, the number is routed to a different WhatsApp Business Account (typically after linking it to a Facebook Page). - `true`: Meta reports no such problem. - `null`: Meta did not report it (read failed or no health_status); not evidence either way.
+	// From the phone number's Meta health_status, overridden to `false` when subscribing the number's WhatsApp Business Account to Zernio's webhooks failed at connect.  - `false`: Meta says Zernio is not subscribed to the message webhook for this number, or the subscribe failed when the number was connected, so inbound messages are not delivered, though the number is CONNECTED and can still send. - `false`, fix: re-subscribe (reconnect the number). If it stays `false`, the number is routed to a different WhatsApp Business Account (typically after linking it to a Facebook Page). - `true`: Meta reports no such problem. - `null`: Meta did not report it (read failed or no health_status); not evidence either way.
 	InboundWebhookSubscribed NullableBool `json:"inboundWebhookSubscribed,omitempty"`
 }
 
