@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.411.0
+API version: 1.412.0
 Contact: support@zernio.com
 */
 
@@ -300,14 +300,14 @@ See each platform's schema for media constraints.
 
 ## LinkedIn @mentions
 
-Mention a person or company by putting its LinkedIn URL inside `@[...]`, in `content` or in a LinkedIn entry's `customContent`. The post is published with LinkedIn's real name and link, with no lookup call first.
+Mention a person or company by putting its LinkedIn URL inside `@[...]`, in `content`, a LinkedIn entry's `customContent` or its `platformSpecificData.firstComment`. The post is published with LinkedIn's real name and link, with no lookup call first.
 
 - Person: `@[https://www.linkedin.com/in/jane-doe]`
 - Company: `@[https://www.linkedin.com/company/acme]`
 - Your own text: `@[Jane](https://www.linkedin.com/in/jane-doe)`. For a person it must be the first, last or full name, for a company the exact company name, both case-sensitive. Other text is replaced with LinkedIn's name and returns a `linkedin_mention_name_replaced` warning.
 - `@[Text](urn:li:person:ID)`, as returned by `GET /v1/accounts/{accountId}/linkedin-mentions`: published exactly as written, with no lookup, so its text must already be LinkedIn's name.
 
-A post can resolve at most 10 profile or company URL mentions across its shared content and LinkedIn entries. Resolving a person's profile URL needs one of your LinkedIn accounts to administer a Page; publishing does not.
+A post can resolve at most 10 profile or company URL mentions across its shared content, LinkedIn entries and first comments. Resolving a person's profile URL needs one of your LinkedIn accounts to administer a Page; publishing does not.
 
 ### When a mention can't be resolved
 

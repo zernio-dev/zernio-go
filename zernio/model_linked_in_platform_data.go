@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.411.0
+API version: 1.412.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ type LinkedInPlatformData struct {
 	DocumentTitle *string `json:"documentTitle,omitempty"`
 	// Target LinkedIn Organization URN (e.g. \"urn:li:organization:123456789\"). If omitted, uses the default org. Use GET /v1/accounts/{id}/linkedin-organizations to list orgs.
 	OrganizationUrn *string `json:"organizationUrn,omitempty"`
-	// Optional first comment to add after the post is created. Mention a profile or Page with @[Name](urn:li:person:ID) or @[Org](urn:li:organization:ID); the name must match LinkedIn's exactly (case-sensitive) or it renders as plain text. The profile-URL form is not resolved in comments, and an unknown person URN posts the plain name.
+	// Optional first comment to add after the post is created. Mention with @[https://www.linkedin.com/in/vanity] (resolved to LinkedIn's live name, same rules and errors as post content) or @[Name](urn:li:person|organization:ID); a hand-written name must match LinkedIn's exactly or it renders as plain text.
 	FirstComment *string `json:"firstComment,omitempty"`
 	// Set to true to disable automatic link previews for URLs in the post content (default is false)
 	DisableLinkPreview *bool                         `json:"disableLinkPreview,omitempty"`
