@@ -115,6 +115,8 @@ model_ad_creative_assets_marketing_images_inner.go
 model_ad_creative_carousel_cards_inner.go
 model_ad_creative_catalog.go
 model_ad_creative_catalog_format_transformation_spec_inner.go
+model_ad_creative_descriptions_inner.go
+model_ad_creative_headlines_inner.go
 model_ad_daily_metrics.go
 model_ad_engagement_counts.go
 model_ad_funnel_counts.go

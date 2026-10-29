@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.407.0
+API version: 1.408.0
 Contact: support@zernio.com
 */
 
@@ -87,7 +87,7 @@ type CreateStandaloneAdRequest struct {
 	Headlines []string `json:"headlines,omitempty"`
 	// Meta only. Optional description variations for Multiple Text Options. Sent alongside `bodies` and `headlines`.
 	Descriptions []string `json:"descriptions,omitempty"`
-	// The ad's call-to-action button.  - **Meta:** required on legacy + attach shapes. - **TikTok:** honoured, passed through to the Spark Ad creative's `call_to_action`. - **LinkedIn:** the CTA button on the ad; defaults to LEARN_MORE when `linkUrl` is set. Accepts LEARN_MORE, SIGN_UP, DOWNLOAD, SUBSCRIBE, REGISTER, JOIN, ATTEND, REQUEST_DEMO, VIEW_QUOTE, APPLY, SEE_MORE, SHOP_NOW, BUY_NOW. - **Reddit** (image, video and carousel ads): accepts LEARN_MORE, SHOP_NOW, SIGN_UP, CONTACT_US, DOWNLOAD, GET_QUOTE, SUBSCRIBE, APPLY_NOW, BOOK_NOW, BUY_TICKETS, DONATE_NOW, GET_DIRECTIONS, GET_SHOWTIMES, LISTEN_NOW, ORDER_NOW, SEE_MENU, INSTALL_MOBILE_APP. Other values return 400. - **Google, Pinterest, and X:** ignored.
+	// The ad's call-to-action button.  - **Meta:** required on legacy + attach shapes. Accepts every call to action type Meta itself accepts (the enum lists them), including values such as SEE_DETAILS that ads synced from Meta carry. - **TikTok:** honoured, passed through to the Spark Ad creative's `call_to_action`. - **LinkedIn:** the CTA button on the ad; defaults to LEARN_MORE when `linkUrl` is set. Accepts LEARN_MORE, SIGN_UP, DOWNLOAD, SUBSCRIBE, REGISTER, JOIN, ATTEND, REQUEST_DEMO, VIEW_QUOTE, APPLY, SEE_MORE, SHOP_NOW, BUY_NOW. - **Reddit** (image, video and carousel ads): accepts LEARN_MORE, SHOP_NOW, SIGN_UP, CONTACT_US, DOWNLOAD, GET_QUOTE, SUBSCRIBE, APPLY_NOW, BOOK_NOW, BUY_TICKETS, DONATE_NOW, GET_DIRECTIONS, GET_SHOWTIMES, LISTEN_NOW, ORDER_NOW, SEE_MENU, INSTALL_MOBILE_APP. Other values return 400. - **Google, Pinterest, and X:** ignored.
 	CallToAction *string `json:"callToAction,omitempty"`
 	// The ad's destination URL. Required on legacy + attach shapes (skip for multi-creative). NOT required when `goal` is `lead_generation` (the ad opens a Lead Gen form instead).  - **LinkedIn:** required for `traffic` ads, optional for `engagement` / `awareness`. `imageUrl` + `linkUrl` publishes an ARTICLE-content creative (LinkedIn's article ad format), with the image as thumbnail and `longHeadline` as description. - **OpenAI Ads:** required (the chat card's target_url). - **Reddit:** required on image and video ads (the post's destination and the ad's click URL), the fallback for carousel cards without their own, and refused with 400 on text ads.
 	LinkUrl *string `json:"linkUrl,omitempty"`

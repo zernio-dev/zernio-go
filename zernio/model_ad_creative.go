@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.407.0
+API version: 1.408.0
 Contact: support@zernio.com
 */
 
@@ -24,10 +24,24 @@ type AdCreative struct {
 	AssetGroup *GooglePmaxAssetGroupInput `json:"assetGroup,omitempty"`
 	// Google resource name of the created Performance Max asset group.
 	AssetGroupResourceName *string `json:"assetGroupResourceName,omitempty"`
-	// Google RSA only. Replaces the complete headline list. No padding or truncation on update.
-	Headlines []GoogleRsaHeadline `json:"headlines,omitempty"`
-	// Google RSA only. Replaces the complete description list. No padding or truncation on update.
-	Descriptions []GoogleRsaDescription `json:"descriptions,omitempty"`
+	// Google RSA: the headline assets as objects (3 to 15). Meta: every title variation of the creative (`asset_feed_spec.titles`) as strings, the same shape as the `headlines` create input. Present only with 2 or more titles; a single title is `headline`.
+	Headlines []AdCreativeHeadlinesInner `json:"headlines,omitempty"`
+	// Google RSA: the description assets as objects (2 to 4). Meta: every description variation of the creative (`asset_feed_spec.descriptions`) as strings, the same shape as the `descriptions` create input. Present only with 2 or more descriptions; a single one is `description`.
+	Descriptions []AdCreativeDescriptionsInner `json:"descriptions,omitempty"`
+	// Meta: the creative's title (`link_data.name`, `video_data.title`, or the first `asset_feed_spec.titles` entry). Absent when the creative has none.
+	Headline *string `json:"headline,omitempty"`
+	// Meta: every primary text variation of the creative (`asset_feed_spec.bodies`), the same shape as the `bodies` create input. Present only with 2 or more texts; a single text is `body`.
+	Bodies []string `json:"bodies,omitempty"`
+	// Meta: the creative's description under the title (`link_data.description`, `video_data.link_description`, or the first `asset_feed_spec.descriptions` entry).
+	Description *string `json:"description,omitempty"`
+	// Meta: the call to action type (`call_to_action.type`, or the first `asset_feed_spec.call_to_action_types` entry), e.g. LEARN_MORE or SIGN_UP.
+	CallToAction *string `json:"callToAction,omitempty"`
+	// Meta: the instant form the call to action opens (`call_to_action.value.lead_gen_form_id`), the same value as the `leadGenFormId` create input. Absent on ads without a lead form.
+	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
+	// Meta: the ad image hash (`image_hash`), reusable as `imageHash` on POST /v1/ads/create within the same ad account. `thumbnailUrl` and `mediaUrls` carry its stable full resolution permalink when Meta resolves it.
+	ImageHash *string `json:"imageHash,omitempty"`
+	// Meta: the creative's `url_tags` query string appended to the destination URL.
+	UrlTags NullableString `json:"urlTags,omitempty"`
 	// Google RSA only. Replaces final URLs. Omitted lists stay unchanged.
 	FinalUrls []string `json:"finalUrls,omitempty"`
 	// Primary thumbnail/image URL
@@ -41,7 +55,7 @@ type AdCreative struct {
 	VideoId NullableString `json:"videoId,omitempty"`
 	// Public Facebook watch URL for VIDEO-type ads (https://www.facebook.com/watch/?v={videoId}). Null for non-video ads.
 	VideoUrl NullableString `json:"videoUrl,omitempty"`
-	// Meta ad creative id backing this ad. Reusable via existingCreativeId on POST /v1/ads/create.
+	// Meta ad creative id backing this ad, refreshed from Meta on every sync. Reusable via existingCreativeId on POST /v1/ads/create, and readable raw through GET /v1/ads/creatives/{creativeId}. Ads synced from Meta also carry it as the legacy `id` key.
 	CreativeId NullableString `json:"creativeId,omitempty"`
 	// Meta only. The creativeFeatures map sent at creation (degrees_of_freedom_spec.creative_features_spec). Absent on ads synced from Meta.
 	CreativeFeatures map[string]string  `json:"creativeFeatures,omitempty"`
@@ -170,9 +184,9 @@ func (o *AdCreative) SetAssetGroupResourceName(v string) {
 }
 
 // GetHeadlines returns the Headlines field value if set, zero value otherwise.
-func (o *AdCreative) GetHeadlines() []GoogleRsaHeadline {
+func (o *AdCreative) GetHeadlines() []AdCreativeHeadlinesInner {
 	if o == nil || IsNil(o.Headlines) {
-		var ret []GoogleRsaHeadline
+		var ret []AdCreativeHeadlinesInner
 		return ret
 	}
 	return o.Headlines
@@ -180,7 +194,7 @@ func (o *AdCreative) GetHeadlines() []GoogleRsaHeadline {
 
 // GetHeadlinesOk returns a tuple with the Headlines field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdCreative) GetHeadlinesOk() ([]GoogleRsaHeadline, bool) {
+func (o *AdCreative) GetHeadlinesOk() ([]AdCreativeHeadlinesInner, bool) {
 	if o == nil || IsNil(o.Headlines) {
 		return nil, false
 	}
@@ -196,15 +210,15 @@ func (o *AdCreative) HasHeadlines() bool {
 	return false
 }
 
-// SetHeadlines gets a reference to the given []GoogleRsaHeadline and assigns it to the Headlines field.
-func (o *AdCreative) SetHeadlines(v []GoogleRsaHeadline) {
+// SetHeadlines gets a reference to the given []AdCreativeHeadlinesInner and assigns it to the Headlines field.
+func (o *AdCreative) SetHeadlines(v []AdCreativeHeadlinesInner) {
 	o.Headlines = v
 }
 
 // GetDescriptions returns the Descriptions field value if set, zero value otherwise.
-func (o *AdCreative) GetDescriptions() []GoogleRsaDescription {
+func (o *AdCreative) GetDescriptions() []AdCreativeDescriptionsInner {
 	if o == nil || IsNil(o.Descriptions) {
-		var ret []GoogleRsaDescription
+		var ret []AdCreativeDescriptionsInner
 		return ret
 	}
 	return o.Descriptions
@@ -212,7 +226,7 @@ func (o *AdCreative) GetDescriptions() []GoogleRsaDescription {
 
 // GetDescriptionsOk returns a tuple with the Descriptions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdCreative) GetDescriptionsOk() ([]GoogleRsaDescription, bool) {
+func (o *AdCreative) GetDescriptionsOk() ([]AdCreativeDescriptionsInner, bool) {
 	if o == nil || IsNil(o.Descriptions) {
 		return nil, false
 	}
@@ -228,9 +242,244 @@ func (o *AdCreative) HasDescriptions() bool {
 	return false
 }
 
-// SetDescriptions gets a reference to the given []GoogleRsaDescription and assigns it to the Descriptions field.
-func (o *AdCreative) SetDescriptions(v []GoogleRsaDescription) {
+// SetDescriptions gets a reference to the given []AdCreativeDescriptionsInner and assigns it to the Descriptions field.
+func (o *AdCreative) SetDescriptions(v []AdCreativeDescriptionsInner) {
 	o.Descriptions = v
+}
+
+// GetHeadline returns the Headline field value if set, zero value otherwise.
+func (o *AdCreative) GetHeadline() string {
+	if o == nil || IsNil(o.Headline) {
+		var ret string
+		return ret
+	}
+	return *o.Headline
+}
+
+// GetHeadlineOk returns a tuple with the Headline field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetHeadlineOk() (*string, bool) {
+	if o == nil || IsNil(o.Headline) {
+		return nil, false
+	}
+	return o.Headline, true
+}
+
+// HasHeadline returns a boolean if a field has been set.
+func (o *AdCreative) HasHeadline() bool {
+	if o != nil && !IsNil(o.Headline) {
+		return true
+	}
+
+	return false
+}
+
+// SetHeadline gets a reference to the given string and assigns it to the Headline field.
+func (o *AdCreative) SetHeadline(v string) {
+	o.Headline = &v
+}
+
+// GetBodies returns the Bodies field value if set, zero value otherwise.
+func (o *AdCreative) GetBodies() []string {
+	if o == nil || IsNil(o.Bodies) {
+		var ret []string
+		return ret
+	}
+	return o.Bodies
+}
+
+// GetBodiesOk returns a tuple with the Bodies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetBodiesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Bodies) {
+		return nil, false
+	}
+	return o.Bodies, true
+}
+
+// HasBodies returns a boolean if a field has been set.
+func (o *AdCreative) HasBodies() bool {
+	if o != nil && !IsNil(o.Bodies) {
+		return true
+	}
+
+	return false
+}
+
+// SetBodies gets a reference to the given []string and assigns it to the Bodies field.
+func (o *AdCreative) SetBodies(v []string) {
+	o.Bodies = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *AdCreative) GetDescription() string {
+	if o == nil || IsNil(o.Description) {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetDescriptionOk() (*string, bool) {
+	if o == nil || IsNil(o.Description) {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *AdCreative) HasDescription() bool {
+	if o != nil && !IsNil(o.Description) {
+		return true
+	}
+
+	return false
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *AdCreative) SetDescription(v string) {
+	o.Description = &v
+}
+
+// GetCallToAction returns the CallToAction field value if set, zero value otherwise.
+func (o *AdCreative) GetCallToAction() string {
+	if o == nil || IsNil(o.CallToAction) {
+		var ret string
+		return ret
+	}
+	return *o.CallToAction
+}
+
+// GetCallToActionOk returns a tuple with the CallToAction field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetCallToActionOk() (*string, bool) {
+	if o == nil || IsNil(o.CallToAction) {
+		return nil, false
+	}
+	return o.CallToAction, true
+}
+
+// HasCallToAction returns a boolean if a field has been set.
+func (o *AdCreative) HasCallToAction() bool {
+	if o != nil && !IsNil(o.CallToAction) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallToAction gets a reference to the given string and assigns it to the CallToAction field.
+func (o *AdCreative) SetCallToAction(v string) {
+	o.CallToAction = &v
+}
+
+// GetLeadGenFormId returns the LeadGenFormId field value if set, zero value otherwise.
+func (o *AdCreative) GetLeadGenFormId() string {
+	if o == nil || IsNil(o.LeadGenFormId) {
+		var ret string
+		return ret
+	}
+	return *o.LeadGenFormId
+}
+
+// GetLeadGenFormIdOk returns a tuple with the LeadGenFormId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetLeadGenFormIdOk() (*string, bool) {
+	if o == nil || IsNil(o.LeadGenFormId) {
+		return nil, false
+	}
+	return o.LeadGenFormId, true
+}
+
+// HasLeadGenFormId returns a boolean if a field has been set.
+func (o *AdCreative) HasLeadGenFormId() bool {
+	if o != nil && !IsNil(o.LeadGenFormId) {
+		return true
+	}
+
+	return false
+}
+
+// SetLeadGenFormId gets a reference to the given string and assigns it to the LeadGenFormId field.
+func (o *AdCreative) SetLeadGenFormId(v string) {
+	o.LeadGenFormId = &v
+}
+
+// GetImageHash returns the ImageHash field value if set, zero value otherwise.
+func (o *AdCreative) GetImageHash() string {
+	if o == nil || IsNil(o.ImageHash) {
+		var ret string
+		return ret
+	}
+	return *o.ImageHash
+}
+
+// GetImageHashOk returns a tuple with the ImageHash field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetImageHashOk() (*string, bool) {
+	if o == nil || IsNil(o.ImageHash) {
+		return nil, false
+	}
+	return o.ImageHash, true
+}
+
+// HasImageHash returns a boolean if a field has been set.
+func (o *AdCreative) HasImageHash() bool {
+	if o != nil && !IsNil(o.ImageHash) {
+		return true
+	}
+
+	return false
+}
+
+// SetImageHash gets a reference to the given string and assigns it to the ImageHash field.
+func (o *AdCreative) SetImageHash(v string) {
+	o.ImageHash = &v
+}
+
+// GetUrlTags returns the UrlTags field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdCreative) GetUrlTags() string {
+	if o == nil || IsNil(o.UrlTags.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.UrlTags.Get()
+}
+
+// GetUrlTagsOk returns a tuple with the UrlTags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdCreative) GetUrlTagsOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.UrlTags.Get(), o.UrlTags.IsSet()
+}
+
+// HasUrlTags returns a boolean if a field has been set.
+func (o *AdCreative) HasUrlTags() bool {
+	if o != nil && o.UrlTags.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetUrlTags gets a reference to the given NullableString and assigns it to the UrlTags field.
+func (o *AdCreative) SetUrlTags(v string) {
+	o.UrlTags.Set(&v)
+}
+
+// SetUrlTagsNil sets the value for UrlTags to be an explicit nil
+func (o *AdCreative) SetUrlTagsNil() {
+	o.UrlTags.Set(nil)
+}
+
+// UnsetUrlTags ensures that no value is present for UrlTags, not even an explicit nil
+func (o *AdCreative) UnsetUrlTags() {
+	o.UrlTags.Unset()
 }
 
 // GetFinalUrls returns the FinalUrls field value if set, zero value otherwise.
@@ -1410,6 +1659,27 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Descriptions) {
 		toSerialize["descriptions"] = o.Descriptions
+	}
+	if !IsNil(o.Headline) {
+		toSerialize["headline"] = o.Headline
+	}
+	if !IsNil(o.Bodies) {
+		toSerialize["bodies"] = o.Bodies
+	}
+	if !IsNil(o.Description) {
+		toSerialize["description"] = o.Description
+	}
+	if !IsNil(o.CallToAction) {
+		toSerialize["callToAction"] = o.CallToAction
+	}
+	if !IsNil(o.LeadGenFormId) {
+		toSerialize["leadGenFormId"] = o.LeadGenFormId
+	}
+	if !IsNil(o.ImageHash) {
+		toSerialize["imageHash"] = o.ImageHash
+	}
+	if o.UrlTags.IsSet() {
+		toSerialize["urlTags"] = o.UrlTags.Get()
 	}
 	if !IsNil(o.FinalUrls) {
 		toSerialize["finalUrls"] = o.FinalUrls
