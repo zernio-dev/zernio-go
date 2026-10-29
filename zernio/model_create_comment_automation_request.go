@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.413.1
+API version: 1.413.2
 Contact: support@zernio.com
 */
 
@@ -49,11 +49,11 @@ type CreateCommentAutomationRequest struct {
 	Buttons []DmButton `json:"buttons,omitempty"`
 	// Optional product card sent INSTEAD of the plain dmMessage bubble. Mutually exclusive with buttons. dmMessage stays required: it is what gets sent the moment the card is cleared.
 	Template NullableCommentAutomationTemplate `json:"template,omitempty"`
-	// Public reply to the comment. Optional on Instagram and Facebook; required on TikTok, Threads, LinkedIn and YouTube, where it is the automation's only action.
+	// Public reply to the comment. Optional on Instagram and Facebook; required on TikTok, Threads, LinkedIn and YouTube, where it is the automation's only action.  On LinkedIn, mention with `@[Name](urn:li:person:ID)` or `@[Name](urn:li:organization:ID)`, getting the URN from `GET /v1/accounts/{accountId}/linkedin-mentions`. The name must match the person's or Page's LinkedIn name exactly, or the mention renders as plain text. Profile or company URL mentions are not resolved here and are sent as plain text.
 	CommentReply *string `json:"commentReply,omitempty"`
 	// Optional alternate DM texts for random rotation. When set, each triggered comment sends one picked at random from [dmMessage, ...dmMessageVariations], so repeat commenters get slightly different DMs (helps avoid identical-message patterns). Up to 5. Buttons are attached to whichever text is picked, not varied.
 	DmMessageVariations []string `json:"dmMessageVariations,omitempty"`
-	// Optional alternate public replies, rotated at random alongside commentReply (picked independently of the DM). Up to 5.
+	// Optional alternate public replies, rotated at random alongside commentReply (picked independently of the DM). Up to 5.  LinkedIn mentions follow the commentReply rules.
 	CommentReplyVariations []string `json:"commentReplyVariations,omitempty"`
 	// Wrap link buttons in the DM in a tracked redirect so clicks are counted (Link Clicks / CTR). Pass false to send links exactly as written. Defaults to on.
 	LinkTracking *bool `json:"linkTracking,omitempty"`

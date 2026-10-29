@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.413.1
+API version: 1.413.2
 Contact: support@zernio.com
 */
 
@@ -40,11 +40,12 @@ type UpdateCommentAutomationRequest struct {
 	// Inline DM buttons (1-3). Pass [] to clear all buttons.
 	Buttons []DmButton `json:"buttons,omitempty"`
 	// Product card sent instead of the plain dmMessage bubble. Pass null to clear it and fall back to dmMessage. Mutually exclusive with buttons, including with the buttons already stored on the automation.
-	Template     NullableCommentAutomationTemplate `json:"template,omitempty"`
-	CommentReply *string                           `json:"commentReply,omitempty"`
+	Template NullableCommentAutomationTemplate `json:"template,omitempty"`
+	// On LinkedIn, mention with `@[Name](urn:li:person:ID)` or `@[Name](urn:li:organization:ID)`, getting the URN from `GET /v1/accounts/{accountId}/linkedin-mentions`. The name must match the person's or Page's LinkedIn name exactly, or the mention renders as plain text. Profile or company URL mentions are not resolved here and are sent as plain text.
+	CommentReply *string `json:"commentReply,omitempty"`
 	// Alternate DM texts for random rotation (see create). Pass [] to clear.
 	DmMessageVariations []string `json:"dmMessageVariations,omitempty"`
-	// Alternate public replies for random rotation. Pass [] to clear.
+	// Alternate public replies for random rotation. Pass [] to clear.  LinkedIn mentions follow the commentReply rules.
 	CommentReplyVariations []string `json:"commentReplyVariations,omitempty"`
 	// Wrap link buttons in a tracked redirect to count clicks. Pass false to send links untouched.
 	LinkTracking *bool `json:"linkTracking,omitempty"`
