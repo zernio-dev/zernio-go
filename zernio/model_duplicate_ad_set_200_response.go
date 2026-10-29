@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.402.0
+API version: 1.403.0
 Contact: support@zernio.com
 */
 
@@ -22,8 +22,12 @@ var _ MappedNullable = &DuplicateAdSet200Response{}
 type DuplicateAdSet200Response struct {
 	// Platform ID of the new ad set
 	CopiedAdSetId *string `json:"copiedAdSetId,omitempty"`
-	Discovery     *string `json:"discovery,omitempty"`
-	// Meta's native copy response (includes ad_object_ids for child copies)
+	// Platform IDs of the copied ads
+	CopiedAdIds []string `json:"copiedAdIds,omitempty"`
+	// Meta only: source ad ID to copied ad ID. Empty when `deepCopy` is false.
+	AdIdMap   map[string]string `json:"adIdMap,omitempty"`
+	Discovery *string           `json:"discovery,omitempty"`
+	// Platform-native response from the copy (TikTok). Absent on Meta, which returns `adIdMap` instead.
 	Raw map[string]interface{} `json:"raw,omitempty"`
 }
 
@@ -74,6 +78,70 @@ func (o *DuplicateAdSet200Response) HasCopiedAdSetId() bool {
 // SetCopiedAdSetId gets a reference to the given string and assigns it to the CopiedAdSetId field.
 func (o *DuplicateAdSet200Response) SetCopiedAdSetId(v string) {
 	o.CopiedAdSetId = &v
+}
+
+// GetCopiedAdIds returns the CopiedAdIds field value if set, zero value otherwise.
+func (o *DuplicateAdSet200Response) GetCopiedAdIds() []string {
+	if o == nil || IsNil(o.CopiedAdIds) {
+		var ret []string
+		return ret
+	}
+	return o.CopiedAdIds
+}
+
+// GetCopiedAdIdsOk returns a tuple with the CopiedAdIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DuplicateAdSet200Response) GetCopiedAdIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.CopiedAdIds) {
+		return nil, false
+	}
+	return o.CopiedAdIds, true
+}
+
+// HasCopiedAdIds returns a boolean if a field has been set.
+func (o *DuplicateAdSet200Response) HasCopiedAdIds() bool {
+	if o != nil && !IsNil(o.CopiedAdIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetCopiedAdIds gets a reference to the given []string and assigns it to the CopiedAdIds field.
+func (o *DuplicateAdSet200Response) SetCopiedAdIds(v []string) {
+	o.CopiedAdIds = v
+}
+
+// GetAdIdMap returns the AdIdMap field value if set, zero value otherwise.
+func (o *DuplicateAdSet200Response) GetAdIdMap() map[string]string {
+	if o == nil || IsNil(o.AdIdMap) {
+		var ret map[string]string
+		return ret
+	}
+	return o.AdIdMap
+}
+
+// GetAdIdMapOk returns a tuple with the AdIdMap field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DuplicateAdSet200Response) GetAdIdMapOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.AdIdMap) {
+		return map[string]string{}, false
+	}
+	return o.AdIdMap, true
+}
+
+// HasAdIdMap returns a boolean if a field has been set.
+func (o *DuplicateAdSet200Response) HasAdIdMap() bool {
+	if o != nil && !IsNil(o.AdIdMap) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdIdMap gets a reference to the given map[string]string and assigns it to the AdIdMap field.
+func (o *DuplicateAdSet200Response) SetAdIdMap(v map[string]string) {
+	o.AdIdMap = v
 }
 
 // GetDiscovery returns the Discovery field value if set, zero value otherwise.
@@ -152,6 +220,12 @@ func (o DuplicateAdSet200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.CopiedAdSetId) {
 		toSerialize["copiedAdSetId"] = o.CopiedAdSetId
+	}
+	if !IsNil(o.CopiedAdIds) {
+		toSerialize["copiedAdIds"] = o.CopiedAdIds
+	}
+	if !IsNil(o.AdIdMap) {
+		toSerialize["adIdMap"] = o.AdIdMap
 	}
 	if !IsNil(o.Discovery) {
 		toSerialize["discovery"] = o.Discovery

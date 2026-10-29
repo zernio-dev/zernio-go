@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.402.0
+API version: 1.403.0
 Contact: support@zernio.com
 */
 
@@ -22,8 +22,12 @@ var _ MappedNullable = &DuplicateAdCampaign200Response{}
 type DuplicateAdCampaign200Response struct {
 	// Platform ID of the new campaign
 	CopiedCampaignId *string `json:"copiedCampaignId,omitempty"`
-	Discovery        *string `json:"discovery,omitempty"`
-	// Platform-native response from the copy endpoint (Meta includes ad_object_ids for child copies)
+	// Meta only: source ad set ID to copied ad set ID. Empty when `deepCopy` is false.
+	AdSetIdMap map[string]string `json:"adSetIdMap,omitempty"`
+	// Meta only: source ad ID to copied ad ID, across every copied ad set. Empty when `deepCopy` is false.
+	AdIdMap   map[string]string `json:"adIdMap,omitempty"`
+	Discovery *string           `json:"discovery,omitempty"`
+	// Platform-native response from the copy (TikTok and LinkedIn). Absent on Meta, which returns `adSetIdMap` and `adIdMap` instead.
 	Raw map[string]interface{} `json:"raw,omitempty"`
 }
 
@@ -74,6 +78,70 @@ func (o *DuplicateAdCampaign200Response) HasCopiedCampaignId() bool {
 // SetCopiedCampaignId gets a reference to the given string and assigns it to the CopiedCampaignId field.
 func (o *DuplicateAdCampaign200Response) SetCopiedCampaignId(v string) {
 	o.CopiedCampaignId = &v
+}
+
+// GetAdSetIdMap returns the AdSetIdMap field value if set, zero value otherwise.
+func (o *DuplicateAdCampaign200Response) GetAdSetIdMap() map[string]string {
+	if o == nil || IsNil(o.AdSetIdMap) {
+		var ret map[string]string
+		return ret
+	}
+	return o.AdSetIdMap
+}
+
+// GetAdSetIdMapOk returns a tuple with the AdSetIdMap field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DuplicateAdCampaign200Response) GetAdSetIdMapOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.AdSetIdMap) {
+		return map[string]string{}, false
+	}
+	return o.AdSetIdMap, true
+}
+
+// HasAdSetIdMap returns a boolean if a field has been set.
+func (o *DuplicateAdCampaign200Response) HasAdSetIdMap() bool {
+	if o != nil && !IsNil(o.AdSetIdMap) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdSetIdMap gets a reference to the given map[string]string and assigns it to the AdSetIdMap field.
+func (o *DuplicateAdCampaign200Response) SetAdSetIdMap(v map[string]string) {
+	o.AdSetIdMap = v
+}
+
+// GetAdIdMap returns the AdIdMap field value if set, zero value otherwise.
+func (o *DuplicateAdCampaign200Response) GetAdIdMap() map[string]string {
+	if o == nil || IsNil(o.AdIdMap) {
+		var ret map[string]string
+		return ret
+	}
+	return o.AdIdMap
+}
+
+// GetAdIdMapOk returns a tuple with the AdIdMap field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DuplicateAdCampaign200Response) GetAdIdMapOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.AdIdMap) {
+		return map[string]string{}, false
+	}
+	return o.AdIdMap, true
+}
+
+// HasAdIdMap returns a boolean if a field has been set.
+func (o *DuplicateAdCampaign200Response) HasAdIdMap() bool {
+	if o != nil && !IsNil(o.AdIdMap) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdIdMap gets a reference to the given map[string]string and assigns it to the AdIdMap field.
+func (o *DuplicateAdCampaign200Response) SetAdIdMap(v map[string]string) {
+	o.AdIdMap = v
 }
 
 // GetDiscovery returns the Discovery field value if set, zero value otherwise.
@@ -152,6 +220,12 @@ func (o DuplicateAdCampaign200Response) ToMap() (map[string]interface{}, error) 
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.CopiedCampaignId) {
 		toSerialize["copiedCampaignId"] = o.CopiedCampaignId
+	}
+	if !IsNil(o.AdSetIdMap) {
+		toSerialize["adSetIdMap"] = o.AdSetIdMap
+	}
+	if !IsNil(o.AdIdMap) {
+		toSerialize["adIdMap"] = o.AdIdMap
 	}
 	if !IsNil(o.Discovery) {
 		toSerialize["discovery"] = o.Discovery
