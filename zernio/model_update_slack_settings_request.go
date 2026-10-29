@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.410.0
+API version: 1.411.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type UpdateSlackSettingsRequest struct {
 	DefaultUsername *string `json:"defaultUsername,omitempty"`
 	// Author avatar image URL. Empty string clears it.
 	DefaultIconUrl *string `json:"defaultIconUrl,omitempty"`
+	// Applies the name and icon to every connected channel of this Slack workspace owned by the same owner, on the same Slack app, in profiles the caller can access. Channels connected later inherit the identity from a channel of that workspace.
+	ApplyToWorkspace *bool `json:"applyToWorkspace,omitempty"`
 }
 
 // NewUpdateSlackSettingsRequest instantiates a new UpdateSlackSettingsRequest object
@@ -32,6 +34,8 @@ type UpdateSlackSettingsRequest struct {
 // will change when the set of required properties is changed
 func NewUpdateSlackSettingsRequest() *UpdateSlackSettingsRequest {
 	this := UpdateSlackSettingsRequest{}
+	var applyToWorkspace bool = false
+	this.ApplyToWorkspace = &applyToWorkspace
 	return &this
 }
 
@@ -40,6 +44,8 @@ func NewUpdateSlackSettingsRequest() *UpdateSlackSettingsRequest {
 // but it doesn't guarantee that properties required by API are set
 func NewUpdateSlackSettingsRequestWithDefaults() *UpdateSlackSettingsRequest {
 	this := UpdateSlackSettingsRequest{}
+	var applyToWorkspace bool = false
+	this.ApplyToWorkspace = &applyToWorkspace
 	return &this
 }
 
@@ -107,6 +113,38 @@ func (o *UpdateSlackSettingsRequest) SetDefaultIconUrl(v string) {
 	o.DefaultIconUrl = &v
 }
 
+// GetApplyToWorkspace returns the ApplyToWorkspace field value if set, zero value otherwise.
+func (o *UpdateSlackSettingsRequest) GetApplyToWorkspace() bool {
+	if o == nil || IsNil(o.ApplyToWorkspace) {
+		var ret bool
+		return ret
+	}
+	return *o.ApplyToWorkspace
+}
+
+// GetApplyToWorkspaceOk returns a tuple with the ApplyToWorkspace field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateSlackSettingsRequest) GetApplyToWorkspaceOk() (*bool, bool) {
+	if o == nil || IsNil(o.ApplyToWorkspace) {
+		return nil, false
+	}
+	return o.ApplyToWorkspace, true
+}
+
+// HasApplyToWorkspace returns a boolean if a field has been set.
+func (o *UpdateSlackSettingsRequest) HasApplyToWorkspace() bool {
+	if o != nil && !IsNil(o.ApplyToWorkspace) {
+		return true
+	}
+
+	return false
+}
+
+// SetApplyToWorkspace gets a reference to the given bool and assigns it to the ApplyToWorkspace field.
+func (o *UpdateSlackSettingsRequest) SetApplyToWorkspace(v bool) {
+	o.ApplyToWorkspace = &v
+}
+
 func (o UpdateSlackSettingsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -122,6 +160,9 @@ func (o UpdateSlackSettingsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DefaultIconUrl) {
 		toSerialize["defaultIconUrl"] = o.DefaultIconUrl
+	}
+	if !IsNil(o.ApplyToWorkspace) {
+		toSerialize["applyToWorkspace"] = o.ApplyToWorkspace
 	}
 	return toSerialize, nil
 }
