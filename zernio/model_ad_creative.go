@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.413.2
+API version: 1.413.3
 Contact: support@zernio.com
 */
 
@@ -36,7 +36,7 @@ type AdCreative struct {
 	Description *string `json:"description,omitempty"`
 	// Meta: the call to action type (`call_to_action.type`, or the first `asset_feed_spec.call_to_action_types` entry), e.g. LEARN_MORE or SIGN_UP.
 	CallToAction *string `json:"callToAction,omitempty"`
-	// Meta: the instant form the call to action opens (`call_to_action.value.lead_gen_form_id`), the same value as the `leadGenFormId` create input. Absent on ads without a lead form.
+	// Meta: the instant form the call to action opens (`call_to_action.value.lead_gen_form_id`, or the asset feed's `call_to_actions` on a dynamic creative), the same value as the `leadGenFormId` create input. Absent on ads without a lead form.
 	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
 	// Meta: the ad image hash (`image_hash`), reusable as `imageHash` on POST /v1/ads/create within the same ad account. `thumbnailUrl` and `mediaUrls` carry its stable full resolution permalink when Meta resolves it.
 	ImageHash *string `json:"imageHash,omitempty"`
