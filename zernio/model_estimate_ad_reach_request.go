@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.397.1
+API version: 1.398.0
 Contact: support@zernio.com
 */
 
@@ -26,8 +26,10 @@ type EstimateAdReachRequest struct {
 	AccountId string `json:"accountId"`
 	// Required. The platform ad-account ID the reach call runs against (Meta act_..., LinkedIn numeric sponsoredAccount ID, Pinterest ad-account ID, X account ID) - every backing reach API is scoped to one ad account. Get it from GET /v1/ads/accounts.
 	AdAccountId string `json:"adAccountId"`
-	// The targeting spec to estimate. Same shape used by POST /v1/ads/create.
-	Spec NullableTargetingSpec `json:"spec"`
+	// The targeting spec to estimate. Same shape used by POST /v1/ads/create. Required unless `rawTargeting` is sent; with `rawTargeting` it can be omitted or minimal.
+	Spec NullableTargetingSpec `json:"spec,omitempty"`
+	// Meta only. A Meta-native targeting spec (snake_case: `geo_locations`, `age_min`, `flexible_spec`, `excluded_custom_audiences`, `user_os`, ...), the same field `POST /v1/ads/create` accepts, so the estimate covers the exact audience the ad set will use. For layered targeting, send `flexible_spec` here: entries AND together, ids inside one entry OR.  It uses the same merge rules as `POST /v1/ads/create`: rawTargeting is the BASE layer and `spec`, converted to Meta's wire shape, is merged on top key by key, with `spec` winning on collision. The merge goes one level deep inside `geo_locations` and `excluded_geo_locations` (spec sub-keys win, raw-only sub-keys such as `location_types` survive). Array values (`flexible_spec`, ...) are replaced as a whole key when `spec` builds them, never element-merged, so `spec.interests` or `spec.behaviors` replace a raw `flexible_spec`. The result is sent to Meta `delivery_estimate` as `targeting_spec`.  Sending it for an account on another platform returns 400 naming `rawTargeting`.
+	RawTargeting map[string]interface{} `json:"rawTargeting,omitempty"`
 	// Optional. The optimization goal the estimate should assume (platform's own vocabulary, e.g. Meta `REACH`, `LINK_CLICKS`, `OFFSITE_CONVERSIONS`). Some platforms vary the estimate by goal; omit to use the platform default.
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 }
@@ -38,11 +40,10 @@ type _EstimateAdReachRequest EstimateAdReachRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEstimateAdReachRequest(accountId string, adAccountId string, spec NullableTargetingSpec) *EstimateAdReachRequest {
+func NewEstimateAdReachRequest(accountId string, adAccountId string) *EstimateAdReachRequest {
 	this := EstimateAdReachRequest{}
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
-	this.Spec = spec
 	return &this
 }
 
@@ -102,18 +103,16 @@ func (o *EstimateAdReachRequest) SetAdAccountId(v string) {
 	o.AdAccountId = v
 }
 
-// GetSpec returns the Spec field value
-// If the value is explicit nil, the zero value for TargetingSpec will be returned
+// GetSpec returns the Spec field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EstimateAdReachRequest) GetSpec() TargetingSpec {
-	if o == nil || o.Spec.Get() == nil {
+	if o == nil || IsNil(o.Spec.Get()) {
 		var ret TargetingSpec
 		return ret
 	}
-
 	return *o.Spec.Get()
 }
 
-// GetSpecOk returns a tuple with the Spec field value
+// GetSpecOk returns a tuple with the Spec field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EstimateAdReachRequest) GetSpecOk() (*TargetingSpec, bool) {
@@ -123,9 +122,60 @@ func (o *EstimateAdReachRequest) GetSpecOk() (*TargetingSpec, bool) {
 	return o.Spec.Get(), o.Spec.IsSet()
 }
 
-// SetSpec sets field value
+// HasSpec returns a boolean if a field has been set.
+func (o *EstimateAdReachRequest) HasSpec() bool {
+	if o != nil && o.Spec.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSpec gets a reference to the given NullableTargetingSpec and assigns it to the Spec field.
 func (o *EstimateAdReachRequest) SetSpec(v TargetingSpec) {
 	o.Spec.Set(&v)
+}
+
+// SetSpecNil sets the value for Spec to be an explicit nil
+func (o *EstimateAdReachRequest) SetSpecNil() {
+	o.Spec.Set(nil)
+}
+
+// UnsetSpec ensures that no value is present for Spec, not even an explicit nil
+func (o *EstimateAdReachRequest) UnsetSpec() {
+	o.Spec.Unset()
+}
+
+// GetRawTargeting returns the RawTargeting field value if set, zero value otherwise.
+func (o *EstimateAdReachRequest) GetRawTargeting() map[string]interface{} {
+	if o == nil || IsNil(o.RawTargeting) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.RawTargeting
+}
+
+// GetRawTargetingOk returns a tuple with the RawTargeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EstimateAdReachRequest) GetRawTargetingOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.RawTargeting) {
+		return map[string]interface{}{}, false
+	}
+	return o.RawTargeting, true
+}
+
+// HasRawTargeting returns a boolean if a field has been set.
+func (o *EstimateAdReachRequest) HasRawTargeting() bool {
+	if o != nil && !IsNil(o.RawTargeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetRawTargeting gets a reference to the given map[string]interface{} and assigns it to the RawTargeting field.
+func (o *EstimateAdReachRequest) SetRawTargeting(v map[string]interface{}) {
+	o.RawTargeting = v
 }
 
 // GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise.
@@ -172,7 +222,12 @@ func (o EstimateAdReachRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
-	toSerialize["spec"] = o.Spec.Get()
+	if o.Spec.IsSet() {
+		toSerialize["spec"] = o.Spec.Get()
+	}
+	if !IsNil(o.RawTargeting) {
+		toSerialize["rawTargeting"] = o.RawTargeting
+	}
 	if !IsNil(o.OptimizationGoal) {
 		toSerialize["optimizationGoal"] = o.OptimizationGoal
 	}
@@ -186,7 +241,6 @@ func (o *EstimateAdReachRequest) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"accountId",
 		"adAccountId",
-		"spec",
 	}
 
 	allProperties := make(map[string]interface{})
