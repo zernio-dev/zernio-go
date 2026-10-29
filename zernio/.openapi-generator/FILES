@@ -151,6 +151,7 @@ model_ad_schedule_window.go
 model_ad_status.go
 model_ad_tracking.go
 model_ad_tree_ad_set.go
+model_ad_tree_ad_set_attribution_spec_inner.go
 model_ad_tree_ad_set_promoted_object.go
 model_ad_tree_campaign.go
 model_ad_tree_campaign_optimization_goal.go

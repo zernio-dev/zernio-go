@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.401.0
+API version: 1.402.0
 Contact: support@zernio.com
 */
 
@@ -50,6 +50,14 @@ type AdTreeAdSet struct {
 	// Meta only. Where the ad set stands in Meta's learning phase, as of the last sync: LEARNING while delivery is still being optimized (about 50 optimization events in 7 days end it), SUCCESS once it has left learning, FAIL when it could not gather enough events (Ads Manager's \"Learning limited\"). Null on other platforms and for ad sets not yet synced.
 	LearningStatus NullableString             `json:"learningStatus,omitempty"`
 	PromotedObject *AdTreeAdSetPromotedObject `json:"promotedObject,omitempty"`
+	// Meta only. Where the ad set sends people (Meta `destination_type`), e.g. WEBSITE, MESSENGER, WHATSAPP, INSTAGRAM_DIRECT, ON_AD. Meta answers UNDEFINED for an ad set with no explicit destination. As of the last sync; null on other platforms and for ad sets not yet synced.
+	DestinationType NullableString `json:"destinationType,omitempty"`
+	// Meta only. The ad set's conversion attribution windows (Meta `attribution_spec`), in the same shape `attributionSpec` takes on ad creation so a clone can send it back unchanged. As of the last sync; null on other platforms, for ad sets not yet synced and when Meta reports none.
+	AttributionSpec []AdTreeAdSetAttributionSpecInner `json:"attributionSpec,omitempty"`
+	// Meta only. Regional regulated categories declared on the ad set (Meta `regional_regulated_categories`), e.g. AUSTRALIA_FINSERV, TAIWAN_UNIVERSAL, SINGAPORE_UNIVERSAL or VOLUNTARY_VERIFICATION. As of the last sync; null on other platforms, for ad sets not yet synced and when Meta reports none.
+	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
+	// Meta only. Verified identity IDs per regional regulation role (Meta `regional_regulation_identities`), keyed by Meta's role name. IDs are strings because they can exceed a JSON number's precision. As of the last sync; null on other platforms, for ad sets not yet synced and when Meta reports none.
+	RegionalRegulationIdentities map[string]string `json:"regionalRegulationIdentities,omitempty"`
 	// Individual ads within this ad set (capped at 100). When the ad set has more than 100 ads these are the 100 highest-spending over the requested date range, so this array depends on `fromDate`/`toDate`; `adCount` is always the true ad set size. Returns a subset of Ad fields from the aggregation: `_id`, `name`, `platform`, `status`, `configuredStatus`, `reviewStatus`, `budget`, `metrics`, `creative`, `goal` and the `platform*` ids are always included; `targeting` and `schedule` may be absent. `configuredStatus` (the ad's own on/off toggle) and `reviewStatus` (the platform's review verdict) are part of this contract, not incidental: a rejected ad is only distinguishable from a healthy one through `reviewStatus`. When `timeIncrement=1&dailyLevel=ad`, each entry also carries a `daily[]` array of `AdDailyMetrics`.
 	Ads []Ad `json:"ads,omitempty"`
 	// Per-day metric series for this ad set. Present only when `GET /v1/ads/tree` is called with `timeIncrement=1` and `dailyLevel` is `adset` or `ad`.
@@ -726,6 +734,147 @@ func (o *AdTreeAdSet) SetPromotedObject(v AdTreeAdSetPromotedObject) {
 	o.PromotedObject = &v
 }
 
+// GetDestinationType returns the DestinationType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdTreeAdSet) GetDestinationType() string {
+	if o == nil || IsNil(o.DestinationType.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.DestinationType.Get()
+}
+
+// GetDestinationTypeOk returns a tuple with the DestinationType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdTreeAdSet) GetDestinationTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DestinationType.Get(), o.DestinationType.IsSet()
+}
+
+// HasDestinationType returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasDestinationType() bool {
+	if o != nil && o.DestinationType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDestinationType gets a reference to the given NullableString and assigns it to the DestinationType field.
+func (o *AdTreeAdSet) SetDestinationType(v string) {
+	o.DestinationType.Set(&v)
+}
+
+// SetDestinationTypeNil sets the value for DestinationType to be an explicit nil
+func (o *AdTreeAdSet) SetDestinationTypeNil() {
+	o.DestinationType.Set(nil)
+}
+
+// UnsetDestinationType ensures that no value is present for DestinationType, not even an explicit nil
+func (o *AdTreeAdSet) UnsetDestinationType() {
+	o.DestinationType.Unset()
+}
+
+// GetAttributionSpec returns the AttributionSpec field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdTreeAdSet) GetAttributionSpec() []AdTreeAdSetAttributionSpecInner {
+	if o == nil {
+		var ret []AdTreeAdSetAttributionSpecInner
+		return ret
+	}
+	return o.AttributionSpec
+}
+
+// GetAttributionSpecOk returns a tuple with the AttributionSpec field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdTreeAdSet) GetAttributionSpecOk() ([]AdTreeAdSetAttributionSpecInner, bool) {
+	if o == nil || IsNil(o.AttributionSpec) {
+		return nil, false
+	}
+	return o.AttributionSpec, true
+}
+
+// HasAttributionSpec returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasAttributionSpec() bool {
+	if o != nil && !IsNil(o.AttributionSpec) {
+		return true
+	}
+
+	return false
+}
+
+// SetAttributionSpec gets a reference to the given []AdTreeAdSetAttributionSpecInner and assigns it to the AttributionSpec field.
+func (o *AdTreeAdSet) SetAttributionSpec(v []AdTreeAdSetAttributionSpecInner) {
+	o.AttributionSpec = v
+}
+
+// GetRegionalRegulatedCategories returns the RegionalRegulatedCategories field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdTreeAdSet) GetRegionalRegulatedCategories() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.RegionalRegulatedCategories
+}
+
+// GetRegionalRegulatedCategoriesOk returns a tuple with the RegionalRegulatedCategories field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdTreeAdSet) GetRegionalRegulatedCategoriesOk() ([]string, bool) {
+	if o == nil || IsNil(o.RegionalRegulatedCategories) {
+		return nil, false
+	}
+	return o.RegionalRegulatedCategories, true
+}
+
+// HasRegionalRegulatedCategories returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasRegionalRegulatedCategories() bool {
+	if o != nil && !IsNil(o.RegionalRegulatedCategories) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegionalRegulatedCategories gets a reference to the given []string and assigns it to the RegionalRegulatedCategories field.
+func (o *AdTreeAdSet) SetRegionalRegulatedCategories(v []string) {
+	o.RegionalRegulatedCategories = v
+}
+
+// GetRegionalRegulationIdentities returns the RegionalRegulationIdentities field value if set, zero value otherwise.
+func (o *AdTreeAdSet) GetRegionalRegulationIdentities() map[string]string {
+	if o == nil || IsNil(o.RegionalRegulationIdentities) {
+		var ret map[string]string
+		return ret
+	}
+	return o.RegionalRegulationIdentities
+}
+
+// GetRegionalRegulationIdentitiesOk returns a tuple with the RegionalRegulationIdentities field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTreeAdSet) GetRegionalRegulationIdentitiesOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.RegionalRegulationIdentities) {
+		return map[string]string{}, false
+	}
+	return o.RegionalRegulationIdentities, true
+}
+
+// HasRegionalRegulationIdentities returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasRegionalRegulationIdentities() bool {
+	if o != nil && !IsNil(o.RegionalRegulationIdentities) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegionalRegulationIdentities gets a reference to the given map[string]string and assigns it to the RegionalRegulationIdentities field.
+func (o *AdTreeAdSet) SetRegionalRegulationIdentities(v map[string]string) {
+	o.RegionalRegulationIdentities = v
+}
+
 // GetAds returns the Ads field value if set, zero value otherwise.
 func (o *AdTreeAdSet) GetAds() []Ad {
 	if o == nil || IsNil(o.Ads) {
@@ -853,6 +1002,18 @@ func (o AdTreeAdSet) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject
+	}
+	if o.DestinationType.IsSet() {
+		toSerialize["destinationType"] = o.DestinationType.Get()
+	}
+	if o.AttributionSpec != nil {
+		toSerialize["attributionSpec"] = o.AttributionSpec
+	}
+	if o.RegionalRegulatedCategories != nil {
+		toSerialize["regionalRegulatedCategories"] = o.RegionalRegulatedCategories
+	}
+	if !IsNil(o.RegionalRegulationIdentities) {
+		toSerialize["regionalRegulationIdentities"] = o.RegionalRegulationIdentities
 	}
 	if !IsNil(o.Ads) {
 		toSerialize["ads"] = o.Ads
