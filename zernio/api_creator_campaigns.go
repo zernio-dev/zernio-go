@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.414.1
+API version: 1.415.0
 Contact: support@zernio.com
 */
 
@@ -1091,19 +1091,27 @@ func (r CreatorCampaignsAPICreateCampaignPayoutBatchRequest) Execute() (*CreateC
 /*
 CreateCampaignPayoutBatch Pay creators with one card payment
 
-Pays exactly what is owed to the creators of a `treasury` campaign, through one Stripe Checkout card payment.
+Pays exactly what is owed to the creators of a `treasury` campaign by charging the billing owner's saved card, with no redirect.
 
 ### How it works
 
 1. Every payable creator who finished payout setup (or only `participantIds`, minus `excludeParticipantIds`) is held in `settling`.
-2. The response carries a Stripe Checkout `url` for the total plus the fee (4% per creator, 50 cent minimum).
-3. Once the card payment completes, each creator gets a transfer funded by that charge, and the batch ends `paid` or `partially_failed`.
+2. The saved card (the default one, or `paymentMethodId`) is charged the total plus the fee (4% per creator, 50 cent minimum) while the payer is present.
+3. Once the charge succeeds, each creator gets a transfer funded by it, and the batch ends `paid` or `partially_failed`.
 
-A creator whose payouts were disabled before the payment landed is skipped and stays payable. If the Checkout expires unpaid (24 hours), every amount is payable again.
+A creator whose payouts were disabled before the payment landed is skipped and stays payable.
+
+### 3D Secure
+
+`payment.status: requires_action` means the bank asked the payer to confirm. Complete it with Stripe.js `handleNextAction({ clientSecret })`, then call `POST /v1/payout-batches/{batchId}/confirm`.
+
+One left unfinished is cancelled after 30 minutes and every amount is payable again. Cancel it sooner with `POST /v1/payout-batches/{batchId}/cancel`.
 
 ### Limits and errors
 
-- 402: card payouts are limited to $2,000.00 gross per rolling 30 days by default. Over it the call answers "Over your instant payout limit. Top up your balance to pay more this month, or contact support to raise the limit."
+- 402 `payment_required`: no saved card. Nothing is held.
+- 402 `card_declined`: the bank's reason; every amount is payable again.
+- 402: card payouts are limited to $10,000.00 gross per rolling 30 days by default. Over it the call answers "Over your instant payout limit. Top up your balance to pay more this month, or contact support to raise the limit."
 - 400: nothing payable ("Nothing is payable.").
 
 ### Access and retries
@@ -3902,7 +3910,8 @@ func (r CreatorCampaignsAPIRemoveCampaignParticipantRequest) Execute() (*GetCamp
 RemoveCampaignParticipant Remove campaign participant
 
 Removes the participant from the campaign. Their earnings stay in the ledger. Removing an
-already removed participant returns it unchanged.
+`invited` participant revokes their invite: the link stops working. Removing an already
+removed participant returns it unchanged.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Campaign ID.
@@ -4223,6 +4232,183 @@ func (a *CreatorCampaignsAPIService) ReopenCampaignSubmissionExecute(r CreatorCa
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type CreatorCampaignsAPIResendCampaignParticipantInviteRequest struct {
+	ctx            context.Context
+	ApiService     *CreatorCampaignsAPIService
+	campaignId     string
+	participantId  string
+	idempotencyKey *string
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+func (r CreatorCampaignsAPIResendCampaignParticipantInviteRequest) IdempotencyKey(idempotencyKey string) CreatorCampaignsAPIResendCampaignParticipantInviteRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
+}
+
+func (r CreatorCampaignsAPIResendCampaignParticipantInviteRequest) Execute() (*GetCampaignParticipant200Response, *http.Response, error) {
+	return r.ApiService.ResendCampaignParticipantInviteExecute(r)
+}
+
+/*
+ResendCampaignParticipantInvite Resend campaign participant invite
+
+Emails an `invited` participant their personal invite link again. The link does not change,
+so a link you already sent keeps working. The email counts toward the daily invite email cap
+of your workspace.
+
+Answers 409 when the participant has already joined, was suspended or removed, has no email,
+or the campaign is closed.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Campaign ID.
+	@param participantId Participant ID.
+	@return CreatorCampaignsAPIResendCampaignParticipantInviteRequest
+*/
+func (a *CreatorCampaignsAPIService) ResendCampaignParticipantInvite(ctx context.Context, campaignId string, participantId string) CreatorCampaignsAPIResendCampaignParticipantInviteRequest {
+	return CreatorCampaignsAPIResendCampaignParticipantInviteRequest{
+		ApiService:    a,
+		ctx:           ctx,
+		campaignId:    campaignId,
+		participantId: participantId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetCampaignParticipant200Response
+func (a *CreatorCampaignsAPIService) ResendCampaignParticipantInviteExecute(r CreatorCampaignsAPIResendCampaignParticipantInviteRequest) (*GetCampaignParticipant200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetCampaignParticipant200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CreatorCampaignsAPIService.ResendCampaignParticipantInvite")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/creator-campaigns/{campaignId}/participants/{participantId}/resend-invite"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"participantId"+"}", url.PathEscape(parameterValueToString(r.participantId, "participantId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type CreatorCampaignsAPISettleCampaignParticipantRequest struct {
 	ctx                              context.Context
 	ApiService                       *CreatorCampaignsAPIService
@@ -4266,6 +4452,7 @@ The transfer fee (4%, $0.50 minimum) is added on top: the creator receives the f
 
 - The creator must have finished payout setup from their campaign page (409 otherwise).
 - A balance that does not cover the amount plus the fee answers 402.
+- Money from a card top-up charged under 7 days ago cannot be paid out yet: a payout that needs it answers 409 `payout_funds_locked` with the day it can be sent.
 
 Set `recordOnly: true` to record a payout you made yourself instead of moving money through the treasury (the webhook then carries `recorded: true`).
 

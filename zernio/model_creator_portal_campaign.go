@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.414.1
+API version: 1.415.0
 Contact: support@zernio.com
 */
 
@@ -37,8 +37,8 @@ type CreatorPortalCampaign struct {
 	EndsAt       NullableTime           `json:"endsAt"`
 	Currency     string                 `json:"currency"`
 	Economics    CreatorPortalEconomics `json:"economics"`
-	// A post must be submitted within this many minutes of publishing.
-	MaxPostAgeMinutes int32 `json:"maxPostAgeMinutes"`
+	// A post must be submitted within this many minutes of publishing. Null means any age. Either way, only posts published after the campaign started are accepted.
+	MaxPostAgeMinutes NullableInt32 `json:"maxPostAgeMinutes"`
 	// Days approved earnings stay owed before they become payable.
 	HoldDays int32 `json:"holdDays"`
 	// Days each submitted post is tracked for views.
@@ -51,7 +51,7 @@ type _CreatorPortalCampaign CreatorPortalCampaign
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatorPortalCampaign(id string, name string, brandName string, logoUrl NullableString, theme map[string]interface{}, status string, platforms []string, contentRules NullableString, startsAt NullableTime, endsAt NullableTime, currency string, economics CreatorPortalEconomics, maxPostAgeMinutes int32, holdDays int32, trackingDays int32) *CreatorPortalCampaign {
+func NewCreatorPortalCampaign(id string, name string, brandName string, logoUrl NullableString, theme map[string]interface{}, status string, platforms []string, contentRules NullableString, startsAt NullableTime, endsAt NullableTime, currency string, economics CreatorPortalEconomics, maxPostAgeMinutes NullableInt32, holdDays int32, trackingDays int32) *CreatorPortalCampaign {
 	this := CreatorPortalCampaign{}
 	this.Id = id
 	this.Name = name
@@ -378,27 +378,29 @@ func (o *CreatorPortalCampaign) SetEconomics(v CreatorPortalEconomics) {
 }
 
 // GetMaxPostAgeMinutes returns the MaxPostAgeMinutes field value
+// If the value is explicit nil, the zero value for int32 will be returned
 func (o *CreatorPortalCampaign) GetMaxPostAgeMinutes() int32 {
-	if o == nil {
+	if o == nil || o.MaxPostAgeMinutes.Get() == nil {
 		var ret int32
 		return ret
 	}
 
-	return o.MaxPostAgeMinutes
+	return *o.MaxPostAgeMinutes.Get()
 }
 
 // GetMaxPostAgeMinutesOk returns a tuple with the MaxPostAgeMinutes field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *CreatorPortalCampaign) GetMaxPostAgeMinutesOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.MaxPostAgeMinutes, true
+	return o.MaxPostAgeMinutes.Get(), o.MaxPostAgeMinutes.IsSet()
 }
 
 // SetMaxPostAgeMinutes sets field value
 func (o *CreatorPortalCampaign) SetMaxPostAgeMinutes(v int32) {
-	o.MaxPostAgeMinutes = v
+	o.MaxPostAgeMinutes.Set(&v)
 }
 
 // GetHoldDays returns the HoldDays field value
@@ -473,7 +475,7 @@ func (o CreatorPortalCampaign) ToMap() (map[string]interface{}, error) {
 	toSerialize["endsAt"] = o.EndsAt.Get()
 	toSerialize["currency"] = o.Currency
 	toSerialize["economics"] = o.Economics
-	toSerialize["maxPostAgeMinutes"] = o.MaxPostAgeMinutes
+	toSerialize["maxPostAgeMinutes"] = o.MaxPostAgeMinutes.Get()
 	toSerialize["holdDays"] = o.HoldDays
 	toSerialize["trackingDays"] = o.TrackingDays
 	return toSerialize, nil

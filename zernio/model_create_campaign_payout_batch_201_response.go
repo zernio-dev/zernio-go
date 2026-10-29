@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.414.1
+API version: 1.415.0
 Contact: support@zernio.com
 */
 
@@ -22,9 +22,8 @@ var _ MappedNullable = &CreateCampaignPayoutBatch201Response{}
 
 // CreateCampaignPayoutBatch201Response struct for CreateCampaignPayoutBatch201Response
 type CreateCampaignPayoutBatch201Response struct {
-	Batch PayoutBatch `json:"batch"`
-	// Stripe Checkout for the card payment.
-	Url string `json:"url"`
+	Batch   PayoutBatch                                 `json:"batch"`
+	Payment CreateCampaignPayoutBatch201ResponsePayment `json:"payment"`
 }
 
 type _CreateCampaignPayoutBatch201Response CreateCampaignPayoutBatch201Response
@@ -33,10 +32,10 @@ type _CreateCampaignPayoutBatch201Response CreateCampaignPayoutBatch201Response
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateCampaignPayoutBatch201Response(batch PayoutBatch, url string) *CreateCampaignPayoutBatch201Response {
+func NewCreateCampaignPayoutBatch201Response(batch PayoutBatch, payment CreateCampaignPayoutBatch201ResponsePayment) *CreateCampaignPayoutBatch201Response {
 	this := CreateCampaignPayoutBatch201Response{}
 	this.Batch = batch
-	this.Url = url
+	this.Payment = payment
 	return &this
 }
 
@@ -72,28 +71,28 @@ func (o *CreateCampaignPayoutBatch201Response) SetBatch(v PayoutBatch) {
 	o.Batch = v
 }
 
-// GetUrl returns the Url field value
-func (o *CreateCampaignPayoutBatch201Response) GetUrl() string {
+// GetPayment returns the Payment field value
+func (o *CreateCampaignPayoutBatch201Response) GetPayment() CreateCampaignPayoutBatch201ResponsePayment {
 	if o == nil {
-		var ret string
+		var ret CreateCampaignPayoutBatch201ResponsePayment
 		return ret
 	}
 
-	return o.Url
+	return o.Payment
 }
 
-// GetUrlOk returns a tuple with the Url field value
+// GetPaymentOk returns a tuple with the Payment field value
 // and a boolean to check if the value has been set.
-func (o *CreateCampaignPayoutBatch201Response) GetUrlOk() (*string, bool) {
+func (o *CreateCampaignPayoutBatch201Response) GetPaymentOk() (*CreateCampaignPayoutBatch201ResponsePayment, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Url, true
+	return &o.Payment, true
 }
 
-// SetUrl sets field value
-func (o *CreateCampaignPayoutBatch201Response) SetUrl(v string) {
-	o.Url = v
+// SetPayment sets field value
+func (o *CreateCampaignPayoutBatch201Response) SetPayment(v CreateCampaignPayoutBatch201ResponsePayment) {
+	o.Payment = v
 }
 
 func (o CreateCampaignPayoutBatch201Response) MarshalJSON() ([]byte, error) {
@@ -107,7 +106,7 @@ func (o CreateCampaignPayoutBatch201Response) MarshalJSON() ([]byte, error) {
 func (o CreateCampaignPayoutBatch201Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["batch"] = o.Batch
-	toSerialize["url"] = o.Url
+	toSerialize["payment"] = o.Payment
 	return toSerialize, nil
 }
 
@@ -117,7 +116,7 @@ func (o *CreateCampaignPayoutBatch201Response) UnmarshalJSON(data []byte) (err e
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"batch",
-		"url",
+		"payment",
 	}
 
 	allProperties := make(map[string]interface{})

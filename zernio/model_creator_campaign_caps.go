@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.414.1
+API version: 1.415.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,8 @@ type CreatorCampaignCaps struct {
 	MaxSubmissionsPerParticipantPerDay *int32 `json:"maxSubmissionsPerParticipantPerDay,omitempty"`
 	// Accounts a participant can use in this campaign. Connecting a new account past it answers 400; only the first accounts connected, up to this count, can submit posts.
 	MaxAccountsPerParticipant *int32 `json:"maxAccountsPerParticipant,omitempty"`
+	// X campaigns only: what tracking X posts may cost in X reads, in cents. Unset means 5000 ($50).  X bills one read per tracked post per UTC day, and you pay it at cost through usage-based billing.  When it is spent, open X posts stop counting views and are flagged `x_read_cap`, and new X posts answer 409.
+	MaxXReadSpendCents *int32 `json:"maxXReadSpendCents,omitempty"`
 	// A submission whose authenticity score falls below this is flagged `low_authenticity`. It is never rejected automatically. Defaults to 40 on create.
 	AuthenticityThreshold float32 `json:"authenticityThreshold"`
 }
@@ -148,6 +150,38 @@ func (o *CreatorCampaignCaps) SetMaxAccountsPerParticipant(v int32) {
 	o.MaxAccountsPerParticipant = &v
 }
 
+// GetMaxXReadSpendCents returns the MaxXReadSpendCents field value if set, zero value otherwise.
+func (o *CreatorCampaignCaps) GetMaxXReadSpendCents() int32 {
+	if o == nil || IsNil(o.MaxXReadSpendCents) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxXReadSpendCents
+}
+
+// GetMaxXReadSpendCentsOk returns a tuple with the MaxXReadSpendCents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaignCaps) GetMaxXReadSpendCentsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxXReadSpendCents) {
+		return nil, false
+	}
+	return o.MaxXReadSpendCents, true
+}
+
+// HasMaxXReadSpendCents returns a boolean if a field has been set.
+func (o *CreatorCampaignCaps) HasMaxXReadSpendCents() bool {
+	if o != nil && !IsNil(o.MaxXReadSpendCents) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxXReadSpendCents gets a reference to the given int32 and assigns it to the MaxXReadSpendCents field.
+func (o *CreatorCampaignCaps) SetMaxXReadSpendCents(v int32) {
+	o.MaxXReadSpendCents = &v
+}
+
 // GetAuthenticityThreshold returns the AuthenticityThreshold field value
 func (o *CreatorCampaignCaps) GetAuthenticityThreshold() float32 {
 	if o == nil {
@@ -190,6 +224,9 @@ func (o CreatorCampaignCaps) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MaxAccountsPerParticipant) {
 		toSerialize["maxAccountsPerParticipant"] = o.MaxAccountsPerParticipant
+	}
+	if !IsNil(o.MaxXReadSpendCents) {
+		toSerialize["maxXReadSpendCents"] = o.MaxXReadSpendCents
 	}
 	toSerialize["authenticityThreshold"] = o.AuthenticityThreshold
 	return toSerialize, nil

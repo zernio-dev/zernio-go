@@ -869,6 +869,7 @@ func main() {
 | `client.CreatorCampaignsAPI.RejectCampaignSubmission(ctx)` | Reject campaign submission |
 | `client.CreatorCampaignsAPI.RemoveCampaignParticipant(ctx)` | Remove campaign participant |
 | `client.CreatorCampaignsAPI.ReopenCampaignSubmission(ctx)` | Reopen campaign submission |
+| `client.CreatorCampaignsAPI.ResendCampaignParticipantInvite(ctx)` | Resend campaign participant invite |
 | `client.CreatorCampaignsAPI.SettleCampaignParticipant(ctx)` | Settle campaign participant |
 | `client.CreatorCampaignsAPI.SuspendCampaignParticipant(ctx)` | Suspend campaign participant |
 
@@ -1280,6 +1281,9 @@ func main() {
 | `client.TreasuryAPI.GetTopupReceipt(ctx)` | Get a top-up receipt |
 | `client.TreasuryAPI.GetTransfer(ctx)` | Get a transfer |
 | `client.TreasuryAPI.CancelPayoutBatch(ctx)` | Cancel an unpaid payout batch |
+| `client.TreasuryAPI.CancelTopup(ctx)` | Cancel a top-up |
+| `client.TreasuryAPI.ConfirmPayoutBatch(ctx)` | Confirm a payout batch payment |
+| `client.TreasuryAPI.ConfirmTopup(ctx)` | Confirm a top-up |
 
 ### Twitter Engagement
 | Method | Description |

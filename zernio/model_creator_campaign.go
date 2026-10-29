@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.414.1
+API version: 1.415.0
 Contact: support@zernio.com
 */
 
@@ -46,8 +46,10 @@ type CreatorCampaign struct {
 	TrackingDays int32 `json:"trackingDays"`
 	// Days approved earnings are held before they become payable.
 	HoldDays int32 `json:"holdDays"`
-	// A post older than this when submitted is refused.
-	MaxPostAgeMinutes int32 `json:"maxPostAgeMinutes"`
+	// A post older than this many minutes when submitted is refused. Null (the default) accepts any age. Either way, a post published before the campaign started (`startsAt`, or `activatedAt` without one) is refused.
+	MaxPostAgeMinutes NullableInt32 `json:"maxPostAgeMinutes"`
+	// When the campaign was first activated. Without `startsAt`, posts must be published after this moment.
+	ActivatedAt NullableTime `json:"activatedAt"`
 	// none: settle records a payout made elsewhere. external: you pay from your own rails on campaign_payout.payable and settle with your reference. treasury: settle moves the money from your Zernio balance to the creator's Stripe account, and the creator sets up payouts from their campaign page.
 	Settlement        string                          `json:"settlement"`
 	Economics         CreatorCampaignEconomics        `json:"economics"`
@@ -65,6 +67,8 @@ type CreatorCampaign struct {
 	ConsumedCents    int32                    `json:"consumedCents"`
 	ParticipantCount int32                    `json:"participantCount"`
 	SubmissionCounts CampaignSubmissionCounts `json:"submissionCounts"`
+	// What the campaign's creators can be paid now, summed over every participant's payable balance.
+	PayableCents int32 `json:"payableCents"`
 }
 
 type _CreatorCampaign CreatorCampaign
@@ -73,7 +77,7 @@ type _CreatorCampaign CreatorCampaign
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatorCampaign(id string, userId string, profileId string, kind string, name string, brandName string, status string, type_ string, currency string, platforms []string, contentRules NullableString, startsAt NullableTime, endsAt NullableTime, trackingDays int32, holdDays int32, maxPostAgeMinutes int32, settlement string, economics CreatorCampaignEconomics, caps CreatorCampaignCaps, branding NullableCreatorCampaignBranding, budgetExhaustedAt NullableTime, closedAt NullableTime, payableScannedAt NullableTime, createdAt time.Time, updatedAt time.Time, hasOpenInvite bool, consumedCents int32, participantCount int32, submissionCounts CampaignSubmissionCounts) *CreatorCampaign {
+func NewCreatorCampaign(id string, userId string, profileId string, kind string, name string, brandName string, status string, type_ string, currency string, platforms []string, contentRules NullableString, startsAt NullableTime, endsAt NullableTime, trackingDays int32, holdDays int32, maxPostAgeMinutes NullableInt32, activatedAt NullableTime, settlement string, economics CreatorCampaignEconomics, caps CreatorCampaignCaps, branding NullableCreatorCampaignBranding, budgetExhaustedAt NullableTime, closedAt NullableTime, payableScannedAt NullableTime, createdAt time.Time, updatedAt time.Time, hasOpenInvite bool, consumedCents int32, participantCount int32, submissionCounts CampaignSubmissionCounts, payableCents int32) *CreatorCampaign {
 	this := CreatorCampaign{}
 	this.Id = id
 	this.UserId = userId
@@ -91,6 +95,7 @@ func NewCreatorCampaign(id string, userId string, profileId string, kind string,
 	this.TrackingDays = trackingDays
 	this.HoldDays = holdDays
 	this.MaxPostAgeMinutes = maxPostAgeMinutes
+	this.ActivatedAt = activatedAt
 	this.Settlement = settlement
 	this.Economics = economics
 	this.Caps = caps
@@ -104,6 +109,7 @@ func NewCreatorCampaign(id string, userId string, profileId string, kind string,
 	this.ConsumedCents = consumedCents
 	this.ParticipantCount = participantCount
 	this.SubmissionCounts = submissionCounts
+	this.PayableCents = payableCents
 	return &this
 }
 
@@ -482,27 +488,55 @@ func (o *CreatorCampaign) SetHoldDays(v int32) {
 }
 
 // GetMaxPostAgeMinutes returns the MaxPostAgeMinutes field value
+// If the value is explicit nil, the zero value for int32 will be returned
 func (o *CreatorCampaign) GetMaxPostAgeMinutes() int32 {
-	if o == nil {
+	if o == nil || o.MaxPostAgeMinutes.Get() == nil {
 		var ret int32
 		return ret
 	}
 
-	return o.MaxPostAgeMinutes
+	return *o.MaxPostAgeMinutes.Get()
 }
 
 // GetMaxPostAgeMinutesOk returns a tuple with the MaxPostAgeMinutes field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *CreatorCampaign) GetMaxPostAgeMinutesOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.MaxPostAgeMinutes, true
+	return o.MaxPostAgeMinutes.Get(), o.MaxPostAgeMinutes.IsSet()
 }
 
 // SetMaxPostAgeMinutes sets field value
 func (o *CreatorCampaign) SetMaxPostAgeMinutes(v int32) {
-	o.MaxPostAgeMinutes = v
+	o.MaxPostAgeMinutes.Set(&v)
+}
+
+// GetActivatedAt returns the ActivatedAt field value
+// If the value is explicit nil, the zero value for time.Time will be returned
+func (o *CreatorCampaign) GetActivatedAt() time.Time {
+	if o == nil || o.ActivatedAt.Get() == nil {
+		var ret time.Time
+		return ret
+	}
+
+	return *o.ActivatedAt.Get()
+}
+
+// GetActivatedAtOk returns a tuple with the ActivatedAt field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatorCampaign) GetActivatedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ActivatedAt.Get(), o.ActivatedAt.IsSet()
+}
+
+// SetActivatedAt sets field value
+func (o *CreatorCampaign) SetActivatedAt(v time.Time) {
+	o.ActivatedAt.Set(&v)
 }
 
 // GetSettlement returns the Settlement field value
@@ -825,6 +859,30 @@ func (o *CreatorCampaign) SetSubmissionCounts(v CampaignSubmissionCounts) {
 	o.SubmissionCounts = v
 }
 
+// GetPayableCents returns the PayableCents field value
+func (o *CreatorCampaign) GetPayableCents() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.PayableCents
+}
+
+// GetPayableCentsOk returns a tuple with the PayableCents field value
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaign) GetPayableCentsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.PayableCents, true
+}
+
+// SetPayableCents sets field value
+func (o *CreatorCampaign) SetPayableCents(v int32) {
+	o.PayableCents = v
+}
+
 func (o CreatorCampaign) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -850,7 +908,8 @@ func (o CreatorCampaign) ToMap() (map[string]interface{}, error) {
 	toSerialize["endsAt"] = o.EndsAt.Get()
 	toSerialize["trackingDays"] = o.TrackingDays
 	toSerialize["holdDays"] = o.HoldDays
-	toSerialize["maxPostAgeMinutes"] = o.MaxPostAgeMinutes
+	toSerialize["maxPostAgeMinutes"] = o.MaxPostAgeMinutes.Get()
+	toSerialize["activatedAt"] = o.ActivatedAt.Get()
 	toSerialize["settlement"] = o.Settlement
 	toSerialize["economics"] = o.Economics
 	toSerialize["caps"] = o.Caps
@@ -864,6 +923,7 @@ func (o CreatorCampaign) ToMap() (map[string]interface{}, error) {
 	toSerialize["consumedCents"] = o.ConsumedCents
 	toSerialize["participantCount"] = o.ParticipantCount
 	toSerialize["submissionCounts"] = o.SubmissionCounts
+	toSerialize["payableCents"] = o.PayableCents
 	return toSerialize, nil
 }
 
@@ -888,6 +948,7 @@ func (o *CreatorCampaign) UnmarshalJSON(data []byte) (err error) {
 		"trackingDays",
 		"holdDays",
 		"maxPostAgeMinutes",
+		"activatedAt",
 		"settlement",
 		"economics",
 		"caps",
@@ -901,6 +962,7 @@ func (o *CreatorCampaign) UnmarshalJSON(data []byte) (err error) {
 		"consumedCents",
 		"participantCount",
 		"submissionCounts",
+		"payableCents",
 	}
 
 	allProperties := make(map[string]interface{})

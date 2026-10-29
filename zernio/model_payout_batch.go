@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.414.1
+API version: 1.415.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,7 @@ var _ MappedNullable = &PayoutBatch{}
 type PayoutBatch struct {
 	Id         string         `json:"id"`
 	CampaignId NullableString `json:"campaignId"`
-	// `awaiting_payment` until the card payment completes; `paying` while transfers go out; then `paid`, `partially_failed` (some items failed or were skipped), `failed` (none paid) or `expired` (the Checkout expired unpaid, every amount is payable again).
+	// `awaiting_payment` until the card charge succeeds (3D Secure included); `paying` while transfers go out; then `paid`, `partially_failed` (some items failed or were skipped), `failed` (the card was declined, or none paid) or `expired` (the payment was cancelled unpaid, every amount is payable again).
 	Status string `json:"status"`
 	Method string `json:"method"`
 	// Total the creators receive.

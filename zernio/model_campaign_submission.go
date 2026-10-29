@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.414.1
+API version: 1.415.0
 Contact: support@zernio.com
 */
 
@@ -45,11 +45,11 @@ type CampaignSubmission struct {
 	// User id of the reviewer.
 	ReviewedBy NullableString `json:"reviewedBy"`
 	ReviewedAt NullableTime   `json:"reviewedAt"`
-	// Views when the post was submitted; they never count toward earnings.
+	// Views when the post was submitted. They count toward earnings like every later view.
 	ViewsAtSubmission NullableInt32 `json:"viewsAtSubmission"`
 	// Latest view count read for the post, frozen at the tracking window end.
 	ViewsLatest NullableInt32 `json:"viewsLatest"`
-	// Views gained after submission that count toward earnings, read at the tracking window end at the latest: once the window completes or is cancelled, the last read at or before its end is final and this value stops moving.
+	// Views that count toward earnings: every view the platform reports for the post, including those before submission, read at the tracking window end at the latest: once the window completes or is cancelled, the last read at or before its end is final and this value stops moving.
 	ViewsEligible          NullableInt32                           `json:"viewsEligible"`
 	LastAccruedViews       int32                                   `json:"lastAccruedViews"`
 	AccruedCents           int32                                   `json:"accruedCents"`

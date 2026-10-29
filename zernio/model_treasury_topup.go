@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.414.1
+API version: 1.415.0
 Contact: support@zernio.com
 */
 
@@ -33,10 +33,11 @@ type TreasuryTopup struct {
 	// Stripe processing fee you paid; null until Stripe reports it, 0 when Zernio covers it
 	StripeFeeCents NullableInt32 `json:"stripeFeeCents,omitempty"`
 	// Amount credited to your balance: gross minus the Stripe fee, or the whole charge when Zernio covers the fee; null until Stripe reports it
-	NetCents    NullableInt32 `json:"netCents,omitempty"`
-	Status      *string       `json:"status,omitempty"`
-	CreatedAt   *time.Time    `json:"createdAt,omitempty"`
-	SucceededAt NullableTime  `json:"succeededAt,omitempty"`
+	NetCents NullableInt32 `json:"netCents,omitempty"`
+	// `pending` until the card is charged (or 3D Secure is finished) and credited. `expired` means it ended unpaid: cancelled, or 3D Secure left unfinished for 30 minutes. Only `pending` counts toward pendingTopupCents.
+	Status      *string      `json:"status,omitempty"`
+	CreatedAt   *time.Time   `json:"createdAt,omitempty"`
+	SucceededAt NullableTime `json:"succeededAt,omitempty"`
 }
 
 // NewTreasuryTopup instantiates a new TreasuryTopup object

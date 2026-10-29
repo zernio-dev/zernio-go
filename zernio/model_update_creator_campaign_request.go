@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.414.1
+API version: 1.415.0
 Contact: support@zernio.com
 */
 
@@ -21,15 +21,16 @@ var _ MappedNullable = &UpdateCreatorCampaignRequest{}
 
 // UpdateCreatorCampaignRequest Every field is optional; send at least one. `economics` can only change while the campaign is a draft.
 type UpdateCreatorCampaignRequest struct {
-	Name              *string                         `json:"name,omitempty"`
-	BrandName         *string                         `json:"brandName,omitempty"`
-	Platforms         []string                        `json:"platforms,omitempty"`
-	ContentRules      NullableString                  `json:"contentRules,omitempty"`
-	StartsAt          NullableTime                    `json:"startsAt,omitempty"`
-	EndsAt            NullableTime                    `json:"endsAt,omitempty"`
-	TrackingDays      *int32                          `json:"trackingDays,omitempty"`
-	HoldDays          *int32                          `json:"holdDays,omitempty"`
-	MaxPostAgeMinutes *int32                          `json:"maxPostAgeMinutes,omitempty"`
+	Name         *string        `json:"name,omitempty"`
+	BrandName    *string        `json:"brandName,omitempty"`
+	Platforms    []string       `json:"platforms,omitempty"`
+	ContentRules NullableString `json:"contentRules,omitempty"`
+	StartsAt     NullableTime   `json:"startsAt,omitempty"`
+	EndsAt       NullableTime   `json:"endsAt,omitempty"`
+	TrackingDays *int32         `json:"trackingDays,omitempty"`
+	HoldDays     *int32         `json:"holdDays,omitempty"`
+	// Null removes the limit.
+	MaxPostAgeMinutes NullableInt32                   `json:"maxPostAgeMinutes,omitempty"`
 	Settlement        *string                         `json:"settlement,omitempty"`
 	Economics         *CreatorCampaignEconomics       `json:"economics,omitempty"`
 	Caps              *CreatorCampaignCaps            `json:"caps,omitempty"`
@@ -342,36 +343,47 @@ func (o *UpdateCreatorCampaignRequest) SetHoldDays(v int32) {
 	o.HoldDays = &v
 }
 
-// GetMaxPostAgeMinutes returns the MaxPostAgeMinutes field value if set, zero value otherwise.
+// GetMaxPostAgeMinutes returns the MaxPostAgeMinutes field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *UpdateCreatorCampaignRequest) GetMaxPostAgeMinutes() int32 {
-	if o == nil || IsNil(o.MaxPostAgeMinutes) {
+	if o == nil || IsNil(o.MaxPostAgeMinutes.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.MaxPostAgeMinutes
+	return *o.MaxPostAgeMinutes.Get()
 }
 
 // GetMaxPostAgeMinutesOk returns a tuple with the MaxPostAgeMinutes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *UpdateCreatorCampaignRequest) GetMaxPostAgeMinutesOk() (*int32, bool) {
-	if o == nil || IsNil(o.MaxPostAgeMinutes) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MaxPostAgeMinutes, true
+	return o.MaxPostAgeMinutes.Get(), o.MaxPostAgeMinutes.IsSet()
 }
 
 // HasMaxPostAgeMinutes returns a boolean if a field has been set.
 func (o *UpdateCreatorCampaignRequest) HasMaxPostAgeMinutes() bool {
-	if o != nil && !IsNil(o.MaxPostAgeMinutes) {
+	if o != nil && o.MaxPostAgeMinutes.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMaxPostAgeMinutes gets a reference to the given int32 and assigns it to the MaxPostAgeMinutes field.
+// SetMaxPostAgeMinutes gets a reference to the given NullableInt32 and assigns it to the MaxPostAgeMinutes field.
 func (o *UpdateCreatorCampaignRequest) SetMaxPostAgeMinutes(v int32) {
-	o.MaxPostAgeMinutes = &v
+	o.MaxPostAgeMinutes.Set(&v)
+}
+
+// SetMaxPostAgeMinutesNil sets the value for MaxPostAgeMinutes to be an explicit nil
+func (o *UpdateCreatorCampaignRequest) SetMaxPostAgeMinutesNil() {
+	o.MaxPostAgeMinutes.Set(nil)
+}
+
+// UnsetMaxPostAgeMinutes ensures that no value is present for MaxPostAgeMinutes, not even an explicit nil
+func (o *UpdateCreatorCampaignRequest) UnsetMaxPostAgeMinutes() {
+	o.MaxPostAgeMinutes.Unset()
 }
 
 // GetSettlement returns the Settlement field value if set, zero value otherwise.
@@ -547,8 +559,8 @@ func (o UpdateCreatorCampaignRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.HoldDays) {
 		toSerialize["holdDays"] = o.HoldDays
 	}
-	if !IsNil(o.MaxPostAgeMinutes) {
-		toSerialize["maxPostAgeMinutes"] = o.MaxPostAgeMinutes
+	if o.MaxPostAgeMinutes.IsSet() {
+		toSerialize["maxPostAgeMinutes"] = o.MaxPostAgeMinutes.Get()
 	}
 	if !IsNil(o.Settlement) {
 		toSerialize["settlement"] = o.Settlement

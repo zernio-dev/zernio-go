@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.414.1
+API version: 1.415.0
 Contact: support@zernio.com
 */
 
@@ -12,7 +12,9 @@ Contact: support@zernio.com
 package zernio
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the CreateTopup201Response type satisfies the MappedNullable interface at compile time
@@ -20,17 +22,23 @@ var _ MappedNullable = &CreateTopup201Response{}
 
 // CreateTopup201Response struct for CreateTopup201Response
 type CreateTopup201Response struct {
-	TopupId *string `json:"topupId,omitempty"`
-	// Stripe Checkout URL to send the payer to
-	Url *string `json:"url,omitempty"`
+	TopupId string `json:"topupId"`
+	Status  string `json:"status"`
+	// PaymentIntent client secret for Stripe.js handleNextAction; set only when status is requires_action
+	ClientSecret NullableString `json:"clientSecret"`
 }
+
+type _CreateTopup201Response CreateTopup201Response
 
 // NewCreateTopup201Response instantiates a new CreateTopup201Response object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateTopup201Response() *CreateTopup201Response {
+func NewCreateTopup201Response(topupId string, status string, clientSecret NullableString) *CreateTopup201Response {
 	this := CreateTopup201Response{}
+	this.TopupId = topupId
+	this.Status = status
+	this.ClientSecret = clientSecret
 	return &this
 }
 
@@ -42,68 +50,78 @@ func NewCreateTopup201ResponseWithDefaults() *CreateTopup201Response {
 	return &this
 }
 
-// GetTopupId returns the TopupId field value if set, zero value otherwise.
+// GetTopupId returns the TopupId field value
 func (o *CreateTopup201Response) GetTopupId() string {
-	if o == nil || IsNil(o.TopupId) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.TopupId
+
+	return o.TopupId
 }
 
-// GetTopupIdOk returns a tuple with the TopupId field value if set, nil otherwise
+// GetTopupIdOk returns a tuple with the TopupId field value
 // and a boolean to check if the value has been set.
 func (o *CreateTopup201Response) GetTopupIdOk() (*string, bool) {
-	if o == nil || IsNil(o.TopupId) {
+	if o == nil {
 		return nil, false
 	}
-	return o.TopupId, true
+	return &o.TopupId, true
 }
 
-// HasTopupId returns a boolean if a field has been set.
-func (o *CreateTopup201Response) HasTopupId() bool {
-	if o != nil && !IsNil(o.TopupId) {
-		return true
-	}
-
-	return false
-}
-
-// SetTopupId gets a reference to the given string and assigns it to the TopupId field.
+// SetTopupId sets field value
 func (o *CreateTopup201Response) SetTopupId(v string) {
-	o.TopupId = &v
+	o.TopupId = v
 }
 
-// GetUrl returns the Url field value if set, zero value otherwise.
-func (o *CreateTopup201Response) GetUrl() string {
-	if o == nil || IsNil(o.Url) {
+// GetStatus returns the Status field value
+func (o *CreateTopup201Response) GetStatus() string {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Url
+
+	return o.Status
 }
 
-// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
+// GetStatusOk returns a tuple with the Status field value
 // and a boolean to check if the value has been set.
-func (o *CreateTopup201Response) GetUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.Url) {
+func (o *CreateTopup201Response) GetStatusOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Url, true
+	return &o.Status, true
 }
 
-// HasUrl returns a boolean if a field has been set.
-func (o *CreateTopup201Response) HasUrl() bool {
-	if o != nil && !IsNil(o.Url) {
-		return true
+// SetStatus sets field value
+func (o *CreateTopup201Response) SetStatus(v string) {
+	o.Status = v
+}
+
+// GetClientSecret returns the ClientSecret field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *CreateTopup201Response) GetClientSecret() string {
+	if o == nil || o.ClientSecret.Get() == nil {
+		var ret string
+		return ret
 	}
 
-	return false
+	return *o.ClientSecret.Get()
 }
 
-// SetUrl gets a reference to the given string and assigns it to the Url field.
-func (o *CreateTopup201Response) SetUrl(v string) {
-	o.Url = &v
+// GetClientSecretOk returns a tuple with the ClientSecret field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateTopup201Response) GetClientSecretOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ClientSecret.Get(), o.ClientSecret.IsSet()
+}
+
+// SetClientSecret sets field value
+func (o *CreateTopup201Response) SetClientSecret(v string) {
+	o.ClientSecret.Set(&v)
 }
 
 func (o CreateTopup201Response) MarshalJSON() ([]byte, error) {
@@ -116,13 +134,49 @@ func (o CreateTopup201Response) MarshalJSON() ([]byte, error) {
 
 func (o CreateTopup201Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.TopupId) {
-		toSerialize["topupId"] = o.TopupId
-	}
-	if !IsNil(o.Url) {
-		toSerialize["url"] = o.Url
-	}
+	toSerialize["topupId"] = o.TopupId
+	toSerialize["status"] = o.Status
+	toSerialize["clientSecret"] = o.ClientSecret.Get()
 	return toSerialize, nil
+}
+
+func (o *CreateTopup201Response) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"topupId",
+		"status",
+		"clientSecret",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varCreateTopup201Response := _CreateTopup201Response{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varCreateTopup201Response)
+
+	if err != nil {
+		return err
+	}
+
+	*o = CreateTopup201Response(varCreateTopup201Response)
+
+	return err
 }
 
 type NullableCreateTopup201Response struct {

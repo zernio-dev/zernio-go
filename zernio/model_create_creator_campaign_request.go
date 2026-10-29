@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.414.1
+API version: 1.415.0
 Contact: support@zernio.com
 */
 
@@ -30,14 +30,15 @@ type CreateCreatorCampaignRequest struct {
 	Economics CreatorCampaignEconomics `json:"economics"`
 	// Omitted, the campaign starts with authenticityThreshold 40 and no other caps.
 	Caps *CreatorCampaignCaps `json:"caps,omitempty"`
-	// Platforms creators may post on. At least one is needed to activate.
-	Platforms         []string                        `json:"platforms,omitempty"`
-	ContentRules      NullableString                  `json:"contentRules,omitempty"`
-	StartsAt          NullableTime                    `json:"startsAt,omitempty"`
-	EndsAt            NullableTime                    `json:"endsAt,omitempty"`
-	TrackingDays      *int32                          `json:"trackingDays,omitempty"`
-	HoldDays          *int32                          `json:"holdDays,omitempty"`
-	MaxPostAgeMinutes *int32                          `json:"maxPostAgeMinutes,omitempty"`
+	// Platforms creators may post on. At least one is needed to activate. `twitter` (X) needs usage-based billing: X reads are billed at cost, up to `caps.maxXReadSpendCents`, and X views are the post's impressions. `facebook` takes Page reels and videos only.
+	Platforms    []string       `json:"platforms,omitempty"`
+	ContentRules NullableString `json:"contentRules,omitempty"`
+	StartsAt     NullableTime   `json:"startsAt,omitempty"`
+	EndsAt       NullableTime   `json:"endsAt,omitempty"`
+	TrackingDays *int32         `json:"trackingDays,omitempty"`
+	HoldDays     *int32         `json:"holdDays,omitempty"`
+	// Optional maximum age in minutes of a post when it is submitted. Null or omitted (the default) accepts any age. Posts published before the campaign started are always refused.
+	MaxPostAgeMinutes NullableInt32                   `json:"maxPostAgeMinutes,omitempty"`
 	Settlement        *string                         `json:"settlement,omitempty"`
 	Branding          NullableCreatorCampaignBranding `json:"branding,omitempty"`
 }
@@ -58,8 +59,6 @@ func NewCreateCreatorCampaignRequest(profileId string, name string, brandName st
 	this.TrackingDays = &trackingDays
 	var holdDays int32 = 10
 	this.HoldDays = &holdDays
-	var maxPostAgeMinutes int32 = 60
-	this.MaxPostAgeMinutes = &maxPostAgeMinutes
 	var settlement string = "none"
 	this.Settlement = &settlement
 	return &this
@@ -74,8 +73,6 @@ func NewCreateCreatorCampaignRequestWithDefaults() *CreateCreatorCampaignRequest
 	this.TrackingDays = &trackingDays
 	var holdDays int32 = 10
 	this.HoldDays = &holdDays
-	var maxPostAgeMinutes int32 = 60
-	this.MaxPostAgeMinutes = &maxPostAgeMinutes
 	var settlement string = "none"
 	this.Settlement = &settlement
 	return &this
@@ -434,36 +431,47 @@ func (o *CreateCreatorCampaignRequest) SetHoldDays(v int32) {
 	o.HoldDays = &v
 }
 
-// GetMaxPostAgeMinutes returns the MaxPostAgeMinutes field value if set, zero value otherwise.
+// GetMaxPostAgeMinutes returns the MaxPostAgeMinutes field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CreateCreatorCampaignRequest) GetMaxPostAgeMinutes() int32 {
-	if o == nil || IsNil(o.MaxPostAgeMinutes) {
+	if o == nil || IsNil(o.MaxPostAgeMinutes.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.MaxPostAgeMinutes
+	return *o.MaxPostAgeMinutes.Get()
 }
 
 // GetMaxPostAgeMinutesOk returns a tuple with the MaxPostAgeMinutes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *CreateCreatorCampaignRequest) GetMaxPostAgeMinutesOk() (*int32, bool) {
-	if o == nil || IsNil(o.MaxPostAgeMinutes) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MaxPostAgeMinutes, true
+	return o.MaxPostAgeMinutes.Get(), o.MaxPostAgeMinutes.IsSet()
 }
 
 // HasMaxPostAgeMinutes returns a boolean if a field has been set.
 func (o *CreateCreatorCampaignRequest) HasMaxPostAgeMinutes() bool {
-	if o != nil && !IsNil(o.MaxPostAgeMinutes) {
+	if o != nil && o.MaxPostAgeMinutes.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMaxPostAgeMinutes gets a reference to the given int32 and assigns it to the MaxPostAgeMinutes field.
+// SetMaxPostAgeMinutes gets a reference to the given NullableInt32 and assigns it to the MaxPostAgeMinutes field.
 func (o *CreateCreatorCampaignRequest) SetMaxPostAgeMinutes(v int32) {
-	o.MaxPostAgeMinutes = &v
+	o.MaxPostAgeMinutes.Set(&v)
+}
+
+// SetMaxPostAgeMinutesNil sets the value for MaxPostAgeMinutes to be an explicit nil
+func (o *CreateCreatorCampaignRequest) SetMaxPostAgeMinutesNil() {
+	o.MaxPostAgeMinutes.Set(nil)
+}
+
+// UnsetMaxPostAgeMinutes ensures that no value is present for MaxPostAgeMinutes, not even an explicit nil
+func (o *CreateCreatorCampaignRequest) UnsetMaxPostAgeMinutes() {
+	o.MaxPostAgeMinutes.Unset()
 }
 
 // GetSettlement returns the Settlement field value if set, zero value otherwise.
@@ -576,8 +584,8 @@ func (o CreateCreatorCampaignRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.HoldDays) {
 		toSerialize["holdDays"] = o.HoldDays
 	}
-	if !IsNil(o.MaxPostAgeMinutes) {
-		toSerialize["maxPostAgeMinutes"] = o.MaxPostAgeMinutes
+	if o.MaxPostAgeMinutes.IsSet() {
+		toSerialize["maxPostAgeMinutes"] = o.MaxPostAgeMinutes.Get()
 	}
 	if !IsNil(o.Settlement) {
 		toSerialize["settlement"] = o.Settlement
