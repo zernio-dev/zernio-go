@@ -2004,6 +2004,7 @@ model_move_whats_app_number_to_profile_200_response.go
 model_o_auth_app.go
 model_o_auth_app_setup.go
 model_o_auth_app_setup_scope_areas_inner.go
+model_o_auth_app_slack_events.go
 model_o_auth_app_webhook.go
 model_o_auth_app_webhook_object.go
 model_on_branded_calling_identity_action_required_request.go

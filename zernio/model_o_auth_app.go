@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.409.1
+API version: 1.410.0
 Contact: support@zernio.com
 */
 
@@ -43,7 +43,10 @@ type OAuthApp struct {
 	Webhook     *OAuthAppWebhook `json:"webhook,omitempty"`
 	// TikTok only: set this as the webhook callback URL in your TikTok developer app. TikTok uses it to report when a video finishes publishing; Zernio also checks the publish status itself, so posting works without it. Null on other platforms.
 	SharedWebhookUrl NullableString `json:"sharedWebhookUrl,omitempty"`
-	CreatedAt        time.Time      `json:"createdAt"`
+	// Slack only: whether the signing secret of your Slack app is saved. Without it Zernio refuses every event sent to `slackEvents.requestUrl`.
+	HasSlackSigningSecret *bool                `json:"hasSlackSigningSecret,omitempty"`
+	SlackEvents           *OAuthAppSlackEvents `json:"slackEvents,omitempty"`
+	CreatedAt             time.Time            `json:"createdAt"`
 }
 
 type _OAuthApp OAuthApp
@@ -427,6 +430,70 @@ func (o *OAuthApp) UnsetSharedWebhookUrl() {
 	o.SharedWebhookUrl.Unset()
 }
 
+// GetHasSlackSigningSecret returns the HasSlackSigningSecret field value if set, zero value otherwise.
+func (o *OAuthApp) GetHasSlackSigningSecret() bool {
+	if o == nil || IsNil(o.HasSlackSigningSecret) {
+		var ret bool
+		return ret
+	}
+	return *o.HasSlackSigningSecret
+}
+
+// GetHasSlackSigningSecretOk returns a tuple with the HasSlackSigningSecret field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OAuthApp) GetHasSlackSigningSecretOk() (*bool, bool) {
+	if o == nil || IsNil(o.HasSlackSigningSecret) {
+		return nil, false
+	}
+	return o.HasSlackSigningSecret, true
+}
+
+// HasHasSlackSigningSecret returns a boolean if a field has been set.
+func (o *OAuthApp) HasHasSlackSigningSecret() bool {
+	if o != nil && !IsNil(o.HasSlackSigningSecret) {
+		return true
+	}
+
+	return false
+}
+
+// SetHasSlackSigningSecret gets a reference to the given bool and assigns it to the HasSlackSigningSecret field.
+func (o *OAuthApp) SetHasSlackSigningSecret(v bool) {
+	o.HasSlackSigningSecret = &v
+}
+
+// GetSlackEvents returns the SlackEvents field value if set, zero value otherwise.
+func (o *OAuthApp) GetSlackEvents() OAuthAppSlackEvents {
+	if o == nil || IsNil(o.SlackEvents) {
+		var ret OAuthAppSlackEvents
+		return ret
+	}
+	return *o.SlackEvents
+}
+
+// GetSlackEventsOk returns a tuple with the SlackEvents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OAuthApp) GetSlackEventsOk() (*OAuthAppSlackEvents, bool) {
+	if o == nil || IsNil(o.SlackEvents) {
+		return nil, false
+	}
+	return o.SlackEvents, true
+}
+
+// HasSlackEvents returns a boolean if a field has been set.
+func (o *OAuthApp) HasSlackEvents() bool {
+	if o != nil && !IsNil(o.SlackEvents) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlackEvents gets a reference to the given OAuthAppSlackEvents and assigns it to the SlackEvents field.
+func (o *OAuthApp) SetSlackEvents(v OAuthAppSlackEvents) {
+	o.SlackEvents = &v
+}
+
 // GetCreatedAt returns the CreatedAt field value
 func (o *OAuthApp) GetCreatedAt() time.Time {
 	if o == nil {
@@ -480,6 +547,12 @@ func (o OAuthApp) ToMap() (map[string]interface{}, error) {
 	}
 	if o.SharedWebhookUrl.IsSet() {
 		toSerialize["sharedWebhookUrl"] = o.SharedWebhookUrl.Get()
+	}
+	if !IsNil(o.HasSlackSigningSecret) {
+		toSerialize["hasSlackSigningSecret"] = o.HasSlackSigningSecret
+	}
+	if !IsNil(o.SlackEvents) {
+		toSerialize["slackEvents"] = o.SlackEvents
 	}
 	toSerialize["createdAt"] = o.CreatedAt
 	return toSerialize, nil

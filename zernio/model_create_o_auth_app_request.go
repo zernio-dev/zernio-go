@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.409.1
+API version: 1.410.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type CreateOAuthAppRequest struct {
 	Label        string `json:"label"`
 	ClientId     string `json:"clientId"`
 	ClientSecret string `json:"clientSecret"`
+	// Slack only: the signing secret from the app's Basic Information page. Needed to receive events from your Slack app; any other platform is a 400.
+	SlackSigningSecret *string `json:"slackSigningSecret,omitempty"`
 	// Areas this app requests. Defaults to every area the platform supports; an area the platform cannot request separately is a 400.
 	ScopeAreas           []string `json:"scopeAreas,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -150,6 +152,38 @@ func (o *CreateOAuthAppRequest) SetClientSecret(v string) {
 	o.ClientSecret = v
 }
 
+// GetSlackSigningSecret returns the SlackSigningSecret field value if set, zero value otherwise.
+func (o *CreateOAuthAppRequest) GetSlackSigningSecret() string {
+	if o == nil || IsNil(o.SlackSigningSecret) {
+		var ret string
+		return ret
+	}
+	return *o.SlackSigningSecret
+}
+
+// GetSlackSigningSecretOk returns a tuple with the SlackSigningSecret field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateOAuthAppRequest) GetSlackSigningSecretOk() (*string, bool) {
+	if o == nil || IsNil(o.SlackSigningSecret) {
+		return nil, false
+	}
+	return o.SlackSigningSecret, true
+}
+
+// HasSlackSigningSecret returns a boolean if a field has been set.
+func (o *CreateOAuthAppRequest) HasSlackSigningSecret() bool {
+	if o != nil && !IsNil(o.SlackSigningSecret) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlackSigningSecret gets a reference to the given string and assigns it to the SlackSigningSecret field.
+func (o *CreateOAuthAppRequest) SetSlackSigningSecret(v string) {
+	o.SlackSigningSecret = &v
+}
+
 // GetScopeAreas returns the ScopeAreas field value if set, zero value otherwise.
 func (o *CreateOAuthAppRequest) GetScopeAreas() []string {
 	if o == nil || IsNil(o.ScopeAreas) {
@@ -196,6 +230,9 @@ func (o CreateOAuthAppRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["label"] = o.Label
 	toSerialize["clientId"] = o.ClientId
 	toSerialize["clientSecret"] = o.ClientSecret
+	if !IsNil(o.SlackSigningSecret) {
+		toSerialize["slackSigningSecret"] = o.SlackSigningSecret
+	}
 	if !IsNil(o.ScopeAreas) {
 		toSerialize["scopeAreas"] = o.ScopeAreas
 	}
@@ -249,6 +286,7 @@ func (o *CreateOAuthAppRequest) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "label")
 		delete(additionalProperties, "clientId")
 		delete(additionalProperties, "clientSecret")
+		delete(additionalProperties, "slackSigningSecret")
 		delete(additionalProperties, "scopeAreas")
 		o.AdditionalProperties = additionalProperties
 	}
