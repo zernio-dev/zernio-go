@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.403.0
+API version: 1.404.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,8 @@ type ConnectWhatsAppCredentialsRequest struct {
 	PhoneNumberId string `json:"phoneNumberId"`
 	// The 6-digit two-step verification PIN set on the number. Required if you enabled two-step verification for it, otherwise Meta rejects the Cloud API registration with error 133005 and the number cannot send messages.
 	Pin *string `json:"pin,omitempty" validate:"regexp=^\\\\d{6}$"`
+	// Your own WhatsApp OAuth app (see /v1/connect/oauth-apps) holding the Meta app the access token belongs to. The WABA's webhooks then go to that app's own callback URL and every delivery is checked against its app secret. Without it, deliveries come to Zernio's shared Meta webhook.
+	OauthAppId *string `json:"oauthAppId,omitempty"`
 }
 
 type _ConnectWhatsAppCredentialsRequest ConnectWhatsAppCredentialsRequest
@@ -185,6 +187,38 @@ func (o *ConnectWhatsAppCredentialsRequest) SetPin(v string) {
 	o.Pin = &v
 }
 
+// GetOauthAppId returns the OauthAppId field value if set, zero value otherwise.
+func (o *ConnectWhatsAppCredentialsRequest) GetOauthAppId() string {
+	if o == nil || IsNil(o.OauthAppId) {
+		var ret string
+		return ret
+	}
+	return *o.OauthAppId
+}
+
+// GetOauthAppIdOk returns a tuple with the OauthAppId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectWhatsAppCredentialsRequest) GetOauthAppIdOk() (*string, bool) {
+	if o == nil || IsNil(o.OauthAppId) {
+		return nil, false
+	}
+	return o.OauthAppId, true
+}
+
+// HasOauthAppId returns a boolean if a field has been set.
+func (o *ConnectWhatsAppCredentialsRequest) HasOauthAppId() bool {
+	if o != nil && !IsNil(o.OauthAppId) {
+		return true
+	}
+
+	return false
+}
+
+// SetOauthAppId gets a reference to the given string and assigns it to the OauthAppId field.
+func (o *ConnectWhatsAppCredentialsRequest) SetOauthAppId(v string) {
+	o.OauthAppId = &v
+}
+
 func (o ConnectWhatsAppCredentialsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -201,6 +235,9 @@ func (o ConnectWhatsAppCredentialsRequest) ToMap() (map[string]interface{}, erro
 	toSerialize["phoneNumberId"] = o.PhoneNumberId
 	if !IsNil(o.Pin) {
 		toSerialize["pin"] = o.Pin
+	}
+	if !IsNil(o.OauthAppId) {
+		toSerialize["oauthAppId"] = o.OauthAppId
 	}
 	return toSerialize, nil
 }
