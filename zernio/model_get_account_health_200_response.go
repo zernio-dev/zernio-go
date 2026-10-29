@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.412.0
+API version: 1.413.0
 Contact: support@zernio.com
 */
 
@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the GetAccountHealth200Response type satisfies the MappedNullable interface at compile time
@@ -36,7 +37,15 @@ type GetAccountHealth200Response struct {
 	// List of issues found
 	Issues []string `json:"issues,omitempty"`
 	// Actionable recommendations to fix issues
-	Recommendations      []string                                                          `json:"recommendations,omitempty"`
+	Recommendations []string `json:"recommendations,omitempty"`
+	// User id of the profile owner, not necessarily the team member who connected the account.
+	OwnerUserId *string `json:"ownerUserId,omitempty"`
+	// Why the connection is broken or its token refresh is failing, from the most recent current cause. Null when the connection is healthy, including when the account is unhealthy for another reason (analytics, messaging restriction, missing analytics scopes), or when no cause is stored.
+	DisconnectReason NullableString `json:"disconnectReason,omitempty"`
+	// intentional: deliberately disconnected by the user or by Zernio (for example a plan downgrade), not a token failure. unintentional: token expired or revoked, or an auth failure. Null when disconnectReason is null.
+	DisconnectionType NullableString `json:"disconnectionType,omitempty"`
+	// When the earliest current stored cause was recorded (the start of the outage); for an intentional disconnect, when it was disconnected. Null when the connection is healthy, including when the account is unhealthy for another reason (analytics, messaging restriction, missing analytics scopes), or when the time is unknown.
+	UnhealthySince       NullableTime                                                      `json:"unhealthySince,omitempty"`
 	AnalyticsSync        *GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync        `json:"analyticsSync,omitempty"`
 	MessagingRestriction *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction `json:"messagingRestriction,omitempty"`
 	PlatformConnection   *GetAccountHealth200ResponsePlatformConnection                    `json:"platformConnection,omitempty"`
@@ -443,6 +452,167 @@ func (o *GetAccountHealth200Response) SetRecommendations(v []string) {
 	o.Recommendations = v
 }
 
+// GetOwnerUserId returns the OwnerUserId field value if set, zero value otherwise.
+func (o *GetAccountHealth200Response) GetOwnerUserId() string {
+	if o == nil || IsNil(o.OwnerUserId) {
+		var ret string
+		return ret
+	}
+	return *o.OwnerUserId
+}
+
+// GetOwnerUserIdOk returns a tuple with the OwnerUserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200Response) GetOwnerUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.OwnerUserId) {
+		return nil, false
+	}
+	return o.OwnerUserId, true
+}
+
+// HasOwnerUserId returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasOwnerUserId() bool {
+	if o != nil && !IsNil(o.OwnerUserId) {
+		return true
+	}
+
+	return false
+}
+
+// SetOwnerUserId gets a reference to the given string and assigns it to the OwnerUserId field.
+func (o *GetAccountHealth200Response) SetOwnerUserId(v string) {
+	o.OwnerUserId = &v
+}
+
+// GetDisconnectReason returns the DisconnectReason field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAccountHealth200Response) GetDisconnectReason() string {
+	if o == nil || IsNil(o.DisconnectReason.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.DisconnectReason.Get()
+}
+
+// GetDisconnectReasonOk returns a tuple with the DisconnectReason field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAccountHealth200Response) GetDisconnectReasonOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DisconnectReason.Get(), o.DisconnectReason.IsSet()
+}
+
+// HasDisconnectReason returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasDisconnectReason() bool {
+	if o != nil && o.DisconnectReason.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDisconnectReason gets a reference to the given NullableString and assigns it to the DisconnectReason field.
+func (o *GetAccountHealth200Response) SetDisconnectReason(v string) {
+	o.DisconnectReason.Set(&v)
+}
+
+// SetDisconnectReasonNil sets the value for DisconnectReason to be an explicit nil
+func (o *GetAccountHealth200Response) SetDisconnectReasonNil() {
+	o.DisconnectReason.Set(nil)
+}
+
+// UnsetDisconnectReason ensures that no value is present for DisconnectReason, not even an explicit nil
+func (o *GetAccountHealth200Response) UnsetDisconnectReason() {
+	o.DisconnectReason.Unset()
+}
+
+// GetDisconnectionType returns the DisconnectionType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAccountHealth200Response) GetDisconnectionType() string {
+	if o == nil || IsNil(o.DisconnectionType.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.DisconnectionType.Get()
+}
+
+// GetDisconnectionTypeOk returns a tuple with the DisconnectionType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAccountHealth200Response) GetDisconnectionTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DisconnectionType.Get(), o.DisconnectionType.IsSet()
+}
+
+// HasDisconnectionType returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasDisconnectionType() bool {
+	if o != nil && o.DisconnectionType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDisconnectionType gets a reference to the given NullableString and assigns it to the DisconnectionType field.
+func (o *GetAccountHealth200Response) SetDisconnectionType(v string) {
+	o.DisconnectionType.Set(&v)
+}
+
+// SetDisconnectionTypeNil sets the value for DisconnectionType to be an explicit nil
+func (o *GetAccountHealth200Response) SetDisconnectionTypeNil() {
+	o.DisconnectionType.Set(nil)
+}
+
+// UnsetDisconnectionType ensures that no value is present for DisconnectionType, not even an explicit nil
+func (o *GetAccountHealth200Response) UnsetDisconnectionType() {
+	o.DisconnectionType.Unset()
+}
+
+// GetUnhealthySince returns the UnhealthySince field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAccountHealth200Response) GetUnhealthySince() time.Time {
+	if o == nil || IsNil(o.UnhealthySince.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.UnhealthySince.Get()
+}
+
+// GetUnhealthySinceOk returns a tuple with the UnhealthySince field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAccountHealth200Response) GetUnhealthySinceOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.UnhealthySince.Get(), o.UnhealthySince.IsSet()
+}
+
+// HasUnhealthySince returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasUnhealthySince() bool {
+	if o != nil && o.UnhealthySince.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetUnhealthySince gets a reference to the given NullableTime and assigns it to the UnhealthySince field.
+func (o *GetAccountHealth200Response) SetUnhealthySince(v time.Time) {
+	o.UnhealthySince.Set(&v)
+}
+
+// SetUnhealthySinceNil sets the value for UnhealthySince to be an explicit nil
+func (o *GetAccountHealth200Response) SetUnhealthySinceNil() {
+	o.UnhealthySince.Set(nil)
+}
+
+// UnsetUnhealthySince ensures that no value is present for UnhealthySince, not even an explicit nil
+func (o *GetAccountHealth200Response) UnsetUnhealthySince() {
+	o.UnhealthySince.Unset()
+}
+
 // GetAnalyticsSync returns the AnalyticsSync field value if set, zero value otherwise.
 func (o *GetAccountHealth200Response) GetAnalyticsSync() GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync {
 	if o == nil || IsNil(o.AnalyticsSync) {
@@ -584,6 +754,18 @@ func (o GetAccountHealth200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Recommendations) {
 		toSerialize["recommendations"] = o.Recommendations
+	}
+	if !IsNil(o.OwnerUserId) {
+		toSerialize["ownerUserId"] = o.OwnerUserId
+	}
+	if o.DisconnectReason.IsSet() {
+		toSerialize["disconnectReason"] = o.DisconnectReason.Get()
+	}
+	if o.DisconnectionType.IsSet() {
+		toSerialize["disconnectionType"] = o.DisconnectionType.Get()
+	}
+	if o.UnhealthySince.IsSet() {
+		toSerialize["unhealthySince"] = o.UnhealthySince.Get()
 	}
 	if !IsNil(o.AnalyticsSync) {
 		toSerialize["analyticsSync"] = o.AnalyticsSync
