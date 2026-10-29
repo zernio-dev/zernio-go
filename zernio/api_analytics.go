@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.397.0
+API version: 1.397.1
 Contact: support@zernio.com
 */
 
@@ -39,7 +39,7 @@ CancelTrackingWindow Cancel a tracking window
 
 Stops tracking and returns the window with its final status. A window that already completed keeps its
 `completed` status and its final read. A cancelled window gets no final read and fires no
-`post.tracking_completed` webhook. Requires the Analytics add-on.
+`post.tracking_completed` webhook.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param windowId
@@ -548,7 +548,7 @@ GetAnalyticsDashboard Get an analytics dashboard
 Everything an analytics dashboard needs in one call: window totals, follower growth, a per-day series, top posts, recent posts and, optionally, the same figures for the previous period.
 Daily and total metrics use received attribution: each day holds the engagement that arrived that day, on any post, so `totals` is always the sum of `daily`.
 `topPosts` and `recentPosts` list posts published in the window with their lifetime metrics. A post cross-posted to several platforms appears once per platform.
-All dates are UTC days. Requires the Analytics add-on.
+All dates are UTC days.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetAnalyticsDashboardRequest
@@ -1020,7 +1020,7 @@ GetBestTimeToPost Get best times to post
 
 Returns the best times to post based on historical engagement data.
 Groups all published posts by day of week and hour (UTC), calculating average engagement per slot.
-Use this to auto-schedule posts at optimal times. Requires the Analytics add-on.
+Use this to auto-schedule posts at optimal times.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetBestTimeToPostRequest
@@ -1188,7 +1188,6 @@ GetContentDecay Get content performance decay
 Returns how engagement accumulates over time after a post is published.
 Each bucket shows what percentage of the post's total engagement had been reached by that time window.
 Useful for understanding content lifespan (e.g. "posts reach 78% of total engagement within 24 hours").
-Requires the Analytics add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetContentDecayRequest
@@ -1376,7 +1375,7 @@ GetDailyMetrics Get daily aggregated metrics
 
 Returns daily aggregated analytics metrics and a per-platform breakdown.
 Each day includes post count, platform distribution, and summed metrics (impressions, reach, likes, comments, shares, saves, clicks, views).
-Defaults to the last 180 days. Requires the Analytics add-on.
+Defaults to the last 180 days.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetDailyMetricsRequest
@@ -1543,7 +1542,7 @@ GetFacebookDemographics Get Facebook Page demographics
 Returns the follower breakdown of a connected Facebook Page by country and/or city, from Meta's latest daily snapshot.
 Country keys are ISO 3166-1 alpha-2 codes; city keys are "City, Region, Country" strings as Meta returns them.
 Meta removed age and gender demographics for Pages (page_fans_gender_age) on November 15 2025 with no replacement, so only country and city are available.
-Meta reports small counts at a privacy floor, so the long tail can show identical low values. Requires the Analytics add-on.
+Meta reports small counts at a privacy floor, so the long tail can show identical low values.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetFacebookDemographicsRequest
@@ -1754,7 +1753,7 @@ by Meta on November 15, 2025 and are NOT accepted by this endpoint. Use the repl
 below. Because Meta did not provide direct adds/removes replacements, Zernio synthesizes
 followers_gained / followers_lost from the daily follower snapshotter.
 
-Max 89 days, defaults to last 30 days. Requires the Analytics add-on.
+Max 89 days, defaults to last 30 days.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetFacebookPageInsightsRequest
@@ -1913,7 +1912,7 @@ func (r AnalyticsAPIGetFacebookPostEarningsRequest) Execute() (*FacebookPostEarn
 GetFacebookPostEarnings Get Facebook post monetization earnings
 
 Returns lifetime monetization earnings for ONE Facebook post, read live from Meta on every
-request. Requires the Analytics add-on.
+request.
 
 Earnings are CUMULATIVE since the post was published, not earnings within a date range, so
 this endpoint takes no since/until and the totals must not be summed across dates or across
@@ -2590,7 +2589,6 @@ Returns daily performance metrics for a Google Business Profile location.
 Metrics include impressions (Maps/Search, desktop/mobile), website clicks,
 call clicks, direction requests, conversations, bookings, and food orders.
 Data may be delayed 2-3 days. Max 18 months of historical data.
-Requires the Analytics add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetGoogleBusinessPerformanceRequest
@@ -2805,7 +2803,7 @@ GetGoogleBusinessSearchKeywords Get Google Business Profile search keywords
 Returns search keywords that triggered impressions for a Google Business Profile location.
 Data is aggregated monthly. Keywords Google reports only as below a threshold have `impressions` 0 and `impressionsThreshold` set to that threshold.
 Returns up to 100 keywords per page. When `nextPageToken` is not null, pass it as `pageToken` with the same `startMonth` and `endMonth` to get the next page.
-Max 18 months of historical data. Requires the Analytics add-on.
+Max 18 months of historical data.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetGoogleBusinessSearchKeywordsRequest
@@ -3044,7 +3042,7 @@ GetInstagramAccountInsights Get Instagram insights
 Returns account-level Instagram insights such as reach, views, accounts engaged, and total interactions.
 These metrics reflect the entire account's performance across all content surfaces (feed, stories, explore, profile),
 and are fundamentally different from post-level metrics. Data may be delayed up to 48 hours.
-Max 90 days, defaults to last 30 days. Requires the Analytics add-on.
+Max 90 days, defaults to last 30 days.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetInstagramAccountInsightsRequest
@@ -3257,7 +3255,7 @@ GetInstagramDemographics Get Instagram demographics
 
 Returns audience demographic insights for an Instagram account, broken down by age, city, country, and/or gender.
 Requires at least 100 followers. Returns top 45 entries per dimension.
-Data may be delayed up to 48 hours. Requires the Analytics add-on.
+Data may be delayed up to 48 hours.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetInstagramDemographicsRequest
@@ -3489,7 +3487,7 @@ the /insights endpoint in Graph API v22+ and never exposed a historical daily se
 via any public API.
 
 Response envelope matches /v1/analytics/instagram/account-insights so the same client
-handling works. Max 89 days, defaults to last 30 days. Requires the Analytics add-on.
+handling works. Max 89 days, defaults to last 30 days.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetInstagramFollowerHistoryRequest
@@ -3636,7 +3634,7 @@ GetInstagramOnlineFollowers Get Instagram online followers
 Returns how many of an Instagram account's followers were online in each hour, for every day of the last 30 days that Meta has data for.
 Hour keys are "0" to "23" as Meta returns them. endTime is the end_time Meta returns for that day. Meta does not document the timezone of the hour keys.
 Data is delayed up to 48 hours, so the most recent days are left out until Meta fills them.
-Requires at least 100 followers; for smaller accounts days is empty. Requires the Analytics add-on.
+Requires at least 100 followers; for smaller accounts days is empty.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetInstagramOnlineFollowersRequest
@@ -4253,7 +4251,7 @@ Backed by LinkedIn's organizationalEntityShareStatistics,
 organizationalEntityFollowerStatistics, and organizationPageStatistics endpoints.
 
 Response shape matches /v1/analytics/instagram/account-insights. Max 89 days,
-defaults to last 30 days. Requires the Analytics add-on.
+defaults to last 30 days.
 
 Scope requirements: r_organization_social, r_organization_followers, and
 r_organization_admin must all be present on the account. Accounts connected before
@@ -4761,7 +4759,7 @@ pattern looks more like organic viewing. The score is ours. It is computed only 
 samples we fetched from the platform, never from anything the creator or caller reported, and `reasons`
 lists each factor that lowered it with its weight in points. `confidence` (0 to 1) says how much data
 the score rests on. A stored score newer than 30 minutes is returned as is, otherwise it is recomputed.
-The `post.authenticity_changed` webhook fires when a score crosses 40. Requires the Analytics add-on.
+The `post.authenticity_changed` webhook fires when a score crosses 40.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId An external post id, a platform post id or a Zernio post id.
@@ -4939,7 +4937,7 @@ Returns the raw readings behind a post's numbers, oldest first. Each sample is o
 views and engagement as the platform reported them at `syncedAt`. Zernio only stores what it fetched from
 the platform, so nothing here was self-reported. `shares` and `saves` are null on platforms that do not
 return that counter, which is different from a real zero. `watchSeconds` and `completionRate` are null
-when the platform gives no watch signal. Requires the Analytics add-on.
+when the platform gives no watch signal.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetPostSamplesRequest
@@ -5133,7 +5131,7 @@ GetPostTimeline Get post analytics timeline
 
 Returns a daily timeline of analytics metrics for a specific post, showing how impressions, likes,
 and other metrics evolved day-by-day since publishing. Each row represents one day of data per platform.
-For multi-platform Zernio posts, returns separate rows for each platform. Requires the Analytics add-on.
+For multi-platform Zernio posts, returns separate rows for each platform.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetPostTimelineRequest
@@ -5328,7 +5326,6 @@ GetPostingFrequency Get frequency vs engagement
 Returns the correlation between posting frequency (posts per week) and engagement rate, broken down by platform.
 Helps find the optimal posting cadence for each platform. Each row represents a specific (platform, posts_per_week) combination
 with the average engagement rate observed across all weeks matching that frequency.
-Requires the Analytics add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetPostingFrequencyRequest
@@ -5520,7 +5517,7 @@ Returns account-level TikTok insights from /v2/user/info/ (live) plus historical
 time series joined from Zernio's daily snapshotter (AccountStats).
 
 Response shape matches /v1/analytics/instagram/account-insights. Max 89 days,
-defaults to last 30 days. Requires the Analytics add-on and the user.info.stats
+defaults to last 30 days. Requires the user.info.stats
 scope on the account (412 if missing).
 
 Scope intentionally narrow: this ACCOUNT-level endpoint exposes only the four
@@ -5678,7 +5675,7 @@ func (r AnalyticsAPIGetTrackingWindowRequest) Execute() (*TrackingWindowResponse
 GetTrackingWindow Get a tracking window
 
 Returns one tracking window with the latest verified numbers we read from the platform. Once the window
-has completed, `finalReadAt` and `completionReason` say how it closed. Requires the Analytics add-on.
+has completed, `finalReadAt` and `completionReason` say how it closed.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param windowId
@@ -5882,7 +5879,7 @@ channel totals.
 Response shape matches /v1/analytics/instagram/account-insights so the same client
 handling works. Requires yt-analytics.readonly scope (412 with reauthorizeUrl if
 missing). Data has a 2-3 day delay (endDate is clamped accordingly). Max 89 days,
-defaults to last 30 days. Requires the Analytics add-on.
+defaults to last 30 days.
 
 NOT exposed: impressions (Studio thumbnail impressions) and impressionsClickThroughRate.
 YouTube Analytics API v2 does not expose these for any principal type, not channel
@@ -6366,7 +6363,6 @@ Pass videoId to get the audience profile of a single video instead of the whole 
 Age and gender values are viewer percentages (0-100). Country values are view counts.
 Data is based on signed-in viewers only, with a 2-3 day delay. YouTube suppresses demographics
 for videos with too few signed-in views, so low-traffic videos can return empty breakdowns.
-Requires the Analytics add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetYouTubeDemographicsRequest
@@ -7514,7 +7510,7 @@ func (r AnalyticsAPIListTrackingWindowsRequest) Execute() (*ListTrackingWindows2
 ListTrackingWindows List tracking windows
 
 Lists the tracking windows you can see, newest first. Each window carries the latest verified
-numbers we read from the platform. Requires the Analytics add-on.
+numbers we read from the platform.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIListTrackingWindowsRequest
@@ -7689,7 +7685,7 @@ the creator or the caller reported. The window runs for `trackingDays` (30 by de
 ends with one final read, after which the `post.tracking_completed` webhook fires. Identify the post
 with `postId` (an external post id from Zernio), or with `accountId` together with the post's `url`.
 Opening a window for a post that is already tracked returns the existing window with `200`. A new
-window returns `201`. Requires the Analytics add-on.
+window returns `201`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIOpenTrackingWindowRequest
