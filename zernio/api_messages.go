@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.415.0
+API version: 1.416.0
 Contact: support@zernio.com
 */
 
@@ -2137,6 +2137,7 @@ type MessagesAPIListInboxConversationsRequest struct {
 	limit      *int32
 	cursor     *string
 	accountId  *string
+	tags       *string
 }
 
 // Filter by profile ID
@@ -2184,6 +2185,12 @@ func (r MessagesAPIListInboxConversationsRequest) Cursor(cursor string) Messages
 // Filter by specific account ID
 func (r MessagesAPIListInboxConversationsRequest) AccountId(accountId string) MessagesAPIListInboxConversationsRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Comma-separated contact tags. Returns only conversations whose contact has any of them. Cannot be combined with folder&#x3D;requests.
+func (r MessagesAPIListInboxConversationsRequest) Tags(tags string) MessagesAPIListInboxConversationsRequest {
+	r.tags = &tags
 	return r
 }
 
@@ -2282,6 +2289,9 @@ func (a *MessagesAPIService) ListInboxConversationsExecute(r MessagesAPIListInbo
 	}
 	if r.accountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
