@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.405.0
+API version: 1.406.0
 Contact: support@zernio.com
 */
 
@@ -38,6 +38,8 @@ type SelectPinterestBoardRequest struct {
 	ExpiresIn *int32 `json:"expiresIn,omitempty"`
 	// Custom redirect URL after connection completes
 	RedirectUrl *string `json:"redirect_url,omitempty"`
+	// The `oauthAppId` from the selection redirect, when the connect ran on one of your own OAuth apps. Pass it back so a retried selection stays on that app; a different app than the connect used returns 400.
+	OauthAppId *string `json:"oauthAppId,omitempty"`
 }
 
 type _SelectPinterestBoardRequest SelectPinterestBoardRequest
@@ -294,6 +296,38 @@ func (o *SelectPinterestBoardRequest) SetRedirectUrl(v string) {
 	o.RedirectUrl = &v
 }
 
+// GetOauthAppId returns the OauthAppId field value if set, zero value otherwise.
+func (o *SelectPinterestBoardRequest) GetOauthAppId() string {
+	if o == nil || IsNil(o.OauthAppId) {
+		var ret string
+		return ret
+	}
+	return *o.OauthAppId
+}
+
+// GetOauthAppIdOk returns a tuple with the OauthAppId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectPinterestBoardRequest) GetOauthAppIdOk() (*string, bool) {
+	if o == nil || IsNil(o.OauthAppId) {
+		return nil, false
+	}
+	return o.OauthAppId, true
+}
+
+// HasOauthAppId returns a boolean if a field has been set.
+func (o *SelectPinterestBoardRequest) HasOauthAppId() bool {
+	if o != nil && !IsNil(o.OauthAppId) {
+		return true
+	}
+
+	return false
+}
+
+// SetOauthAppId gets a reference to the given string and assigns it to the OauthAppId field.
+func (o *SelectPinterestBoardRequest) SetOauthAppId(v string) {
+	o.OauthAppId = &v
+}
+
 func (o SelectPinterestBoardRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -321,6 +355,9 @@ func (o SelectPinterestBoardRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RedirectUrl) {
 		toSerialize["redirect_url"] = o.RedirectUrl
+	}
+	if !IsNil(o.OauthAppId) {
+		toSerialize["oauthAppId"] = o.OauthAppId
 	}
 	return toSerialize, nil
 }
