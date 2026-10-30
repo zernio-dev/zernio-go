@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.419.0
+API version: 1.420.0
 Contact: support@zernio.com
 */
 
@@ -7589,12 +7589,19 @@ type AdCampaignsAPIListAdsAlertsRequest struct {
 	ctx              context.Context
 	ApiService       *AdCampaignsAPIService
 	accountId        *string
+	profileId        *string
 	includeDismissed *bool
 }
 
 // Only alerts of this ads connection (sibling-expanded like /v1/ads/tree). Omit for every ad account the API key can reach.
 func (r AdCampaignsAPIListAdsAlertsRequest) AccountId(accountId string) AdCampaignsAPIListAdsAlertsRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Only alerts of the ads connections on this profile. Omit for every profile the API key can reach.
+func (r AdCampaignsAPIListAdsAlertsRequest) ProfileId(profileId string) AdCampaignsAPIListAdsAlertsRequest {
+	r.profileId = &profileId
 	return r
 }
 
@@ -7618,6 +7625,8 @@ Lists what needs attention across your ads, most severe first:
 - Meta ad accounts with a failed or overdue payment, or disabled while holding live ads
 - campaigns that spent on 3 or more of the last 7 days without a result (conversion, lead, purchase or conversation goals)
 - budgets spent to their daily cap yesterday
+- ads connections that need reconnecting while they still hold live ads
+- ad accounts whose sync has been failing
 
 Built from stored data and the last 7 days of synced metrics, so it costs no platform call.
 
@@ -7657,6 +7666,9 @@ func (a *AdCampaignsAPIService) ListAdsAlertsExecute(r AdCampaignsAPIListAdsAler
 
 	if r.accountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
 	}
 	if r.includeDismissed != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "includeDismissed", r.includeDismissed, "form", "")
