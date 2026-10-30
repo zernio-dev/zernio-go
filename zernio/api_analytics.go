@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.422.0
+API version: 1.423.0
 Contact: support@zernio.com
 */
 
@@ -4077,7 +4077,7 @@ func (r AnalyticsAPIGetLinkedInDemographicsRequest) AccountId(accountId string) 
 	return r
 }
 
-// Comma-separated list of demographic dimensions: function, seniority, industry, company_size. Defaults to all four if omitted.
+// Comma-separated list of demographic dimensions: function, seniority, industry, company_size, country, region. Defaults to function, seniority, industry and company_size if omitted. Country and region are returned only when requested.
 func (r AnalyticsAPIGetLinkedInDemographicsRequest) Breakdown(breakdown string) AnalyticsAPIGetLinkedInDemographicsRequest {
 	r.breakdown = &breakdown
 	return r
@@ -4090,12 +4090,13 @@ func (r AnalyticsAPIGetLinkedInDemographicsRequest) Execute() (*GetLinkedInDemog
 /*
 GetLinkedInDemographics Get LinkedIn organization follower demographics
 
-Returns the lifetime follower breakdown of a connected LinkedIn organization page by job function, seniority, industry and company size.
+Returns the lifetime follower breakdown of a connected LinkedIn organization page by job function, seniority, industry, company size, country and region. Without `breakdown` it returns function, seniority, industry and company size; country and region are returned only when requested.
 
 ### Labels
 
 - Function, seniority and industry are labelled with LinkedIn's standardized names (English) and keep the LinkedIn URN in `id`.
 - Company size is labelled as a range such as `2-10` or `10001+`.
+- Country and region are labelled with LinkedIn's geo names (English) and keep `urn:li:geo:*` in `id`. A region is a LinkedIn market area, for example New York City Metropolitan Area.
 
 LinkedIn returns at most the top 100 values per breakdown and leaves out followers whose profile lacks that field, so a breakdown does not add up to the follower count.
 
