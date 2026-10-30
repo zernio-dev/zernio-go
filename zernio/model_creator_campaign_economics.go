@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.424.0
+API version: 1.426.0
 Contact: support@zernio.com
 */
 
@@ -17,7 +17,7 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// CreatorCampaignEconomics - How the campaign pays, picked by `type`. Amounts are USD cents.  Every type carries `budgetCents`, the most the campaign can pay out in total. Once earnings reach it, the campaign stops accruing and `creator_campaign.budget_exhausted` fires.  - `cpm`: `ratePer1kCents` per 1,000 eligible views, earned from `minViewsToEarn` views on, capped per post by `maxPayoutPerClipCents`. - `per_post`: `perApprovedPostCents` for each approved post, at most `maxPostsPerParticipant` per participant. - `pool`: `budgetCents` is split at close among approved posts by eligible views; a post needs `minViewsToQualify` views to share.
+// CreatorCampaignEconomics - How the campaign pays, picked by `type`. Amounts are USD cents.  Every type carries `budgetCents`, the most the campaign can pay out in total. Once earnings reach it, the campaign stops accruing and `creator_campaign.budget_exhausted` fires.  - `cpm`: `ratePer1kCents` per 1,000 of the counted `metric` (views by default), earned once a post reaches `minViewsToEarn` of it, capped per post by `maxPayoutPerClipCents`. - `per_post`: `perApprovedPostCents` for each approved post, at most `maxPostsPerParticipant` per participant. - `pool`: `budgetCents` is split at close among approved posts by eligible views; a post needs `minViewsToQualify` views to share.
 type CreatorCampaignEconomics struct {
 	CreatorCampaignEconomicsCpm     *CreatorCampaignEconomicsCpm
 	CreatorCampaignEconomicsPerPost *CreatorCampaignEconomicsPerPost

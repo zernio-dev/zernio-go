@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.424.0
+API version: 1.426.0
 Contact: support@zernio.com
 */
 
@@ -50,7 +50,9 @@ type CampaignSubmission struct {
 	// Latest view count read for the post, frozen at the tracking window end.
 	ViewsLatest NullableInt32 `json:"viewsLatest"`
 	// Views that count toward earnings: every view the platform reports for the post, including those before submission, read at the tracking window end at the latest: once the window completes or is cancelled, the last read at or before its end is final and this value stops moving.
-	ViewsEligible          NullableInt32                           `json:"viewsEligible"`
+	ViewsEligible NullableInt32 `json:"viewsEligible"`
+	// The campaign engagement types summed at the latest read (all four on a views campaign), frozen at the tracking window end like `viewsEligible`. An `engagements` campaign earns on this count.
+	EngagementsLatest      NullableInt32                           `json:"engagementsLatest"`
 	LastAccruedViews       int32                                   `json:"lastAccruedViews"`
 	AccruedCents           int32                                   `json:"accruedCents"`
 	ApprovedCents          int32                                   `json:"approvedCents"`
@@ -77,7 +79,7 @@ type _CampaignSubmission CampaignSubmission
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCampaignSubmission(id string, campaignId string, participantId string, creatorId string, accountId string, platform string, platformPostId string, platformPostUrl NullableString, externalPostId NullableString, trackingWindowId NullableString, mediaHash NullableString, submittedAt time.Time, postPublishedAt NullableTime, status string, rejectReason NullableString, reviewRound int32, reviewedBy NullableString, reviewedAt NullableTime, viewsAtSubmission NullableInt32, viewsLatest NullableInt32, viewsEligible NullableInt32, lastAccruedViews int32, accruedCents int32, approvedCents int32, authenticityScore NullableInt32, authenticityConfidence NullableFloat32, flags []CampaignSubmissionFlag, createdAt time.Time, updatedAt time.Time, creator WebhookPayloadCampaignSubmissionCreator, authenticity CampaignSubmissionAuthenticity, earnedCents int32, releasedCents int32, paidOutCents int32, window CampaignSubmissionWindow, post CampaignSubmissionPost) *CampaignSubmission {
+func NewCampaignSubmission(id string, campaignId string, participantId string, creatorId string, accountId string, platform string, platformPostId string, platformPostUrl NullableString, externalPostId NullableString, trackingWindowId NullableString, mediaHash NullableString, submittedAt time.Time, postPublishedAt NullableTime, status string, rejectReason NullableString, reviewRound int32, reviewedBy NullableString, reviewedAt NullableTime, viewsAtSubmission NullableInt32, viewsLatest NullableInt32, viewsEligible NullableInt32, engagementsLatest NullableInt32, lastAccruedViews int32, accruedCents int32, approvedCents int32, authenticityScore NullableInt32, authenticityConfidence NullableFloat32, flags []CampaignSubmissionFlag, createdAt time.Time, updatedAt time.Time, creator WebhookPayloadCampaignSubmissionCreator, authenticity CampaignSubmissionAuthenticity, earnedCents int32, releasedCents int32, paidOutCents int32, window CampaignSubmissionWindow, post CampaignSubmissionPost) *CampaignSubmission {
 	this := CampaignSubmission{}
 	this.Id = id
 	this.CampaignId = campaignId
@@ -100,6 +102,7 @@ func NewCampaignSubmission(id string, campaignId string, participantId string, c
 	this.ViewsAtSubmission = viewsAtSubmission
 	this.ViewsLatest = viewsLatest
 	this.ViewsEligible = viewsEligible
+	this.EngagementsLatest = engagementsLatest
 	this.LastAccruedViews = lastAccruedViews
 	this.AccruedCents = accruedCents
 	this.ApprovedCents = approvedCents
@@ -652,6 +655,32 @@ func (o *CampaignSubmission) SetViewsEligible(v int32) {
 	o.ViewsEligible.Set(&v)
 }
 
+// GetEngagementsLatest returns the EngagementsLatest field value
+// If the value is explicit nil, the zero value for int32 will be returned
+func (o *CampaignSubmission) GetEngagementsLatest() int32 {
+	if o == nil || o.EngagementsLatest.Get() == nil {
+		var ret int32
+		return ret
+	}
+
+	return *o.EngagementsLatest.Get()
+}
+
+// GetEngagementsLatestOk returns a tuple with the EngagementsLatest field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CampaignSubmission) GetEngagementsLatestOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.EngagementsLatest.Get(), o.EngagementsLatest.IsSet()
+}
+
+// SetEngagementsLatest sets field value
+func (o *CampaignSubmission) SetEngagementsLatest(v int32) {
+	o.EngagementsLatest.Set(&v)
+}
+
 // GetLastAccruedViews returns the LastAccruedViews field value
 func (o *CampaignSubmission) GetLastAccruedViews() int32 {
 	if o == nil {
@@ -1047,6 +1076,7 @@ func (o CampaignSubmission) ToMap() (map[string]interface{}, error) {
 	toSerialize["viewsAtSubmission"] = o.ViewsAtSubmission.Get()
 	toSerialize["viewsLatest"] = o.ViewsLatest.Get()
 	toSerialize["viewsEligible"] = o.ViewsEligible.Get()
+	toSerialize["engagementsLatest"] = o.EngagementsLatest.Get()
 	toSerialize["lastAccruedViews"] = o.LastAccruedViews
 	toSerialize["accruedCents"] = o.AccruedCents
 	toSerialize["approvedCents"] = o.ApprovedCents
@@ -1091,6 +1121,7 @@ func (o *CampaignSubmission) UnmarshalJSON(data []byte) (err error) {
 		"viewsAtSubmission",
 		"viewsLatest",
 		"viewsEligible",
+		"engagementsLatest",
 		"lastAccruedViews",
 		"accruedCents",
 		"approvedCents",

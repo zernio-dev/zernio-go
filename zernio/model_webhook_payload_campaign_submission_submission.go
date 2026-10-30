@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.424.0
+API version: 1.426.0
 Contact: support@zernio.com
 */
 
@@ -22,12 +22,16 @@ var _ MappedNullable = &WebhookPayloadCampaignSubmissionSubmission{}
 
 // WebhookPayloadCampaignSubmissionSubmission struct for WebhookPayloadCampaignSubmissionSubmission
 type WebhookPayloadCampaignSubmissionSubmission struct {
-	Id                string                                                 `json:"id"`
-	Platform          string                                                 `json:"platform"`
-	PlatformPostId    string                                                 `json:"platformPostId"`
-	PlatformPostUrl   NullableString                                         `json:"platformPostUrl"`
-	Status            string                                                 `json:"status"`
-	ViewsAtSubmission NullableInt32                                          `json:"viewsAtSubmission"`
+	Id                string         `json:"id"`
+	Platform          string         `json:"platform"`
+	PlatformPostId    string         `json:"platformPostId"`
+	PlatformPostUrl   NullableString `json:"platformPostUrl"`
+	Status            string         `json:"status"`
+	ViewsAtSubmission NullableInt32  `json:"viewsAtSubmission"`
+	// Views that count toward earnings at the latest read.
+	ViewsEligible NullableInt32 `json:"viewsEligible"`
+	// The campaign engagement types summed at the latest read. An engagements campaign earns on this count.
+	EngagementsLatest NullableInt32                                          `json:"engagementsLatest"`
 	Flags             []WebhookPayloadCampaignSubmissionSubmissionFlagsInner `json:"flags"`
 }
 
@@ -37,7 +41,7 @@ type _WebhookPayloadCampaignSubmissionSubmission WebhookPayloadCampaignSubmissio
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadCampaignSubmissionSubmission(id string, platform string, platformPostId string, platformPostUrl NullableString, status string, viewsAtSubmission NullableInt32, flags []WebhookPayloadCampaignSubmissionSubmissionFlagsInner) *WebhookPayloadCampaignSubmissionSubmission {
+func NewWebhookPayloadCampaignSubmissionSubmission(id string, platform string, platformPostId string, platformPostUrl NullableString, status string, viewsAtSubmission NullableInt32, viewsEligible NullableInt32, engagementsLatest NullableInt32, flags []WebhookPayloadCampaignSubmissionSubmissionFlagsInner) *WebhookPayloadCampaignSubmissionSubmission {
 	this := WebhookPayloadCampaignSubmissionSubmission{}
 	this.Id = id
 	this.Platform = platform
@@ -45,6 +49,8 @@ func NewWebhookPayloadCampaignSubmissionSubmission(id string, platform string, p
 	this.PlatformPostUrl = platformPostUrl
 	this.Status = status
 	this.ViewsAtSubmission = viewsAtSubmission
+	this.ViewsEligible = viewsEligible
+	this.EngagementsLatest = engagementsLatest
 	this.Flags = flags
 	return &this
 }
@@ -205,6 +211,58 @@ func (o *WebhookPayloadCampaignSubmissionSubmission) SetViewsAtSubmission(v int3
 	o.ViewsAtSubmission.Set(&v)
 }
 
+// GetViewsEligible returns the ViewsEligible field value
+// If the value is explicit nil, the zero value for int32 will be returned
+func (o *WebhookPayloadCampaignSubmissionSubmission) GetViewsEligible() int32 {
+	if o == nil || o.ViewsEligible.Get() == nil {
+		var ret int32
+		return ret
+	}
+
+	return *o.ViewsEligible.Get()
+}
+
+// GetViewsEligibleOk returns a tuple with the ViewsEligible field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadCampaignSubmissionSubmission) GetViewsEligibleOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ViewsEligible.Get(), o.ViewsEligible.IsSet()
+}
+
+// SetViewsEligible sets field value
+func (o *WebhookPayloadCampaignSubmissionSubmission) SetViewsEligible(v int32) {
+	o.ViewsEligible.Set(&v)
+}
+
+// GetEngagementsLatest returns the EngagementsLatest field value
+// If the value is explicit nil, the zero value for int32 will be returned
+func (o *WebhookPayloadCampaignSubmissionSubmission) GetEngagementsLatest() int32 {
+	if o == nil || o.EngagementsLatest.Get() == nil {
+		var ret int32
+		return ret
+	}
+
+	return *o.EngagementsLatest.Get()
+}
+
+// GetEngagementsLatestOk returns a tuple with the EngagementsLatest field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadCampaignSubmissionSubmission) GetEngagementsLatestOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.EngagementsLatest.Get(), o.EngagementsLatest.IsSet()
+}
+
+// SetEngagementsLatest sets field value
+func (o *WebhookPayloadCampaignSubmissionSubmission) SetEngagementsLatest(v int32) {
+	o.EngagementsLatest.Set(&v)
+}
+
 // GetFlags returns the Flags field value
 func (o *WebhookPayloadCampaignSubmissionSubmission) GetFlags() []WebhookPayloadCampaignSubmissionSubmissionFlagsInner {
 	if o == nil {
@@ -245,6 +303,8 @@ func (o WebhookPayloadCampaignSubmissionSubmission) ToMap() (map[string]interfac
 	toSerialize["platformPostUrl"] = o.PlatformPostUrl.Get()
 	toSerialize["status"] = o.Status
 	toSerialize["viewsAtSubmission"] = o.ViewsAtSubmission.Get()
+	toSerialize["viewsEligible"] = o.ViewsEligible.Get()
+	toSerialize["engagementsLatest"] = o.EngagementsLatest.Get()
 	toSerialize["flags"] = o.Flags
 	return toSerialize, nil
 }
@@ -260,6 +320,8 @@ func (o *WebhookPayloadCampaignSubmissionSubmission) UnmarshalJSON(data []byte) 
 		"platformPostUrl",
 		"status",
 		"viewsAtSubmission",
+		"viewsEligible",
+		"engagementsLatest",
 		"flags",
 	}
 

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.424.0
+API version: 1.426.0
 Contact: support@zernio.com
 */
 
@@ -22,8 +22,13 @@ var _ MappedNullable = &CreatorCampaignEconomicsCpm{}
 
 // CreatorCampaignEconomicsCpm struct for CreatorCampaignEconomicsCpm
 type CreatorCampaignEconomicsCpm struct {
-	Type                  string `json:"type"`
-	RatePer1kCents        int32  `json:"ratePer1kCents"`
+	Type string `json:"type"`
+	// What the rate pays on. `engagements` counts the `engagementTypes` as each platform reports them, and `minViewsToEarn` then applies to engagements. Fixed once the campaign leaves draft.
+	Metric *string `json:"metric,omitempty"`
+	// With `metric: engagements`, the engagements that count. Missing means all four, and sending it on a views campaign answers 400. YouTube reports likes and comments only, Facebook and Threads have no saves, and Pinterest reports saves only.
+	EngagementTypes []string `json:"engagementTypes,omitempty"`
+	RatePer1kCents  int32    `json:"ratePer1kCents"`
+	// The count a post must reach before it earns, in the campaign metric (views or engagements).
 	MinViewsToEarn        int32  `json:"minViewsToEarn"`
 	MaxPayoutPerClipCents *int32 `json:"maxPayoutPerClipCents,omitempty"`
 	BudgetCents           int32  `json:"budgetCents"`
@@ -38,6 +43,8 @@ type _CreatorCampaignEconomicsCpm CreatorCampaignEconomicsCpm
 func NewCreatorCampaignEconomicsCpm(type_ string, ratePer1kCents int32, minViewsToEarn int32, budgetCents int32) *CreatorCampaignEconomicsCpm {
 	this := CreatorCampaignEconomicsCpm{}
 	this.Type = type_
+	var metric string = "views"
+	this.Metric = &metric
 	this.RatePer1kCents = ratePer1kCents
 	this.MinViewsToEarn = minViewsToEarn
 	this.BudgetCents = budgetCents
@@ -49,6 +56,8 @@ func NewCreatorCampaignEconomicsCpm(type_ string, ratePer1kCents int32, minViews
 // but it doesn't guarantee that properties required by API are set
 func NewCreatorCampaignEconomicsCpmWithDefaults() *CreatorCampaignEconomicsCpm {
 	this := CreatorCampaignEconomicsCpm{}
+	var metric string = "views"
+	this.Metric = &metric
 	return &this
 }
 
@@ -74,6 +83,70 @@ func (o *CreatorCampaignEconomicsCpm) GetTypeOk() (*string, bool) {
 // SetType sets field value
 func (o *CreatorCampaignEconomicsCpm) SetType(v string) {
 	o.Type = v
+}
+
+// GetMetric returns the Metric field value if set, zero value otherwise.
+func (o *CreatorCampaignEconomicsCpm) GetMetric() string {
+	if o == nil || IsNil(o.Metric) {
+		var ret string
+		return ret
+	}
+	return *o.Metric
+}
+
+// GetMetricOk returns a tuple with the Metric field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaignEconomicsCpm) GetMetricOk() (*string, bool) {
+	if o == nil || IsNil(o.Metric) {
+		return nil, false
+	}
+	return o.Metric, true
+}
+
+// HasMetric returns a boolean if a field has been set.
+func (o *CreatorCampaignEconomicsCpm) HasMetric() bool {
+	if o != nil && !IsNil(o.Metric) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetric gets a reference to the given string and assigns it to the Metric field.
+func (o *CreatorCampaignEconomicsCpm) SetMetric(v string) {
+	o.Metric = &v
+}
+
+// GetEngagementTypes returns the EngagementTypes field value if set, zero value otherwise.
+func (o *CreatorCampaignEconomicsCpm) GetEngagementTypes() []string {
+	if o == nil || IsNil(o.EngagementTypes) {
+		var ret []string
+		return ret
+	}
+	return o.EngagementTypes
+}
+
+// GetEngagementTypesOk returns a tuple with the EngagementTypes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaignEconomicsCpm) GetEngagementTypesOk() ([]string, bool) {
+	if o == nil || IsNil(o.EngagementTypes) {
+		return nil, false
+	}
+	return o.EngagementTypes, true
+}
+
+// HasEngagementTypes returns a boolean if a field has been set.
+func (o *CreatorCampaignEconomicsCpm) HasEngagementTypes() bool {
+	if o != nil && !IsNil(o.EngagementTypes) {
+		return true
+	}
+
+	return false
+}
+
+// SetEngagementTypes gets a reference to the given []string and assigns it to the EngagementTypes field.
+func (o *CreatorCampaignEconomicsCpm) SetEngagementTypes(v []string) {
+	o.EngagementTypes = v
 }
 
 // GetRatePer1kCents returns the RatePer1kCents field value
@@ -191,6 +264,12 @@ func (o CreatorCampaignEconomicsCpm) MarshalJSON() ([]byte, error) {
 func (o CreatorCampaignEconomicsCpm) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["type"] = o.Type
+	if !IsNil(o.Metric) {
+		toSerialize["metric"] = o.Metric
+	}
+	if !IsNil(o.EngagementTypes) {
+		toSerialize["engagementTypes"] = o.EngagementTypes
+	}
 	toSerialize["ratePer1kCents"] = o.RatePer1kCents
 	toSerialize["minViewsToEarn"] = o.MinViewsToEarn
 	if !IsNil(o.MaxPayoutPerClipCents) {
