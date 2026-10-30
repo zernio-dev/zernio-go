@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.420.1
+API version: 1.421.0
 Contact: support@zernio.com
 */
 
@@ -759,6 +759,11 @@ type ConnectAPIConnectAdsRequest struct {
 	force           *bool
 	adAccountId     *string
 	adAccountIds    *[]string
+	welcome         *bool
+	brandName       *string
+	logoUrl         *string
+	primaryColor    *string
+	welcomeTheme    *string
 }
 
 // Your Zernio profile ID
@@ -818,6 +823,36 @@ func (r ConnectAPIConnectAdsRequest) AdAccountId(adAccountId string) ConnectAPIC
 // Scope ad sync to multiple platform ad accounts (same platform support and id shapes as &#x60;adAccountId&#x60;). Repeat the param (&#x60;?adAccountIds&#x3D;act_1&amp;adAccountIds&#x3D;act_2&#x60;) or comma-separate (&#x60;?adAccountIds&#x3D;act_1,act_2&#x60;).  - Persisted server-side; the latest call wins. De-scoped ad accounts have their synced ads, campaigns, ad sets and keywords removed. - On Meta only the scoped ad accounts get webhook subscriptions, including when the call starts a fresh OAuth. - Omitting both &#x60;adAccountId&#x60; and &#x60;adAccountIds&#x60; keeps any previously persisted scope unchanged (no scope means every reachable ad account).
 func (r ConnectAPIConnectAdsRequest) AdAccountIds(adAccountIds []string) ConnectAPIConnectAdsRequest {
 	r.adAccountIds = &adAccountIds
+	return r
+}
+
+// When &#x60;true&#x60;, &#x60;authUrl&#x60; opens on the Zernio-hosted welcome screen with your brand, as on GET /v1/connect/{platform}, naming the ads platform (\&quot;&lt;brandName&gt; wants to connect to your Meta Ads\&quot;).  - With no &#x60;redirect_url&#x60;, the flow ends on the branded result page instead of the Zernio dashboard. - Shown only with &#x60;welcome&#x3D;true&#x60;: the workspace&#39;s saved \&quot;on by default\&quot; (&#x60;PUT /v1/connect/welcome-screen&#x60;) applies to GET /v1/connect/{platform} only, so ads links behave as before unless you opt in. The saved brand still fills in what the call leaves out. - Cannot be combined with &#x60;headless&#x3D;true&#x60; (400 &#x60;INVALID_FIELD_VALUE&#x60;). - Responses with &#x60;alreadyConnected: true&#x60; carry no &#x60;authUrl&#x60;, so they show no screen.
+func (r ConnectAPIConnectAdsRequest) Welcome(welcome bool) ConnectAPIConnectAdsRequest {
+	r.welcome = &welcome
+	return r
+}
+
+// Welcome screen only: your product name in its heading. Same rules as on GET /v1/connect/{platform}.
+func (r ConnectAPIConnectAdsRequest) BrandName(brandName string) ConnectAPIConnectAdsRequest {
+	r.brandName = &brandName
+	return r
+}
+
+// Welcome screen only: https URL of your square logo. Rejected with 400 &#x60;INVALID_FIELD_VALUE&#x60; when the welcome screen is not shown.
+func (r ConnectAPIConnectAdsRequest) LogoUrl(logoUrl string) ConnectAPIConnectAdsRequest {
+	r.logoUrl = &logoUrl
+	return r
+}
+
+// Welcome screen only: hex colour (&#x60;#RRGGBB&#x60;) of its button.
+func (r ConnectAPIConnectAdsRequest) PrimaryColor(primaryColor string) ConnectAPIConnectAdsRequest {
+	r.primaryColor = &primaryColor
+	return r
+}
+
+// Welcome screen only: a URL-encoded JSON object restyling and rewording the welcome screen and the result page, with the keys documented on GET /v1/connect/{platform}. Rejected when the welcome screen is not shown.
+func (r ConnectAPIConnectAdsRequest) WelcomeTheme(welcomeTheme string) ConnectAPIConnectAdsRequest {
+	r.welcomeTheme = &welcomeTheme
 	return r
 }
 
@@ -1051,6 +1086,21 @@ func (a *ConnectAPIService) ConnectAdsExecute(r ConnectAPIConnectAdsRequest) (*C
 		} else {
 			parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountIds", t, "form", "multi")
 		}
+	}
+	if r.welcome != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "welcome", r.welcome, "form", "")
+	}
+	if r.brandName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "brandName", r.brandName, "form", "")
+	}
+	if r.logoUrl != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "logoUrl", r.logoUrl, "form", "")
+	}
+	if r.primaryColor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "primaryColor", r.primaryColor, "form", "")
+	}
+	if r.welcomeTheme != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "welcomeTheme", r.welcomeTheme, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
