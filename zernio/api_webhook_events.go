@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.416.0
+API version: 1.417.0
 Contact: support@zernio.com
 */
 
@@ -8741,6 +8741,108 @@ func (a *WebhookEventsAPIService) OnReferralReceivedExecute(r WebhookEventsAPIOn
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnReviewDeletedRequest struct {
+	ctx                         context.Context
+	ApiService                  *WebhookEventsAPIService
+	webhookPayloadReviewDeleted *WebhookPayloadReviewDeleted
+}
+
+func (r WebhookEventsAPIOnReviewDeletedRequest) WebhookPayloadReviewDeleted(webhookPayloadReviewDeleted WebhookPayloadReviewDeleted) WebhookEventsAPIOnReviewDeletedRequest {
+	r.webhookPayloadReviewDeleted = &webhookPayloadReviewDeleted
+	return r
+}
+
+func (r WebhookEventsAPIOnReviewDeletedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnReviewDeletedExecute(r)
+}
+
+/*
+OnReviewDeleted Review deleted event
+
+Google Business Profile stopped returning this review, for example after Google's spam filter removed it.
+Detected by polling: fires usually 6 to 12 hours after the review disappears, only for locations covered
+by a webhook subscribed to review.deleted or review.restored. If the review comes back, review.restored
+fires. May arrive for a review id you never received review.new for. A review hidden and restored by Google may produce review.deleted followed by review.restored, and a review.updated can arrive for a review previously reported by review.deleted (it is restored on the next check). Requires the Inbox add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnReviewDeletedRequest
+*/
+func (a *WebhookEventsAPIService) OnReviewDeleted(ctx context.Context) WebhookEventsAPIOnReviewDeletedRequest {
+	return WebhookEventsAPIOnReviewDeletedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnReviewDeletedExecute(r WebhookEventsAPIOnReviewDeletedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnReviewDeleted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/review.deleted"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadReviewDeleted == nil {
+		return nil, reportError("webhookPayloadReviewDeleted is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadReviewDeleted
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnReviewNewRequest struct {
 	ctx                     context.Context
 	ApiService              *WebhookEventsAPIService
@@ -8813,6 +8915,106 @@ func (a *WebhookEventsAPIService) OnReviewNewExecute(r WebhookEventsAPIOnReviewN
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadReviewNew
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnReviewRestoredRequest struct {
+	ctx                          context.Context
+	ApiService                   *WebhookEventsAPIService
+	webhookPayloadReviewRestored *WebhookPayloadReviewRestored
+}
+
+func (r WebhookEventsAPIOnReviewRestoredRequest) WebhookPayloadReviewRestored(webhookPayloadReviewRestored WebhookPayloadReviewRestored) WebhookEventsAPIOnReviewRestoredRequest {
+	r.webhookPayloadReviewRestored = &webhookPayloadReviewRestored
+	return r
+}
+
+func (r WebhookEventsAPIOnReviewRestoredRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnReviewRestoredExecute(r)
+}
+
+/*
+OnReviewRestored Review restored event
+
+A review reported by review.deleted is returned by Google again. Same payload as review.new.
+Requires the Inbox add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnReviewRestoredRequest
+*/
+func (a *WebhookEventsAPIService) OnReviewRestored(ctx context.Context) WebhookEventsAPIOnReviewRestoredRequest {
+	return WebhookEventsAPIOnReviewRestoredRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnReviewRestoredExecute(r WebhookEventsAPIOnReviewRestoredRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnReviewRestored")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/review.restored"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadReviewRestored == nil {
+		return nil, reportError("webhookPayloadReviewRestored is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadReviewRestored
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
