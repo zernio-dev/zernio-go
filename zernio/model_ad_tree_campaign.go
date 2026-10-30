@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.428.0
+API version: 1.429.0
 Contact: support@zernio.com
 */
 
@@ -21,9 +21,11 @@ var _ MappedNullable = &AdTreeCampaign{}
 
 // AdTreeCampaign Campaign with nested ad sets and rolled-up metrics
 type AdTreeCampaign struct {
-	PlatformCampaignId *string `json:"platformCampaignId,omitempty"`
-	Platform           *string `json:"platform,omitempty"`
-	CampaignName       *string `json:"campaignName,omitempty"`
+	// Only with `results=true`. The values you sent for this campaign over the range, plus each formula they allow, by metric key. A metric with no value is absent.
+	Results            map[string]float32 `json:"results,omitempty"`
+	PlatformCampaignId *string            `json:"platformCampaignId,omitempty"`
+	Platform           *string            `json:"platform,omitempty"`
+	CampaignName       *string            `json:"campaignName,omitempty"`
 	// Earliest `platformCreatedAt` across every ad in the campaign (platform ad creation time; falls back to `createdAt`, Zernio's sync time, for ads synced before that field existed).  Not the platform campaign's own creation time (Meta's `Campaign.created_time` etc. is not synced). A campaign created empty and populated later shows its first ad's time, not the campaign's.  Usable for sorting \"most recently created\" without the numeric-campaign-id heuristic. Same source as `AdTreeAdSet.createdTime` and `Ad.platformCreatedAt`; mirrors `AdCampaign.earliestAd`.
 	CreatedTime NullableTime `json:"createdTime,omitempty"`
 	// Delivery status derived from child ad statuses. Distinct from `reviewStatus`, which reflects the platform-side review state.
@@ -92,6 +94,38 @@ func NewAdTreeCampaignWithDefaults() *AdTreeCampaign {
 	var isBudgetScheduleEnabled bool = false
 	this.IsBudgetScheduleEnabled = &isBudgetScheduleEnabled
 	return &this
+}
+
+// GetResults returns the Results field value if set, zero value otherwise.
+func (o *AdTreeCampaign) GetResults() map[string]float32 {
+	if o == nil || IsNil(o.Results) {
+		var ret map[string]float32
+		return ret
+	}
+	return o.Results
+}
+
+// GetResultsOk returns a tuple with the Results field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTreeCampaign) GetResultsOk() (map[string]float32, bool) {
+	if o == nil || IsNil(o.Results) {
+		return map[string]float32{}, false
+	}
+	return o.Results, true
+}
+
+// HasResults returns a boolean if a field has been set.
+func (o *AdTreeCampaign) HasResults() bool {
+	if o != nil && !IsNil(o.Results) {
+		return true
+	}
+
+	return false
+}
+
+// SetResults gets a reference to the given map[string]float32 and assigns it to the Results field.
+func (o *AdTreeCampaign) SetResults(v map[string]float32) {
+	o.Results = v
 }
 
 // GetPlatformCampaignId returns the PlatformCampaignId field value if set, zero value otherwise.
@@ -1218,6 +1252,9 @@ func (o AdTreeCampaign) MarshalJSON() ([]byte, error) {
 
 func (o AdTreeCampaign) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Results) {
+		toSerialize["results"] = o.Results
+	}
 	if !IsNil(o.PlatformCampaignId) {
 		toSerialize["platformCampaignId"] = o.PlatformCampaignId
 	}

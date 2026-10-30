@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.428.0
+API version: 1.429.0
 Contact: support@zernio.com
 */
 
@@ -4656,6 +4656,7 @@ type AdCampaignsAPIGetAdTreeRequest struct {
 	timeIncrement *int32
 	dailyLevel    *string
 	compare       *string
+	results       *bool
 }
 
 // Page number (1-based)
@@ -4774,6 +4775,12 @@ func (r AdCampaignsAPIGetAdTreeRequest) DailyLevel(dailyLevel string) AdCampaign
 // Set to &#x60;previous&#x60; to also read the period of the same length that ends the day before &#x60;fromDate&#x60;. Every campaign, ad set and ad gains &#x60;previousMetrics&#x60; (same fields as &#x60;metrics&#x60;) and the response gains &#x60;previousRange&#x60;, so a table can show the change against the previous period in one call.
 func (r AdCampaignsAPIGetAdTreeRequest) Compare(compare string) AdCampaignsAPIGetAdTreeRequest {
 	r.compare = &compare
+	return r
+}
+
+// Set to &#x60;true&#x60; to add your own results (see [Campaign results](/guides/campaign-results)): every campaign gains &#x60;results&#x60;, the values you sent for the range plus each formula they allow, and the response gains &#x60;resultMetrics&#x60; to label them.
+func (r AdCampaignsAPIGetAdTreeRequest) Results(results bool) AdCampaignsAPIGetAdTreeRequest {
+	r.results = &results
 	return r
 }
 
@@ -4925,6 +4932,9 @@ func (a *AdCampaignsAPIService) GetAdTreeExecute(r AdCampaignsAPIGetAdTreeReques
 	}
 	if r.compare != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "compare", r.compare, "form", "")
+	}
+	if r.results != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "results", r.results, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

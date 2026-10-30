@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.428.0
+API version: 1.429.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,8 @@ type GetAdTree202Response struct {
 	// When the most recently synced ad on this page was last read from the platform. Null before the first sync.
 	SyncedAt      *time.Time                                 `json:"syncedAt,omitempty"`
 	PreviousRange *GetAnalyticsDashboard200ResponseDateRange `json:"previousRange,omitempty"`
+	// Only with `results=true`. Your metrics and formulas, to label each campaign's `results`.
+	ResultMetrics []CampaignResultMetric `json:"resultMetrics,omitempty"`
 	// Always true on this response. Part of the requested range is still being backfilled; retry until the request returns 200.
 	BackfillPending bool `json:"backfillPending"`
 }
@@ -180,6 +182,38 @@ func (o *GetAdTree202Response) SetPreviousRange(v GetAnalyticsDashboard200Respon
 	o.PreviousRange = &v
 }
 
+// GetResultMetrics returns the ResultMetrics field value if set, zero value otherwise.
+func (o *GetAdTree202Response) GetResultMetrics() []CampaignResultMetric {
+	if o == nil || IsNil(o.ResultMetrics) {
+		var ret []CampaignResultMetric
+		return ret
+	}
+	return o.ResultMetrics
+}
+
+// GetResultMetricsOk returns a tuple with the ResultMetrics field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdTree202Response) GetResultMetricsOk() ([]CampaignResultMetric, bool) {
+	if o == nil || IsNil(o.ResultMetrics) {
+		return nil, false
+	}
+	return o.ResultMetrics, true
+}
+
+// HasResultMetrics returns a boolean if a field has been set.
+func (o *GetAdTree202Response) HasResultMetrics() bool {
+	if o != nil && !IsNil(o.ResultMetrics) {
+		return true
+	}
+
+	return false
+}
+
+// SetResultMetrics gets a reference to the given []CampaignResultMetric and assigns it to the ResultMetrics field.
+func (o *GetAdTree202Response) SetResultMetrics(v []CampaignResultMetric) {
+	o.ResultMetrics = v
+}
+
 // GetBackfillPending returns the BackfillPending field value
 func (o *GetAdTree202Response) GetBackfillPending() bool {
 	if o == nil {
@@ -225,6 +259,9 @@ func (o GetAdTree202Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PreviousRange) {
 		toSerialize["previousRange"] = o.PreviousRange
+	}
+	if !IsNil(o.ResultMetrics) {
+		toSerialize["resultMetrics"] = o.ResultMetrics
 	}
 	toSerialize["backfillPending"] = o.BackfillPending
 	return toSerialize, nil

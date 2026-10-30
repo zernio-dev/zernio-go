@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.428.0
+API version: 1.429.0
 Contact: support@zernio.com
 */
 
@@ -22,10 +22,15 @@ var _ MappedNullable = &CampaignResultMetric{}
 
 // CampaignResultMetric struct for CampaignResultMetric
 type CampaignResultMetric struct {
-	Key      string         `json:"key"`
-	Label    string         `json:"label"`
+	Key   string `json:"key"`
+	Label string `json:"label"`
+	// How the value reads: `percent` values are already multiplied by 100.
 	Kind     string         `json:"kind"`
 	Currency NullableString `json:"currency"`
+	// Null for a number you send. For a computed metric, the formula over `spend`, `impressions`, `clicks`, `conversions`, `purchase_value` and the metrics you send, e.g. `spend / revenue * 100`.
+	Formula NullableString `json:"formula"`
+	// One of the formulas every team has (`cac_percent`, `cost_per_sale`, `cost_per_qualified_lead`, `lead_to_sale`). Setting the same key replaces it for your team.
+	BuiltIn bool `json:"builtIn"`
 }
 
 type _CampaignResultMetric CampaignResultMetric
@@ -34,12 +39,14 @@ type _CampaignResultMetric CampaignResultMetric
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCampaignResultMetric(key string, label string, kind string, currency NullableString) *CampaignResultMetric {
+func NewCampaignResultMetric(key string, label string, kind string, currency NullableString, formula NullableString, builtIn bool) *CampaignResultMetric {
 	this := CampaignResultMetric{}
 	this.Key = key
 	this.Label = label
 	this.Kind = kind
 	this.Currency = currency
+	this.Formula = formula
+	this.BuiltIn = builtIn
 	return &this
 }
 
@@ -149,6 +156,56 @@ func (o *CampaignResultMetric) SetCurrency(v string) {
 	o.Currency.Set(&v)
 }
 
+// GetFormula returns the Formula field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *CampaignResultMetric) GetFormula() string {
+	if o == nil || o.Formula.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Formula.Get()
+}
+
+// GetFormulaOk returns a tuple with the Formula field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CampaignResultMetric) GetFormulaOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Formula.Get(), o.Formula.IsSet()
+}
+
+// SetFormula sets field value
+func (o *CampaignResultMetric) SetFormula(v string) {
+	o.Formula.Set(&v)
+}
+
+// GetBuiltIn returns the BuiltIn field value
+func (o *CampaignResultMetric) GetBuiltIn() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.BuiltIn
+}
+
+// GetBuiltInOk returns a tuple with the BuiltIn field value
+// and a boolean to check if the value has been set.
+func (o *CampaignResultMetric) GetBuiltInOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.BuiltIn, true
+}
+
+// SetBuiltIn sets field value
+func (o *CampaignResultMetric) SetBuiltIn(v bool) {
+	o.BuiltIn = v
+}
+
 func (o CampaignResultMetric) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -163,6 +220,8 @@ func (o CampaignResultMetric) ToMap() (map[string]interface{}, error) {
 	toSerialize["label"] = o.Label
 	toSerialize["kind"] = o.Kind
 	toSerialize["currency"] = o.Currency.Get()
+	toSerialize["formula"] = o.Formula.Get()
+	toSerialize["builtIn"] = o.BuiltIn
 	return toSerialize, nil
 }
 
@@ -175,6 +234,8 @@ func (o *CampaignResultMetric) UnmarshalJSON(data []byte) (err error) {
 		"label",
 		"kind",
 		"currency",
+		"formula",
+		"builtIn",
 	}
 
 	allProperties := make(map[string]interface{})

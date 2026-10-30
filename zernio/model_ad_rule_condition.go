@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.428.0
+API version: 1.429.0
 Contact: support@zernio.com
 */
 
@@ -22,9 +22,9 @@ var _ MappedNullable = &AdRuleCondition{}
 
 // AdRuleCondition struct for AdRuleCondition
 type AdRuleCondition struct {
-	// `ctr` is a percentage. `spend`, `cpc`, `cpm` and `cpa` are in the ad account currency. `reach` and `frequency` use the platform's de-duplicated reach, so they are accepted on Meta and TikTok only.
-	Metric string `json:"metric"`
-	// Days in the ad account's own timezone. `last_7d` includes today.
+	// `ctr` is a percentage. `spend`, `cpc`, `cpm` and `cpa` are in the ad account currency. `reach` and `frequency` use the platform's de-duplicated reach, so they are accepted on Meta and TikTok only.  `result:<key>` reads one of your own results (see [Campaign results](/guides/campaign-results)), on campaign rules only: the values you sent for the window, or a formula over them and the platform's numbers. A campaign with no value for it never matches.
+	Metric NullableString `json:"metric"`
+	// Days in the ad account's own timezone. `last_7d` is the 7 full days before today; only `today` reads the day in progress.
 	Window string  `json:"window"`
 	Op     string  `json:"op"`
 	Value  float32 `json:"value"`
@@ -36,7 +36,7 @@ type _AdRuleCondition AdRuleCondition
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdRuleCondition(metric string, window string, op string, value float32) *AdRuleCondition {
+func NewAdRuleCondition(metric NullableString, window string, op string, value float32) *AdRuleCondition {
 	this := AdRuleCondition{}
 	this.Metric = metric
 	this.Window = window
@@ -54,27 +54,29 @@ func NewAdRuleConditionWithDefaults() *AdRuleCondition {
 }
 
 // GetMetric returns the Metric field value
+// If the value is explicit nil, the zero value for string will be returned
 func (o *AdRuleCondition) GetMetric() string {
-	if o == nil {
+	if o == nil || o.Metric.Get() == nil {
 		var ret string
 		return ret
 	}
 
-	return o.Metric
+	return *o.Metric.Get()
 }
 
 // GetMetricOk returns a tuple with the Metric field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AdRuleCondition) GetMetricOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Metric, true
+	return o.Metric.Get(), o.Metric.IsSet()
 }
 
 // SetMetric sets field value
 func (o *AdRuleCondition) SetMetric(v string) {
-	o.Metric = v
+	o.Metric.Set(&v)
 }
 
 // GetWindow returns the Window field value
@@ -159,7 +161,7 @@ func (o AdRuleCondition) MarshalJSON() ([]byte, error) {
 
 func (o AdRuleCondition) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["metric"] = o.Metric
+	toSerialize["metric"] = o.Metric.Get()
 	toSerialize["window"] = o.Window
 	toSerialize["op"] = o.Op
 	toSerialize["value"] = o.Value
