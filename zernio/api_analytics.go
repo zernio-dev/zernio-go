@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.420.0
+API version: 1.420.1
 Contact: support@zernio.com
 */
 
@@ -190,7 +190,7 @@ type AnalyticsAPIGetAnalyticsRequest struct {
 	tags       *string
 }
 
-// Returns analytics for a single post. Accepts both Zernio Post IDs and External Post IDs. Zernio IDs are auto-resolved to External Post analytics.
+// Returns analytics for a single post. Accepts Zernio Post IDs, External Post IDs and the platform&#39;s native post ID. Zernio IDs are auto-resolved to External Post analytics.
 func (r AnalyticsAPIGetAnalyticsRequest) PostId(postId string) AnalyticsAPIGetAnalyticsRequest {
 	r.postId = &postId
 	return r
@@ -202,13 +202,13 @@ func (r AnalyticsAPIGetAnalyticsRequest) Platform(platform string) AnalyticsAPIG
 	return r
 }
 
-// Filter by profile ID (default \&quot;all\&quot;)
+// Filter by profile ID (default \&quot;all\&quot;). With a native postId, selects that profile&#39;s copy of the post.
 func (r AnalyticsAPIGetAnalyticsRequest) ProfileId(profileId string) AnalyticsAPIGetAnalyticsRequest {
 	r.profileId = &profileId
 	return r
 }
 
-// Filter by account ID
+// Filter by account ID. With a native postId, selects that account&#39;s copy of the post.
 func (r AnalyticsAPIGetAnalyticsRequest) AccountId(accountId string) AnalyticsAPIGetAnalyticsRequest {
 	r.accountId = &accountId
 	return r
