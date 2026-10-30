@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.417.0
+API version: 1.418.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,10 @@ var _ MappedNullable = &UpdateOAuthAppRequest{}
 type UpdateOAuthAppRequest struct {
 	Label        *string `json:"label,omitempty"`
 	ClientSecret *string `json:"clientSecret,omitempty"`
+	// Instagram only: the numeric ID of the Meta app your Instagram app lives in. Zernio uses it with `metaAppSecret` to register the webhook. Send both or neither.
+	MetaAppId *string `json:"metaAppId,omitempty" validate:"regexp=^\\\\d{1,32}$"`
+	// Instagram only: the secret of that Meta app. Never returned.
+	MetaAppSecret *string `json:"metaAppSecret,omitempty"`
 	// Slack only: saves or replaces the signing secret from the app's Basic Information page; any other platform is a 400.
 	SlackSigningSecret *string `json:"slackSigningSecret,omitempty"`
 	// Replaces the areas new connects request. Accounts already connected keep what they were granted until they reconnect.
@@ -112,6 +116,70 @@ func (o *UpdateOAuthAppRequest) SetClientSecret(v string) {
 	o.ClientSecret = &v
 }
 
+// GetMetaAppId returns the MetaAppId field value if set, zero value otherwise.
+func (o *UpdateOAuthAppRequest) GetMetaAppId() string {
+	if o == nil || IsNil(o.MetaAppId) {
+		var ret string
+		return ret
+	}
+	return *o.MetaAppId
+}
+
+// GetMetaAppIdOk returns a tuple with the MetaAppId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateOAuthAppRequest) GetMetaAppIdOk() (*string, bool) {
+	if o == nil || IsNil(o.MetaAppId) {
+		return nil, false
+	}
+	return o.MetaAppId, true
+}
+
+// HasMetaAppId returns a boolean if a field has been set.
+func (o *UpdateOAuthAppRequest) HasMetaAppId() bool {
+	if o != nil && !IsNil(o.MetaAppId) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetaAppId gets a reference to the given string and assigns it to the MetaAppId field.
+func (o *UpdateOAuthAppRequest) SetMetaAppId(v string) {
+	o.MetaAppId = &v
+}
+
+// GetMetaAppSecret returns the MetaAppSecret field value if set, zero value otherwise.
+func (o *UpdateOAuthAppRequest) GetMetaAppSecret() string {
+	if o == nil || IsNil(o.MetaAppSecret) {
+		var ret string
+		return ret
+	}
+	return *o.MetaAppSecret
+}
+
+// GetMetaAppSecretOk returns a tuple with the MetaAppSecret field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateOAuthAppRequest) GetMetaAppSecretOk() (*string, bool) {
+	if o == nil || IsNil(o.MetaAppSecret) {
+		return nil, false
+	}
+	return o.MetaAppSecret, true
+}
+
+// HasMetaAppSecret returns a boolean if a field has been set.
+func (o *UpdateOAuthAppRequest) HasMetaAppSecret() bool {
+	if o != nil && !IsNil(o.MetaAppSecret) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetaAppSecret gets a reference to the given string and assigns it to the MetaAppSecret field.
+func (o *UpdateOAuthAppRequest) SetMetaAppSecret(v string) {
+	o.MetaAppSecret = &v
+}
+
 // GetSlackSigningSecret returns the SlackSigningSecret field value if set, zero value otherwise.
 func (o *UpdateOAuthAppRequest) GetSlackSigningSecret() string {
 	if o == nil || IsNil(o.SlackSigningSecret) {
@@ -192,6 +260,12 @@ func (o UpdateOAuthAppRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ClientSecret) {
 		toSerialize["clientSecret"] = o.ClientSecret
 	}
+	if !IsNil(o.MetaAppId) {
+		toSerialize["metaAppId"] = o.MetaAppId
+	}
+	if !IsNil(o.MetaAppSecret) {
+		toSerialize["metaAppSecret"] = o.MetaAppSecret
+	}
 	if !IsNil(o.SlackSigningSecret) {
 		toSerialize["slackSigningSecret"] = o.SlackSigningSecret
 	}
@@ -222,6 +296,8 @@ func (o *UpdateOAuthAppRequest) UnmarshalJSON(data []byte) (err error) {
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "label")
 		delete(additionalProperties, "clientSecret")
+		delete(additionalProperties, "metaAppId")
+		delete(additionalProperties, "metaAppSecret")
 		delete(additionalProperties, "slackSigningSecret")
 		delete(additionalProperties, "scopeAreas")
 		o.AdditionalProperties = additionalProperties
