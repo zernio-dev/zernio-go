@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.423.0
+API version: 1.424.0
 Contact: support@zernio.com
 */
 
@@ -16,19 +16,21 @@ import (
 	"fmt"
 )
 
-// AdRuleLevel Whether the rule checks campaigns or ad sets. Each one is evaluated on its own.
+// AdRuleLevel Whether the rule checks campaigns, ad sets or single ads. Each one is evaluated on its own.
 type AdRuleLevel string
 
 // List of AdRuleLevel
 const (
 	ADRULELEVEL_CAMPAIGN AdRuleLevel = "campaign"
 	ADRULELEVEL_ADSET    AdRuleLevel = "adset"
+	ADRULELEVEL_AD       AdRuleLevel = "ad"
 )
 
 // All allowed values of AdRuleLevel enum
 var AllowedAdRuleLevelEnumValues = []AdRuleLevel{
 	"campaign",
 	"adset",
+	"ad",
 }
 
 func (v *AdRuleLevel) UnmarshalJSON(src []byte) error {

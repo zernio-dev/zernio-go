@@ -535,6 +535,7 @@ func main() {
 |--------|-------------|
 | `client.AdRulesAPI.ListAdRuleActivity(ctx)` | List every change ad rules made |
 | `client.AdRulesAPI.ListAdRuleRuns(ctx)` | List an ad rule's runs |
+| `client.AdRulesAPI.ListAdRuleTemplates(ctx)` | List ready-made ad rules |
 | `client.AdRulesAPI.ListAdRules(ctx)` | List ad rules |
 | `client.AdRulesAPI.CreateAdRule(ctx)` | Create an ad rule |
 | `client.AdRulesAPI.GetAdRule(ctx)` | Get an ad rule |

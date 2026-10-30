@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.423.0
+API version: 1.424.0
 Contact: support@zernio.com
 */
 
@@ -22,13 +22,15 @@ var _ MappedNullable = &AdRuleActionOneOf3{}
 
 // AdRuleActionOneOf3 struct for AdRuleActionOneOf3
 type AdRuleActionOneOf3 struct {
-	// Change the daily budget. Google ad groups have no budget of their own, so on Google it needs a campaign-level rule.
+	// Change the daily budget. Not on ad-level rules (an ad has no budget), and on Google it needs a campaign-level rule (ad groups have no budget of their own).
 	Type      string `json:"type"`
 	Direction string `json:"direction"`
 	// Change in percent: up to 100 for an increase, up to 90 for a decrease.
 	Percent int32 `json:"percent"`
 	// The budget never goes above this on an increase, or below it on a decrease, in the ad account currency.
 	Limit float32 `json:"limit"`
+	// At most this many objects changed in any 24 hours, across runs. Matches over the limit are skipped with `daily_limit_reached` and tried again later.
+	MaxChangesPerDay *int32 `json:"maxChangesPerDay,omitempty"`
 }
 
 type _AdRuleActionOneOf3 AdRuleActionOneOf3
@@ -150,6 +152,38 @@ func (o *AdRuleActionOneOf3) SetLimit(v float32) {
 	o.Limit = v
 }
 
+// GetMaxChangesPerDay returns the MaxChangesPerDay field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf3) GetMaxChangesPerDay() int32 {
+	if o == nil || IsNil(o.MaxChangesPerDay) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxChangesPerDay
+}
+
+// GetMaxChangesPerDayOk returns a tuple with the MaxChangesPerDay field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf3) GetMaxChangesPerDayOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxChangesPerDay) {
+		return nil, false
+	}
+	return o.MaxChangesPerDay, true
+}
+
+// HasMaxChangesPerDay returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf3) HasMaxChangesPerDay() bool {
+	if o != nil && !IsNil(o.MaxChangesPerDay) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxChangesPerDay gets a reference to the given int32 and assigns it to the MaxChangesPerDay field.
+func (o *AdRuleActionOneOf3) SetMaxChangesPerDay(v int32) {
+	o.MaxChangesPerDay = &v
+}
+
 func (o AdRuleActionOneOf3) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -164,6 +198,9 @@ func (o AdRuleActionOneOf3) ToMap() (map[string]interface{}, error) {
 	toSerialize["direction"] = o.Direction
 	toSerialize["percent"] = o.Percent
 	toSerialize["limit"] = o.Limit
+	if !IsNil(o.MaxChangesPerDay) {
+		toSerialize["maxChangesPerDay"] = o.MaxChangesPerDay
+	}
 	return toSerialize, nil
 }
 
