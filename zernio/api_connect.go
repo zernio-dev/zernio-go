@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.421.0
+API version: 1.422.0
 Contact: support@zernio.com
 */
 
@@ -826,7 +826,7 @@ func (r ConnectAPIConnectAdsRequest) AdAccountIds(adAccountIds []string) Connect
 	return r
 }
 
-// When &#x60;true&#x60;, &#x60;authUrl&#x60; opens on the Zernio-hosted welcome screen with your brand, as on GET /v1/connect/{platform}, naming the ads platform (\&quot;&lt;brandName&gt; wants to connect to your Meta Ads\&quot;).  - With no &#x60;redirect_url&#x60;, the flow ends on the branded result page instead of the Zernio dashboard. - Shown only with &#x60;welcome&#x3D;true&#x60;: the workspace&#39;s saved \&quot;on by default\&quot; (&#x60;PUT /v1/connect/welcome-screen&#x60;) applies to GET /v1/connect/{platform} only, so ads links behave as before unless you opt in. The saved brand still fills in what the call leaves out. - Cannot be combined with &#x60;headless&#x3D;true&#x60; (400 &#x60;INVALID_FIELD_VALUE&#x60;). - Responses with &#x60;alreadyConnected: true&#x60; carry no &#x60;authUrl&#x60;, so they show no screen.
+// When &#x60;true&#x60;, &#x60;authUrl&#x60; opens on the Zernio-hosted welcome screen with your brand, as on GET /v1/connect/{platform}, naming the ads platform (\&quot;&lt;brandName&gt; wants to connect to your Meta Ads\&quot;).  - With no &#x60;redirect_url&#x60;, the flow ends on the branded result page instead of the Zernio dashboard. - Shown only with &#x60;welcome&#x3D;true&#x60;: the workspace&#39;s saved \&quot;on by default\&quot; (&#x60;PUT /v1/connect/welcome-screen&#x60;) applies to GET /v1/connect/{platform} only, so ads links behave as before unless you opt in. The saved brand still fills in what the call leaves out. - Without &#x60;adAccountId&#x60; or &#x60;adAccountIds&#x60;, on Meta, Google, LinkedIn, X, Reddit and Microsoft, the user then picks the ad accounts to connect on a branded Zernio-hosted page (skipped when the login reaches only one). - After that page the flow ends on your &#x60;redirect_url&#x60; with &#x60;connected&#x60; set to the ads platform and &#x60;accountId&#x60; to the ads connection. - Cannot be combined with &#x60;headless&#x3D;true&#x60; (400 &#x60;INVALID_FIELD_VALUE&#x60;). - Responses with &#x60;alreadyConnected: true&#x60; carry no &#x60;authUrl&#x60;, so they show no screen.
 func (r ConnectAPIConnectAdsRequest) Welcome(welcome bool) ConnectAPIConnectAdsRequest {
 	r.welcome = &welcome
 	return r
