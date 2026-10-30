@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.418.1
+API version: 1.419.0
 Contact: support@zernio.com
 */
 
@@ -1714,6 +1714,7 @@ type AccountsAPIListAccountsRequest struct {
 	order                  *string
 	includeOverLimit       *bool
 	excludeHidden          *bool
+	adAccountRows          *bool
 	includeCreatorAccounts *bool
 	includeSandbox         *bool
 	includeStatusCounts    *bool
@@ -1775,6 +1776,12 @@ func (r AccountsAPIListAccountsRequest) IncludeOverLimit(includeOverLimit bool) 
 // When true, leaves out accounts the dashboard does not show as connections:  - posting accounts with &#x60;enabled: false&#x60; (ads accounts are always kept, whatever their &#x60;enabled&#x60; value); - the internal &#x60;sms&#x60; and &#x60;phone&#x60; accounts behind each phone number.  Applied before pagination, so page totals and &#x60;statusCounts&#x60; count only the remaining accounts. Sandbox accounts added by &#x60;includeSandbox&#x60; are appended after this filter. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
 func (r AccountsAPIListAccountsRequest) ExcludeHidden(excludeHidden bool) AccountsAPIListAccountsRequest {
 	r.excludeHidden = &excludeHidden
+	return r
+}
+
+// When true, lists every ads account row, one per ad account. By default an API key or OAuth app sees each ads login once per profile and platform, as the single ads connection it had before rows per ad account: its oldest row.  Only changes the result once ads are connected as one row per ad account; until then the two shapes are the same. Applied before pagination. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
+func (r AccountsAPIListAccountsRequest) AdAccountRows(adAccountRows bool) AccountsAPIListAccountsRequest {
+	r.adAccountRows = &adAccountRows
 	return r
 }
 
@@ -1912,6 +1919,13 @@ func (a *AccountsAPIService) ListAccountsExecute(r AccountsAPIListAccountsReques
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "excludeHidden", defaultValue, "form", "")
 		r.excludeHidden = &defaultValue
+	}
+	if r.adAccountRows != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountRows", r.adAccountRows, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountRows", defaultValue, "form", "")
+		r.adAccountRows = &defaultValue
 	}
 	if r.includeCreatorAccounts != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "includeCreatorAccounts", r.includeCreatorAccounts, "form", "")
