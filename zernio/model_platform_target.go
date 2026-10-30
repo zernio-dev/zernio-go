@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.429.0
+API version: 1.429.1
 Contact: support@zernio.com
 */
 
@@ -49,7 +49,7 @@ type PlatformTarget struct {
 	PublishAttempts *int32 `json:"publishAttempts,omitempty"`
 	// Instagram only. Automatic re-sends of media_publish on the same container that Zernio scheduled after Meta answered a transient error: 30 min, 2 h and 6 h after each failure, at most 3. Absent when none was scheduled.  While the target is still processing, the latest one may not have been sent yet. Not reset by a manual retry. Independent of publishAttempts, which counts publish-leg claims.
 	PublishRetries *int32 `json:"publishRetries,omitempty"`
-	// Human-readable error message when status is failed. Contains platform-specific error details explaining why the publish failed.
+	// Human-readable reason this target has not published yet, or why it failed.  - Failed entries: why the publish failed, with the platform's error details. - Pending entries: why the publish has not gone out yet, for example the last temporary error while Zernio retries the publish automatically, or a posting limit notice.  A posting limit holds the post with the notice \"This post is queued and will publish automatically after <timestamp>\".  The limits are the hourly posting velocity limit and, on a TikTok account connected through the TikTok for Business app, the daily cap of 15 videos and 15 photo posts.  A held post keeps status pending and its scheduledFor moves to that timestamp. It is not failed.
 	ErrorMessage *string `json:"errorMessage,omitempty"`
 	// Error category for programmatic handling:  - `auth_expired`: token expired/revoked - `user_content`: wrong format/too long - `user_abuse`: rate limits/spam - `account_issue`: config problems - `platform_rejected`: policy violation - `platform_error`: 5xx/maintenance - `platform_rate_limit`: platform throttling, retried automatically - `quota_exhausted`: a shared quota pool the integration draws on is empty, including our own capacity gate in front of one. Not caused by your content or account, and safe to retry once the pool frees up. - `system_error`: Zernio infra - `unknown`
 	ErrorCategory *string `json:"errorCategory,omitempty"`
