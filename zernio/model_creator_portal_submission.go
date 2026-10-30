@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.427.0
+API version: 1.428.0
 Contact: support@zernio.com
 */
 
@@ -33,7 +33,9 @@ type CreatorPortalSubmission struct {
 	// Latest view count read for the post.
 	Views int32 `json:"views"`
 	// The campaign engagement types summed at the latest read. Null until the post is read.
-	Engagements  NullableInt32  `json:"engagements"`
+	Engagements NullableInt32 `json:"engagements"`
+	// Views that came from ads the creator ran, on YouTube and X. Null where the platform does not report them or before the first read.
+	ViewsFromAds NullableInt32  `json:"viewsFromAds"`
 	EarnedCents  int32          `json:"earnedCents"`
 	RejectReason NullableString `json:"rejectReason"`
 	// Creator-safe flags only. Every other review flag shows as `under_review`.
@@ -47,7 +49,7 @@ type _CreatorPortalSubmission CreatorPortalSubmission
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatorPortalSubmission(id string, platform string, postId string, url NullableString, status string, submittedAt time.Time, publishedAt NullableTime, views int32, engagements NullableInt32, earnedCents int32, rejectReason NullableString, flags []string, trackingEndsAt NullableTime) *CreatorPortalSubmission {
+func NewCreatorPortalSubmission(id string, platform string, postId string, url NullableString, status string, submittedAt time.Time, publishedAt NullableTime, views int32, engagements NullableInt32, viewsFromAds NullableInt32, earnedCents int32, rejectReason NullableString, flags []string, trackingEndsAt NullableTime) *CreatorPortalSubmission {
 	this := CreatorPortalSubmission{}
 	this.Id = id
 	this.Platform = platform
@@ -58,6 +60,7 @@ func NewCreatorPortalSubmission(id string, platform string, postId string, url N
 	this.PublishedAt = publishedAt
 	this.Views = views
 	this.Engagements = engagements
+	this.ViewsFromAds = viewsFromAds
 	this.EarnedCents = earnedCents
 	this.RejectReason = rejectReason
 	this.Flags = flags
@@ -295,6 +298,32 @@ func (o *CreatorPortalSubmission) SetEngagements(v int32) {
 	o.Engagements.Set(&v)
 }
 
+// GetViewsFromAds returns the ViewsFromAds field value
+// If the value is explicit nil, the zero value for int32 will be returned
+func (o *CreatorPortalSubmission) GetViewsFromAds() int32 {
+	if o == nil || o.ViewsFromAds.Get() == nil {
+		var ret int32
+		return ret
+	}
+
+	return *o.ViewsFromAds.Get()
+}
+
+// GetViewsFromAdsOk returns a tuple with the ViewsFromAds field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatorPortalSubmission) GetViewsFromAdsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ViewsFromAds.Get(), o.ViewsFromAds.IsSet()
+}
+
+// SetViewsFromAds sets field value
+func (o *CreatorPortalSubmission) SetViewsFromAds(v int32) {
+	o.ViewsFromAds.Set(&v)
+}
+
 // GetEarnedCents returns the EarnedCents field value
 func (o *CreatorPortalSubmission) GetEarnedCents() int32 {
 	if o == nil {
@@ -414,6 +443,7 @@ func (o CreatorPortalSubmission) ToMap() (map[string]interface{}, error) {
 	toSerialize["publishedAt"] = o.PublishedAt.Get()
 	toSerialize["views"] = o.Views
 	toSerialize["engagements"] = o.Engagements.Get()
+	toSerialize["viewsFromAds"] = o.ViewsFromAds.Get()
 	toSerialize["earnedCents"] = o.EarnedCents
 	toSerialize["rejectReason"] = o.RejectReason.Get()
 	toSerialize["flags"] = o.Flags
@@ -435,6 +465,7 @@ func (o *CreatorPortalSubmission) UnmarshalJSON(data []byte) (err error) {
 		"publishedAt",
 		"views",
 		"engagements",
+		"viewsFromAds",
 		"earnedCents",
 		"rejectReason",
 		"flags",

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.427.0
+API version: 1.428.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,8 @@ type CreatorCampaignEconomicsPool struct {
 	Type              string `json:"type"`
 	BudgetCents       int32  `json:"budgetCents"`
 	MinViewsToQualify int32  `json:"minViewsToQualify"`
+	// Count only organic views: views from ads the creator ran do not earn. Every campaign platform must be YouTube or X, which report ad views per post, or the request answers 400. A post earns nothing until its ad views were first read.
+	OrganicViewsOnly *bool `json:"organicViewsOnly,omitempty"`
 }
 
 type _CreatorCampaignEconomicsPool CreatorCampaignEconomicsPool
@@ -38,6 +40,8 @@ func NewCreatorCampaignEconomicsPool(type_ string, budgetCents int32, minViewsTo
 	this.Type = type_
 	this.BudgetCents = budgetCents
 	this.MinViewsToQualify = minViewsToQualify
+	var organicViewsOnly bool = false
+	this.OrganicViewsOnly = &organicViewsOnly
 	return &this
 }
 
@@ -46,6 +50,8 @@ func NewCreatorCampaignEconomicsPool(type_ string, budgetCents int32, minViewsTo
 // but it doesn't guarantee that properties required by API are set
 func NewCreatorCampaignEconomicsPoolWithDefaults() *CreatorCampaignEconomicsPool {
 	this := CreatorCampaignEconomicsPool{}
+	var organicViewsOnly bool = false
+	this.OrganicViewsOnly = &organicViewsOnly
 	return &this
 }
 
@@ -121,6 +127,38 @@ func (o *CreatorCampaignEconomicsPool) SetMinViewsToQualify(v int32) {
 	o.MinViewsToQualify = v
 }
 
+// GetOrganicViewsOnly returns the OrganicViewsOnly field value if set, zero value otherwise.
+func (o *CreatorCampaignEconomicsPool) GetOrganicViewsOnly() bool {
+	if o == nil || IsNil(o.OrganicViewsOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.OrganicViewsOnly
+}
+
+// GetOrganicViewsOnlyOk returns a tuple with the OrganicViewsOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaignEconomicsPool) GetOrganicViewsOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.OrganicViewsOnly) {
+		return nil, false
+	}
+	return o.OrganicViewsOnly, true
+}
+
+// HasOrganicViewsOnly returns a boolean if a field has been set.
+func (o *CreatorCampaignEconomicsPool) HasOrganicViewsOnly() bool {
+	if o != nil && !IsNil(o.OrganicViewsOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetOrganicViewsOnly gets a reference to the given bool and assigns it to the OrganicViewsOnly field.
+func (o *CreatorCampaignEconomicsPool) SetOrganicViewsOnly(v bool) {
+	o.OrganicViewsOnly = &v
+}
+
 func (o CreatorCampaignEconomicsPool) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -134,6 +172,9 @@ func (o CreatorCampaignEconomicsPool) ToMap() (map[string]interface{}, error) {
 	toSerialize["type"] = o.Type
 	toSerialize["budgetCents"] = o.BudgetCents
 	toSerialize["minViewsToQualify"] = o.MinViewsToQualify
+	if !IsNil(o.OrganicViewsOnly) {
+		toSerialize["organicViewsOnly"] = o.OrganicViewsOnly
+	}
 	return toSerialize, nil
 }
 

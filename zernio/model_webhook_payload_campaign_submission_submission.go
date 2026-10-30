@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.427.0
+API version: 1.428.0
 Contact: support@zernio.com
 */
 
@@ -31,8 +31,10 @@ type WebhookPayloadCampaignSubmissionSubmission struct {
 	// Views that count toward earnings at the latest read.
 	ViewsEligible NullableInt32 `json:"viewsEligible"`
 	// The campaign engagement types summed at the latest read. An engagements campaign earns on this count.
-	EngagementsLatest NullableInt32                                          `json:"engagementsLatest"`
-	Flags             []WebhookPayloadCampaignSubmissionSubmissionFlagsInner `json:"flags"`
+	EngagementsLatest NullableInt32 `json:"engagementsLatest"`
+	// Views from ads, on YouTube and X. Null elsewhere or before the first read.
+	ViewsPaid NullableInt32                                          `json:"viewsPaid"`
+	Flags     []WebhookPayloadCampaignSubmissionSubmissionFlagsInner `json:"flags"`
 }
 
 type _WebhookPayloadCampaignSubmissionSubmission WebhookPayloadCampaignSubmissionSubmission
@@ -41,7 +43,7 @@ type _WebhookPayloadCampaignSubmissionSubmission WebhookPayloadCampaignSubmissio
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadCampaignSubmissionSubmission(id string, platform string, platformPostId string, platformPostUrl NullableString, status string, viewsAtSubmission NullableInt32, viewsEligible NullableInt32, engagementsLatest NullableInt32, flags []WebhookPayloadCampaignSubmissionSubmissionFlagsInner) *WebhookPayloadCampaignSubmissionSubmission {
+func NewWebhookPayloadCampaignSubmissionSubmission(id string, platform string, platformPostId string, platformPostUrl NullableString, status string, viewsAtSubmission NullableInt32, viewsEligible NullableInt32, engagementsLatest NullableInt32, viewsPaid NullableInt32, flags []WebhookPayloadCampaignSubmissionSubmissionFlagsInner) *WebhookPayloadCampaignSubmissionSubmission {
 	this := WebhookPayloadCampaignSubmissionSubmission{}
 	this.Id = id
 	this.Platform = platform
@@ -51,6 +53,7 @@ func NewWebhookPayloadCampaignSubmissionSubmission(id string, platform string, p
 	this.ViewsAtSubmission = viewsAtSubmission
 	this.ViewsEligible = viewsEligible
 	this.EngagementsLatest = engagementsLatest
+	this.ViewsPaid = viewsPaid
 	this.Flags = flags
 	return &this
 }
@@ -263,6 +266,32 @@ func (o *WebhookPayloadCampaignSubmissionSubmission) SetEngagementsLatest(v int3
 	o.EngagementsLatest.Set(&v)
 }
 
+// GetViewsPaid returns the ViewsPaid field value
+// If the value is explicit nil, the zero value for int32 will be returned
+func (o *WebhookPayloadCampaignSubmissionSubmission) GetViewsPaid() int32 {
+	if o == nil || o.ViewsPaid.Get() == nil {
+		var ret int32
+		return ret
+	}
+
+	return *o.ViewsPaid.Get()
+}
+
+// GetViewsPaidOk returns a tuple with the ViewsPaid field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadCampaignSubmissionSubmission) GetViewsPaidOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ViewsPaid.Get(), o.ViewsPaid.IsSet()
+}
+
+// SetViewsPaid sets field value
+func (o *WebhookPayloadCampaignSubmissionSubmission) SetViewsPaid(v int32) {
+	o.ViewsPaid.Set(&v)
+}
+
 // GetFlags returns the Flags field value
 func (o *WebhookPayloadCampaignSubmissionSubmission) GetFlags() []WebhookPayloadCampaignSubmissionSubmissionFlagsInner {
 	if o == nil {
@@ -305,6 +334,7 @@ func (o WebhookPayloadCampaignSubmissionSubmission) ToMap() (map[string]interfac
 	toSerialize["viewsAtSubmission"] = o.ViewsAtSubmission.Get()
 	toSerialize["viewsEligible"] = o.ViewsEligible.Get()
 	toSerialize["engagementsLatest"] = o.EngagementsLatest.Get()
+	toSerialize["viewsPaid"] = o.ViewsPaid.Get()
 	toSerialize["flags"] = o.Flags
 	return toSerialize, nil
 }
@@ -322,6 +352,7 @@ func (o *WebhookPayloadCampaignSubmissionSubmission) UnmarshalJSON(data []byte) 
 		"viewsAtSubmission",
 		"viewsEligible",
 		"engagementsLatest",
+		"viewsPaid",
 		"flags",
 	}
 

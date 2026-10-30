@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.427.0
+API version: 1.428.0
 Contact: support@zernio.com
 */
 
@@ -26,10 +26,12 @@ type CPM struct {
 	// What the rate pays on. Missing means views.
 	Metric *string `json:"metric,omitempty"`
 	// The engagements that count. Missing means all four.
-	EngagementTypes       []string `json:"engagementTypes,omitempty"`
-	RatePer1kCents        int32    `json:"ratePer1kCents"`
-	MinViewsToEarn        int32    `json:"minViewsToEarn"`
-	MaxPayoutPerClipCents *int32   `json:"maxPayoutPerClipCents,omitempty"`
+	EngagementTypes []string `json:"engagementTypes,omitempty"`
+	// Only organic views count; views from ads do not.
+	OrganicViewsOnly      *bool  `json:"organicViewsOnly,omitempty"`
+	RatePer1kCents        int32  `json:"ratePer1kCents"`
+	MinViewsToEarn        int32  `json:"minViewsToEarn"`
+	MaxPayoutPerClipCents *int32 `json:"maxPayoutPerClipCents,omitempty"`
 }
 
 type _CPM CPM
@@ -142,6 +144,38 @@ func (o *CPM) SetEngagementTypes(v []string) {
 	o.EngagementTypes = v
 }
 
+// GetOrganicViewsOnly returns the OrganicViewsOnly field value if set, zero value otherwise.
+func (o *CPM) GetOrganicViewsOnly() bool {
+	if o == nil || IsNil(o.OrganicViewsOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.OrganicViewsOnly
+}
+
+// GetOrganicViewsOnlyOk returns a tuple with the OrganicViewsOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CPM) GetOrganicViewsOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.OrganicViewsOnly) {
+		return nil, false
+	}
+	return o.OrganicViewsOnly, true
+}
+
+// HasOrganicViewsOnly returns a boolean if a field has been set.
+func (o *CPM) HasOrganicViewsOnly() bool {
+	if o != nil && !IsNil(o.OrganicViewsOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetOrganicViewsOnly gets a reference to the given bool and assigns it to the OrganicViewsOnly field.
+func (o *CPM) SetOrganicViewsOnly(v bool) {
+	o.OrganicViewsOnly = &v
+}
+
 // GetRatePer1kCents returns the RatePer1kCents field value
 func (o *CPM) GetRatePer1kCents() int32 {
 	if o == nil {
@@ -238,6 +272,9 @@ func (o CPM) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.EngagementTypes) {
 		toSerialize["engagementTypes"] = o.EngagementTypes
+	}
+	if !IsNil(o.OrganicViewsOnly) {
+		toSerialize["organicViewsOnly"] = o.OrganicViewsOnly
 	}
 	toSerialize["ratePer1kCents"] = o.RatePer1kCents
 	toSerialize["minViewsToEarn"] = o.MinViewsToEarn

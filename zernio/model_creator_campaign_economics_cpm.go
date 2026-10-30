@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.427.0
+API version: 1.428.0
 Contact: support@zernio.com
 */
 
@@ -27,7 +27,9 @@ type CreatorCampaignEconomicsCpm struct {
 	Metric *string `json:"metric,omitempty"`
 	// With `metric: engagements`, the engagements that count. Missing means all four, and sending it on a views campaign answers 400. YouTube reports likes and comments only, Facebook and Threads have no saves, and Pinterest reports saves only.
 	EngagementTypes []string `json:"engagementTypes,omitempty"`
-	RatePer1kCents  int32    `json:"ratePer1kCents"`
+	// Count only organic views: views from ads the creator ran do not earn. Every campaign platform must be YouTube or X, which report ad views per post, or the request answers 400. A post earns nothing until its ad views were first read.
+	OrganicViewsOnly *bool `json:"organicViewsOnly,omitempty"`
+	RatePer1kCents   int32 `json:"ratePer1kCents"`
 	// The count a post must reach before it earns, in the campaign metric (views or engagements).
 	MinViewsToEarn        int32  `json:"minViewsToEarn"`
 	MaxPayoutPerClipCents *int32 `json:"maxPayoutPerClipCents,omitempty"`
@@ -45,6 +47,8 @@ func NewCreatorCampaignEconomicsCpm(type_ string, ratePer1kCents int32, minViews
 	this.Type = type_
 	var metric string = "views"
 	this.Metric = &metric
+	var organicViewsOnly bool = false
+	this.OrganicViewsOnly = &organicViewsOnly
 	this.RatePer1kCents = ratePer1kCents
 	this.MinViewsToEarn = minViewsToEarn
 	this.BudgetCents = budgetCents
@@ -58,6 +62,8 @@ func NewCreatorCampaignEconomicsCpmWithDefaults() *CreatorCampaignEconomicsCpm {
 	this := CreatorCampaignEconomicsCpm{}
 	var metric string = "views"
 	this.Metric = &metric
+	var organicViewsOnly bool = false
+	this.OrganicViewsOnly = &organicViewsOnly
 	return &this
 }
 
@@ -147,6 +153,38 @@ func (o *CreatorCampaignEconomicsCpm) HasEngagementTypes() bool {
 // SetEngagementTypes gets a reference to the given []string and assigns it to the EngagementTypes field.
 func (o *CreatorCampaignEconomicsCpm) SetEngagementTypes(v []string) {
 	o.EngagementTypes = v
+}
+
+// GetOrganicViewsOnly returns the OrganicViewsOnly field value if set, zero value otherwise.
+func (o *CreatorCampaignEconomicsCpm) GetOrganicViewsOnly() bool {
+	if o == nil || IsNil(o.OrganicViewsOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.OrganicViewsOnly
+}
+
+// GetOrganicViewsOnlyOk returns a tuple with the OrganicViewsOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaignEconomicsCpm) GetOrganicViewsOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.OrganicViewsOnly) {
+		return nil, false
+	}
+	return o.OrganicViewsOnly, true
+}
+
+// HasOrganicViewsOnly returns a boolean if a field has been set.
+func (o *CreatorCampaignEconomicsCpm) HasOrganicViewsOnly() bool {
+	if o != nil && !IsNil(o.OrganicViewsOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetOrganicViewsOnly gets a reference to the given bool and assigns it to the OrganicViewsOnly field.
+func (o *CreatorCampaignEconomicsCpm) SetOrganicViewsOnly(v bool) {
+	o.OrganicViewsOnly = &v
 }
 
 // GetRatePer1kCents returns the RatePer1kCents field value
@@ -269,6 +307,9 @@ func (o CreatorCampaignEconomicsCpm) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.EngagementTypes) {
 		toSerialize["engagementTypes"] = o.EngagementTypes
+	}
+	if !IsNil(o.OrganicViewsOnly) {
+		toSerialize["organicViewsOnly"] = o.OrganicViewsOnly
 	}
 	toSerialize["ratePer1kCents"] = o.RatePer1kCents
 	toSerialize["minViewsToEarn"] = o.MinViewsToEarn

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.427.0
+API version: 1.428.0
 Contact: support@zernio.com
 */
 
@@ -52,7 +52,11 @@ type CampaignSubmission struct {
 	// Views that count toward earnings: every view the platform reports for the post, including those before submission, read at the tracking window end at the latest: once the window completes or is cancelled, the last read at or before its end is final and this value stops moving.
 	ViewsEligible NullableInt32 `json:"viewsEligible"`
 	// The campaign engagement types summed at the latest read (all four on a views campaign), frozen at the tracking window end like `viewsEligible`. An `engagements` campaign earns on this count.
-	EngagementsLatest      NullableInt32                           `json:"engagementsLatest"`
+	EngagementsLatest NullableInt32 `json:"engagementsLatest"`
+	// Views from ads the creator ran: YouTube views from the advertising traffic source, X impressions beyond the organic ones. Null on other platforms and before the first read. On an organic-only campaign `viewsEligible` is the latest views minus these.
+	ViewsPaid NullableInt32 `json:"viewsPaid"`
+	// When `viewsPaid` was last read. YouTube refreshes every 6 hours and reports ad views up to 2 days late; X about once a day while the post is under 30 days old.
+	PaidViewsReadAt        NullableTime                            `json:"paidViewsReadAt"`
 	LastAccruedViews       int32                                   `json:"lastAccruedViews"`
 	AccruedCents           int32                                   `json:"accruedCents"`
 	ApprovedCents          int32                                   `json:"approvedCents"`
@@ -79,7 +83,7 @@ type _CampaignSubmission CampaignSubmission
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCampaignSubmission(id string, campaignId string, participantId string, creatorId string, accountId string, platform string, platformPostId string, platformPostUrl NullableString, externalPostId NullableString, trackingWindowId NullableString, mediaHash NullableString, submittedAt time.Time, postPublishedAt NullableTime, status string, rejectReason NullableString, reviewRound int32, reviewedBy NullableString, reviewedAt NullableTime, viewsAtSubmission NullableInt32, viewsLatest NullableInt32, viewsEligible NullableInt32, engagementsLatest NullableInt32, lastAccruedViews int32, accruedCents int32, approvedCents int32, authenticityScore NullableInt32, authenticityConfidence NullableFloat32, flags []CampaignSubmissionFlag, createdAt time.Time, updatedAt time.Time, creator WebhookPayloadCampaignSubmissionCreator, authenticity CampaignSubmissionAuthenticity, earnedCents int32, releasedCents int32, paidOutCents int32, window CampaignSubmissionWindow, post CampaignSubmissionPost) *CampaignSubmission {
+func NewCampaignSubmission(id string, campaignId string, participantId string, creatorId string, accountId string, platform string, platformPostId string, platformPostUrl NullableString, externalPostId NullableString, trackingWindowId NullableString, mediaHash NullableString, submittedAt time.Time, postPublishedAt NullableTime, status string, rejectReason NullableString, reviewRound int32, reviewedBy NullableString, reviewedAt NullableTime, viewsAtSubmission NullableInt32, viewsLatest NullableInt32, viewsEligible NullableInt32, engagementsLatest NullableInt32, viewsPaid NullableInt32, paidViewsReadAt NullableTime, lastAccruedViews int32, accruedCents int32, approvedCents int32, authenticityScore NullableInt32, authenticityConfidence NullableFloat32, flags []CampaignSubmissionFlag, createdAt time.Time, updatedAt time.Time, creator WebhookPayloadCampaignSubmissionCreator, authenticity CampaignSubmissionAuthenticity, earnedCents int32, releasedCents int32, paidOutCents int32, window CampaignSubmissionWindow, post CampaignSubmissionPost) *CampaignSubmission {
 	this := CampaignSubmission{}
 	this.Id = id
 	this.CampaignId = campaignId
@@ -103,6 +107,8 @@ func NewCampaignSubmission(id string, campaignId string, participantId string, c
 	this.ViewsLatest = viewsLatest
 	this.ViewsEligible = viewsEligible
 	this.EngagementsLatest = engagementsLatest
+	this.ViewsPaid = viewsPaid
+	this.PaidViewsReadAt = paidViewsReadAt
 	this.LastAccruedViews = lastAccruedViews
 	this.AccruedCents = accruedCents
 	this.ApprovedCents = approvedCents
@@ -681,6 +687,58 @@ func (o *CampaignSubmission) SetEngagementsLatest(v int32) {
 	o.EngagementsLatest.Set(&v)
 }
 
+// GetViewsPaid returns the ViewsPaid field value
+// If the value is explicit nil, the zero value for int32 will be returned
+func (o *CampaignSubmission) GetViewsPaid() int32 {
+	if o == nil || o.ViewsPaid.Get() == nil {
+		var ret int32
+		return ret
+	}
+
+	return *o.ViewsPaid.Get()
+}
+
+// GetViewsPaidOk returns a tuple with the ViewsPaid field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CampaignSubmission) GetViewsPaidOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ViewsPaid.Get(), o.ViewsPaid.IsSet()
+}
+
+// SetViewsPaid sets field value
+func (o *CampaignSubmission) SetViewsPaid(v int32) {
+	o.ViewsPaid.Set(&v)
+}
+
+// GetPaidViewsReadAt returns the PaidViewsReadAt field value
+// If the value is explicit nil, the zero value for time.Time will be returned
+func (o *CampaignSubmission) GetPaidViewsReadAt() time.Time {
+	if o == nil || o.PaidViewsReadAt.Get() == nil {
+		var ret time.Time
+		return ret
+	}
+
+	return *o.PaidViewsReadAt.Get()
+}
+
+// GetPaidViewsReadAtOk returns a tuple with the PaidViewsReadAt field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CampaignSubmission) GetPaidViewsReadAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PaidViewsReadAt.Get(), o.PaidViewsReadAt.IsSet()
+}
+
+// SetPaidViewsReadAt sets field value
+func (o *CampaignSubmission) SetPaidViewsReadAt(v time.Time) {
+	o.PaidViewsReadAt.Set(&v)
+}
+
 // GetLastAccruedViews returns the LastAccruedViews field value
 func (o *CampaignSubmission) GetLastAccruedViews() int32 {
 	if o == nil {
@@ -1077,6 +1135,8 @@ func (o CampaignSubmission) ToMap() (map[string]interface{}, error) {
 	toSerialize["viewsLatest"] = o.ViewsLatest.Get()
 	toSerialize["viewsEligible"] = o.ViewsEligible.Get()
 	toSerialize["engagementsLatest"] = o.EngagementsLatest.Get()
+	toSerialize["viewsPaid"] = o.ViewsPaid.Get()
+	toSerialize["paidViewsReadAt"] = o.PaidViewsReadAt.Get()
 	toSerialize["lastAccruedViews"] = o.LastAccruedViews
 	toSerialize["accruedCents"] = o.AccruedCents
 	toSerialize["approvedCents"] = o.ApprovedCents
@@ -1122,6 +1182,8 @@ func (o *CampaignSubmission) UnmarshalJSON(data []byte) (err error) {
 		"viewsLatest",
 		"viewsEligible",
 		"engagementsLatest",
+		"viewsPaid",
+		"paidViewsReadAt",
 		"lastAccruedViews",
 		"accruedCents",
 		"approvedCents",

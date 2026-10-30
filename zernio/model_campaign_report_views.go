@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.427.0
+API version: 1.428.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type CampaignReportViews struct {
 	Eligible int32 `json:"eligible"`
 	// Latest view counts.
 	Total int32 `json:"total"`
+	// Views from ads, on YouTube and X posts.
+	Paid int32 `json:"paid"`
 }
 
 type _CampaignReportViews CampaignReportViews
@@ -34,10 +36,11 @@ type _CampaignReportViews CampaignReportViews
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCampaignReportViews(eligible int32, total int32) *CampaignReportViews {
+func NewCampaignReportViews(eligible int32, total int32, paid int32) *CampaignReportViews {
 	this := CampaignReportViews{}
 	this.Eligible = eligible
 	this.Total = total
+	this.Paid = paid
 	return &this
 }
 
@@ -97,6 +100,30 @@ func (o *CampaignReportViews) SetTotal(v int32) {
 	o.Total = v
 }
 
+// GetPaid returns the Paid field value
+func (o *CampaignReportViews) GetPaid() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.Paid
+}
+
+// GetPaidOk returns a tuple with the Paid field value
+// and a boolean to check if the value has been set.
+func (o *CampaignReportViews) GetPaidOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Paid, true
+}
+
+// SetPaid sets field value
+func (o *CampaignReportViews) SetPaid(v int32) {
+	o.Paid = v
+}
+
 func (o CampaignReportViews) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -109,6 +136,7 @@ func (o CampaignReportViews) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["eligible"] = o.Eligible
 	toSerialize["total"] = o.Total
+	toSerialize["paid"] = o.Paid
 	return toSerialize, nil
 }
 
@@ -119,6 +147,7 @@ func (o *CampaignReportViews) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"eligible",
 		"total",
+		"paid",
 	}
 
 	allProperties := make(map[string]interface{})
