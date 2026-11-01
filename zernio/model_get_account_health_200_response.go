@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.429.1
+API version: 1.429.2
 Contact: support@zernio.com
 */
 
@@ -40,11 +40,11 @@ type GetAccountHealth200Response struct {
 	Recommendations []string `json:"recommendations,omitempty"`
 	// User id of the profile owner, not necessarily the team member who connected the account.
 	OwnerUserId *string `json:"ownerUserId,omitempty"`
-	// Why the connection is broken or its token refresh is failing, from the most recent current cause. Null when the connection is healthy, including when the account is unhealthy for another reason (analytics, messaging restriction, missing analytics scopes), or when no cause is stored.
+	// Why the connection is broken or its token refresh is failing, from the most recent current cause. Null when the connection is healthy, including when the account is unhealthy for another reason (analytics, messaging restriction, missing analytics scopes, Meta phone status), or when no cause is stored.
 	DisconnectReason NullableString `json:"disconnectReason,omitempty"`
 	// intentional: deliberately disconnected by the user or by Zernio (for example a plan downgrade), not a token failure. unintentional: token expired or revoked, or an auth failure. Null when disconnectReason is null.
 	DisconnectionType NullableString `json:"disconnectionType,omitempty"`
-	// When the earliest current stored cause was recorded (the start of the outage); for an intentional disconnect, when it was disconnected. Null when the connection is healthy, including when the account is unhealthy for another reason (analytics, messaging restriction, missing analytics scopes), or when the time is unknown.
+	// When the earliest current stored cause was recorded (the start of the outage); for an intentional disconnect, when it was disconnected. Null when the connection is healthy, including when the account is unhealthy for another reason (analytics, messaging restriction, missing analytics scopes, Meta phone status), or when unknown.
 	UnhealthySince       NullableTime                                                      `json:"unhealthySince,omitempty"`
 	AnalyticsSync        *GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync        `json:"analyticsSync,omitempty"`
 	MessagingRestriction *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction `json:"messagingRestriction,omitempty"`
