@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.429.2
+API version: 1.430.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type FacebookPlatformData struct {
 	Title *string `json:"title,omitempty"`
 	// Optional first comment to post immediately after publishing (feed posts and reels, not stories). Skipped when facebookSettings.draft is true.
 	FirstComment *string `json:"firstComment,omitempty"`
+	// When true, Facebook shows its AI-disclosure label on the post. Forwarded as is_ai_generated on Reels (contentType=reel) and video Stories (contentType=story with a video). Meta documents no such parameter for feed posts, feed videos or photo Stories, so the flag is accepted with a warning and no label there.
+	IsAiGenerated *bool `json:"isAiGenerated,omitempty"`
 	// Target Facebook Page ID for multi-page posting. If omitted, uses the default page. Use GET /v1/accounts/{id}/facebook-page to list pages.
 	PageId           *string           `json:"pageId,omitempty"`
 	GeoRestriction   *GeoRestriction   `json:"geoRestriction,omitempty"`
@@ -38,6 +40,8 @@ type FacebookPlatformData struct {
 // will change when the set of required properties is changed
 func NewFacebookPlatformData() *FacebookPlatformData {
 	this := FacebookPlatformData{}
+	var isAiGenerated bool = false
+	this.IsAiGenerated = &isAiGenerated
 	return &this
 }
 
@@ -46,6 +50,8 @@ func NewFacebookPlatformData() *FacebookPlatformData {
 // but it doesn't guarantee that properties required by API are set
 func NewFacebookPlatformDataWithDefaults() *FacebookPlatformData {
 	this := FacebookPlatformData{}
+	var isAiGenerated bool = false
+	this.IsAiGenerated = &isAiGenerated
 	return &this
 }
 
@@ -143,6 +149,38 @@ func (o *FacebookPlatformData) HasFirstComment() bool {
 // SetFirstComment gets a reference to the given string and assigns it to the FirstComment field.
 func (o *FacebookPlatformData) SetFirstComment(v string) {
 	o.FirstComment = &v
+}
+
+// GetIsAiGenerated returns the IsAiGenerated field value if set, zero value otherwise.
+func (o *FacebookPlatformData) GetIsAiGenerated() bool {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		var ret bool
+		return ret
+	}
+	return *o.IsAiGenerated
+}
+
+// GetIsAiGeneratedOk returns a tuple with the IsAiGenerated field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FacebookPlatformData) GetIsAiGeneratedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		return nil, false
+	}
+	return o.IsAiGenerated, true
+}
+
+// HasIsAiGenerated returns a boolean if a field has been set.
+func (o *FacebookPlatformData) HasIsAiGenerated() bool {
+	if o != nil && !IsNil(o.IsAiGenerated) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsAiGenerated gets a reference to the given bool and assigns it to the IsAiGenerated field.
+func (o *FacebookPlatformData) SetIsAiGenerated(v bool) {
+	o.IsAiGenerated = &v
 }
 
 // GetPageId returns the PageId field value if set, zero value otherwise.
@@ -259,6 +297,9 @@ func (o FacebookPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.FirstComment) {
 		toSerialize["firstComment"] = o.FirstComment
+	}
+	if !IsNil(o.IsAiGenerated) {
+		toSerialize["isAiGenerated"] = o.IsAiGenerated
 	}
 	if !IsNil(o.PageId) {
 		toSerialize["pageId"] = o.PageId
