@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.432.0
+API version: 1.432.1
 Contact: support@zernio.com
 */
 
@@ -10638,7 +10638,8 @@ For Demand Gen, `targeting` takes locations, languages, `locationTargetingType` 
 
 - **Status and budget**: supported.
 - **Targeting**: countries or regions, excludedLocations (countries), the B2B facets, and audience segments. Applied to the LinkedIn Campaign via PARTIAL_UPDATE, and REPLACES the campaign's entire targetingCriteria, not a merge.
-- **Creative**: uploads new media, creates a replacement inline creative on the same campaign, and pauses the old one.
+- **Creative**: uploads new media, creates a replacement inline creative on the same campaign, and removes the old one (it is deleted, the ad's `platformAdId` and `creative.creativeId` move to the new creative, and the new creative keeps the old one's held-off state: `DRAFT` stays `DRAFT`).
+- **Name**: updating `name` returns 400 (LinkedIn does not support renaming an ad).
 
 ### Reddit Ads
 
