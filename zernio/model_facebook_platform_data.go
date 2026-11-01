@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.430.0
+API version: 1.431.0
 Contact: support@zernio.com
 */
 
@@ -29,9 +29,13 @@ type FacebookPlatformData struct {
 	// When true, Facebook shows its AI-disclosure label on the post. Forwarded as is_ai_generated on Reels (contentType=reel) and video Stories (contentType=story with a video). Meta documents no such parameter for feed posts, feed videos or photo Stories, so the flag is accepted with a warning and no label there.
 	IsAiGenerated *bool `json:"isAiGenerated,omitempty"`
 	// Target Facebook Page ID for multi-page posting. If omitted, uses the default page. Use GET /v1/accounts/{id}/facebook-page to list pages.
-	PageId           *string           `json:"pageId,omitempty"`
-	GeoRestriction   *GeoRestriction   `json:"geoRestriction,omitempty"`
-	FacebookSettings *FacebookSettings `json:"facebookSettings,omitempty"`
+	PageId         *string         `json:"pageId,omitempty"`
+	GeoRestriction *GeoRestriction `json:"geoRestriction,omitempty"`
+	// Facebook Page IDs (numeric, up to 10 unique) to invite as collaborators. Reels only (contentType=reel), sent after the Reel is published, never for drafts. Each Page must accept. Meta allows 10 invites per Page per 24 hours; rejected invites are listed in failedCollaborators. Other values are ignored with a warning.
+	Collaborators []string `json:"collaborators,omitempty"`
+	// Output only. Collaborator invites Facebook rejected after the Reel was published. The Reel itself stays published.
+	FailedCollaborators []FacebookPlatformDataFailedCollaboratorsInner `json:"failedCollaborators,omitempty"`
+	FacebookSettings    *FacebookSettings                              `json:"facebookSettings,omitempty"`
 }
 
 // NewFacebookPlatformData instantiates a new FacebookPlatformData object
@@ -247,6 +251,70 @@ func (o *FacebookPlatformData) SetGeoRestriction(v GeoRestriction) {
 	o.GeoRestriction = &v
 }
 
+// GetCollaborators returns the Collaborators field value if set, zero value otherwise.
+func (o *FacebookPlatformData) GetCollaborators() []string {
+	if o == nil || IsNil(o.Collaborators) {
+		var ret []string
+		return ret
+	}
+	return o.Collaborators
+}
+
+// GetCollaboratorsOk returns a tuple with the Collaborators field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FacebookPlatformData) GetCollaboratorsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Collaborators) {
+		return nil, false
+	}
+	return o.Collaborators, true
+}
+
+// HasCollaborators returns a boolean if a field has been set.
+func (o *FacebookPlatformData) HasCollaborators() bool {
+	if o != nil && !IsNil(o.Collaborators) {
+		return true
+	}
+
+	return false
+}
+
+// SetCollaborators gets a reference to the given []string and assigns it to the Collaborators field.
+func (o *FacebookPlatformData) SetCollaborators(v []string) {
+	o.Collaborators = v
+}
+
+// GetFailedCollaborators returns the FailedCollaborators field value if set, zero value otherwise.
+func (o *FacebookPlatformData) GetFailedCollaborators() []FacebookPlatformDataFailedCollaboratorsInner {
+	if o == nil || IsNil(o.FailedCollaborators) {
+		var ret []FacebookPlatformDataFailedCollaboratorsInner
+		return ret
+	}
+	return o.FailedCollaborators
+}
+
+// GetFailedCollaboratorsOk returns a tuple with the FailedCollaborators field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FacebookPlatformData) GetFailedCollaboratorsOk() ([]FacebookPlatformDataFailedCollaboratorsInner, bool) {
+	if o == nil || IsNil(o.FailedCollaborators) {
+		return nil, false
+	}
+	return o.FailedCollaborators, true
+}
+
+// HasFailedCollaborators returns a boolean if a field has been set.
+func (o *FacebookPlatformData) HasFailedCollaborators() bool {
+	if o != nil && !IsNil(o.FailedCollaborators) {
+		return true
+	}
+
+	return false
+}
+
+// SetFailedCollaborators gets a reference to the given []FacebookPlatformDataFailedCollaboratorsInner and assigns it to the FailedCollaborators field.
+func (o *FacebookPlatformData) SetFailedCollaborators(v []FacebookPlatformDataFailedCollaboratorsInner) {
+	o.FailedCollaborators = v
+}
+
 // GetFacebookSettings returns the FacebookSettings field value if set, zero value otherwise.
 func (o *FacebookPlatformData) GetFacebookSettings() FacebookSettings {
 	if o == nil || IsNil(o.FacebookSettings) {
@@ -306,6 +374,12 @@ func (o FacebookPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.GeoRestriction) {
 		toSerialize["geoRestriction"] = o.GeoRestriction
+	}
+	if !IsNil(o.Collaborators) {
+		toSerialize["collaborators"] = o.Collaborators
+	}
+	if !IsNil(o.FailedCollaborators) {
+		toSerialize["failedCollaborators"] = o.FailedCollaborators
 	}
 	if !IsNil(o.FacebookSettings) {
 		toSerialize["facebookSettings"] = o.FacebookSettings

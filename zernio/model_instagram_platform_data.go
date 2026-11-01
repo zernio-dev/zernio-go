@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.430.0
+API version: 1.431.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ type InstagramPlatformData struct {
 	ContentType *string `json:"contentType,omitempty"`
 	// For Reels only. When true (default), the Reel appears on both the Reels tab and your main profile feed. Set to false to post to the Reels tab only.
 	ShareToFeed *bool `json:"shareToFeed,omitempty"`
-	// Up to 3 Instagram usernames to invite as collaborators (feed/Reels only)
+	// Up to 3 Instagram usernames to invite as collaborators (feed/Reels only). Collaborators are supported on Instagram and Facebook Page Reels only. TikTok, YouTube, Threads, LinkedIn, X and Pinterest do not expose collaborators in their public APIs.
 	Collaborators []string `json:"collaborators,omitempty"`
 	// Output only. Set by Zernio when Instagram rejected these collaborators and the retry was sent without them.
 	DroppedCollaborators []InstagramPlatformDataDroppedCollaboratorsInner `json:"droppedCollaborators,omitempty"`
