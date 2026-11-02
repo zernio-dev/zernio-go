@@ -69,7 +69,6 @@ api_sequences.go
 api_slack.go
 api_sms.go
 api_support_assistant.go
-api_tools.go
 api_tracking_tags.go
 api_treasury.go
 api_twitter_engagement.go
@@ -928,8 +927,6 @@ model_discord_scheduled_event_entity_metadata.go
 model_dismiss_ads_alert_200_response.go
 model_dismiss_google_recommendations_request.go
 model_dm_button.go
-model_download_tik_tok_video_200_response.go
-model_download_tik_tok_video_200_response_formats_inner.go
 model_duplicate_ad_200_response.go
 model_duplicate_ad_campaign_200_response.go
 model_duplicate_ad_campaign_request.go
