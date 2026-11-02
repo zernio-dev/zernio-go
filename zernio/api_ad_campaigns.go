@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.433.2
+API version: 1.434.0
 Contact: support@zernio.com
 */
 
@@ -2084,6 +2084,17 @@ The creative format follows the body:
 Only the legacy single-creative shape is available: `creatives[]`, `adSetId`, `existingCampaignId` and `validateOnly` are refused.
 
 Reddit throttling surfaces as 429 `rate_limited` with `platform: reddit`; retry after a delay. To promote an existing Reddit post, use POST /v1/ads/boost.
+
+### Microsoft Ads
+
+Use the `accountId` of a `microsoftads` connection and its numeric `adAccountId`. Zernio creates a Search campaign carrying the daily budget and the countries, an ad group carrying the schedule, a responsive search ad and the `keywords`.
+
+- `goal` is `traffic`; `budgetType` must be `daily`.
+- `headline`, `body` and `linkUrl` are required. `additionalHeadlines` and `additionalDescriptions` complete the ad to 3 to 15 headlines (30 characters) and 2 to 4 descriptions (90 characters); missing ones are filled from `name` and the link's host.
+- `countries` (or `targeting.countries`) is required; no other targeting field applies.
+- Bid fields, `negativeKeywords`, `campaignNegativeKeywords`, sitelinks, callouts, structured snippets, `businessName`, `longHeadline` and a `campaignType` other than `search` return 422.
+
+Without `status`, every level is switched on and the campaign spends once Microsoft approves the ad: send `status: PAUSED` to create it paused. A failed step deletes the campaign the call created.
 
 ### Idempotency
 

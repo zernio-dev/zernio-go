@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.433.2
+API version: 1.434.0
 Contact: support@zernio.com
 */
 
@@ -183,7 +183,7 @@ The OAuth token can be perfectly valid while Meta refuses to serve the phone-num
 - When Meta reports that the number's inbound message webhook does not reach Zernio, or subscribing the number's WhatsApp Business Account to Zernio's webhooks failed at connect, `platformConnection.inboundWebhookSubscribed` is `false`, an entry is added to `issues`, and the overall `status` is at least `warning`.
 - When `platformConnection.phoneStatus` is anything other than `CONNECTED`, an entry is added to `issues` and the overall `status` is at least `warning`; `BANNED` makes it `error`. `disconnectReason` stays null, since reconnecting does not lift a Meta status.
 
-### Standalone ads connections (`googleads`, `redditads`)
+### Standalone ads connections (`googleads`, `redditads`, `microsoftads`)
 
 A connection that cannot serve requests until a fresh OAuth repairs it adds an entry to `issues`. It also adds a recommendation to call `GET /v1/connect/{platform}/ads`, whose `authUrl` reconnects the same account.
 
