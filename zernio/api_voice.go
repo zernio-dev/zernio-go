@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.443.0
+API version: 1.444.0
 Contact: support@zernio.com
 */
 
@@ -1593,6 +1593,7 @@ type VoiceAPIGetVoiceCallEstimateRequest struct {
 	ApiService    *VoiceAPIService
 	to            *string
 	from          *string
+	forwardTo     *string
 	minutes       *int32
 	recording     *bool
 	transcription *bool
@@ -1607,6 +1608,12 @@ func (r VoiceAPIGetVoiceCallEstimateRequest) To(to string) VoiceAPIGetVoiceCallE
 // The number the call would dial from, E.164. When it is verified on a Branded Calling identity and &#x60;to&#x60; is a US number, the estimate includes the per-call Branded Calling surcharge.
 func (r VoiceAPIGetVoiceCallEstimateRequest) From(from string) VoiceAPIGetVoiceCallEstimateRequest {
 	r.from = &from
+	return r
+}
+
+// Destination the call bridges to: &#x60;tel:+E164&#x60;, &#x60;sip:...&#x60; or &#x60;wss://...&#x60;. Defaults to the dialing number&#39;s configured forward. A &#x60;tel:&#x60; destination adds a second carrier leg to the quote. Encode the &#x60;+&#x60; as &#x60;%2B&#x60;.
+func (r VoiceAPIGetVoiceCallEstimateRequest) ForwardTo(forwardTo string) VoiceAPIGetVoiceCallEstimateRequest {
+	r.forwardTo = &forwardTo
 	return r
 }
 
@@ -1634,7 +1641,7 @@ GetVoiceCallEstimate Estimate call cost
 
 Pre-call cost estimate for a PSTN call: the carrier leg plus optional recording and transcription add-ons.
 
-It uses the same billing formula as the post-call invoice, so the quote and the final charge can't disagree. The per-minute figure is deliberately conservative (the real cost comes from the settled carrier record after the call), so estimates trend slightly over the actual invoice.
+It uses the same billing formula as the post-call invoice, so the quote and the final charge can't disagree. The carrier figure follows the carrier's per-destination rate card: a call dialed from a number in the destination country uses the local mobile rate, and a `tel:` forward destination is quoted as a second carrier leg billed from the same number. The real cost comes from the settled carrier record after the call.
 
 Parity endpoint of `GET /v1/whatsapp/calls/estimate`, minus the Meta line. PSTN calls have no separate Meta bill, so `totalCostUSD` equals `billableCostUSD`.
 
@@ -1676,6 +1683,9 @@ func (a *VoiceAPIService) GetVoiceCallEstimateExecute(r VoiceAPIGetVoiceCallEsti
 	parameterAddToHeaderOrQuery(localVarQueryParams, "to", r.to, "form", "")
 	if r.from != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
+	}
+	if r.forwardTo != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "forwardTo", r.forwardTo, "form", "")
 	}
 	if r.minutes != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "minutes", r.minutes, "form", "")
