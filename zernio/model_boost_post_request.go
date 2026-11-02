@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.440.1
+API version: 1.440.2
 Contact: support@zernio.com
 */
 
@@ -25,11 +25,11 @@ var _ MappedNullable = &BoostPostRequest{}
 type BoostPostRequest struct {
 	// Meta Advantage+ creative enhancements. Map snake_case feature names to OPT_IN or OPT_OUT; Meta validates supported keys and unspecified features default to OPT_OUT. auto_promotion_tag is an Advantage+ enhancement, not the Ads Manager Promotion setting. The deprecated standard_enhancements bundle is rejected by Meta.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
-	// Zernio post ID (provide this or platformPostId)
+	// The Zernio post id (24 hex characters) returned when the post was created through Zernio. Send this or platformPostId. A value that is not a Zernio id is boosted as the platform post id, the same as platformPostId; a Zernio id that matches no post is a 404 on postId.
 	PostId *string `json:"postId,omitempty"`
 	// Platform post ID (alternative to postId).  - Reddit: the post id, with or without the `t3_` prefix. - Meta: a Page post id (`<pageId>_<postId>` or the bare post id) or an Instagram media id. - Meta Ads business-login connection (platform metaads): the id is resolved live. An Instagram media id is boosted as that media, running as the Instagram account that owns it.
 	PlatformPostId *string `json:"platformPostId,omitempty"`
-	// Zernio account id. Normally the connected posting account (facebook, instagram, tiktok, linkedin, pinterest, twitter), a googleads account or a redditads account.  TikTok: the TikTok Ads connection (platform tiktokads) is also accepted when the post brings its own authorization (sparkAuthCode or sparkPosts), so Spark ads need no organic TikTok account connected. Such a call must use platformPostId, not postId.
+	// Zernio account id. Normally the connected posting account (facebook, instagram, tiktok, linkedin, pinterest, twitter), a googleads account or a redditads account.  TikTok: the TikTok Ads connection (platform tiktokads) is also accepted when the post brings its own authorization (sparkAuthCode or sparkPosts), so Spark ads need no organic TikTok account connected. Such a call cannot use a Zernio postId: send the TikTok item id (as platformPostId, or in postId).
 	AccountId string `json:"accountId"`
 	// Platform ad account ID
 	AdAccountId string `json:"adAccountId"`
