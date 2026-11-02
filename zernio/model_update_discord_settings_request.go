@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.433.0
+API version: 1.433.1
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &UpdateDiscordSettingsRequest{}
 type UpdateDiscordSettingsRequest struct {
 	// Custom display name for the webhook (1-80 chars). Empty string resets to default (\"Zernio\"). Cannot contain \"clyde\" or \"discord\".
 	WebhookUsername *string `json:"webhookUsername,omitempty"`
-	// Custom avatar URL. Empty string resets to default bot avatar.
+	// Custom avatar URL. Empty string resets to default bot avatar. Zernio upload URLs (temp/) are copied to permanent storage; an expired one returns 400.
 	WebhookAvatarUrl *string `json:"webhookAvatarUrl,omitempty"`
 	// Switch to a different channel in the same guild. Must be a text (0), announcement (5), or forum (15) channel.
 	ChannelId *string `json:"channelId,omitempty"`
