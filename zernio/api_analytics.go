@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.440.2
+API version: 1.441.0
 Contact: support@zernio.com
 */
 
@@ -6714,10 +6714,16 @@ Returns the audience retention curve for a single YouTube video, plus the video'
 - Up to 100 points (elapsedVideoTimeRatio 0.01-1.0), aggregated over the whole date range. YouTube does not support per-day retention breakdowns.
 - audienceWatchRatio: the absolute share of viewers watching at that point in the video. It can exceed 1 (rewinds and looping, common on Shorts).
 - relativeRetentionPerformance: compares against videos of similar length (0 = worst, 0.5 = median, 1 = best).
+- Zernio returns exactly the buckets YouTube reports for the requested range and fills none in. A curve that ends before 1.0, or skips a position, means YouTube returned no row there for that range.
+- The range ends at toDate (default 3 days ago), so recent views are included only with a later toDate.
 
 ### Empty curves
 
 YouTube returns an empty curve for videos with very few views or before analytics processing completes (2-3 day delay).
+
+### startedWatching and stoppedWatching
+
+YouTube does not return segment-level data for every video. Zernio then fetches the curve without it: `segmentMetricsAvailable` is `false` and both fields are `0` placeholders in every point. When it is `true`, a `0` is the value YouTube reported.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetYouTubeVideoRetentionRequest

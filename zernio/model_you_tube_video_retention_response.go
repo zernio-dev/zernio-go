@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.440.2
+API version: 1.441.0
 Contact: support@zernio.com
 */
 
@@ -35,7 +35,9 @@ type YouTubeVideoRetentionResponse struct {
 	DateRange       *GetGoogleBusinessPerformance200ResponseDateRange `json:"dateRange,omitempty"`
 	// Present only when the range reaches into YouTube's ~3-day processing window: the first date whose numbers are provisional and may still be revised by YouTube.
 	ProvisionalSince *string `json:"provisionalSince,omitempty"`
-	// Up to 100 points covering the video timeline, aggregated over the date range. Can be empty when YouTube has no retention data for the video in the given range.
+	// Whether YouTube returned startedWatching and stoppedWatching for this curve. When false, both are 0 placeholders in every point, not measured values.
+	SegmentMetricsAvailable *bool `json:"segmentMetricsAvailable,omitempty"`
+	// Up to 100 points covering the video timeline, aggregated over the date range. Contains only the buckets YouTube reports for that range and is never zero-filled, so it can end before 1.0, skip positions, or be empty.
 	RetentionCurve []YouTubeVideoRetentionResponseRetentionCurveInner `json:"retentionCurve,omitempty"`
 	// Present only when the curve is empty, explaining why
 	Note        *string                               `json:"note,omitempty"`
@@ -348,6 +350,38 @@ func (o *YouTubeVideoRetentionResponse) SetProvisionalSince(v string) {
 	o.ProvisionalSince = &v
 }
 
+// GetSegmentMetricsAvailable returns the SegmentMetricsAvailable field value if set, zero value otherwise.
+func (o *YouTubeVideoRetentionResponse) GetSegmentMetricsAvailable() bool {
+	if o == nil || IsNil(o.SegmentMetricsAvailable) {
+		var ret bool
+		return ret
+	}
+	return *o.SegmentMetricsAvailable
+}
+
+// GetSegmentMetricsAvailableOk returns a tuple with the SegmentMetricsAvailable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *YouTubeVideoRetentionResponse) GetSegmentMetricsAvailableOk() (*bool, bool) {
+	if o == nil || IsNil(o.SegmentMetricsAvailable) {
+		return nil, false
+	}
+	return o.SegmentMetricsAvailable, true
+}
+
+// HasSegmentMetricsAvailable returns a boolean if a field has been set.
+func (o *YouTubeVideoRetentionResponse) HasSegmentMetricsAvailable() bool {
+	if o != nil && !IsNil(o.SegmentMetricsAvailable) {
+		return true
+	}
+
+	return false
+}
+
+// SetSegmentMetricsAvailable gets a reference to the given bool and assigns it to the SegmentMetricsAvailable field.
+func (o *YouTubeVideoRetentionResponse) SetSegmentMetricsAvailable(v bool) {
+	o.SegmentMetricsAvailable = &v
+}
+
 // GetRetentionCurve returns the RetentionCurve field value if set, zero value otherwise.
 func (o *YouTubeVideoRetentionResponse) GetRetentionCurve() []YouTubeVideoRetentionResponseRetentionCurveInner {
 	if o == nil || IsNil(o.RetentionCurve) {
@@ -477,6 +511,9 @@ func (o YouTubeVideoRetentionResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ProvisionalSince) {
 		toSerialize["provisionalSince"] = o.ProvisionalSince
+	}
+	if !IsNil(o.SegmentMetricsAvailable) {
+		toSerialize["segmentMetricsAvailable"] = o.SegmentMetricsAvailable
 	}
 	if !IsNil(o.RetentionCurve) {
 		toSerialize["retentionCurve"] = o.RetentionCurve
