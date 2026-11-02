@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.436.0
+API version: 1.437.0
 Contact: support@zernio.com
 */
 
@@ -3178,6 +3178,190 @@ func (a *CreatorCampaignsAPIService) ListCreatorCampaignsExecute(r CreatorCampai
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type CreatorCampaignsAPIMoveCampaignParticipantRequest struct {
+	ctx                            context.Context
+	ApiService                     *CreatorCampaignsAPIService
+	campaignId                     string
+	participantId                  string
+	moveCampaignParticipantRequest *MoveCampaignParticipantRequest
+}
+
+func (r CreatorCampaignsAPIMoveCampaignParticipantRequest) MoveCampaignParticipantRequest(moveCampaignParticipantRequest MoveCampaignParticipantRequest) CreatorCampaignsAPIMoveCampaignParticipantRequest {
+	r.moveCampaignParticipantRequest = &moveCampaignParticipantRequest
+	return r
+}
+
+func (r CreatorCampaignsAPIMoveCampaignParticipantRequest) Execute() (*MoveCampaignParticipant200Response, *http.Response, error) {
+	return r.ApiService.MoveCampaignParticipantExecute(r)
+}
+
+/*
+MoveCampaignParticipant Move participant to another campaign
+
+Moves a creator invited or joined into the wrong campaign to another campaign of the same
+owner. The participant keeps its id, status and portal link, which now opens the target.
+
+Posts that fit the target (platform accepted, published after it started) move with it.
+Undecided posts that do not fit are rejected in this campaign with the reason; decided ones stay.
+
+Answers 409 when the target is closed or full, the creator is already in it, the participant
+was removed, or any money touched the participation (ledger entries, a payout batch or a
+transfer). Money never moves between campaigns.
+
+Fires `campaign_participant.removed` here and, for a creator who joined,
+`campaign_participant.joined` on the target.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Campaign the participant is in now.
+	@param participantId Participant ID.
+	@return CreatorCampaignsAPIMoveCampaignParticipantRequest
+*/
+func (a *CreatorCampaignsAPIService) MoveCampaignParticipant(ctx context.Context, campaignId string, participantId string) CreatorCampaignsAPIMoveCampaignParticipantRequest {
+	return CreatorCampaignsAPIMoveCampaignParticipantRequest{
+		ApiService:    a,
+		ctx:           ctx,
+		campaignId:    campaignId,
+		participantId: participantId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return MoveCampaignParticipant200Response
+func (a *CreatorCampaignsAPIService) MoveCampaignParticipantExecute(r CreatorCampaignsAPIMoveCampaignParticipantRequest) (*MoveCampaignParticipant200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MoveCampaignParticipant200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CreatorCampaignsAPIService.MoveCampaignParticipant")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/creator-campaigns/{campaignId}/participants/{participantId}/move"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"participantId"+"}", url.PathEscape(parameterValueToString(r.participantId, "participantId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.moveCampaignParticipantRequest == nil {
+		return localVarReturnValue, nil, reportError("moveCampaignParticipantRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.moveCampaignParticipantRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

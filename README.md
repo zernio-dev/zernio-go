@@ -869,6 +869,7 @@ func main() {
 | `client.CreatorCampaignsAPI.ActivateCreatorCampaign(ctx)` | Activate creator campaign |
 | `client.CreatorCampaignsAPI.ApproveCampaignSubmission(ctx)` | Approve campaign submission |
 | `client.CreatorCampaignsAPI.CloseCreatorCampaign(ctx)` | Close creator campaign |
+| `client.CreatorCampaignsAPI.MoveCampaignParticipant(ctx)` | Move participant to another campaign |
 | `client.CreatorCampaignsAPI.PauseCreatorCampaign(ctx)` | Pause creator campaign |
 | `client.CreatorCampaignsAPI.RaiseCreatorCampaignBudget(ctx)` | Raise creator campaign budget |
 | `client.CreatorCampaignsAPI.ReinstateCampaignParticipant(ctx)` | Reinstate campaign participant |

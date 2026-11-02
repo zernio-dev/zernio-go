@@ -2011,6 +2011,9 @@ model_money.go
 model_money_amount.go
 model_move_account_to_profile_200_response.go
 model_move_account_to_profile_request.go
+model_move_campaign_participant_200_response.go
+model_move_campaign_participant_200_response_submissions.go
+model_move_campaign_participant_request.go
 model_move_whats_app_number_to_profile_200_response.go
 model_o_auth_app.go
 model_o_auth_app_setup.go
