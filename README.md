@@ -1285,6 +1285,7 @@ func main() {
 | `client.TreasuryAPI.CreateTransfer(ctx)` | Create a transfer |
 | `client.TreasuryAPI.GetBalance(ctx)` | Get balance |
 | `client.TreasuryAPI.GetPayoutBatch(ctx)` | Get a payout batch |
+| `client.TreasuryAPI.GetTopupCardFee(ctx)` | Get the card fee for a top-up |
 | `client.TreasuryAPI.GetTopupReceipt(ctx)` | Get a top-up receipt |
 | `client.TreasuryAPI.GetTransfer(ctx)` | Get a transfer |
 | `client.TreasuryAPI.CancelPayoutBatch(ctx)` | Cancel an unpaid payout batch |

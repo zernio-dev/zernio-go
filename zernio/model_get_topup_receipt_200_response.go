@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.435.0
+API version: 1.436.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,12 @@ var _ MappedNullable = &GetTopupReceipt200Response{}
 type GetTopupReceipt200Response struct {
 	Url    string `json:"url"`
 	Format string `json:"format"`
+	// As in the top-up list.
+	AmountCents int32 `json:"amountCents"`
+	// Card fee paid, as in the top-up list.
+	FeeCents NullableInt32 `json:"feeCents"`
+	// What the card was charged, the total on the receipt.
+	ChargedCents int32 `json:"chargedCents"`
 }
 
 type _GetTopupReceipt200Response GetTopupReceipt200Response
@@ -32,10 +38,13 @@ type _GetTopupReceipt200Response GetTopupReceipt200Response
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetTopupReceipt200Response(url string, format string) *GetTopupReceipt200Response {
+func NewGetTopupReceipt200Response(url string, format string, amountCents int32, feeCents NullableInt32, chargedCents int32) *GetTopupReceipt200Response {
 	this := GetTopupReceipt200Response{}
 	this.Url = url
 	this.Format = format
+	this.AmountCents = amountCents
+	this.FeeCents = feeCents
+	this.ChargedCents = chargedCents
 	return &this
 }
 
@@ -95,6 +104,80 @@ func (o *GetTopupReceipt200Response) SetFormat(v string) {
 	o.Format = v
 }
 
+// GetAmountCents returns the AmountCents field value
+func (o *GetTopupReceipt200Response) GetAmountCents() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.AmountCents
+}
+
+// GetAmountCentsOk returns a tuple with the AmountCents field value
+// and a boolean to check if the value has been set.
+func (o *GetTopupReceipt200Response) GetAmountCentsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.AmountCents, true
+}
+
+// SetAmountCents sets field value
+func (o *GetTopupReceipt200Response) SetAmountCents(v int32) {
+	o.AmountCents = v
+}
+
+// GetFeeCents returns the FeeCents field value
+// If the value is explicit nil, the zero value for int32 will be returned
+func (o *GetTopupReceipt200Response) GetFeeCents() int32 {
+	if o == nil || o.FeeCents.Get() == nil {
+		var ret int32
+		return ret
+	}
+
+	return *o.FeeCents.Get()
+}
+
+// GetFeeCentsOk returns a tuple with the FeeCents field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetTopupReceipt200Response) GetFeeCentsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FeeCents.Get(), o.FeeCents.IsSet()
+}
+
+// SetFeeCents sets field value
+func (o *GetTopupReceipt200Response) SetFeeCents(v int32) {
+	o.FeeCents.Set(&v)
+}
+
+// GetChargedCents returns the ChargedCents field value
+func (o *GetTopupReceipt200Response) GetChargedCents() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.ChargedCents
+}
+
+// GetChargedCentsOk returns a tuple with the ChargedCents field value
+// and a boolean to check if the value has been set.
+func (o *GetTopupReceipt200Response) GetChargedCentsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ChargedCents, true
+}
+
+// SetChargedCents sets field value
+func (o *GetTopupReceipt200Response) SetChargedCents(v int32) {
+	o.ChargedCents = v
+}
+
 func (o GetTopupReceipt200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -107,6 +190,9 @@ func (o GetTopupReceipt200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["url"] = o.Url
 	toSerialize["format"] = o.Format
+	toSerialize["amountCents"] = o.AmountCents
+	toSerialize["feeCents"] = o.FeeCents.Get()
+	toSerialize["chargedCents"] = o.ChargedCents
 	return toSerialize, nil
 }
 
@@ -117,6 +203,9 @@ func (o *GetTopupReceipt200Response) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"url",
 		"format",
+		"amountCents",
+		"feeCents",
+		"chargedCents",
 	}
 
 	allProperties := make(map[string]interface{})

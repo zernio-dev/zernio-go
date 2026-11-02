@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.435.0
+API version: 1.436.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,15 @@ var _ MappedNullable = &CreateTopup201Response{}
 // CreateTopup201Response struct for CreateTopup201Response
 type CreateTopup201Response struct {
 	TopupId string `json:"topupId"`
-	Status  string `json:"status"`
+	// Credited to your balance once paid: exactly this when feeIsExact, else at least this.
+	AmountCents int32 `json:"amountCents"`
+	// Card fee, charged on top of amountCents.
+	FeeCents int32 `json:"feeCents"`
+	// What the card is charged: amountCents plus feeCents.
+	ChargedCents int32 `json:"chargedCents"`
+	// True when feeCents is exactly Stripe's fee for this card. False when it is the region's highest rate, so Stripe may take less and the difference is added to your balance.
+	FeeIsExact bool   `json:"feeIsExact"`
+	Status     string `json:"status"`
 	// PaymentIntent client secret for Stripe.js handleNextAction; set only when status is requires_action
 	ClientSecret NullableString `json:"clientSecret"`
 }
@@ -34,9 +42,13 @@ type _CreateTopup201Response CreateTopup201Response
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateTopup201Response(topupId string, status string, clientSecret NullableString) *CreateTopup201Response {
+func NewCreateTopup201Response(topupId string, amountCents int32, feeCents int32, chargedCents int32, feeIsExact bool, status string, clientSecret NullableString) *CreateTopup201Response {
 	this := CreateTopup201Response{}
 	this.TopupId = topupId
+	this.AmountCents = amountCents
+	this.FeeCents = feeCents
+	this.ChargedCents = chargedCents
+	this.FeeIsExact = feeIsExact
 	this.Status = status
 	this.ClientSecret = clientSecret
 	return &this
@@ -72,6 +84,102 @@ func (o *CreateTopup201Response) GetTopupIdOk() (*string, bool) {
 // SetTopupId sets field value
 func (o *CreateTopup201Response) SetTopupId(v string) {
 	o.TopupId = v
+}
+
+// GetAmountCents returns the AmountCents field value
+func (o *CreateTopup201Response) GetAmountCents() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.AmountCents
+}
+
+// GetAmountCentsOk returns a tuple with the AmountCents field value
+// and a boolean to check if the value has been set.
+func (o *CreateTopup201Response) GetAmountCentsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.AmountCents, true
+}
+
+// SetAmountCents sets field value
+func (o *CreateTopup201Response) SetAmountCents(v int32) {
+	o.AmountCents = v
+}
+
+// GetFeeCents returns the FeeCents field value
+func (o *CreateTopup201Response) GetFeeCents() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.FeeCents
+}
+
+// GetFeeCentsOk returns a tuple with the FeeCents field value
+// and a boolean to check if the value has been set.
+func (o *CreateTopup201Response) GetFeeCentsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.FeeCents, true
+}
+
+// SetFeeCents sets field value
+func (o *CreateTopup201Response) SetFeeCents(v int32) {
+	o.FeeCents = v
+}
+
+// GetChargedCents returns the ChargedCents field value
+func (o *CreateTopup201Response) GetChargedCents() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.ChargedCents
+}
+
+// GetChargedCentsOk returns a tuple with the ChargedCents field value
+// and a boolean to check if the value has been set.
+func (o *CreateTopup201Response) GetChargedCentsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ChargedCents, true
+}
+
+// SetChargedCents sets field value
+func (o *CreateTopup201Response) SetChargedCents(v int32) {
+	o.ChargedCents = v
+}
+
+// GetFeeIsExact returns the FeeIsExact field value
+func (o *CreateTopup201Response) GetFeeIsExact() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.FeeIsExact
+}
+
+// GetFeeIsExactOk returns a tuple with the FeeIsExact field value
+// and a boolean to check if the value has been set.
+func (o *CreateTopup201Response) GetFeeIsExactOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.FeeIsExact, true
+}
+
+// SetFeeIsExact sets field value
+func (o *CreateTopup201Response) SetFeeIsExact(v bool) {
+	o.FeeIsExact = v
 }
 
 // GetStatus returns the Status field value
@@ -135,6 +243,10 @@ func (o CreateTopup201Response) MarshalJSON() ([]byte, error) {
 func (o CreateTopup201Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["topupId"] = o.TopupId
+	toSerialize["amountCents"] = o.AmountCents
+	toSerialize["feeCents"] = o.FeeCents
+	toSerialize["chargedCents"] = o.ChargedCents
+	toSerialize["feeIsExact"] = o.FeeIsExact
 	toSerialize["status"] = o.Status
 	toSerialize["clientSecret"] = o.ClientSecret.Get()
 	return toSerialize, nil
@@ -146,6 +258,10 @@ func (o *CreateTopup201Response) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"topupId",
+		"amountCents",
+		"feeCents",
+		"chargedCents",
+		"feeIsExact",
 		"status",
 		"clientSecret",
 	}
