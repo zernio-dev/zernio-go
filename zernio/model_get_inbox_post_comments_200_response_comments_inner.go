@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.439.0
+API version: 1.440.0
 Contact: support@zernio.com
 */
 
@@ -45,7 +45,7 @@ type GetInboxPostComments200ResponseCommentsInner struct {
 	IsHidden *bool `json:"isHidden,omitempty"`
 	// Whether the current user has liked this comment
 	IsLiked *bool `json:"isLiked,omitempty"`
-	// Facebook only. The comment's sticker, GIF, photo, share or video, whenever Facebook returns one (replies included). Absent when the comment has no media and on every other platform.
+	// The comment's media, whenever the platform returns one (replies included). Supported on Facebook, TikTok, X, Threads and Bluesky; absent when the comment has no media and on every other platform. See CommentAttachment for each platform's `type` values.
 	Attachment *CommentAttachment `json:"attachment,omitempty"`
 	// Bluesky like URI for unliking
 	LikeUri NullableString `json:"likeUri,omitempty"`

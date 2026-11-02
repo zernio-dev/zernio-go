@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.439.0
+API version: 1.440.0
 Contact: support@zernio.com
 */
 
@@ -20,13 +20,13 @@ import (
 // checks if the CommentAttachment type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CommentAttachment{}
 
-// CommentAttachment Facebook only. The media on a comment (sticker, GIF, photo, shared link or video). One attachment per comment, a single object. URLs are expiring Meta CDN links (oe= expiry), so fetch promptly. Instagram comments carry no media.
+// CommentAttachment The media on a comment or reply, one per comment (the first item when the platform returns several). `type` is the platform's own media kind:  - Facebook: sticker, animated_image_share, photo, image_share, share or video_inline. - TikTok: image. - X: photo, video or animated_gif. A video `url` is an mp4 and `imageUrl` its preview. - Threads: IMAGE, VIDEO or GIF. Album replies carry no attachment. - Bluesky: image, video or external (link cards, GIFs arrive this way). A video `url` is an HLS playlist (.m3u8).  Facebook and Threads URLs are expiring Meta CDN links, so fetch promptly. Instagram, YouTube, LinkedIn and Reddit comments carry no media.
 type CommentAttachment struct {
-	// Attachment type as Facebook reports it, for example sticker, animated_image_share, photo, image_share, share or video_inline.
+	// The platform's own media kind, see the schema description for each platform's values.
 	Type string `json:"type"`
-	// Rendered image/preview URL (from attachment.media.image.src).
+	// Rendered image or preview URL.
 	ImageUrl *string `json:"imageUrl,omitempty"`
-	// Source URL (from attachment.url). For GIFs this is an l.facebook.com redirect.
+	// Source or playable URL. Facebook GIFs carry an l.facebook.com redirect, X videos an mp4, Bluesky videos an HLS playlist.
 	Url *string `json:"url,omitempty"`
 }
 
