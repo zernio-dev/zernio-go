@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.438.0
+API version: 1.439.0
 Contact: support@zernio.com
 */
 
@@ -1406,6 +1406,8 @@ GetDailyMetrics Get daily aggregated metrics
 Returns daily aggregated analytics metrics and a per-platform breakdown.
 Each day includes post count, platform distribution, and summed metrics (impressions, reach, likes, comments, shares, saves, clicks, views).
 Defaults to the last 180 days.
+
+`totals` sums the whole range for the applied filters (pass `accountId` for one account). With attribution "publish" they are the lifetime metrics of posts published in the range, with "received" the engagement that arrived in the range.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetDailyMetricsRequest

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.438.0
+API version: 1.439.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,7 @@ var _ MappedNullable = &GetDailyMetrics200Response{}
 type GetDailyMetrics200Response struct {
 	DailyData         []GetDailyMetrics200ResponseDailyDataInner         `json:"dailyData,omitempty"`
 	PlatformBreakdown []GetDailyMetrics200ResponsePlatformBreakdownInner `json:"platformBreakdown,omitempty"`
+	Totals            *GetDailyMetrics200ResponseTotals                  `json:"totals,omitempty"`
 }
 
 // NewGetDailyMetrics200Response instantiates a new GetDailyMetrics200Response object
@@ -105,6 +106,38 @@ func (o *GetDailyMetrics200Response) SetPlatformBreakdown(v []GetDailyMetrics200
 	o.PlatformBreakdown = v
 }
 
+// GetTotals returns the Totals field value if set, zero value otherwise.
+func (o *GetDailyMetrics200Response) GetTotals() GetDailyMetrics200ResponseTotals {
+	if o == nil || IsNil(o.Totals) {
+		var ret GetDailyMetrics200ResponseTotals
+		return ret
+	}
+	return *o.Totals
+}
+
+// GetTotalsOk returns a tuple with the Totals field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetDailyMetrics200Response) GetTotalsOk() (*GetDailyMetrics200ResponseTotals, bool) {
+	if o == nil || IsNil(o.Totals) {
+		return nil, false
+	}
+	return o.Totals, true
+}
+
+// HasTotals returns a boolean if a field has been set.
+func (o *GetDailyMetrics200Response) HasTotals() bool {
+	if o != nil && !IsNil(o.Totals) {
+		return true
+	}
+
+	return false
+}
+
+// SetTotals gets a reference to the given GetDailyMetrics200ResponseTotals and assigns it to the Totals field.
+func (o *GetDailyMetrics200Response) SetTotals(v GetDailyMetrics200ResponseTotals) {
+	o.Totals = &v
+}
+
 func (o GetDailyMetrics200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +153,9 @@ func (o GetDailyMetrics200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PlatformBreakdown) {
 		toSerialize["platformBreakdown"] = o.PlatformBreakdown
+	}
+	if !IsNil(o.Totals) {
+		toSerialize["totals"] = o.Totals
 	}
 	return toSerialize, nil
 }
