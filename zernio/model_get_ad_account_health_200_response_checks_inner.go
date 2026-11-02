@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.442.0
+API version: 1.443.0
 Contact: support@zernio.com
 */
 
@@ -22,11 +22,14 @@ var _ MappedNullable = &GetAdAccountHealth200ResponseChecksInner{}
 
 // GetAdAccountHealth200ResponseChecksInner struct for GetAdAccountHealth200ResponseChecksInner
 type GetAdAccountHealth200ResponseChecksInner struct {
-	Id      string                                       `json:"id"`
-	Status  string                                       `json:"status"`
-	Title   string                                       `json:"title"`
-	Message string                                       `json:"message"`
-	Fix     *GetAdAccountHealth200ResponseChecksInnerFix `json:"fix,omitempty"`
+	Id      string `json:"id"`
+	Status  string `json:"status"`
+	Title   string `json:"title"`
+	Message string `json:"message"`
+	// When the check is not `ok`: the error code a create refused for this reason returns.
+	Code *string                                        `json:"code,omitempty"`
+	Hint *string                                        `json:"hint,omitempty"`
+	Fix  *GetAdAccountHealth200ResponseBlockersInnerFix `json:"fix,omitempty"`
 }
 
 type _GetAdAccountHealth200ResponseChecksInner GetAdAccountHealth200ResponseChecksInner
@@ -148,10 +151,74 @@ func (o *GetAdAccountHealth200ResponseChecksInner) SetMessage(v string) {
 	o.Message = v
 }
 
+// GetCode returns the Code field value if set, zero value otherwise.
+func (o *GetAdAccountHealth200ResponseChecksInner) GetCode() string {
+	if o == nil || IsNil(o.Code) {
+		var ret string
+		return ret
+	}
+	return *o.Code
+}
+
+// GetCodeOk returns a tuple with the Code field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdAccountHealth200ResponseChecksInner) GetCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.Code) {
+		return nil, false
+	}
+	return o.Code, true
+}
+
+// HasCode returns a boolean if a field has been set.
+func (o *GetAdAccountHealth200ResponseChecksInner) HasCode() bool {
+	if o != nil && !IsNil(o.Code) {
+		return true
+	}
+
+	return false
+}
+
+// SetCode gets a reference to the given string and assigns it to the Code field.
+func (o *GetAdAccountHealth200ResponseChecksInner) SetCode(v string) {
+	o.Code = &v
+}
+
+// GetHint returns the Hint field value if set, zero value otherwise.
+func (o *GetAdAccountHealth200ResponseChecksInner) GetHint() string {
+	if o == nil || IsNil(o.Hint) {
+		var ret string
+		return ret
+	}
+	return *o.Hint
+}
+
+// GetHintOk returns a tuple with the Hint field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdAccountHealth200ResponseChecksInner) GetHintOk() (*string, bool) {
+	if o == nil || IsNil(o.Hint) {
+		return nil, false
+	}
+	return o.Hint, true
+}
+
+// HasHint returns a boolean if a field has been set.
+func (o *GetAdAccountHealth200ResponseChecksInner) HasHint() bool {
+	if o != nil && !IsNil(o.Hint) {
+		return true
+	}
+
+	return false
+}
+
+// SetHint gets a reference to the given string and assigns it to the Hint field.
+func (o *GetAdAccountHealth200ResponseChecksInner) SetHint(v string) {
+	o.Hint = &v
+}
+
 // GetFix returns the Fix field value if set, zero value otherwise.
-func (o *GetAdAccountHealth200ResponseChecksInner) GetFix() GetAdAccountHealth200ResponseChecksInnerFix {
+func (o *GetAdAccountHealth200ResponseChecksInner) GetFix() GetAdAccountHealth200ResponseBlockersInnerFix {
 	if o == nil || IsNil(o.Fix) {
-		var ret GetAdAccountHealth200ResponseChecksInnerFix
+		var ret GetAdAccountHealth200ResponseBlockersInnerFix
 		return ret
 	}
 	return *o.Fix
@@ -159,7 +226,7 @@ func (o *GetAdAccountHealth200ResponseChecksInner) GetFix() GetAdAccountHealth20
 
 // GetFixOk returns a tuple with the Fix field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetAdAccountHealth200ResponseChecksInner) GetFixOk() (*GetAdAccountHealth200ResponseChecksInnerFix, bool) {
+func (o *GetAdAccountHealth200ResponseChecksInner) GetFixOk() (*GetAdAccountHealth200ResponseBlockersInnerFix, bool) {
 	if o == nil || IsNil(o.Fix) {
 		return nil, false
 	}
@@ -175,8 +242,8 @@ func (o *GetAdAccountHealth200ResponseChecksInner) HasFix() bool {
 	return false
 }
 
-// SetFix gets a reference to the given GetAdAccountHealth200ResponseChecksInnerFix and assigns it to the Fix field.
-func (o *GetAdAccountHealth200ResponseChecksInner) SetFix(v GetAdAccountHealth200ResponseChecksInnerFix) {
+// SetFix gets a reference to the given GetAdAccountHealth200ResponseBlockersInnerFix and assigns it to the Fix field.
+func (o *GetAdAccountHealth200ResponseChecksInner) SetFix(v GetAdAccountHealth200ResponseBlockersInnerFix) {
 	o.Fix = &v
 }
 
@@ -194,6 +261,12 @@ func (o GetAdAccountHealth200ResponseChecksInner) ToMap() (map[string]interface{
 	toSerialize["status"] = o.Status
 	toSerialize["title"] = o.Title
 	toSerialize["message"] = o.Message
+	if !IsNil(o.Code) {
+		toSerialize["code"] = o.Code
+	}
+	if !IsNil(o.Hint) {
+		toSerialize["hint"] = o.Hint
+	}
 	if !IsNil(o.Fix) {
 		toSerialize["fix"] = o.Fix
 	}

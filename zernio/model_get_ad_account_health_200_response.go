@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.442.0
+API version: 1.443.0
 Contact: support@zernio.com
 */
 
@@ -21,10 +21,13 @@ var _ MappedNullable = &GetAdAccountHealth200Response{}
 
 // GetAdAccountHealth200Response struct for GetAdAccountHealth200Response
 type GetAdAccountHealth200Response struct {
-	AdAccountId *string                                    `json:"adAccountId,omitempty"`
-	Status      *string                                    `json:"status,omitempty"`
-	CheckedAt   *time.Time                                 `json:"checkedAt,omitempty"`
-	Checks      []GetAdAccountHealth200ResponseChecksInner `json:"checks,omitempty"`
+	AdAccountId *string `json:"adAccountId,omitempty"`
+	Status      *string `json:"status,omitempty"`
+	// False when a create or boost on this ad account would be refused; `blockers` says why.
+	Ready     *bool                                        `json:"ready,omitempty"`
+	Blockers  []GetAdAccountHealth200ResponseBlockersInner `json:"blockers,omitempty"`
+	CheckedAt *time.Time                                   `json:"checkedAt,omitempty"`
+	Checks    []GetAdAccountHealth200ResponseChecksInner   `json:"checks,omitempty"`
 }
 
 // NewGetAdAccountHealth200Response instantiates a new GetAdAccountHealth200Response object
@@ -108,6 +111,70 @@ func (o *GetAdAccountHealth200Response) SetStatus(v string) {
 	o.Status = &v
 }
 
+// GetReady returns the Ready field value if set, zero value otherwise.
+func (o *GetAdAccountHealth200Response) GetReady() bool {
+	if o == nil || IsNil(o.Ready) {
+		var ret bool
+		return ret
+	}
+	return *o.Ready
+}
+
+// GetReadyOk returns a tuple with the Ready field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdAccountHealth200Response) GetReadyOk() (*bool, bool) {
+	if o == nil || IsNil(o.Ready) {
+		return nil, false
+	}
+	return o.Ready, true
+}
+
+// HasReady returns a boolean if a field has been set.
+func (o *GetAdAccountHealth200Response) HasReady() bool {
+	if o != nil && !IsNil(o.Ready) {
+		return true
+	}
+
+	return false
+}
+
+// SetReady gets a reference to the given bool and assigns it to the Ready field.
+func (o *GetAdAccountHealth200Response) SetReady(v bool) {
+	o.Ready = &v
+}
+
+// GetBlockers returns the Blockers field value if set, zero value otherwise.
+func (o *GetAdAccountHealth200Response) GetBlockers() []GetAdAccountHealth200ResponseBlockersInner {
+	if o == nil || IsNil(o.Blockers) {
+		var ret []GetAdAccountHealth200ResponseBlockersInner
+		return ret
+	}
+	return o.Blockers
+}
+
+// GetBlockersOk returns a tuple with the Blockers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdAccountHealth200Response) GetBlockersOk() ([]GetAdAccountHealth200ResponseBlockersInner, bool) {
+	if o == nil || IsNil(o.Blockers) {
+		return nil, false
+	}
+	return o.Blockers, true
+}
+
+// HasBlockers returns a boolean if a field has been set.
+func (o *GetAdAccountHealth200Response) HasBlockers() bool {
+	if o != nil && !IsNil(o.Blockers) {
+		return true
+	}
+
+	return false
+}
+
+// SetBlockers gets a reference to the given []GetAdAccountHealth200ResponseBlockersInner and assigns it to the Blockers field.
+func (o *GetAdAccountHealth200Response) SetBlockers(v []GetAdAccountHealth200ResponseBlockersInner) {
+	o.Blockers = v
+}
+
 // GetCheckedAt returns the CheckedAt field value if set, zero value otherwise.
 func (o *GetAdAccountHealth200Response) GetCheckedAt() time.Time {
 	if o == nil || IsNil(o.CheckedAt) {
@@ -187,6 +254,12 @@ func (o GetAdAccountHealth200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.Ready) {
+		toSerialize["ready"] = o.Ready
+	}
+	if !IsNil(o.Blockers) {
+		toSerialize["blockers"] = o.Blockers
 	}
 	if !IsNil(o.CheckedAt) {
 		toSerialize["checkedAt"] = o.CheckedAt
