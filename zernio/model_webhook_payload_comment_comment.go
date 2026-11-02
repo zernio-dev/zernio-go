@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.437.0
+API version: 1.438.0
 Contact: support@zernio.com
 */
 
@@ -39,9 +39,10 @@ type WebhookPayloadCommentComment struct {
 	// Parent comment ID if this is a reply
 	ParentCommentId NullableString `json:"parentCommentId"`
 	// Instagram only: true when the comment was made on a live broadcast (the live_comments webhook field). Absent on every other comment.
-	IsLive     *bool                                   `json:"isLive,omitempty"`
-	Ad         *WebhookPayloadCommentCommentAd         `json:"ad,omitempty"`
-	Attachment *WebhookPayloadCommentCommentAttachment `json:"attachment,omitempty"`
+	IsLive *bool                           `json:"isLive,omitempty"`
+	Ad     *WebhookPayloadCommentCommentAd `json:"ad,omitempty"`
+	// Facebook only. Present on graphic-only comments (sticker, GIF, photo) that carry no text: the webhook only includes it when the comment has no text. The REST comments API returns it whenever Facebook returns one, text or not.
+	Attachment *CommentAttachment `json:"attachment,omitempty"`
 }
 
 type _WebhookPayloadCommentComment WebhookPayloadCommentComment
@@ -357,9 +358,9 @@ func (o *WebhookPayloadCommentComment) SetAd(v WebhookPayloadCommentCommentAd) {
 }
 
 // GetAttachment returns the Attachment field value if set, zero value otherwise.
-func (o *WebhookPayloadCommentComment) GetAttachment() WebhookPayloadCommentCommentAttachment {
+func (o *WebhookPayloadCommentComment) GetAttachment() CommentAttachment {
 	if o == nil || IsNil(o.Attachment) {
-		var ret WebhookPayloadCommentCommentAttachment
+		var ret CommentAttachment
 		return ret
 	}
 	return *o.Attachment
@@ -367,7 +368,7 @@ func (o *WebhookPayloadCommentComment) GetAttachment() WebhookPayloadCommentComm
 
 // GetAttachmentOk returns a tuple with the Attachment field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadCommentComment) GetAttachmentOk() (*WebhookPayloadCommentCommentAttachment, bool) {
+func (o *WebhookPayloadCommentComment) GetAttachmentOk() (*CommentAttachment, bool) {
 	if o == nil || IsNil(o.Attachment) {
 		return nil, false
 	}
@@ -383,8 +384,8 @@ func (o *WebhookPayloadCommentComment) HasAttachment() bool {
 	return false
 }
 
-// SetAttachment gets a reference to the given WebhookPayloadCommentCommentAttachment and assigns it to the Attachment field.
-func (o *WebhookPayloadCommentComment) SetAttachment(v WebhookPayloadCommentCommentAttachment) {
+// SetAttachment gets a reference to the given CommentAttachment and assigns it to the Attachment field.
+func (o *WebhookPayloadCommentComment) SetAttachment(v CommentAttachment) {
 	o.Attachment = &v
 }
 

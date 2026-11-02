@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.437.0
+API version: 1.438.0
 Contact: support@zernio.com
 */
 
@@ -45,6 +45,8 @@ type GetInboxPostComments200ResponseCommentsInner struct {
 	IsHidden *bool `json:"isHidden,omitempty"`
 	// Whether the current user has liked this comment
 	IsLiked *bool `json:"isLiked,omitempty"`
+	// Facebook only. The comment's sticker, GIF, photo, share or video, whenever Facebook returns one (replies included). Absent when the comment has no media and on every other platform.
+	Attachment *CommentAttachment `json:"attachment,omitempty"`
 	// Bluesky like URI for unliking
 	LikeUri NullableString `json:"likeUri,omitempty"`
 	// Bluesky content identifier
@@ -597,6 +599,38 @@ func (o *GetInboxPostComments200ResponseCommentsInner) SetIsLiked(v bool) {
 	o.IsLiked = &v
 }
 
+// GetAttachment returns the Attachment field value if set, zero value otherwise.
+func (o *GetInboxPostComments200ResponseCommentsInner) GetAttachment() CommentAttachment {
+	if o == nil || IsNil(o.Attachment) {
+		var ret CommentAttachment
+		return ret
+	}
+	return *o.Attachment
+}
+
+// GetAttachmentOk returns a tuple with the Attachment field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetInboxPostComments200ResponseCommentsInner) GetAttachmentOk() (*CommentAttachment, bool) {
+	if o == nil || IsNil(o.Attachment) {
+		return nil, false
+	}
+	return o.Attachment, true
+}
+
+// HasAttachment returns a boolean if a field has been set.
+func (o *GetInboxPostComments200ResponseCommentsInner) HasAttachment() bool {
+	if o != nil && !IsNil(o.Attachment) {
+		return true
+	}
+
+	return false
+}
+
+// SetAttachment gets a reference to the given CommentAttachment and assigns it to the Attachment field.
+func (o *GetInboxPostComments200ResponseCommentsInner) SetAttachment(v CommentAttachment) {
+	o.Attachment = &v
+}
+
 // GetLikeUri returns the LikeUri field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetInboxPostComments200ResponseCommentsInner) GetLikeUri() string {
 	if o == nil || IsNil(o.LikeUri.Get()) {
@@ -869,6 +903,9 @@ func (o GetInboxPostComments200ResponseCommentsInner) ToMap() (map[string]interf
 	}
 	if !IsNil(o.IsLiked) {
 		toSerialize["isLiked"] = o.IsLiked
+	}
+	if !IsNil(o.Attachment) {
+		toSerialize["attachment"] = o.Attachment
 	}
 	if o.LikeUri.IsSet() {
 		toSerialize["likeUri"] = o.LikeUri.Get()
