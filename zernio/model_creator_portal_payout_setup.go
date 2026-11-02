@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.434.1
+API version: 1.435.0
 Contact: support@zernio.com
 */
 
@@ -22,10 +22,12 @@ var _ MappedNullable = &CreatorPortalPayoutSetup{}
 
 // CreatorPortalPayoutSetup struct for CreatorPortalPayoutSetup
 type CreatorPortalPayoutSetup struct {
-	// How the campaign pays: treasury means through Zernio, so the creator onboards for payouts.
+	// How the campaign pays: treasury means through Zernio, so the creator onboards for payouts, which they can do from the moment they join. Earnings wait until it is done.
 	Mode    string         `json:"mode"`
 	Status  string         `json:"status"`
 	Country NullableString `json:"country"`
+	// The country the request came from, to preselect before payout setup starts. Null once the payout account has a country, and outside treasury mode.
+	SuggestedCountry NullableString `json:"suggestedCountry"`
 	// Treasury payouts sent to the creator.
 	Transfers []CreatorPortalPayoutSetupTransfersInner `json:"transfers"`
 }
@@ -36,11 +38,12 @@ type _CreatorPortalPayoutSetup CreatorPortalPayoutSetup
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatorPortalPayoutSetup(mode string, status string, country NullableString, transfers []CreatorPortalPayoutSetupTransfersInner) *CreatorPortalPayoutSetup {
+func NewCreatorPortalPayoutSetup(mode string, status string, country NullableString, suggestedCountry NullableString, transfers []CreatorPortalPayoutSetupTransfersInner) *CreatorPortalPayoutSetup {
 	this := CreatorPortalPayoutSetup{}
 	this.Mode = mode
 	this.Status = status
 	this.Country = country
+	this.SuggestedCountry = suggestedCountry
 	this.Transfers = transfers
 	return &this
 }
@@ -127,6 +130,32 @@ func (o *CreatorPortalPayoutSetup) SetCountry(v string) {
 	o.Country.Set(&v)
 }
 
+// GetSuggestedCountry returns the SuggestedCountry field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *CreatorPortalPayoutSetup) GetSuggestedCountry() string {
+	if o == nil || o.SuggestedCountry.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.SuggestedCountry.Get()
+}
+
+// GetSuggestedCountryOk returns a tuple with the SuggestedCountry field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatorPortalPayoutSetup) GetSuggestedCountryOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SuggestedCountry.Get(), o.SuggestedCountry.IsSet()
+}
+
+// SetSuggestedCountry sets field value
+func (o *CreatorPortalPayoutSetup) SetSuggestedCountry(v string) {
+	o.SuggestedCountry.Set(&v)
+}
+
 // GetTransfers returns the Transfers field value
 func (o *CreatorPortalPayoutSetup) GetTransfers() []CreatorPortalPayoutSetupTransfersInner {
 	if o == nil {
@@ -164,6 +193,7 @@ func (o CreatorPortalPayoutSetup) ToMap() (map[string]interface{}, error) {
 	toSerialize["mode"] = o.Mode
 	toSerialize["status"] = o.Status
 	toSerialize["country"] = o.Country.Get()
+	toSerialize["suggestedCountry"] = o.SuggestedCountry.Get()
 	toSerialize["transfers"] = o.Transfers
 	return toSerialize, nil
 }
@@ -176,6 +206,7 @@ func (o *CreatorPortalPayoutSetup) UnmarshalJSON(data []byte) (err error) {
 		"mode",
 		"status",
 		"country",
+		"suggestedCountry",
 		"transfers",
 	}
 

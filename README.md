@@ -888,6 +888,7 @@ func main() {
 | `client.CreatorPortalAPI.GetCreatorPortal(ctx)` | Read a creator invite or participant page |
 | `client.CreatorPortalAPI.JoinCreatorCampaign(ctx)` | Join a campaign |
 | `client.CreatorPortalAPI.RecoverCreatorPortalLinks(ctx)` | Email a creator their campaign links |
+| `client.CreatorPortalAPI.RemoveCreatorAccount(ctx)` | Remove a connected account |
 | `client.CreatorPortalAPI.StartCreatorConnect(ctx)` | Start connecting a creator account |
 | `client.CreatorPortalAPI.StartCreatorPayouts(ctx)` | Start payout onboarding |
 | `client.CreatorPortalAPI.SubmitCreatorPost(ctx)` | Submit a post |

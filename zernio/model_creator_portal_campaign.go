@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.434.1
+API version: 1.435.0
 Contact: support@zernio.com
 */
 
@@ -35,14 +35,18 @@ type CreatorPortalCampaign struct {
 	ContentRules NullableString         `json:"contentRules"`
 	StartsAt     NullableTime           `json:"startsAt"`
 	EndsAt       NullableTime           `json:"endsAt"`
-	Currency     string                 `json:"currency"`
-	Economics    CreatorPortalEconomics `json:"economics"`
+	// Posts published before this moment do not count: `startsAt`, else when the campaign went live.
+	StartedAt time.Time              `json:"startedAt"`
+	Currency  string                 `json:"currency"`
+	Economics CreatorPortalEconomics `json:"economics"`
 	// A post must be submitted within this many minutes of publishing. Null means any age. Either way, only posts published after the campaign started are accepted.
 	MaxPostAgeMinutes NullableInt32 `json:"maxPostAgeMinutes"`
 	// Days approved earnings stay owed before they become payable.
 	HoldDays int32 `json:"holdDays"`
 	// Days each submitted post is tracked for views.
 	TrackingDays int32 `json:"trackingDays"`
+	// How many connected accounts can submit posts. Null means no limit.
+	MaxAccountsPerParticipant NullableInt32 `json:"maxAccountsPerParticipant"`
 }
 
 type _CreatorPortalCampaign CreatorPortalCampaign
@@ -51,7 +55,7 @@ type _CreatorPortalCampaign CreatorPortalCampaign
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatorPortalCampaign(id string, name string, brandName string, logoUrl NullableString, theme map[string]interface{}, status string, platforms []string, contentRules NullableString, startsAt NullableTime, endsAt NullableTime, currency string, economics CreatorPortalEconomics, maxPostAgeMinutes NullableInt32, holdDays int32, trackingDays int32) *CreatorPortalCampaign {
+func NewCreatorPortalCampaign(id string, name string, brandName string, logoUrl NullableString, theme map[string]interface{}, status string, platforms []string, contentRules NullableString, startsAt NullableTime, endsAt NullableTime, startedAt time.Time, currency string, economics CreatorPortalEconomics, maxPostAgeMinutes NullableInt32, holdDays int32, trackingDays int32, maxAccountsPerParticipant NullableInt32) *CreatorPortalCampaign {
 	this := CreatorPortalCampaign{}
 	this.Id = id
 	this.Name = name
@@ -63,11 +67,13 @@ func NewCreatorPortalCampaign(id string, name string, brandName string, logoUrl 
 	this.ContentRules = contentRules
 	this.StartsAt = startsAt
 	this.EndsAt = endsAt
+	this.StartedAt = startedAt
 	this.Currency = currency
 	this.Economics = economics
 	this.MaxPostAgeMinutes = maxPostAgeMinutes
 	this.HoldDays = holdDays
 	this.TrackingDays = trackingDays
+	this.MaxAccountsPerParticipant = maxAccountsPerParticipant
 	return &this
 }
 
@@ -329,6 +335,30 @@ func (o *CreatorPortalCampaign) SetEndsAt(v time.Time) {
 	o.EndsAt.Set(&v)
 }
 
+// GetStartedAt returns the StartedAt field value
+func (o *CreatorPortalCampaign) GetStartedAt() time.Time {
+	if o == nil {
+		var ret time.Time
+		return ret
+	}
+
+	return o.StartedAt
+}
+
+// GetStartedAtOk returns a tuple with the StartedAt field value
+// and a boolean to check if the value has been set.
+func (o *CreatorPortalCampaign) GetStartedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.StartedAt, true
+}
+
+// SetStartedAt sets field value
+func (o *CreatorPortalCampaign) SetStartedAt(v time.Time) {
+	o.StartedAt = v
+}
+
 // GetCurrency returns the Currency field value
 func (o *CreatorPortalCampaign) GetCurrency() string {
 	if o == nil {
@@ -451,6 +481,32 @@ func (o *CreatorPortalCampaign) SetTrackingDays(v int32) {
 	o.TrackingDays = v
 }
 
+// GetMaxAccountsPerParticipant returns the MaxAccountsPerParticipant field value
+// If the value is explicit nil, the zero value for int32 will be returned
+func (o *CreatorPortalCampaign) GetMaxAccountsPerParticipant() int32 {
+	if o == nil || o.MaxAccountsPerParticipant.Get() == nil {
+		var ret int32
+		return ret
+	}
+
+	return *o.MaxAccountsPerParticipant.Get()
+}
+
+// GetMaxAccountsPerParticipantOk returns a tuple with the MaxAccountsPerParticipant field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatorPortalCampaign) GetMaxAccountsPerParticipantOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaxAccountsPerParticipant.Get(), o.MaxAccountsPerParticipant.IsSet()
+}
+
+// SetMaxAccountsPerParticipant sets field value
+func (o *CreatorPortalCampaign) SetMaxAccountsPerParticipant(v int32) {
+	o.MaxAccountsPerParticipant.Set(&v)
+}
+
 func (o CreatorPortalCampaign) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -473,11 +529,13 @@ func (o CreatorPortalCampaign) ToMap() (map[string]interface{}, error) {
 	toSerialize["contentRules"] = o.ContentRules.Get()
 	toSerialize["startsAt"] = o.StartsAt.Get()
 	toSerialize["endsAt"] = o.EndsAt.Get()
+	toSerialize["startedAt"] = o.StartedAt
 	toSerialize["currency"] = o.Currency
 	toSerialize["economics"] = o.Economics
 	toSerialize["maxPostAgeMinutes"] = o.MaxPostAgeMinutes.Get()
 	toSerialize["holdDays"] = o.HoldDays
 	toSerialize["trackingDays"] = o.TrackingDays
+	toSerialize["maxAccountsPerParticipant"] = o.MaxAccountsPerParticipant.Get()
 	return toSerialize, nil
 }
 
@@ -496,11 +554,13 @@ func (o *CreatorPortalCampaign) UnmarshalJSON(data []byte) (err error) {
 		"contentRules",
 		"startsAt",
 		"endsAt",
+		"startedAt",
 		"currency",
 		"economics",
 		"maxPostAgeMinutes",
 		"holdDays",
 		"trackingDays",
+		"maxAccountsPerParticipant",
 	}
 
 	allProperties := make(map[string]interface{})

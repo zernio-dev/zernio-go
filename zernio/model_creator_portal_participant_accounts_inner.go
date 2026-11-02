@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.434.1
+API version: 1.435.0
 Contact: support@zernio.com
 */
 
@@ -22,10 +22,14 @@ var _ MappedNullable = &CreatorPortalParticipantAccountsInner{}
 
 // CreatorPortalParticipantAccountsInner struct for CreatorPortalParticipantAccountsInner
 type CreatorPortalParticipantAccountsInner struct {
+	// Pass to `DELETE /public/creator-campaigns/{token}/accounts/{accountId}` to remove the account.
+	Id          string         `json:"id"`
 	Platform    string         `json:"platform"`
 	Username    string         `json:"username"`
 	DisplayName NullableString `json:"displayName"`
 	AvatarUrl   NullableString `json:"avatarUrl"`
+	// False for an account connected past `maxAccountsPerParticipant`: posts from it are refused until another account is removed.
+	Counts bool `json:"counts"`
 }
 
 type _CreatorPortalParticipantAccountsInner CreatorPortalParticipantAccountsInner
@@ -34,12 +38,14 @@ type _CreatorPortalParticipantAccountsInner CreatorPortalParticipantAccountsInne
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatorPortalParticipantAccountsInner(platform string, username string, displayName NullableString, avatarUrl NullableString) *CreatorPortalParticipantAccountsInner {
+func NewCreatorPortalParticipantAccountsInner(id string, platform string, username string, displayName NullableString, avatarUrl NullableString, counts bool) *CreatorPortalParticipantAccountsInner {
 	this := CreatorPortalParticipantAccountsInner{}
+	this.Id = id
 	this.Platform = platform
 	this.Username = username
 	this.DisplayName = displayName
 	this.AvatarUrl = avatarUrl
+	this.Counts = counts
 	return &this
 }
 
@@ -49,6 +55,30 @@ func NewCreatorPortalParticipantAccountsInner(platform string, username string, 
 func NewCreatorPortalParticipantAccountsInnerWithDefaults() *CreatorPortalParticipantAccountsInner {
 	this := CreatorPortalParticipantAccountsInner{}
 	return &this
+}
+
+// GetId returns the Id field value
+func (o *CreatorPortalParticipantAccountsInner) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *CreatorPortalParticipantAccountsInner) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
+
+// SetId sets field value
+func (o *CreatorPortalParticipantAccountsInner) SetId(v string) {
+	o.Id = v
 }
 
 // GetPlatform returns the Platform field value
@@ -151,6 +181,30 @@ func (o *CreatorPortalParticipantAccountsInner) SetAvatarUrl(v string) {
 	o.AvatarUrl.Set(&v)
 }
 
+// GetCounts returns the Counts field value
+func (o *CreatorPortalParticipantAccountsInner) GetCounts() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.Counts
+}
+
+// GetCountsOk returns a tuple with the Counts field value
+// and a boolean to check if the value has been set.
+func (o *CreatorPortalParticipantAccountsInner) GetCountsOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Counts, true
+}
+
+// SetCounts sets field value
+func (o *CreatorPortalParticipantAccountsInner) SetCounts(v bool) {
+	o.Counts = v
+}
+
 func (o CreatorPortalParticipantAccountsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -161,10 +215,12 @@ func (o CreatorPortalParticipantAccountsInner) MarshalJSON() ([]byte, error) {
 
 func (o CreatorPortalParticipantAccountsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	toSerialize["id"] = o.Id
 	toSerialize["platform"] = o.Platform
 	toSerialize["username"] = o.Username
 	toSerialize["displayName"] = o.DisplayName.Get()
 	toSerialize["avatarUrl"] = o.AvatarUrl.Get()
+	toSerialize["counts"] = o.Counts
 	return toSerialize, nil
 }
 
@@ -173,10 +229,12 @@ func (o *CreatorPortalParticipantAccountsInner) UnmarshalJSON(data []byte) (err 
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"id",
 		"platform",
 		"username",
 		"displayName",
 		"avatarUrl",
+		"counts",
 	}
 
 	allProperties := make(map[string]interface{})
