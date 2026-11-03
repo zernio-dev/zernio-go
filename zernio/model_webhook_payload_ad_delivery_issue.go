@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadAdDeliveryIssue type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadAdDeliveryIssue{}
 
-// WebhookPayloadAdDeliveryIssue Webhook payload for the `ad.delivery_issue` event. Fires when an ad Zernio already tracked moves into the platform's error state:  - Meta `WITH_ISSUES` (payment, policy and account problems) - TikTok account punishment or missing balance - LinkedIn removals - any platform status Zernio does not recognize yet (check `issue.raw`)  Ads seen for the first time by a sync never fire it.  Detected by Zernio's own ad sync, so it arrives within one sync cycle. Each ad fires at most once per 24 hours. On Meta, `ad.status_changed` with `WITH_ISSUES` can also fire for the same problem, straight from Meta's webhook.
+// WebhookPayloadAdDeliveryIssue Webhook payload for the `ad.delivery_issue` event. Fires when an ad Zernio already tracked moves into the platform's error state:  - Meta `WITH_ISSUES` (payment, policy and account problems) - TikTok account punishment or missing balance - any platform status Zernio does not recognize yet (check `issue.raw`)  Ads seen for the first time by a sync never fire it.  Detected by Zernio's own ad sync, so it arrives within one sync cycle. Each ad fires at most once per 24 hours. On Meta, `ad.status_changed` with `WITH_ISSUES` can also fire for the same problem, straight from Meta's webhook.
 type WebhookPayloadAdDeliveryIssue struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery.
 	Id string `json:"id"`
