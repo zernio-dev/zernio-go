@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.447.0
+API version: 1.448.0
 Contact: support@zernio.com
 */
 
@@ -28,8 +28,9 @@ type AdTreeCampaign struct {
 	CampaignName       *string            `json:"campaignName,omitempty"`
 	// Earliest `platformCreatedAt` across every ad in the campaign (platform ad creation time; falls back to `createdAt`, Zernio's sync time, for ads synced before that field existed).  Not the platform campaign's own creation time (Meta's `Campaign.created_time` etc. is not synced). A campaign created empty and populated later shows its first ad's time, not the campaign's.  Usable for sorting \"most recently created\" without the numeric-campaign-id heuristic. Same source as `AdTreeAdSet.createdTime` and `Ad.platformCreatedAt`; mirrors `AdCampaign.earliestAd`.
 	CreatedTime NullableTime `json:"createdTime,omitempty"`
-	// Delivery status derived from child ad statuses. Distinct from `reviewStatus`, which reflects the platform-side review state.
-	Status *AdStatus `json:"status,omitempty"`
+	// Delivery status derived from child ad statuses. Reads `paused` when the campaign is switched off on the platform (`platformCampaignStatus`), even while its ads still report their own switch as on. Distinct from `reviewStatus`, which reflects the platform-side review state.
+	Status   *AdStatus                                 `json:"status,omitempty"`
+	Schedule *ListAdSets200ResponseAdSetsInnerSchedule `json:"schedule,omitempty"`
 	// Platform-side review state of the campaign. Independent of the children-derived delivery `status`: a campaign can have ads already active (status=active) while the campaign itself is still being reviewed by the platform (reviewStatus=in_review). For Meta, derived from `effective_status` + `issues_info` on the Campaign, plus ad-level PENDING_REVIEW rollup.
 	ReviewStatus NullableAdReviewStatus `json:"reviewStatus,omitempty"`
 	// Raw platform-level campaign status (Meta `effective_status`: ACTIVE, PAUSED, DELETED, ARCHIVED, IN_PROCESS, WITH_ISSUES; ChatGPT (OpenAI): the campaign's own switch, active / paused / archived, independent of the delivery `status`; TikTok: the campaign's own switch `operation_status`, ENABLE / DISABLE; Reddit: the campaign's `configured_status`, ACTIVE / PAUSED / ARCHIVED). Distinct from per-ad `platformStatus`.
@@ -297,6 +298,38 @@ func (o *AdTreeCampaign) HasStatus() bool {
 // SetStatus gets a reference to the given AdStatus and assigns it to the Status field.
 func (o *AdTreeCampaign) SetStatus(v AdStatus) {
 	o.Status = &v
+}
+
+// GetSchedule returns the Schedule field value if set, zero value otherwise.
+func (o *AdTreeCampaign) GetSchedule() ListAdSets200ResponseAdSetsInnerSchedule {
+	if o == nil || IsNil(o.Schedule) {
+		var ret ListAdSets200ResponseAdSetsInnerSchedule
+		return ret
+	}
+	return *o.Schedule
+}
+
+// GetScheduleOk returns a tuple with the Schedule field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTreeCampaign) GetScheduleOk() (*ListAdSets200ResponseAdSetsInnerSchedule, bool) {
+	if o == nil || IsNil(o.Schedule) {
+		return nil, false
+	}
+	return o.Schedule, true
+}
+
+// HasSchedule returns a boolean if a field has been set.
+func (o *AdTreeCampaign) HasSchedule() bool {
+	if o != nil && !IsNil(o.Schedule) {
+		return true
+	}
+
+	return false
+}
+
+// SetSchedule gets a reference to the given ListAdSets200ResponseAdSetsInnerSchedule and assigns it to the Schedule field.
+func (o *AdTreeCampaign) SetSchedule(v ListAdSets200ResponseAdSetsInnerSchedule) {
+	o.Schedule = &v
 }
 
 // GetReviewStatus returns the ReviewStatus field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1269,6 +1302,9 @@ func (o AdTreeCampaign) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.Schedule) {
+		toSerialize["schedule"] = o.Schedule
 	}
 	if o.ReviewStatus.IsSet() {
 		toSerialize["reviewStatus"] = o.ReviewStatus.Get()

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.447.0
+API version: 1.448.0
 Contact: support@zernio.com
 */
 
@@ -23,8 +23,9 @@ var _ MappedNullable = &AdTreeAdSet{}
 type AdTreeAdSet struct {
 	PlatformAdSetId *string `json:"platformAdSetId,omitempty"`
 	AdSetName       *string `json:"adSetName,omitempty"`
-	// Derived from child ad statuses
-	Status *AdStatus `json:"status,omitempty"`
+	// Derived from child ad statuses. Reads `paused` when the synced ad set or its campaign is switched off on the platform, even while the ads still report their own switch as on.
+	Status   *AdStatus                                 `json:"status,omitempty"`
+	Schedule *ListAdSets200ResponseAdSetsInnerSchedule `json:"schedule,omitempty"`
 	// Earliest `platformCreatedAt` (platform ad creation time; falls back to `createdAt`, Zernio's sync time, for ads synced before that field existed) across this ad set's ads. Not the ad set's own creation time on the platform, but a proxy usable for sorting.
 	CreatedTime NullableTime `json:"createdTime,omitempty"`
 	AdCount     *int32       `json:"adCount,omitempty"`
@@ -175,6 +176,38 @@ func (o *AdTreeAdSet) HasStatus() bool {
 // SetStatus gets a reference to the given AdStatus and assigns it to the Status field.
 func (o *AdTreeAdSet) SetStatus(v AdStatus) {
 	o.Status = &v
+}
+
+// GetSchedule returns the Schedule field value if set, zero value otherwise.
+func (o *AdTreeAdSet) GetSchedule() ListAdSets200ResponseAdSetsInnerSchedule {
+	if o == nil || IsNil(o.Schedule) {
+		var ret ListAdSets200ResponseAdSetsInnerSchedule
+		return ret
+	}
+	return *o.Schedule
+}
+
+// GetScheduleOk returns a tuple with the Schedule field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTreeAdSet) GetScheduleOk() (*ListAdSets200ResponseAdSetsInnerSchedule, bool) {
+	if o == nil || IsNil(o.Schedule) {
+		return nil, false
+	}
+	return o.Schedule, true
+}
+
+// HasSchedule returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasSchedule() bool {
+	if o != nil && !IsNil(o.Schedule) {
+		return true
+	}
+
+	return false
+}
+
+// SetSchedule gets a reference to the given ListAdSets200ResponseAdSetsInnerSchedule and assigns it to the Schedule field.
+func (o *AdTreeAdSet) SetSchedule(v ListAdSets200ResponseAdSetsInnerSchedule) {
+	o.Schedule = &v
 }
 
 // GetCreatedTime returns the CreatedTime field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -957,6 +990,9 @@ func (o AdTreeAdSet) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.Schedule) {
+		toSerialize["schedule"] = o.Schedule
 	}
 	if o.CreatedTime.IsSet() {
 		toSerialize["createdTime"] = o.CreatedTime.Get()

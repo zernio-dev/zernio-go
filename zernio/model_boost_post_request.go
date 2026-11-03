@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.447.0
+API version: 1.448.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &BoostPostRequest{}
 
 // BoostPostRequest struct for BoostPostRequest
 type BoostPostRequest struct {
-	// Meta Advantage+ creative enhancements. Map snake_case feature names to OPT_IN or OPT_OUT; Meta validates supported keys and unspecified features default to OPT_OUT. auto_promotion_tag is an Advantage+ enhancement, not the Ads Manager Promotion setting. The deprecated standard_enhancements bundle is rejected by Meta.
+	// Meta Advantage+ creative enhancements. Map snake_case feature names to OPT_IN or OPT_OUT; Meta validates supported keys and unspecified features default to OPT_OUT. auto_promotion_tag is an Advantage+ enhancement, not the Ads Manager Promotion setting. The deprecated standard_enhancements bundle (subcode 3858504) is a 400 before any Meta call.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// The Zernio post id (24 hex characters) returned when the post was created through Zernio. Send this or platformPostId. A value that is not a Zernio id is boosted as the platform post id, the same as platformPostId; a Zernio id that matches no post is a 404 on postId.
 	PostId *string `json:"postId,omitempty"`
@@ -68,7 +68,7 @@ type BoostPostRequest struct {
 	Currency *string `json:"currency,omitempty"`
 	// Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's `start_time`. When omitted the ad starts delivering immediately. On Meta, TikTok, X, Pinterest and Reddit a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone. Same field as on POST /v1/ads/create.
 	StartDate *time.Time `json:"startDate,omitempty"`
-	// Ad-set end time (ISO 8601). Required for lifetime budgets. Same field as on POST /v1/ads/create.  Maps to the ad set's `end_time` (on X, the line item's `end_time`; X campaigns carry no flight dates).  On Meta, TikTok, X, Pinterest and Reddit, a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone, and a date-only end runs to 23:59:59 local.
+	// Ad-set end time (ISO 8601). Required for lifetime budgets. Same field as on POST /v1/ads/create.  Maps to the ad set's `end_time` (on X, the line item's `end_time`; X campaigns carry no flight dates). On Pinterest it also goes on the campaign when the ad account needs Campaign Budget Optimization, daily budget included.  On Meta, TikTok, X, Pinterest and Reddit, a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone, and a date-only end runs to 23:59:59 local.  Anything that is not an ISO 8601 date or date-time is a 400 on `endDate`.
 	EndDate *time.Time `json:"endDate,omitempty"`
 	// Deprecated
 	Schedule  *BoostPostRequestSchedule  `json:"schedule,omitempty"`
