@@ -30,8 +30,10 @@ type GetCampaignResultsUpload200Response struct {
 	RowsMatched   int32                                               `json:"rowsMatched"`
 	RowsUnmatched int32                                               `json:"rowsUnmatched"`
 	Unmatched     []GetCampaignResultsUpload200ResponseUnmatchedInner `json:"unmatched"`
-	CreatedAt     time.Time                                           `json:"createdAt"`
-	CompletedAt   NullableTime                                        `json:"completedAt"`
+	// Set when `status` is `failed`. `queue_unavailable`: the upload could not be queued. `processing_failed`: its rows could not be stored after several retries. Both are on our side.
+	FailureReason NullableString `json:"failureReason"`
+	CreatedAt     time.Time      `json:"createdAt"`
+	CompletedAt   NullableTime   `json:"completedAt"`
 }
 
 type _GetCampaignResultsUpload200Response GetCampaignResultsUpload200Response
@@ -40,7 +42,7 @@ type _GetCampaignResultsUpload200Response GetCampaignResultsUpload200Response
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetCampaignResultsUpload200Response(uploadId string, status string, source string, rowsReceived int32, rowsMatched int32, rowsUnmatched int32, unmatched []GetCampaignResultsUpload200ResponseUnmatchedInner, createdAt time.Time, completedAt NullableTime) *GetCampaignResultsUpload200Response {
+func NewGetCampaignResultsUpload200Response(uploadId string, status string, source string, rowsReceived int32, rowsMatched int32, rowsUnmatched int32, unmatched []GetCampaignResultsUpload200ResponseUnmatchedInner, failureReason NullableString, createdAt time.Time, completedAt NullableTime) *GetCampaignResultsUpload200Response {
 	this := GetCampaignResultsUpload200Response{}
 	this.UploadId = uploadId
 	this.Status = status
@@ -49,6 +51,7 @@ func NewGetCampaignResultsUpload200Response(uploadId string, status string, sour
 	this.RowsMatched = rowsMatched
 	this.RowsUnmatched = rowsUnmatched
 	this.Unmatched = unmatched
+	this.FailureReason = failureReason
 	this.CreatedAt = createdAt
 	this.CompletedAt = completedAt
 	return &this
@@ -230,6 +233,32 @@ func (o *GetCampaignResultsUpload200Response) SetUnmatched(v []GetCampaignResult
 	o.Unmatched = v
 }
 
+// GetFailureReason returns the FailureReason field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *GetCampaignResultsUpload200Response) GetFailureReason() string {
+	if o == nil || o.FailureReason.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.FailureReason.Get()
+}
+
+// GetFailureReasonOk returns a tuple with the FailureReason field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetCampaignResultsUpload200Response) GetFailureReasonOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FailureReason.Get(), o.FailureReason.IsSet()
+}
+
+// SetFailureReason sets field value
+func (o *GetCampaignResultsUpload200Response) SetFailureReason(v string) {
+	o.FailureReason.Set(&v)
+}
+
 // GetCreatedAt returns the CreatedAt field value
 func (o *GetCampaignResultsUpload200Response) GetCreatedAt() time.Time {
 	if o == nil {
@@ -297,6 +326,7 @@ func (o GetCampaignResultsUpload200Response) ToMap() (map[string]interface{}, er
 	toSerialize["rowsMatched"] = o.RowsMatched
 	toSerialize["rowsUnmatched"] = o.RowsUnmatched
 	toSerialize["unmatched"] = o.Unmatched
+	toSerialize["failureReason"] = o.FailureReason.Get()
 	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["completedAt"] = o.CompletedAt.Get()
 	return toSerialize, nil
@@ -314,6 +344,7 @@ func (o *GetCampaignResultsUpload200Response) UnmarshalJSON(data []byte) (err er
 		"rowsMatched",
 		"rowsUnmatched",
 		"unmatched",
+		"failureReason",
 		"createdAt",
 		"completedAt",
 	}

@@ -194,6 +194,8 @@ How an upload was matched: rows matched and unmatched, and up to 100 unmatched r
 
 `status` turns `done` once every row is processed, usually within seconds. Uploads are kept for 30 days.
 
+A `failed` upload says why in `failureReason`. Send it again: re-sending a day replaces it, so nothing is counted twice.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param uploadId
 	@return AdCampaignResultsAPIGetCampaignResultsUploadRequest
