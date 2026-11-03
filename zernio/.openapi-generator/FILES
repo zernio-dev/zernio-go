@@ -138,7 +138,10 @@ model_ad_rule_action_one_of_2.go
 model_ad_rule_action_one_of_3.go
 model_ad_rule_activity_entry.go
 model_ad_rule_condition.go
+model_ad_rule_condition_item.go
 model_ad_rule_conditions.go
+model_ad_rule_conditions_one_of.go
+model_ad_rule_conditions_one_of_1.go
 model_ad_rule_evaluation.go
 model_ad_rule_level.go
 model_ad_rule_object_evaluation.go

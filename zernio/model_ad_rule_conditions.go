@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.452.3
+API version: 1.453.0
 Contact: support@zernio.com
 */
 
@@ -12,112 +12,124 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
-// checks if the AdRuleConditions type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &AdRuleConditions{}
-
-// AdRuleConditions Every condition must hold for an object to match. A rate with no denominator (a CPA with no conversions) never matches.
+// AdRuleConditions - A group: `all` (every item must hold) or `any` (one is enough). An item is a condition or another group, nested up to 3 levels, with at most 10 conditions in total. A rate with no denominator (a CPA with no conversions) never matches.
 type AdRuleConditions struct {
-	All []AdRuleCondition `json:"all"`
+	AdRuleConditionsOneOf  *AdRuleConditionsOneOf
+	AdRuleConditionsOneOf1 *AdRuleConditionsOneOf1
 }
 
-type _AdRuleConditions AdRuleConditions
-
-// NewAdRuleConditions instantiates a new AdRuleConditions object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewAdRuleConditions(all []AdRuleCondition) *AdRuleConditions {
-	this := AdRuleConditions{}
-	this.All = all
-	return &this
-}
-
-// NewAdRuleConditionsWithDefaults instantiates a new AdRuleConditions object
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set
-func NewAdRuleConditionsWithDefaults() *AdRuleConditions {
-	this := AdRuleConditions{}
-	return &this
-}
-
-// GetAll returns the All field value
-func (o *AdRuleConditions) GetAll() []AdRuleCondition {
-	if o == nil {
-		var ret []AdRuleCondition
-		return ret
+// AdRuleConditionsOneOfAsAdRuleConditions is a convenience function that returns AdRuleConditionsOneOf wrapped in AdRuleConditions
+func AdRuleConditionsOneOfAsAdRuleConditions(v *AdRuleConditionsOneOf) AdRuleConditions {
+	return AdRuleConditions{
+		AdRuleConditionsOneOf: v,
 	}
-
-	return o.All
 }
 
-// GetAllOk returns a tuple with the All field value
-// and a boolean to check if the value has been set.
-func (o *AdRuleConditions) GetAllOk() ([]AdRuleCondition, bool) {
-	if o == nil {
-		return nil, false
+// AdRuleConditionsOneOf1AsAdRuleConditions is a convenience function that returns AdRuleConditionsOneOf1 wrapped in AdRuleConditions
+func AdRuleConditionsOneOf1AsAdRuleConditions(v *AdRuleConditionsOneOf1) AdRuleConditions {
+	return AdRuleConditions{
+		AdRuleConditionsOneOf1: v,
 	}
-	return o.All, true
 }
 
-// SetAll sets field value
-func (o *AdRuleConditions) SetAll(v []AdRuleCondition) {
-	o.All = v
-}
-
-func (o AdRuleConditions) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
-	if err != nil {
-		return []byte{}, err
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o AdRuleConditions) ToMap() (map[string]interface{}, error) {
-	toSerialize := map[string]interface{}{}
-	toSerialize["all"] = o.All
-	return toSerialize, nil
-}
-
-func (o *AdRuleConditions) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"all",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *AdRuleConditions) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into AdRuleConditionsOneOf
+	err = newStrictDecoder(data).Decode(&dst.AdRuleConditionsOneOf)
+	if err == nil {
+		jsonAdRuleConditionsOneOf, _ := json.Marshal(dst.AdRuleConditionsOneOf)
+		if string(jsonAdRuleConditionsOneOf) == "{}" { // empty struct
+			dst.AdRuleConditionsOneOf = nil
+		} else {
+			if err = validator.Validate(dst.AdRuleConditionsOneOf); err != nil {
+				dst.AdRuleConditionsOneOf = nil
+			} else {
+				match++
+			}
 		}
+	} else {
+		dst.AdRuleConditionsOneOf = nil
 	}
 
-	varAdRuleConditions := _AdRuleConditions{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAdRuleConditions)
-
-	if err != nil {
-		return err
+	// try to unmarshal data into AdRuleConditionsOneOf1
+	err = newStrictDecoder(data).Decode(&dst.AdRuleConditionsOneOf1)
+	if err == nil {
+		jsonAdRuleConditionsOneOf1, _ := json.Marshal(dst.AdRuleConditionsOneOf1)
+		if string(jsonAdRuleConditionsOneOf1) == "{}" { // empty struct
+			dst.AdRuleConditionsOneOf1 = nil
+		} else {
+			if err = validator.Validate(dst.AdRuleConditionsOneOf1); err != nil {
+				dst.AdRuleConditionsOneOf1 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AdRuleConditionsOneOf1 = nil
 	}
 
-	*o = AdRuleConditions(varAdRuleConditions)
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.AdRuleConditionsOneOf = nil
+		dst.AdRuleConditionsOneOf1 = nil
 
-	return err
+		return fmt.Errorf("data matches more than one schema in oneOf(AdRuleConditions)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("data failed to match schemas in oneOf(AdRuleConditions)")
+	}
+}
+
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src AdRuleConditions) MarshalJSON() ([]byte, error) {
+	if src.AdRuleConditionsOneOf != nil {
+		return json.Marshal(&src.AdRuleConditionsOneOf)
+	}
+
+	if src.AdRuleConditionsOneOf1 != nil {
+		return json.Marshal(&src.AdRuleConditionsOneOf1)
+	}
+
+	return nil, nil // no data in oneOf schemas
+}
+
+// Get the actual instance
+func (obj *AdRuleConditions) GetActualInstance() interface{} {
+	if obj == nil {
+		return nil
+	}
+	if obj.AdRuleConditionsOneOf != nil {
+		return obj.AdRuleConditionsOneOf
+	}
+
+	if obj.AdRuleConditionsOneOf1 != nil {
+		return obj.AdRuleConditionsOneOf1
+	}
+
+	// all schemas are nil
+	return nil
+}
+
+// Get the actual instance value
+func (obj AdRuleConditions) GetActualInstanceValue() interface{} {
+	if obj.AdRuleConditionsOneOf != nil {
+		return *obj.AdRuleConditionsOneOf
+	}
+
+	if obj.AdRuleConditionsOneOf1 != nil {
+		return *obj.AdRuleConditionsOneOf1
+	}
+
+	// all schemas are nil
+	return nil
 }
 
 type NullableAdRuleConditions struct {
