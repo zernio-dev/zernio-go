@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.451.1
+API version: 1.452.0
 Contact: support@zernio.com
 */
 
@@ -88,7 +88,7 @@ type BoostPostRequest struct {
 	RoasAverageFloor     *float32                              `json:"roasAverageFloor,omitempty"`
 	PlatformSpecificData *BoostPostRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
 	Tracking             *BoostPostRequestTracking             `json:"tracking,omitempty"`
-	// Meta only. Required for housing, employment, credit, or political ads.
+	// Special ad category of the campaign the boost creates. Required for housing, employment, credit, or political ads.  - Meta: every value. - TikTok: HOUSING, EMPLOYMENT and CREDIT, sent as the campaign's `special_industries` (TikTok requires one for these ads aimed at the US or Canada). Other values return 400. - TikTok targeting: a 400 names the field for ZIP codes (`targeting.locations.zips`), gender, ages under 18 (`targeting.ageMin`), interest keywords (`keyword:` ids in `targeting.interests`) and hashtag behaviors. - TikTok also refuses Smart Targeting (`smartTargeting`) and lookalike audiences (`targeting.audienceInclude` / `targeting.audienceExclude`). Without an age, the ad group targets 18+. - TikTok sets the category when the campaign is created, so it is a 400 with `smartPlus` or `existingCampaignId`.
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
 	// Meta (metaads) only. 2-letter ISO country codes the special ad category applies to. Requires specialAdCategories to be set (400 otherwise).
 	SpecialAdCategoryCountry []string `json:"specialAdCategoryCountry,omitempty"`

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.451.1
+API version: 1.452.0
 Contact: support@zernio.com
 */
 
@@ -71,7 +71,9 @@ type AdTreeCampaign struct {
 	// Representative ROAS floor for the campaign, bubbled up from the top-spending ad set. Decimal multiplier (2.0 = 2.0x).
 	RoasAverageFloor NullableFloat32            `json:"roasAverageFloor,omitempty"`
 	PromotedObject   *AdTreeAdSetPromotedObject `json:"promotedObject,omitempty"`
-	AdSets           []AdTreeAdSet              `json:"adSets,omitempty"`
+	// Special ad categories declared when Zernio created the campaign, read from the ad that created it (its earliest ad), e.g. [\"HOUSING\"]. Absent when none was declared or the campaign was created outside Zernio.
+	SpecialAdCategories []string      `json:"specialAdCategories,omitempty"`
+	AdSets              []AdTreeAdSet `json:"adSets,omitempty"`
 	// Per-day metric series for this campaign. Present only when `GET /v1/ads/tree` is called with `timeIncrement=1` (any `dailyLevel`). This is the per-campaign daily trend. Summing its additive fields reproduces the campaign `metrics` total, except `reach`: on Meta the range total is de-duplicated, so daily reach does not sum to it.
 	Daily []AdDailyMetrics `json:"daily,omitempty"`
 }
@@ -1211,6 +1213,38 @@ func (o *AdTreeCampaign) SetPromotedObject(v AdTreeAdSetPromotedObject) {
 	o.PromotedObject = &v
 }
 
+// GetSpecialAdCategories returns the SpecialAdCategories field value if set, zero value otherwise.
+func (o *AdTreeCampaign) GetSpecialAdCategories() []string {
+	if o == nil || IsNil(o.SpecialAdCategories) {
+		var ret []string
+		return ret
+	}
+	return o.SpecialAdCategories
+}
+
+// GetSpecialAdCategoriesOk returns a tuple with the SpecialAdCategories field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTreeCampaign) GetSpecialAdCategoriesOk() ([]string, bool) {
+	if o == nil || IsNil(o.SpecialAdCategories) {
+		return nil, false
+	}
+	return o.SpecialAdCategories, true
+}
+
+// HasSpecialAdCategories returns a boolean if a field has been set.
+func (o *AdTreeCampaign) HasSpecialAdCategories() bool {
+	if o != nil && !IsNil(o.SpecialAdCategories) {
+		return true
+	}
+
+	return false
+}
+
+// SetSpecialAdCategories gets a reference to the given []string and assigns it to the SpecialAdCategories field.
+func (o *AdTreeCampaign) SetSpecialAdCategories(v []string) {
+	o.SpecialAdCategories = v
+}
+
 // GetAdSets returns the AdSets field value if set, zero value otherwise.
 func (o *AdTreeCampaign) GetAdSets() []AdTreeAdSet {
 	if o == nil || IsNil(o.AdSets) {
@@ -1377,6 +1411,9 @@ func (o AdTreeCampaign) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject
+	}
+	if !IsNil(o.SpecialAdCategories) {
+		toSerialize["specialAdCategories"] = o.SpecialAdCategories
 	}
 	if !IsNil(o.AdSets) {
 		toSerialize["adSets"] = o.AdSets

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.451.1
+API version: 1.452.0
 Contact: support@zernio.com
 */
 
@@ -66,9 +66,11 @@ type Ad struct {
 	// Bid amount in WHOLE currency units of the ad account (USD: 5 = $5.00; JPY: 100 = ¥100).  - Meta: `bid_amount` on the ad set (smallest-denomination int, decoded here). Populated when bidStrategy is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`; `null` for auto-bid (`LOWEST_COST_WITHOUT_CAP`). - TikTok: priority order `bid_price` -> `conversion_bid_price` -> `deep_cpa_bid` (whichever is set on the ad group). TikTok stores all three in whole currency units. - LinkedIn: the campaign's EFFECTIVE `unitCost`, refreshed on every sync rather than echoing what was passed on create. Its meaning depends on the bidding mode implied by `optimizationGoal`: bid amount (manual), target cost, or cost cap. - LinkedIn pairing: it pairs with `costType`, NOT with `bidStrategy`, which LinkedIn does not have. A value of `0` is a real, delivery-stopping configuration, not \"unset\", so do not gate this field on `bidStrategy` for LinkedIn ads.  Source: facebook-business-sdk-codegen api_specs/specs/AdSet.json (`bid_amount`).
 	BidAmount NullableFloat32 `json:"bidAmount,omitempty"`
 	// Minimum ROAS as a decimal multiplier (2.0 = 2.0x ROAS). Populated when bidStrategy is `LOWEST_COST_WITH_MIN_ROAS`.  - Meta source: decoded from `bid_constraints.roas_average_floor` (Meta stores as   fixed-point int × 10000; we return the decimal). - TikTok source: `roas_bid` on the ad group (already a decimal).  Source: facebook-business-sdk-codegen api_specs/specs/AdCampaignBidConstraint.json.
-	RoasAverageFloor NullableFloat32   `json:"roasAverageFloor,omitempty"`
-	PromotedObject   *AdPromotedObject `json:"promotedObject,omitempty"`
-	Creative         *AdCreative       `json:"creative,omitempty"`
+	RoasAverageFloor NullableFloat32 `json:"roasAverageFloor,omitempty"`
+	// Special ad categories declared when Zernio created this ad (`specialAdCategories` on POST /v1/ads/create or /v1/ads/boost), e.g. [\"HOUSING\"]. Empty or absent when none was declared or the ad was created outside Zernio.
+	SpecialAdCategories []string          `json:"specialAdCategories,omitempty"`
+	PromotedObject      *AdPromotedObject `json:"promotedObject,omitempty"`
+	Creative            *AdCreative       `json:"creative,omitempty"`
 	// The ad set's targeting (age, gender, geo, interests, placements, audience inclusions/exclusions). May be absent if the ad set exposes no targeting or the lookup fails.  - Ads created through Zernio: the spec you supplied. - External ads (synced from Meta Ads Manager, `isExternal: true`): targeting lives at the ad set and isn't stored at ingest. On the first `GET /v1/ads/{adId}` Zernio resolves it live from Meta and caches it on the ad. - External ads, value shape: Meta's raw `targeting` shape (snake_case, e.g. `geo_locations`, `age_min`), the same object Ads Manager shows.
 	Targeting       map[string]interface{}                    `json:"targeting,omitempty"`
 	Schedule        *ListAdSets200ResponseAdSetsInnerSchedule `json:"schedule,omitempty"`
@@ -1143,6 +1145,38 @@ func (o *Ad) UnsetRoasAverageFloor() {
 	o.RoasAverageFloor.Unset()
 }
 
+// GetSpecialAdCategories returns the SpecialAdCategories field value if set, zero value otherwise.
+func (o *Ad) GetSpecialAdCategories() []string {
+	if o == nil || IsNil(o.SpecialAdCategories) {
+		var ret []string
+		return ret
+	}
+	return o.SpecialAdCategories
+}
+
+// GetSpecialAdCategoriesOk returns a tuple with the SpecialAdCategories field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Ad) GetSpecialAdCategoriesOk() ([]string, bool) {
+	if o == nil || IsNil(o.SpecialAdCategories) {
+		return nil, false
+	}
+	return o.SpecialAdCategories, true
+}
+
+// HasSpecialAdCategories returns a boolean if a field has been set.
+func (o *Ad) HasSpecialAdCategories() bool {
+	if o != nil && !IsNil(o.SpecialAdCategories) {
+		return true
+	}
+
+	return false
+}
+
+// SetSpecialAdCategories gets a reference to the given []string and assigns it to the SpecialAdCategories field.
+func (o *Ad) SetSpecialAdCategories(v []string) {
+	o.SpecialAdCategories = v
+}
+
 // GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
 func (o *Ad) GetPromotedObject() AdPromotedObject {
 	if o == nil || IsNil(o.PromotedObject) {
@@ -1463,6 +1497,9 @@ func (o Ad) ToMap() (map[string]interface{}, error) {
 	}
 	if o.RoasAverageFloor.IsSet() {
 		toSerialize["roasAverageFloor"] = o.RoasAverageFloor.Get()
+	}
+	if !IsNil(o.SpecialAdCategories) {
+		toSerialize["specialAdCategories"] = o.SpecialAdCategories
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject
