@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.452.1
+API version: 1.452.2
 Contact: support@zernio.com
 */
 
@@ -55,7 +55,10 @@ These platforms have no private reply to a comment, so the automation answers a 
 
 The DM fields are rejected with a 400 naming the field: `dmMessage`, `dmMessageVariations`, `buttons`, `template`, `quickReplies`, `alsoMatchInDms`, `audience`, `followGate`, `dmDelaySeconds`, `commentReplyDelaySeconds`.
 
-TikTok comments (TikTok business accounts only) and Threads comments arrive by webhook, so the reply follows within seconds; Threads keeps the comment poll as a fallback. LinkedIn and YouTube are read by the comment poll, so a reply follows the comment by up to the poll interval (10 minutes on posts from the last 24 hours, longer on older posts).
+How fast the reply follows the comment:
+
+- TikTok (business accounts only) and Threads: within seconds, since their comments arrive by webhook. Threads keeps the comment poll as a fallback.
+- LinkedIn and YouTube: up to the comment poll interval, 10 minutes on posts from the last 24 hours and longer on older posts.
 
 `repeatPolicy` applies there too: with the default `once`, a person gets one public reply per automation, and their later comments get none.
 
