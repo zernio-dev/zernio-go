@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.446.0
+API version: 1.447.0
 Contact: support@zernio.com
 */
 
@@ -46,6 +46,8 @@ type AdFunnelCounts struct {
 	MessagingConversationsStarted *int32 `json:"messagingConversationsStarted,omitempty"`
 	// Messaging threads where the person sent a first reply.
 	MessagingFirstReplies *int32 `json:"messagingFirstReplies,omitempty"`
+	// Booked appointments (Meta `Schedule` pixel event). Pair with `spend` for cost per booked meeting.  **Meta** reports Schedule in its `conversions` insight field, never in `actions`. This takes the FIRST present of `offsite_conversion.fb_pixel_schedule`, `omni_schedule`, `app_custom_event.fb_mobile_schedule`, `onsite_conversion.schedule`, `schedule`, `schedule_total`, `schedule_mobile_app`, `schedule_website`, `schedule_offline`. With none of those, a single `offsite_schedule_add_<dataset>` key counts. Two such keys (two datasets) leave it at 0, since one booking can reach both.  Added 2026-11-03. Days synced before then read 0 until re-fetched: each sync restates the last 30 days.
+	Schedules *int32 `json:"schedules,omitempty"`
 }
 
 // NewAdFunnelCounts instantiates a new AdFunnelCounts object
@@ -481,6 +483,38 @@ func (o *AdFunnelCounts) SetMessagingFirstReplies(v int32) {
 	o.MessagingFirstReplies = &v
 }
 
+// GetSchedules returns the Schedules field value if set, zero value otherwise.
+func (o *AdFunnelCounts) GetSchedules() int32 {
+	if o == nil || IsNil(o.Schedules) {
+		var ret int32
+		return ret
+	}
+	return *o.Schedules
+}
+
+// GetSchedulesOk returns a tuple with the Schedules field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdFunnelCounts) GetSchedulesOk() (*int32, bool) {
+	if o == nil || IsNil(o.Schedules) {
+		return nil, false
+	}
+	return o.Schedules, true
+}
+
+// HasSchedules returns a boolean if a field has been set.
+func (o *AdFunnelCounts) HasSchedules() bool {
+	if o != nil && !IsNil(o.Schedules) {
+		return true
+	}
+
+	return false
+}
+
+// SetSchedules gets a reference to the given int32 and assigns it to the Schedules field.
+func (o *AdFunnelCounts) SetSchedules(v int32) {
+	o.Schedules = &v
+}
+
 func (o AdFunnelCounts) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -529,6 +563,9 @@ func (o AdFunnelCounts) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MessagingFirstReplies) {
 		toSerialize["messagingFirstReplies"] = o.MessagingFirstReplies
+	}
+	if !IsNil(o.Schedules) {
+		toSerialize["schedules"] = o.Schedules
 	}
 	return toSerialize, nil
 }
