@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.448.0
+API version: 1.449.0
 Contact: support@zernio.com
 */
 
@@ -33,7 +33,9 @@ type ListAdAudiences200ResponseAudiencesInner struct {
 	Spec     NullableTargetingSpec `json:"spec,omitempty"`
 	Platform *string               `json:"platform,omitempty"`
 	Size     *int32                `json:"size,omitempty"`
-	Status   *string               `json:"status,omitempty"`
+	// Who the audience contains, in one line (e.g. '1% lookalike of Customers in US' or 'All website visitors, last 30 days'). Meta only.
+	Summary *string `json:"summary,omitempty"`
+	Status  *string `json:"status,omitempty"`
 }
 
 // NewListAdAudiences200ResponseAudiencesInner instantiates a new ListAdAudiences200ResponseAudiencesInner object
@@ -363,6 +365,38 @@ func (o *ListAdAudiences200ResponseAudiencesInner) SetSize(v int32) {
 	o.Size = &v
 }
 
+// GetSummary returns the Summary field value if set, zero value otherwise.
+func (o *ListAdAudiences200ResponseAudiencesInner) GetSummary() string {
+	if o == nil || IsNil(o.Summary) {
+		var ret string
+		return ret
+	}
+	return *o.Summary
+}
+
+// GetSummaryOk returns a tuple with the Summary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAudiences200ResponseAudiencesInner) GetSummaryOk() (*string, bool) {
+	if o == nil || IsNil(o.Summary) {
+		return nil, false
+	}
+	return o.Summary, true
+}
+
+// HasSummary returns a boolean if a field has been set.
+func (o *ListAdAudiences200ResponseAudiencesInner) HasSummary() bool {
+	if o != nil && !IsNil(o.Summary) {
+		return true
+	}
+
+	return false
+}
+
+// SetSummary gets a reference to the given string and assigns it to the Summary field.
+func (o *ListAdAudiences200ResponseAudiencesInner) SetSummary(v string) {
+	o.Summary = &v
+}
+
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *ListAdAudiences200ResponseAudiencesInner) GetStatus() string {
 	if o == nil || IsNil(o.Status) {
@@ -431,6 +465,9 @@ func (o ListAdAudiences200ResponseAudiencesInner) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.Size) {
 		toSerialize["size"] = o.Size
+	}
+	if !IsNil(o.Summary) {
+		toSerialize["summary"] = o.Summary
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
