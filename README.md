@@ -429,6 +429,7 @@ func main() {
 | `client.AdCampaignsAPI.ListAdSets(ctx)` | List ad sets |
 | `client.AdCampaignsAPI.ListAds(ctx)` | List ads |
 | `client.AdCampaignsAPI.ListAdsAlerts(ctx)` | List ads that need attention |
+| `client.AdCampaignsAPI.ListAdsByPerformance(ctx)` | Rank ads by performance |
 | `client.AdCampaignsAPI.ListBidStrategies(ctx)` | List portfolio bid strategies |
 | `client.AdCampaignsAPI.ListCampaignAssets(ctx)` | List campaign assets |
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywordLists(ctx)` | List campaign negative lists |

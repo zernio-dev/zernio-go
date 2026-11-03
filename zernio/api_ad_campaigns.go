@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.449.0
+API version: 1.450.0
 Contact: support@zernio.com
 */
 
@@ -7761,6 +7761,225 @@ func (a *AdCampaignsAPIService) ListAdsAlertsExecute(r AdCampaignsAPIListAdsAler
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIListAdsByPerformanceRequest struct {
+	ctx         context.Context
+	ApiService  *AdCampaignsAPIService
+	accountId   *string
+	fromDate    *string
+	toDate      *string
+	adAccountId *string
+	platform    *string
+	sortBy      *string
+	limit       *int32
+}
+
+// Account ID. Sibling-expanded to its linked posting and ads pair. An id the API key cannot reach answers 404.
+func (r AdCampaignsAPIListAdsByPerformanceRequest) AccountId(accountId string) AdCampaignsAPIListAdsByPerformanceRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Inclusive start of the range (YYYY-MM-DD).
+func (r AdCampaignsAPIListAdsByPerformanceRequest) FromDate(fromDate string) AdCampaignsAPIListAdsByPerformanceRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// Inclusive end of the range (YYYY-MM-DD). Max 730-day range.
+func (r AdCampaignsAPIListAdsByPerformanceRequest) ToDate(toDate string) AdCampaignsAPIListAdsByPerformanceRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Optional platform-native ad account ID (e.g. Meta &#x60;act_…&#x60;) to rank one ad account only.
+func (r AdCampaignsAPIListAdsByPerformanceRequest) AdAccountId(adAccountId string) AdCampaignsAPIListAdsByPerformanceRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Restrict to one platform.
+func (r AdCampaignsAPIListAdsByPerformanceRequest) Platform(platform string) AdCampaignsAPIListAdsByPerformanceRequest {
+	r.platform = &platform
+	return r
+}
+
+// Metric the ads are ranked by, highest first.
+func (r AdCampaignsAPIListAdsByPerformanceRequest) SortBy(sortBy string) AdCampaignsAPIListAdsByPerformanceRequest {
+	r.sortBy = &sortBy
+	return r
+}
+
+// How many ads to return.
+func (r AdCampaignsAPIListAdsByPerformanceRequest) Limit(limit int32) AdCampaignsAPIListAdsByPerformanceRequest {
+	r.limit = &limit
+	return r
+}
+
+func (r AdCampaignsAPIListAdsByPerformanceRequest) Execute() (*AdsPerformanceResponse, *http.Response, error) {
+	return r.ApiService.ListAdsByPerformanceExecute(r)
+}
+
+/*
+ListAdsByPerformance Rank ads by performance
+
+Returns an ads account's ads ranked by spend, impressions, clicks, results or ROAS over a date range, each with its creative (type, thumbnail, headline, body, link) and campaign.
+
+Use it to see which creatives perform best. `accountId` is sibling-expanded like `/v1/ads/timeline`.
+
+Money is ranked by its raw amount, so pass `adAccountId` when the connection's ad accounts bill in different currencies.
+
+A Meta range older than the imported history answers `202` with `backfillPending: true` and the covered part; repeat the request until it returns 200.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdCampaignsAPIListAdsByPerformanceRequest
+*/
+func (a *AdCampaignsAPIService) ListAdsByPerformance(ctx context.Context) AdCampaignsAPIListAdsByPerformanceRequest {
+	return AdCampaignsAPIListAdsByPerformanceRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return AdsPerformanceResponse
+func (a *AdCampaignsAPIService) ListAdsByPerformanceExecute(r AdCampaignsAPIListAdsByPerformanceRequest) (*AdsPerformanceResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AdsPerformanceResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ListAdsByPerformance")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/performance"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.fromDate == nil {
+		return localVarReturnValue, nil, reportError("fromDate is required and must be specified")
+	}
+	if r.toDate == nil {
+		return localVarReturnValue, nil, reportError("toDate is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.sortBy != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sortBy", r.sortBy, "form", "")
+	} else {
+		var defaultValue string = "spend"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sortBy", defaultValue, "form", "")
+		r.sortBy = &defaultValue
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 50
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
