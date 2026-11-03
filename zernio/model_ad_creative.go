@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.444.0
+API version: 1.445.0
 Contact: support@zernio.com
 */
 
@@ -34,8 +34,16 @@ type AdCreative struct {
 	Bodies []string `json:"bodies,omitempty"`
 	// Meta: the creative's description under the title (`link_data.description`, `video_data.link_description`, or the first `asset_feed_spec.descriptions` entry).
 	Description *string `json:"description,omitempty"`
-	// Meta: the call to action type (`call_to_action.type`, or the first `asset_feed_spec.call_to_action_types` entry), e.g. LEARN_MORE or SIGN_UP.
+	// Meta: the call to action type (`call_to_action.type`, or the first `asset_feed_spec.call_to_action_types` entry), e.g. LEARN_MORE or SIGN_UP. TikTok: the ad's `call_to_action`.
 	CallToAction *string `json:"callToAction,omitempty"`
+	// TikTok only, with `live=true` on GET /v1/ads/{adId}: the identity the ad runs as (`identity_id`), the same id GET /v1/ads/tiktok-identities lists.
+	IdentityId *string `json:"identityId,omitempty"`
+	// TikTok only, with `live=true`: the identity type (`identity_type`), e.g. TT_USER, BC_AUTH_TT, CUSTOMIZED_USER or AUTH_CODE.
+	IdentityType *string `json:"identityType,omitempty"`
+	// TikTok only, with `live=true`: the Business Center that authorized a BC_AUTH_TT identity (`identity_authorized_bc_id`).
+	IdentityAuthorizedBcId *string `json:"identityAuthorizedBcId,omitempty"`
+	// TikTok only, with `live=true`: the TikTok post a Spark ad runs (`tiktok_item_id`).
+	TiktokItemId *string `json:"tiktokItemId,omitempty"`
 	// Meta: the instant form the call to action opens (`call_to_action.value.lead_gen_form_id`, or the asset feed's `call_to_actions` on a dynamic creative), the same value as the `leadGenFormId` create input. Absent on ads without a lead form.
 	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
 	// Meta: the ad image hash (`image_hash`), reusable as `imageHash` on POST /v1/ads/create within the same ad account. `thumbnailUrl` and `mediaUrls` carry its stable full resolution permalink when Meta resolves it.
@@ -51,7 +59,7 @@ type AdCreative struct {
 	// Google Display only. Resource name of the landscape marketing image asset (`creative.imageUrl`), for example customers/1234567890/assets/123. Set at creation and updated when PUT /v1/ads/{adId} replaces `creative.imageUrl`; replacing only `creative.squareImageUrl` leaves it unchanged.
 	AssetResourceName *string           `json:"assetResourceName,omitempty"`
 	Assets            *AdCreativeAssets `json:"assets,omitempty"`
-	// Meta video ID for VIDEO-type ads. Null for non-video ads. Callers that need an embeddable MP4 can call GET /{videoId}?fields=source with the page access token.
+	// Meta video ID for VIDEO-type ads (TikTok: the ad library `video_id`). Null for non-video ads. Callers that need an embeddable MP4 can call GET /{videoId}?fields=source with the page access token.
 	VideoId NullableString `json:"videoId,omitempty"`
 	// Public Facebook watch URL for VIDEO-type ads (https://www.facebook.com/watch/?v={videoId}). Null for non-video ads.
 	VideoUrl NullableString `json:"videoUrl,omitempty"`
@@ -80,7 +88,7 @@ type AdCreative struct {
 	CarouselCards []AdCreativeCarouselCardsInner `json:"carouselCards,omitempty"`
 	// LinkedIn only. Whether LinkedIn is currently serving this specific creative. Complements the ad-level `servingStatuses`, which describes the parent campaign.
 	IsServing NullableBool `json:"isServing,omitempty"`
-	// LinkedIn only. The LinkedIn ad format, in LinkedIn's own vocabulary: STANDARD_UPDATE, SINGLE_VIDEO, CAROUSEL, NATIVE_DOCUMENT, EVENT, TEXT_AD, SPOTLIGHT, FOLLOW_COMPANY, JOBS, SPONSORED_INMAILS and others. The list is open, so treat an unrecognized value as valid.  - On an ad Zernio created: the format it was created as. - On an ad synced from Campaign Manager: the parent campaign's raw `format`, which is what LinkedIn actually enforces on its creatives.  Absent on LinkedIn ads not yet re-synced, and on every other platform.
+	// LinkedIn (and TikTok with `live=true`). The LinkedIn ad format, in LinkedIn's own vocabulary: STANDARD_UPDATE, SINGLE_VIDEO, CAROUSEL, NATIVE_DOCUMENT, EVENT, TEXT_AD, SPOTLIGHT, FOLLOW_COMPANY, JOBS, SPONSORED_INMAILS and others. The list is open, so treat an unrecognized value as valid.  - On an ad Zernio created: the format it was created as. - On an ad synced from Campaign Manager: the parent campaign's raw `format`, which is what LinkedIn actually enforces on its creatives.  Absent on LinkedIn ads not yet re-synced. On TikTok with `live=true`: the ad's `ad_format` (e.g. SINGLE_VIDEO). Absent on every other platform.
 	AdFormat NullableString `json:"adFormat,omitempty"`
 	// LinkedIn only. Why this specific creative is not being served. Empty when it is serving.  A superset of the ad-level `servingStatuses`: it repeats the inherited campaign, campaign group and account holds AND adds creative-only causes, such as:  - UNDER_REVIEW, REJECTED, PROCESSING, PROCESSING_FAILED; - FORM_HOLD (lead-gen-form creatives); - REFERRED_CONTENT_QUALITY_HOLD; - JOB_POSTING_ON_HOLD and JOB_POSTING_INVALID (job ads).  Some values are format-specific and will never appear on other ad formats. The list is open, so treat unrecognized values as holds rather than errors.
 	ServingHoldReasons []string `json:"servingHoldReasons,omitempty"`
@@ -373,6 +381,134 @@ func (o *AdCreative) HasCallToAction() bool {
 // SetCallToAction gets a reference to the given string and assigns it to the CallToAction field.
 func (o *AdCreative) SetCallToAction(v string) {
 	o.CallToAction = &v
+}
+
+// GetIdentityId returns the IdentityId field value if set, zero value otherwise.
+func (o *AdCreative) GetIdentityId() string {
+	if o == nil || IsNil(o.IdentityId) {
+		var ret string
+		return ret
+	}
+	return *o.IdentityId
+}
+
+// GetIdentityIdOk returns a tuple with the IdentityId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetIdentityIdOk() (*string, bool) {
+	if o == nil || IsNil(o.IdentityId) {
+		return nil, false
+	}
+	return o.IdentityId, true
+}
+
+// HasIdentityId returns a boolean if a field has been set.
+func (o *AdCreative) HasIdentityId() bool {
+	if o != nil && !IsNil(o.IdentityId) {
+		return true
+	}
+
+	return false
+}
+
+// SetIdentityId gets a reference to the given string and assigns it to the IdentityId field.
+func (o *AdCreative) SetIdentityId(v string) {
+	o.IdentityId = &v
+}
+
+// GetIdentityType returns the IdentityType field value if set, zero value otherwise.
+func (o *AdCreative) GetIdentityType() string {
+	if o == nil || IsNil(o.IdentityType) {
+		var ret string
+		return ret
+	}
+	return *o.IdentityType
+}
+
+// GetIdentityTypeOk returns a tuple with the IdentityType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetIdentityTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.IdentityType) {
+		return nil, false
+	}
+	return o.IdentityType, true
+}
+
+// HasIdentityType returns a boolean if a field has been set.
+func (o *AdCreative) HasIdentityType() bool {
+	if o != nil && !IsNil(o.IdentityType) {
+		return true
+	}
+
+	return false
+}
+
+// SetIdentityType gets a reference to the given string and assigns it to the IdentityType field.
+func (o *AdCreative) SetIdentityType(v string) {
+	o.IdentityType = &v
+}
+
+// GetIdentityAuthorizedBcId returns the IdentityAuthorizedBcId field value if set, zero value otherwise.
+func (o *AdCreative) GetIdentityAuthorizedBcId() string {
+	if o == nil || IsNil(o.IdentityAuthorizedBcId) {
+		var ret string
+		return ret
+	}
+	return *o.IdentityAuthorizedBcId
+}
+
+// GetIdentityAuthorizedBcIdOk returns a tuple with the IdentityAuthorizedBcId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetIdentityAuthorizedBcIdOk() (*string, bool) {
+	if o == nil || IsNil(o.IdentityAuthorizedBcId) {
+		return nil, false
+	}
+	return o.IdentityAuthorizedBcId, true
+}
+
+// HasIdentityAuthorizedBcId returns a boolean if a field has been set.
+func (o *AdCreative) HasIdentityAuthorizedBcId() bool {
+	if o != nil && !IsNil(o.IdentityAuthorizedBcId) {
+		return true
+	}
+
+	return false
+}
+
+// SetIdentityAuthorizedBcId gets a reference to the given string and assigns it to the IdentityAuthorizedBcId field.
+func (o *AdCreative) SetIdentityAuthorizedBcId(v string) {
+	o.IdentityAuthorizedBcId = &v
+}
+
+// GetTiktokItemId returns the TiktokItemId field value if set, zero value otherwise.
+func (o *AdCreative) GetTiktokItemId() string {
+	if o == nil || IsNil(o.TiktokItemId) {
+		var ret string
+		return ret
+	}
+	return *o.TiktokItemId
+}
+
+// GetTiktokItemIdOk returns a tuple with the TiktokItemId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetTiktokItemIdOk() (*string, bool) {
+	if o == nil || IsNil(o.TiktokItemId) {
+		return nil, false
+	}
+	return o.TiktokItemId, true
+}
+
+// HasTiktokItemId returns a boolean if a field has been set.
+func (o *AdCreative) HasTiktokItemId() bool {
+	if o != nil && !IsNil(o.TiktokItemId) {
+		return true
+	}
+
+	return false
+}
+
+// SetTiktokItemId gets a reference to the given string and assigns it to the TiktokItemId field.
+func (o *AdCreative) SetTiktokItemId(v string) {
+	o.TiktokItemId = &v
 }
 
 // GetLeadGenFormId returns the LeadGenFormId field value if set, zero value otherwise.
@@ -1671,6 +1807,18 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CallToAction) {
 		toSerialize["callToAction"] = o.CallToAction
+	}
+	if !IsNil(o.IdentityId) {
+		toSerialize["identityId"] = o.IdentityId
+	}
+	if !IsNil(o.IdentityType) {
+		toSerialize["identityType"] = o.IdentityType
+	}
+	if !IsNil(o.IdentityAuthorizedBcId) {
+		toSerialize["identityAuthorizedBcId"] = o.IdentityAuthorizedBcId
+	}
+	if !IsNil(o.TiktokItemId) {
+		toSerialize["tiktokItemId"] = o.TiktokItemId
 	}
 	if !IsNil(o.LeadGenFormId) {
 		toSerialize["leadGenFormId"] = o.LeadGenFormId

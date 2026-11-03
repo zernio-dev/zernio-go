@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.444.0
+API version: 1.445.0
 Contact: support@zernio.com
 */
 
@@ -3710,7 +3710,7 @@ type AdCampaignsAPIGetAdRequest struct {
 	accountId  *string
 }
 
-// Read the on/off switches live from the platform instead of returning synced values. See \&quot;Status freshness\&quot; in the operation description.  - The fresh values are stored (later reads return them too), and the response carries &#x60;statusReadAt&#x60;, the time of the read. - At most 20 platform objects are read per request. - Where a read fails (credentials, platform error, no reader on that platform), stored values come back with &#x60;statusReadAt: null&#x60;.  **On X** the budget is read live too:  - GET /v1/ads/{adId}: &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches). - Ad set and campaign listings: &#x60;budget&#x60; is what that line item or campaign holds now (returned, not stored). A row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
+// Read the on/off switches live from the platform instead of returning synced values. See \&quot;Status freshness\&quot; in the operation description.  - The fresh values are stored (later reads return them too), and the response carries &#x60;statusReadAt&#x60;, the time of the read. - At most 20 platform objects are read per request. - Where a read fails (credentials, platform error, no reader on that platform), stored values come back with &#x60;statusReadAt: null&#x60;.  **On GET /v1/ads/{adId} for a TikTok ad** the creative is read live too: ad text, call to action, landing page, video, format and identity, returned over the stored creative and never stored. See \&quot;Status freshness\&quot; in GET /v1/ads/{adId}.  **On X** the budget is read live too:  - GET /v1/ads/{adId}: &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches). - Ad set and campaign listings: &#x60;budget&#x60; is what that line item or campaign holds now (returned, not stored). A row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
 func (r AdCampaignsAPIGetAdRequest) Live(live bool) AdCampaignsAPIGetAdRequest {
 	r.live = &live
 	return r
@@ -3775,6 +3775,9 @@ With `live=true` these are read live:
 - the ad's own switch (`configuredStatus`)
 - its delivery status (`status`, `platformStatus`)
 - its ad set and campaign switches (`platformAdSetStatus`, `platformCampaignStatus`)
+- on TikTok, the creative TikTok holds now: `creative.body` (ad text), `creative.callToAction`, `creative.linkUrl` (landing page), `creative.videoId`, `creative.adFormat`, `creative.identityId`, `creative.identityType`, `creative.identityAuthorizedBcId` and, on a Spark ad, `creative.tiktokItemId`.
+
+The TikTok creative comes from the same TikTok call as the switches. It replaces the stored values in the response only and is never stored. A key TikTok leaves empty keeps its stored value.
 
 ### Meta ads that are not synced yet
 
@@ -6369,7 +6372,7 @@ func (r AdCampaignsAPIListAdCampaignsRequest) MinSpend(minSpend float32) AdCampa
 	return r
 }
 
-// Read the on/off switches live from the platform instead of returning synced values. See \&quot;Status freshness\&quot; in the operation description.  - The fresh values are stored (later reads return them too), and the response carries &#x60;statusReadAt&#x60;, the time of the read. - At most 20 platform objects are read per request. - Where a read fails (credentials, platform error, no reader on that platform), stored values come back with &#x60;statusReadAt: null&#x60;.  **On X** the budget is read live too:  - GET /v1/ads/{adId}: &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches). - Ad set and campaign listings: &#x60;budget&#x60; is what that line item or campaign holds now (returned, not stored). A row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
+// Read the on/off switches live from the platform instead of returning synced values. See \&quot;Status freshness\&quot; in the operation description.  - The fresh values are stored (later reads return them too), and the response carries &#x60;statusReadAt&#x60;, the time of the read. - At most 20 platform objects are read per request. - Where a read fails (credentials, platform error, no reader on that platform), stored values come back with &#x60;statusReadAt: null&#x60;.  **On GET /v1/ads/{adId} for a TikTok ad** the creative is read live too: ad text, call to action, landing page, video, format and identity, returned over the stored creative and never stored. See \&quot;Status freshness\&quot; in GET /v1/ads/{adId}.  **On X** the budget is read live too:  - GET /v1/ads/{adId}: &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches). - Ad set and campaign listings: &#x60;budget&#x60; is what that line item or campaign holds now (returned, not stored). A row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
 func (r AdCampaignsAPIListAdCampaignsRequest) Live(live bool) AdCampaignsAPIListAdCampaignsRequest {
 	r.live = &live
 	return r
@@ -7088,7 +7091,7 @@ func (r AdCampaignsAPIListAdSetsRequest) Limit(limit int32) AdCampaignsAPIListAd
 	return r
 }
 
-// Read the on/off switches live from the platform instead of returning synced values. See \&quot;Status freshness\&quot; in the operation description.  - The fresh values are stored (later reads return them too), and the response carries &#x60;statusReadAt&#x60;, the time of the read. - At most 20 platform objects are read per request. - Where a read fails (credentials, platform error, no reader on that platform), stored values come back with &#x60;statusReadAt: null&#x60;.  **On X** the budget is read live too:  - GET /v1/ads/{adId}: &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches). - Ad set and campaign listings: &#x60;budget&#x60; is what that line item or campaign holds now (returned, not stored). A row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
+// Read the on/off switches live from the platform instead of returning synced values. See \&quot;Status freshness\&quot; in the operation description.  - The fresh values are stored (later reads return them too), and the response carries &#x60;statusReadAt&#x60;, the time of the read. - At most 20 platform objects are read per request. - Where a read fails (credentials, platform error, no reader on that platform), stored values come back with &#x60;statusReadAt: null&#x60;.  **On GET /v1/ads/{adId} for a TikTok ad** the creative is read live too: ad text, call to action, landing page, video, format and identity, returned over the stored creative and never stored. See \&quot;Status freshness\&quot; in GET /v1/ads/{adId}.  **On X** the budget is read live too:  - GET /v1/ads/{adId}: &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches). - Ad set and campaign listings: &#x60;budget&#x60; is what that line item or campaign holds now (returned, not stored). A row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
 func (r AdCampaignsAPIListAdSetsRequest) Live(live bool) AdCampaignsAPIListAdSetsRequest {
 	r.live = &live
 	return r
