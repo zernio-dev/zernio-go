@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.453.0
+API version: 1.456.0
 Contact: support@zernio.com
 */
 
@@ -22,12 +22,14 @@ var _ MappedNullable = &AdRuleObjectEvaluationConditionsInner{}
 
 // AdRuleObjectEvaluationConditionsInner struct for AdRuleObjectEvaluationConditionsInner
 type AdRuleObjectEvaluationConditionsInner struct {
-	// `ctr` is a percentage. `spend`, `cpc`, `cpm` and `cpa` are in the ad account currency. `reach` and `frequency` use the platform's de-duplicated reach, so they are accepted on Meta and TikTok only.  `result:<key>` reads one of your own results (see [Campaign results](/guides/campaign-results)), on campaign rules only: the values you sent for the window, or a formula over them and the platform's numbers. A campaign with no value for it never matches.
+	// `ctr` is a percentage. `spend`, `cpc`, `cpm` and `cpa` are in the ad account currency. `reach` and `frequency` use the platform's de-duplicated reach, so they are accepted on Meta and TikTok only.  `daily_budget` is the object's synced daily budget. `budget_used` is spend over the window as a percent of that budget for each day of the window: `today` `>=` 200 means twice the budget spent.  Both read campaigns and ad sets with a daily budget of their own. A lifetime budget never matches.  `result:<key>` reads one of your own results (see [Campaign results](/guides/campaign-results)), on campaign rules only: the values you sent for the window, or a formula over them and the platform's numbers. A campaign with no value for it never matches.
 	Metric string `json:"metric"`
-	// Days in the ad account's own timezone. `last_7d` is the 7 full days before today; only `today` reads the day in progress.
+	// Days in the ad account's own timezone. `last_7d` is the 7 full days before today; only `today` reads the day in progress.  `<from>_to_<to>_days_ago` is any range of full days, both ends included, such as `8_to_2_days_ago` to skip the 2 most recent days while their conversions still arrive. `from` is at least `to` and at most 90.
 	Window string  `json:"window"`
 	Op     string  `json:"op"`
 	Value  float32 `json:"value"`
+	// Makes the condition relative: `value` becomes a ratio of the metric over `window` to the same metric over this window. `previous_period` is the same number of days just before `window`; any other value is a window, such as `30_to_2_days_ago`.  Spend, impressions, clicks, conversions and reach are compared per day, so windows of different lengths compare fairly; rates such as `cpc` compare as they are. A comparison window with no value never matches.
+	CompareTo *string `json:"compareTo,omitempty"`
 	// The object's value over the window. Null when it cannot be computed.
 	Actual NullableFloat32 `json:"actual"`
 	Met    bool            `json:"met"`
@@ -154,6 +156,38 @@ func (o *AdRuleObjectEvaluationConditionsInner) SetValue(v float32) {
 	o.Value = v
 }
 
+// GetCompareTo returns the CompareTo field value if set, zero value otherwise.
+func (o *AdRuleObjectEvaluationConditionsInner) GetCompareTo() string {
+	if o == nil || IsNil(o.CompareTo) {
+		var ret string
+		return ret
+	}
+	return *o.CompareTo
+}
+
+// GetCompareToOk returns a tuple with the CompareTo field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleObjectEvaluationConditionsInner) GetCompareToOk() (*string, bool) {
+	if o == nil || IsNil(o.CompareTo) {
+		return nil, false
+	}
+	return o.CompareTo, true
+}
+
+// HasCompareTo returns a boolean if a field has been set.
+func (o *AdRuleObjectEvaluationConditionsInner) HasCompareTo() bool {
+	if o != nil && !IsNil(o.CompareTo) {
+		return true
+	}
+
+	return false
+}
+
+// SetCompareTo gets a reference to the given string and assigns it to the CompareTo field.
+func (o *AdRuleObjectEvaluationConditionsInner) SetCompareTo(v string) {
+	o.CompareTo = &v
+}
+
 // GetActual returns the Actual field value
 // If the value is explicit nil, the zero value for float32 will be returned
 func (o *AdRuleObjectEvaluationConditionsInner) GetActual() float32 {
@@ -218,6 +252,9 @@ func (o AdRuleObjectEvaluationConditionsInner) ToMap() (map[string]interface{}, 
 	toSerialize["window"] = o.Window
 	toSerialize["op"] = o.Op
 	toSerialize["value"] = o.Value
+	if !IsNil(o.CompareTo) {
+		toSerialize["compareTo"] = o.CompareTo
+	}
 	toSerialize["actual"] = o.Actual.Get()
 	toSerialize["met"] = o.Met
 	return toSerialize, nil
