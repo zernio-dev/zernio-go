@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.450.0
+API version: 1.450.1
 Contact: support@zernio.com
 */
 
@@ -9063,11 +9063,13 @@ func (r WebhookEventsAPIOnReviewUpdatedRequest) Execute() (*http.Response, error
 /*
 OnReviewUpdated Review updated event
 
-Fired when a Google Business Profile reviewer edits their review text or rating,
-or when a reply is posted through POST /v1/inbox/reviews/{reviewId}/reply.
-A reply written directly in Google's own interface does NOT fire this event,
-because Google emits no notification for it. Payload shape matches review.new.
-Requires the Inbox add-on.
+Fired when a Google Business Profile reviewer edits their review text or rating, or when a reply is added, edited or removed. Payload shape matches review.new. Requires the Inbox add-on.
+
+A reply posted through POST /v1/inbox/reviews/{reviewId}/reply fires immediately. The periodic check then reports it again with the full review payload, so expect a second delivery.
+
+Replies written or removed in Google's own interface, and replies removed through the API, are reported by the periodic check.
+
+For replies written in Google, that is usually within 6 hours for reviews updated in the last 30 days, and usually within about 7 days for older ones. Only locations covered by a webhook subscribed to review.updated are checked. A removed reply fires with hasReply false.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnReviewUpdatedRequest
