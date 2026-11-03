@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.452.2
+API version: 1.452.3
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ type BoostPostRequestTargeting struct {
 	AgeMax *int32 `json:"ageMax,omitempty"`
 	// Applied on Meta, TikTok, Pinterest and Reddit. Ignored on Google, LinkedIn and X.
 	Gender *string `json:"gender,omitempty"`
-	// Meta locale ids (numeric), passed through as given. Reddit: language codes (e.g. `en`).
+	// Language codes, the same format as `languages` on POST /v1/ads/create.  - Meta: ISO 639-1 codes. A bare code targets all regional variants (\"en\" = all English); use a region-qualified code for a specific one (\"en_GB\", \"pt_BR\"). Meta numeric locale ids (e.g. \"24\" for English UK) are also accepted. Unknown values are rejected. - Reddit: ISO 639-1 codes (e.g. `en`).
 	Languages []string `json:"languages,omitempty"`
 	// ISO country codes. Required for TikTok boosts (TikTok's ad group requires location_ids); optional on other platforms.
 	Countries []string `json:"countries,omitempty"`

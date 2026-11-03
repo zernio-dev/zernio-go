@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.452.2
+API version: 1.452.3
 Contact: support@zernio.com
 */
 
@@ -100,7 +100,7 @@ type CtwaAdRequestBody struct {
 	Placements *CreateStandaloneAdRequestPlacements `json:"placements,omitempty"`
 	// Restrict the audience by gender (Meta `genders`). Omit or send all for everyone; all is ignored in adSetId attach mode. Stored on the ad and read back in `targeting.gender`.
 	Gender *string `json:"gender,omitempty"`
-	// Audience languages (Meta `locales`). A bare ISO 639-1 code targets all regional variants (\"en\" = all English), a region-qualified code a specific one (\"en_GB\", \"pt_BR\"); unknown codes are rejected.
+	// Audience languages (Meta `locales`). A bare ISO 639-1 code targets all regional variants (\"en\" = all English), a region-qualified code a specific one (\"en_GB\", \"pt_BR\"). Meta numeric locale ids (e.g. \"24\" for English UK) are also accepted. Unknown values are rejected. Same format as `targeting.languages` on POST /v1/ads/boost.
 	Languages []string `json:"languages,omitempty"`
 	// Meta place keys (from GET /v1/ads/targeting/search).
 	Places []CreateStandaloneAdRequestRegionsInnerOneOf `json:"places,omitempty"`

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.452.2
+API version: 1.452.3
 Contact: support@zernio.com
 */
 
@@ -143,7 +143,7 @@ type CreateStandaloneAdRequest struct {
 	WorkIndustries []CreateStandaloneAdRequestBehaviorsInner `json:"workIndustries,omitempty"`
 	// Normalized household-income tier. Meta and TikTok express all four; Google maps only `top_10`; rejected on LinkedIn, X, and Pinterest. On Meta, income targeting is incompatible with housing/employment/credit `specialAdCategories`.
 	IncomeTier *string `json:"incomeTier,omitempty"`
-	// Language codes, e.g. [\"en\",\"es\"].  - Google: campaign language targeting (language_constant) using Google's language codes (ISO 639-1, plus variants such as `zh_CN`). Unknown codes return 400. - Meta: a bare code targets all regional variants (\"en\" = all English); use a region-qualified code for a specific one (\"en_GB\", \"pt_BR\", \"zh_TW\"). Unknown codes are rejected. - Other ad platforms use their own language-code systems.
+	// Language codes, e.g. [\"en\",\"es\"].  - Google: campaign language targeting (language_constant) using Google's language codes (ISO 639-1, plus variants such as `zh_CN`). Unknown codes return 400. - Meta: a bare code targets all regional variants (\"en\" = all English); use a region-qualified code for a specific one (\"en_GB\", \"pt_BR\", \"zh_TW\"). Meta numeric locale ids (e.g. \"24\" for English UK) are also accepted. Unknown values are rejected. POST /v1/ads/boost takes the same format in `targeting.languages`. - Other ad platforms use their own language-code systems.
 	Languages  []string                             `json:"languages,omitempty"`
 	Placements *CreateStandaloneAdRequestPlacements `json:"placements,omitempty"`
 	// ID of a `saved_targeting` audience (created via POST /v1/ads/audiences). When set, its stored TargetingSpec is expanded as the base targeting; inline fields on this body merge on top. Lets you reuse a named targeting preset without re-sending every field.
