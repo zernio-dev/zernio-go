@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.450.2
+API version: 1.451.0
 Contact: support@zernio.com
 */
 
@@ -41,8 +41,10 @@ type GetAllAccountsHealth200ResponseAccountsInner struct {
 	// intentional: deliberately disconnected by the user or by Zernio (for example a plan downgrade), not a token failure. unintentional: token expired or revoked, or an auth failure. Null when disconnectReason is null.
 	DisconnectionType NullableString `json:"disconnectionType,omitempty"`
 	// When the earliest current stored cause was recorded (the start of the outage); for an intentional disconnect, when it was disconnected. Null when the connection is healthy, including when the account is unhealthy for another reason (analytics, messaging restriction, missing analytics scopes), or when the time is unknown.
-	UnhealthySince       NullableTime                                                      `json:"unhealthySince,omitempty"`
-	AnalyticsSync        *GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync        `json:"analyticsSync,omitempty"`
+	UnhealthySince NullableTime                                               `json:"unhealthySince,omitempty"`
+	AnalyticsSync  *GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync `json:"analyticsSync,omitempty"`
+	// Present on WhatsApp, Instagram and Facebook accounts. An active WhatsApp number with no inbound message or comment 24 hours after its latest connect gets an entry in issues, which never changes status. Null for accounts connected before tracking shipped, until their first inbound event or next connect.
+	InboundActivity      NullableInboundActivity                                           `json:"inboundActivity,omitempty"`
 	MessagingRestriction *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction `json:"messagingRestriction,omitempty"`
 }
 
@@ -640,6 +642,49 @@ func (o *GetAllAccountsHealth200ResponseAccountsInner) SetAnalyticsSync(v GetAll
 	o.AnalyticsSync = &v
 }
 
+// GetInboundActivity returns the InboundActivity field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetInboundActivity() InboundActivity {
+	if o == nil || IsNil(o.InboundActivity.Get()) {
+		var ret InboundActivity
+		return ret
+	}
+	return *o.InboundActivity.Get()
+}
+
+// GetInboundActivityOk returns a tuple with the InboundActivity field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetInboundActivityOk() (*InboundActivity, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.InboundActivity.Get(), o.InboundActivity.IsSet()
+}
+
+// HasInboundActivity returns a boolean if a field has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) HasInboundActivity() bool {
+	if o != nil && o.InboundActivity.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetInboundActivity gets a reference to the given NullableInboundActivity and assigns it to the InboundActivity field.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) SetInboundActivity(v InboundActivity) {
+	o.InboundActivity.Set(&v)
+}
+
+// SetInboundActivityNil sets the value for InboundActivity to be an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInner) SetInboundActivityNil() {
+	o.InboundActivity.Set(nil)
+}
+
+// UnsetInboundActivity ensures that no value is present for InboundActivity, not even an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInner) UnsetInboundActivity() {
+	o.InboundActivity.Unset()
+}
+
 // GetMessagingRestriction returns the MessagingRestriction field value if set, zero value otherwise.
 func (o *GetAllAccountsHealth200ResponseAccountsInner) GetMessagingRestriction() GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction {
 	if o == nil || IsNil(o.MessagingRestriction) {
@@ -732,6 +777,9 @@ func (o GetAllAccountsHealth200ResponseAccountsInner) ToMap() (map[string]interf
 	}
 	if !IsNil(o.AnalyticsSync) {
 		toSerialize["analyticsSync"] = o.AnalyticsSync
+	}
+	if o.InboundActivity.IsSet() {
+		toSerialize["inboundActivity"] = o.InboundActivity.Get()
 	}
 	if !IsNil(o.MessagingRestriction) {
 		toSerialize["messagingRestriction"] = o.MessagingRestriction

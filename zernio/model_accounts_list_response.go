@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.450.2
+API version: 1.451.0
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &AccountsListResponse{}
 
 // AccountsListResponse struct for AccountsListResponse
 type AccountsListResponse struct {
-	Accounts []SocialAccount `json:"accounts"`
+	Accounts []ListedAccount `json:"accounts"`
 	// Whether user has analytics add-on access
 	HasAnalyticsAccess bool                            `json:"hasAnalyticsAccess"`
 	Pagination         *AccountsListResponsePagination `json:"pagination,omitempty"`
@@ -37,7 +37,7 @@ type _AccountsListResponse AccountsListResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAccountsListResponse(accounts []SocialAccount, hasAnalyticsAccess bool) *AccountsListResponse {
+func NewAccountsListResponse(accounts []ListedAccount, hasAnalyticsAccess bool) *AccountsListResponse {
 	this := AccountsListResponse{}
 	this.Accounts = accounts
 	this.HasAnalyticsAccess = hasAnalyticsAccess
@@ -53,9 +53,9 @@ func NewAccountsListResponseWithDefaults() *AccountsListResponse {
 }
 
 // GetAccounts returns the Accounts field value
-func (o *AccountsListResponse) GetAccounts() []SocialAccount {
+func (o *AccountsListResponse) GetAccounts() []ListedAccount {
 	if o == nil {
-		var ret []SocialAccount
+		var ret []ListedAccount
 		return ret
 	}
 
@@ -64,7 +64,7 @@ func (o *AccountsListResponse) GetAccounts() []SocialAccount {
 
 // GetAccountsOk returns a tuple with the Accounts field value
 // and a boolean to check if the value has been set.
-func (o *AccountsListResponse) GetAccountsOk() ([]SocialAccount, bool) {
+func (o *AccountsListResponse) GetAccountsOk() ([]ListedAccount, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -72,7 +72,7 @@ func (o *AccountsListResponse) GetAccountsOk() ([]SocialAccount, bool) {
 }
 
 // SetAccounts sets field value
-func (o *AccountsListResponse) SetAccounts(v []SocialAccount) {
+func (o *AccountsListResponse) SetAccounts(v []ListedAccount) {
 	o.Accounts = v
 }
 

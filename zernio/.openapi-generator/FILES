@@ -1543,6 +1543,7 @@ model_imessage_audience_contact_opt_in.go
 model_imessage_sandbox_contact.go
 model_imessage_sender.go
 model_imessage_sender_lifecycle.go
+model_inbound_activity.go
 model_inbox_conversation_ad_metadata.go
 model_inbox_message_edit_attachment.go
 model_inbox_message_edit_history_entry.go
@@ -1976,6 +1977,7 @@ model_list_workflow_versions_200_response.go
 model_list_workflow_versions_200_response_versions_inner.go
 model_list_workflows_200_response.go
 model_list_workflows_200_response_workflows_inner.go
+model_listed_account.go
 model_lookup_sms_number_200_response.go
 model_mark_conversation_read_200_response.go
 model_media_content_type.go
