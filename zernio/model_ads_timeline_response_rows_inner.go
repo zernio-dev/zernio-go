@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.445.1
+API version: 1.446.0
 Contact: support@zernio.com
 */
 
@@ -39,8 +39,10 @@ type AdsTimelineResponseRowsInner struct {
 	// Sum of conversion events over the range. Fractional values are normal (attribution splitting + Google modeled conversions). Meta: the ad set Ads Manager Results (see AdMetrics.conversions). Google: tracked conversions. X / LinkedIn: reported website/lead conversions (added 2026-07).
 	Conversions *float32 `json:"conversions,omitempty"`
 	// All conversions, including actions excluded from the Conversions column (Google metrics.all_conversions). 0 on platforms without the concept.
-	AllConversions    *float32 `json:"allConversions,omitempty"`
-	CostPerConversion *float32 `json:"costPerConversion,omitempty"`
+	AllConversions *float32 `json:"allConversions,omitempty"`
+	// `conversions` split by what was counted. Keys are the Meta action_type (e.g. `offsite_conversion.fb_pixel_purchase`) or the Google conversion action name, so a goal change shows as one key ending and another starting. Meta and Google only; empty before 2026-11.
+	ConversionsByType map[string]float32 `json:"conversionsByType,omitempty"`
+	CostPerConversion *float32           `json:"costPerConversion,omitempty"`
 	// Per-action-type counts merged across all ads on this day. Keys are platform-native action types.
 	Actions map[string]float32 `json:"actions,omitempty"`
 	// Monetary mirror of `actions` in native currency.
@@ -463,6 +465,38 @@ func (o *AdsTimelineResponseRowsInner) SetAllConversions(v float32) {
 	o.AllConversions = &v
 }
 
+// GetConversionsByType returns the ConversionsByType field value if set, zero value otherwise.
+func (o *AdsTimelineResponseRowsInner) GetConversionsByType() map[string]float32 {
+	if o == nil || IsNil(o.ConversionsByType) {
+		var ret map[string]float32
+		return ret
+	}
+	return o.ConversionsByType
+}
+
+// GetConversionsByTypeOk returns a tuple with the ConversionsByType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdsTimelineResponseRowsInner) GetConversionsByTypeOk() (map[string]float32, bool) {
+	if o == nil || IsNil(o.ConversionsByType) {
+		return map[string]float32{}, false
+	}
+	return o.ConversionsByType, true
+}
+
+// HasConversionsByType returns a boolean if a field has been set.
+func (o *AdsTimelineResponseRowsInner) HasConversionsByType() bool {
+	if o != nil && !IsNil(o.ConversionsByType) {
+		return true
+	}
+
+	return false
+}
+
+// SetConversionsByType gets a reference to the given map[string]float32 and assigns it to the ConversionsByType field.
+func (o *AdsTimelineResponseRowsInner) SetConversionsByType(v map[string]float32) {
+	o.ConversionsByType = v
+}
+
 // GetCostPerConversion returns the CostPerConversion field value if set, zero value otherwise.
 func (o *AdsTimelineResponseRowsInner) GetCostPerConversion() float32 {
 	if o == nil || IsNil(o.CostPerConversion) {
@@ -668,6 +702,9 @@ func (o AdsTimelineResponseRowsInner) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AllConversions) {
 		toSerialize["allConversions"] = o.AllConversions
+	}
+	if !IsNil(o.ConversionsByType) {
+		toSerialize["conversionsByType"] = o.ConversionsByType
 	}
 	if !IsNil(o.CostPerConversion) {
 		toSerialize["costPerConversion"] = o.CostPerConversion
