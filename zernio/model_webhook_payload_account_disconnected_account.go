@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.491.0
+API version: 1.492.0
 Contact: support@zernio.com
 */
 
@@ -29,7 +29,7 @@ type WebhookPayloadAccountDisconnectedAccount struct {
 	Platform    string  `json:"platform"`
 	Username    string  `json:"username"`
 	DisplayName *string `json:"displayName,omitempty"`
-	// Whether the disconnection was intentional (user action) or unintentional (token expired/revoked)
+	// intentional: removed on purpose, for example with DELETE /v1/accounts/{accountId} or by a switch to the Free plan for the accounts over its limit. The account is deleted permanently 1 hour later unless the same account is reconnected within that hour.  unintentional: the connection broke (token expired or revoked, access lost on the platform). The account stays in Zernio, inactive, until it is reconnected (keeping its accountId) or removed.
 	DisconnectionType string `json:"disconnectionType"`
 	// Human-readable reason for the disconnection
 	Reason string `json:"reason"`

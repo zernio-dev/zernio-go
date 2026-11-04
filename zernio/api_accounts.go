@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.491.0
+API version: 1.492.0
 Contact: support@zernio.com
 */
 
@@ -36,7 +36,11 @@ func (r AccountsAPIDeleteAccountRequest) Execute() (*DeleteAccountGroup200Respon
 /*
 DeleteAccount Disconnect account
 
-Disconnects and removes a connected account. Repeating the call for an account already disconnected returns 404, the account stays in its 1h grace window and the disconnect is not re-run.
+Disconnects and removes a connected account, and fires account.disconnected with disconnectionType intentional.
+
+The account is kept for a 1h grace window. Reconnecting the same account within it restores it with the same accountId and its scheduled posts. After that it is deleted permanently.
+
+Repeating the call for an account already disconnected returns 404, the account stays in its 1h grace window and the disconnect is not re-run.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId

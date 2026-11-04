@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.491.0
+API version: 1.492.0
 Contact: support@zernio.com
 */
 
@@ -46,7 +46,9 @@ type Post struct {
 	// Profile ID if the post was scheduled via the queue
 	QueuedFromProfile *string `json:"queuedFromProfile,omitempty"`
 	// Queue ID if the post was scheduled via a specific queue
-	QueueId   *string    `json:"queueId,omitempty"`
+	QueueId *string `json:"queueId,omitempty"`
+	// Profile the post is filed under. Set only on drafts that have no platforms.
+	ProfileId *string    `json:"profileId,omitempty"`
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 	// Last change to the post or to any of its platforms (a publish, a failure, a resolved URL).
 	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
@@ -645,6 +647,38 @@ func (o *Post) SetQueueId(v string) {
 	o.QueueId = &v
 }
 
+// GetProfileId returns the ProfileId field value if set, zero value otherwise.
+func (o *Post) GetProfileId() string {
+	if o == nil || IsNil(o.ProfileId) {
+		var ret string
+		return ret
+	}
+	return *o.ProfileId
+}
+
+// GetProfileIdOk returns a tuple with the ProfileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Post) GetProfileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ProfileId) {
+		return nil, false
+	}
+	return o.ProfileId, true
+}
+
+// HasProfileId returns a boolean if a field has been set.
+func (o *Post) HasProfileId() bool {
+	if o != nil && !IsNil(o.ProfileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileId gets a reference to the given string and assigns it to the ProfileId field.
+func (o *Post) SetProfileId(v string) {
+	o.ProfileId = &v
+}
+
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
 func (o *Post) GetCreatedAt() time.Time {
 	if o == nil || IsNil(o.CreatedAt) {
@@ -772,6 +806,9 @@ func (o Post) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.QueueId) {
 		toSerialize["queueId"] = o.QueueId
+	}
+	if !IsNil(o.ProfileId) {
+		toSerialize["profileId"] = o.ProfileId
 	}
 	if !IsNil(o.CreatedAt) {
 		toSerialize["createdAt"] = o.CreatedAt
