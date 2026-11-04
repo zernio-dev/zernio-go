@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.470.0
+API version: 1.472.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,8 @@ type AdRuleRunEvaluationActionsInner struct {
 	NewDailyBudget      *float32 `json:"newDailyBudget,omitempty"`
 	PreviousName        *string  `json:"previousName,omitempty"`
 	NewName             *string  `json:"newName,omitempty"`
+	PreviousBidAmount   *float32 `json:"previousBidAmount,omitempty"`
+	NewBidAmount        *float32 `json:"newBidAmount,omitempty"`
 }
 
 type _AdRuleRunEvaluationActionsInner AdRuleRunEvaluationActionsInner
@@ -287,6 +289,70 @@ func (o *AdRuleRunEvaluationActionsInner) SetNewName(v string) {
 	o.NewName = &v
 }
 
+// GetPreviousBidAmount returns the PreviousBidAmount field value if set, zero value otherwise.
+func (o *AdRuleRunEvaluationActionsInner) GetPreviousBidAmount() float32 {
+	if o == nil || IsNil(o.PreviousBidAmount) {
+		var ret float32
+		return ret
+	}
+	return *o.PreviousBidAmount
+}
+
+// GetPreviousBidAmountOk returns a tuple with the PreviousBidAmount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleRunEvaluationActionsInner) GetPreviousBidAmountOk() (*float32, bool) {
+	if o == nil || IsNil(o.PreviousBidAmount) {
+		return nil, false
+	}
+	return o.PreviousBidAmount, true
+}
+
+// HasPreviousBidAmount returns a boolean if a field has been set.
+func (o *AdRuleRunEvaluationActionsInner) HasPreviousBidAmount() bool {
+	if o != nil && !IsNil(o.PreviousBidAmount) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreviousBidAmount gets a reference to the given float32 and assigns it to the PreviousBidAmount field.
+func (o *AdRuleRunEvaluationActionsInner) SetPreviousBidAmount(v float32) {
+	o.PreviousBidAmount = &v
+}
+
+// GetNewBidAmount returns the NewBidAmount field value if set, zero value otherwise.
+func (o *AdRuleRunEvaluationActionsInner) GetNewBidAmount() float32 {
+	if o == nil || IsNil(o.NewBidAmount) {
+		var ret float32
+		return ret
+	}
+	return *o.NewBidAmount
+}
+
+// GetNewBidAmountOk returns a tuple with the NewBidAmount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleRunEvaluationActionsInner) GetNewBidAmountOk() (*float32, bool) {
+	if o == nil || IsNil(o.NewBidAmount) {
+		return nil, false
+	}
+	return o.NewBidAmount, true
+}
+
+// HasNewBidAmount returns a boolean if a field has been set.
+func (o *AdRuleRunEvaluationActionsInner) HasNewBidAmount() bool {
+	if o != nil && !IsNil(o.NewBidAmount) {
+		return true
+	}
+
+	return false
+}
+
+// SetNewBidAmount gets a reference to the given float32 and assigns it to the NewBidAmount field.
+func (o *AdRuleRunEvaluationActionsInner) SetNewBidAmount(v float32) {
+	o.NewBidAmount = &v
+}
+
 func (o AdRuleRunEvaluationActionsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -314,6 +380,12 @@ func (o AdRuleRunEvaluationActionsInner) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.NewName) {
 		toSerialize["newName"] = o.NewName
+	}
+	if !IsNil(o.PreviousBidAmount) {
+		toSerialize["previousBidAmount"] = o.PreviousBidAmount
+	}
+	if !IsNil(o.NewBidAmount) {
+		toSerialize["newBidAmount"] = o.NewBidAmount
 	}
 	return toSerialize, nil
 }

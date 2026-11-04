@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.470.0
+API version: 1.472.0
 Contact: support@zernio.com
 */
 
@@ -687,6 +687,174 @@ func (a *AdRulesAPIService) ListAdRuleActivityExecute(r AdRulesAPIListAdRuleActi
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdRulesAPIListAdRuleAlertsRequest struct {
+	ctx        context.Context
+	ApiService *AdRulesAPIService
+	ruleId     string
+	state      *string
+	limit      *int32
+	cursor     *string
+}
+
+func (r AdRulesAPIListAdRuleAlertsRequest) State(state string) AdRulesAPIListAdRuleAlertsRequest {
+	r.state = &state
+	return r
+}
+
+func (r AdRulesAPIListAdRuleAlertsRequest) Limit(limit int32) AdRulesAPIListAdRuleAlertsRequest {
+	r.limit = &limit
+	return r
+}
+
+// &#x60;nextCursor&#x60; from the previous page.
+func (r AdRulesAPIListAdRuleAlertsRequest) Cursor(cursor string) AdRulesAPIListAdRuleAlertsRequest {
+	r.cursor = &cursor
+	return r
+}
+
+func (r AdRulesAPIListAdRuleAlertsRequest) Execute() (*ListAdRuleAlerts200Response, *http.Response, error) {
+	return r.ApiService.ListAdRuleAlertsExecute(r)
+}
+
+/*
+ListAdRuleAlerts List a rule's alerts
+
+The alert episodes of a rule with a `lifecycle`, newest first. `pending` alerts are confirming, `open` ones were acted on, `resolved` ones ended, with `resolvedReason` saying why. Resolved alerts are kept 90 days.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param ruleId
+	@return AdRulesAPIListAdRuleAlertsRequest
+*/
+func (a *AdRulesAPIService) ListAdRuleAlerts(ctx context.Context, ruleId string) AdRulesAPIListAdRuleAlertsRequest {
+	return AdRulesAPIListAdRuleAlertsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		ruleId:     ruleId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListAdRuleAlerts200Response
+func (a *AdRulesAPIService) ListAdRuleAlertsExecute(r AdRulesAPIListAdRuleAlertsRequest) (*ListAdRuleAlerts200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListAdRuleAlerts200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdRulesAPIService.ListAdRuleAlerts")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/rules/{ruleId}/alerts"
+	localVarPath = strings.Replace(localVarPath, "{"+"ruleId"+"}", url.PathEscape(parameterValueToString(r.ruleId, "ruleId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.state != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "state", r.state, "form", "")
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 50
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

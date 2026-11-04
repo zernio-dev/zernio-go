@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.470.0
+API version: 1.472.0
 Contact: support@zernio.com
 */
 
@@ -22,13 +22,10 @@ var _ MappedNullable = &AdRuleActionOneOf6{}
 
 // AdRuleActionOneOf6 struct for AdRuleActionOneOf6
 type AdRuleActionOneOf6 struct {
-	// Change the daily budget. Not on ad-level rules (an ad has no budget), and on Google it needs a campaign-level rule (ad groups have no budget of their own).
-	Type      string `json:"type"`
-	Direction string `json:"direction"`
-	// Change in percent: up to 100 for an increase, up to 90 for a decrease.
-	Percent int32 `json:"percent"`
-	// The budget never goes above this on an increase, or below it on a decrease, in the ad account currency.
-	Limit float32 `json:"limit"`
+	// Set the daily budget to an exact amount, such as a reset every midnight. Same level rules as the percent change.
+	Type string `json:"type"`
+	// The daily budget to set, in the ad account currency. An object already at it is skipped with `already_at_amount`.
+	Amount float32 `json:"amount"`
 	// At most this many objects changed in any 24 hours, across runs. Matches over the limit are skipped with `daily_limit_reached` and tried again later.
 	MaxChangesPerDay *int32 `json:"maxChangesPerDay,omitempty"`
 }
@@ -39,12 +36,10 @@ type _AdRuleActionOneOf6 AdRuleActionOneOf6
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdRuleActionOneOf6(type_ string, direction string, percent int32, limit float32) *AdRuleActionOneOf6 {
+func NewAdRuleActionOneOf6(type_ string, amount float32) *AdRuleActionOneOf6 {
 	this := AdRuleActionOneOf6{}
 	this.Type = type_
-	this.Direction = direction
-	this.Percent = percent
-	this.Limit = limit
+	this.Amount = amount
 	return &this
 }
 
@@ -80,76 +75,28 @@ func (o *AdRuleActionOneOf6) SetType(v string) {
 	o.Type = v
 }
 
-// GetDirection returns the Direction field value
-func (o *AdRuleActionOneOf6) GetDirection() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Direction
-}
-
-// GetDirectionOk returns a tuple with the Direction field value
-// and a boolean to check if the value has been set.
-func (o *AdRuleActionOneOf6) GetDirectionOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Direction, true
-}
-
-// SetDirection sets field value
-func (o *AdRuleActionOneOf6) SetDirection(v string) {
-	o.Direction = v
-}
-
-// GetPercent returns the Percent field value
-func (o *AdRuleActionOneOf6) GetPercent() int32 {
-	if o == nil {
-		var ret int32
-		return ret
-	}
-
-	return o.Percent
-}
-
-// GetPercentOk returns a tuple with the Percent field value
-// and a boolean to check if the value has been set.
-func (o *AdRuleActionOneOf6) GetPercentOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Percent, true
-}
-
-// SetPercent sets field value
-func (o *AdRuleActionOneOf6) SetPercent(v int32) {
-	o.Percent = v
-}
-
-// GetLimit returns the Limit field value
-func (o *AdRuleActionOneOf6) GetLimit() float32 {
+// GetAmount returns the Amount field value
+func (o *AdRuleActionOneOf6) GetAmount() float32 {
 	if o == nil {
 		var ret float32
 		return ret
 	}
 
-	return o.Limit
+	return o.Amount
 }
 
-// GetLimitOk returns a tuple with the Limit field value
+// GetAmountOk returns a tuple with the Amount field value
 // and a boolean to check if the value has been set.
-func (o *AdRuleActionOneOf6) GetLimitOk() (*float32, bool) {
+func (o *AdRuleActionOneOf6) GetAmountOk() (*float32, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Limit, true
+	return &o.Amount, true
 }
 
-// SetLimit sets field value
-func (o *AdRuleActionOneOf6) SetLimit(v float32) {
-	o.Limit = v
+// SetAmount sets field value
+func (o *AdRuleActionOneOf6) SetAmount(v float32) {
+	o.Amount = v
 }
 
 // GetMaxChangesPerDay returns the MaxChangesPerDay field value if set, zero value otherwise.
@@ -195,9 +142,7 @@ func (o AdRuleActionOneOf6) MarshalJSON() ([]byte, error) {
 func (o AdRuleActionOneOf6) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["type"] = o.Type
-	toSerialize["direction"] = o.Direction
-	toSerialize["percent"] = o.Percent
-	toSerialize["limit"] = o.Limit
+	toSerialize["amount"] = o.Amount
 	if !IsNil(o.MaxChangesPerDay) {
 		toSerialize["maxChangesPerDay"] = o.MaxChangesPerDay
 	}
@@ -210,9 +155,7 @@ func (o *AdRuleActionOneOf6) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"type",
-		"direction",
-		"percent",
-		"limit",
+		"amount",
 	}
 
 	allProperties := make(map[string]interface{})

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.470.0
+API version: 1.472.0
 Contact: support@zernio.com
 */
 
@@ -35,9 +35,11 @@ type AdRule struct {
 	// Platform campaign IDs the rule is limited to. Null checks the whole ad account.
 	CampaignIds []string `json:"campaignIds"`
 	// Narrows the objects the rule checks. Every filter must hold. Text compares without case, and a missing field reads as empty.
-	Filters    []AdRuleFiltersInner `json:"filters"`
-	Conditions AdRuleConditions     `json:"conditions"`
-	// Each type at most once, and at most one of `pause`, `activate`, `adjust_budget`, `duplicate` and `edit_name`.
+	Filters []AdRuleFiltersInner `json:"filters"`
+	// Null when every matching run acts and notifies.
+	Lifecycle  NullableAdRuleLifecycle `json:"lifecycle"`
+	Conditions AdRuleConditions        `json:"conditions"`
+	// Each type at most once, and at most one of `pause`, `activate`, `adjust_budget`, `adjust_bid`, `duplicate` and `edit_name`.
 	Actions         []AdRuleAction `json:"actions"`
 	Schedule        AdRuleSchedule `json:"schedule"`
 	CooldownMinutes int32          `json:"cooldownMinutes"`
@@ -55,7 +57,7 @@ type _AdRule AdRule
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdRule(id string, name string, accountId string, platform string, adAccountId string, level AdRuleLevel, campaignIds []string, filters []AdRuleFiltersInner, conditions AdRuleConditions, actions []AdRuleAction, schedule AdRuleSchedule, cooldownMinutes int32, enabled bool, lastRunAt NullableTime, nextRunAt NullableTime, createdAt time.Time, updatedAt time.Time) *AdRule {
+func NewAdRule(id string, name string, accountId string, platform string, adAccountId string, level AdRuleLevel, campaignIds []string, filters []AdRuleFiltersInner, lifecycle NullableAdRuleLifecycle, conditions AdRuleConditions, actions []AdRuleAction, schedule AdRuleSchedule, cooldownMinutes int32, enabled bool, lastRunAt NullableTime, nextRunAt NullableTime, createdAt time.Time, updatedAt time.Time) *AdRule {
 	this := AdRule{}
 	this.Id = id
 	this.Name = name
@@ -65,6 +67,7 @@ func NewAdRule(id string, name string, accountId string, platform string, adAcco
 	this.Level = level
 	this.CampaignIds = campaignIds
 	this.Filters = filters
+	this.Lifecycle = lifecycle
 	this.Conditions = conditions
 	this.Actions = actions
 	this.Schedule = schedule
@@ -277,6 +280,32 @@ func (o *AdRule) GetFiltersOk() ([]AdRuleFiltersInner, bool) {
 // SetFilters sets field value
 func (o *AdRule) SetFilters(v []AdRuleFiltersInner) {
 	o.Filters = v
+}
+
+// GetLifecycle returns the Lifecycle field value
+// If the value is explicit nil, the zero value for AdRuleLifecycle will be returned
+func (o *AdRule) GetLifecycle() AdRuleLifecycle {
+	if o == nil || o.Lifecycle.Get() == nil {
+		var ret AdRuleLifecycle
+		return ret
+	}
+
+	return *o.Lifecycle.Get()
+}
+
+// GetLifecycleOk returns a tuple with the Lifecycle field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRule) GetLifecycleOk() (*AdRuleLifecycle, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Lifecycle.Get(), o.Lifecycle.IsSet()
+}
+
+// SetLifecycle sets field value
+func (o *AdRule) SetLifecycle(v AdRuleLifecycle) {
+	o.Lifecycle.Set(&v)
 }
 
 // GetConditions returns the Conditions field value
@@ -519,6 +548,7 @@ func (o AdRule) ToMap() (map[string]interface{}, error) {
 		toSerialize["campaignIds"] = o.CampaignIds
 	}
 	toSerialize["filters"] = o.Filters
+	toSerialize["lifecycle"] = o.Lifecycle.Get()
 	toSerialize["conditions"] = o.Conditions
 	toSerialize["actions"] = o.Actions
 	toSerialize["schedule"] = o.Schedule
@@ -544,6 +574,7 @@ func (o *AdRule) UnmarshalJSON(data []byte) (err error) {
 		"level",
 		"campaignIds",
 		"filters",
+		"lifecycle",
 		"conditions",
 		"actions",
 		"schedule",

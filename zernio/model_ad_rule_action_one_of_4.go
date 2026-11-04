@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.470.0
+API version: 1.472.0
 Contact: support@zernio.com
 */
 
@@ -20,16 +20,17 @@ import (
 // checks if the AdRuleActionOneOf4 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdRuleActionOneOf4{}
 
-// AdRuleActionOneOf4 Exactly one of `add` and `remove`.
+// AdRuleActionOneOf4 Either `amount`, or `direction`, `percent` and `limit`.
 type AdRuleActionOneOf4 struct {
-	// Tag the object by its name. Meta, Google and LinkedIn campaigns and ad sets, and TikTok campaigns, ad groups and ads. An object whose name already has the tag (or lacks it, for `remove`) is skipped with `name_unchanged`.
+	// Move the bid cap or cost cap of a Meta ad set, in the ad account currency. Ad set rules on Meta only. An ad set without a cap is skipped with `no_bid_cap`.
 	Type string `json:"type"`
-	// Text to add, like `[WINNER]`. Compared without case.
-	Add *string `json:"add,omitempty"`
-	// Where `add` goes. Defaults to `start`.
-	At *string `json:"at,omitempty"`
-	// Text to take out of the name, every copy of it.
-	Remove *string `json:"remove,omitempty"`
+	// The cap to set.
+	Amount    *float32 `json:"amount,omitempty"`
+	Direction *string  `json:"direction,omitempty"`
+	// Step size. A decrease is at most 90.
+	Percent *int32 `json:"percent,omitempty"`
+	// The cap never goes above this on an increase, or below it on a decrease.
+	Limit *float32 `json:"limit,omitempty"`
 	// At most this many objects changed in any 24 hours, across runs. Matches over the limit are skipped with `daily_limit_reached` and tried again later.
 	MaxChangesPerDay *int32 `json:"maxChangesPerDay,omitempty"`
 }
@@ -78,100 +79,132 @@ func (o *AdRuleActionOneOf4) SetType(v string) {
 	o.Type = v
 }
 
-// GetAdd returns the Add field value if set, zero value otherwise.
-func (o *AdRuleActionOneOf4) GetAdd() string {
-	if o == nil || IsNil(o.Add) {
-		var ret string
+// GetAmount returns the Amount field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf4) GetAmount() float32 {
+	if o == nil || IsNil(o.Amount) {
+		var ret float32
 		return ret
 	}
-	return *o.Add
+	return *o.Amount
 }
 
-// GetAddOk returns a tuple with the Add field value if set, nil otherwise
+// GetAmountOk returns a tuple with the Amount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdRuleActionOneOf4) GetAddOk() (*string, bool) {
-	if o == nil || IsNil(o.Add) {
+func (o *AdRuleActionOneOf4) GetAmountOk() (*float32, bool) {
+	if o == nil || IsNil(o.Amount) {
 		return nil, false
 	}
-	return o.Add, true
+	return o.Amount, true
 }
 
-// HasAdd returns a boolean if a field has been set.
-func (o *AdRuleActionOneOf4) HasAdd() bool {
-	if o != nil && !IsNil(o.Add) {
+// HasAmount returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf4) HasAmount() bool {
+	if o != nil && !IsNil(o.Amount) {
 		return true
 	}
 
 	return false
 }
 
-// SetAdd gets a reference to the given string and assigns it to the Add field.
-func (o *AdRuleActionOneOf4) SetAdd(v string) {
-	o.Add = &v
+// SetAmount gets a reference to the given float32 and assigns it to the Amount field.
+func (o *AdRuleActionOneOf4) SetAmount(v float32) {
+	o.Amount = &v
 }
 
-// GetAt returns the At field value if set, zero value otherwise.
-func (o *AdRuleActionOneOf4) GetAt() string {
-	if o == nil || IsNil(o.At) {
+// GetDirection returns the Direction field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf4) GetDirection() string {
+	if o == nil || IsNil(o.Direction) {
 		var ret string
 		return ret
 	}
-	return *o.At
+	return *o.Direction
 }
 
-// GetAtOk returns a tuple with the At field value if set, nil otherwise
+// GetDirectionOk returns a tuple with the Direction field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdRuleActionOneOf4) GetAtOk() (*string, bool) {
-	if o == nil || IsNil(o.At) {
+func (o *AdRuleActionOneOf4) GetDirectionOk() (*string, bool) {
+	if o == nil || IsNil(o.Direction) {
 		return nil, false
 	}
-	return o.At, true
+	return o.Direction, true
 }
 
-// HasAt returns a boolean if a field has been set.
-func (o *AdRuleActionOneOf4) HasAt() bool {
-	if o != nil && !IsNil(o.At) {
+// HasDirection returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf4) HasDirection() bool {
+	if o != nil && !IsNil(o.Direction) {
 		return true
 	}
 
 	return false
 }
 
-// SetAt gets a reference to the given string and assigns it to the At field.
-func (o *AdRuleActionOneOf4) SetAt(v string) {
-	o.At = &v
+// SetDirection gets a reference to the given string and assigns it to the Direction field.
+func (o *AdRuleActionOneOf4) SetDirection(v string) {
+	o.Direction = &v
 }
 
-// GetRemove returns the Remove field value if set, zero value otherwise.
-func (o *AdRuleActionOneOf4) GetRemove() string {
-	if o == nil || IsNil(o.Remove) {
-		var ret string
+// GetPercent returns the Percent field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf4) GetPercent() int32 {
+	if o == nil || IsNil(o.Percent) {
+		var ret int32
 		return ret
 	}
-	return *o.Remove
+	return *o.Percent
 }
 
-// GetRemoveOk returns a tuple with the Remove field value if set, nil otherwise
+// GetPercentOk returns a tuple with the Percent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdRuleActionOneOf4) GetRemoveOk() (*string, bool) {
-	if o == nil || IsNil(o.Remove) {
+func (o *AdRuleActionOneOf4) GetPercentOk() (*int32, bool) {
+	if o == nil || IsNil(o.Percent) {
 		return nil, false
 	}
-	return o.Remove, true
+	return o.Percent, true
 }
 
-// HasRemove returns a boolean if a field has been set.
-func (o *AdRuleActionOneOf4) HasRemove() bool {
-	if o != nil && !IsNil(o.Remove) {
+// HasPercent returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf4) HasPercent() bool {
+	if o != nil && !IsNil(o.Percent) {
 		return true
 	}
 
 	return false
 }
 
-// SetRemove gets a reference to the given string and assigns it to the Remove field.
-func (o *AdRuleActionOneOf4) SetRemove(v string) {
-	o.Remove = &v
+// SetPercent gets a reference to the given int32 and assigns it to the Percent field.
+func (o *AdRuleActionOneOf4) SetPercent(v int32) {
+	o.Percent = &v
+}
+
+// GetLimit returns the Limit field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf4) GetLimit() float32 {
+	if o == nil || IsNil(o.Limit) {
+		var ret float32
+		return ret
+	}
+	return *o.Limit
+}
+
+// GetLimitOk returns a tuple with the Limit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf4) GetLimitOk() (*float32, bool) {
+	if o == nil || IsNil(o.Limit) {
+		return nil, false
+	}
+	return o.Limit, true
+}
+
+// HasLimit returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf4) HasLimit() bool {
+	if o != nil && !IsNil(o.Limit) {
+		return true
+	}
+
+	return false
+}
+
+// SetLimit gets a reference to the given float32 and assigns it to the Limit field.
+func (o *AdRuleActionOneOf4) SetLimit(v float32) {
+	o.Limit = &v
 }
 
 // GetMaxChangesPerDay returns the MaxChangesPerDay field value if set, zero value otherwise.
@@ -217,14 +250,17 @@ func (o AdRuleActionOneOf4) MarshalJSON() ([]byte, error) {
 func (o AdRuleActionOneOf4) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["type"] = o.Type
-	if !IsNil(o.Add) {
-		toSerialize["add"] = o.Add
+	if !IsNil(o.Amount) {
+		toSerialize["amount"] = o.Amount
 	}
-	if !IsNil(o.At) {
-		toSerialize["at"] = o.At
+	if !IsNil(o.Direction) {
+		toSerialize["direction"] = o.Direction
 	}
-	if !IsNil(o.Remove) {
-		toSerialize["remove"] = o.Remove
+	if !IsNil(o.Percent) {
+		toSerialize["percent"] = o.Percent
+	}
+	if !IsNil(o.Limit) {
+		toSerialize["limit"] = o.Limit
 	}
 	if !IsNil(o.MaxChangesPerDay) {
 		toSerialize["maxChangesPerDay"] = o.MaxChangesPerDay

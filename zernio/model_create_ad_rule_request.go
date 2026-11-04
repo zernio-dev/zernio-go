@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.470.0
+API version: 1.472.0
 Contact: support@zernio.com
 */
 
@@ -31,9 +31,11 @@ type CreateAdRuleRequest struct {
 	// Only check these platform campaign IDs (or their ad sets). Leave out to check the whole ad account.
 	CampaignIds []string `json:"campaignIds,omitempty"`
 	// Narrows the objects the rule checks. Every filter must hold. Text compares without case, and a missing field reads as empty.
-	Filters    []AdRuleFiltersInner `json:"filters,omitempty"`
-	Conditions AdRuleConditions     `json:"conditions"`
-	// Each type at most once, and at most one of `pause`, `activate`, `adjust_budget`, `duplicate` and `edit_name`.
+	Filters []AdRuleFiltersInner `json:"filters,omitempty"`
+	// Null removes it; every matching run then acts and notifies again.
+	Lifecycle  NullableAdRuleLifecycle `json:"lifecycle,omitempty"`
+	Conditions AdRuleConditions        `json:"conditions"`
+	// Each type at most once, and at most one of `pause`, `activate`, `adjust_budget`, `adjust_bid`, `duplicate` and `edit_name`.
 	Actions []AdRuleAction `json:"actions"`
 	// Leave it out to run every 60 minutes.
 	Schedule *AdRuleSchedule `json:"schedule,omitempty"`
@@ -235,6 +237,49 @@ func (o *CreateAdRuleRequest) SetFilters(v []AdRuleFiltersInner) {
 	o.Filters = v
 }
 
+// GetLifecycle returns the Lifecycle field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreateAdRuleRequest) GetLifecycle() AdRuleLifecycle {
+	if o == nil || IsNil(o.Lifecycle.Get()) {
+		var ret AdRuleLifecycle
+		return ret
+	}
+	return *o.Lifecycle.Get()
+}
+
+// GetLifecycleOk returns a tuple with the Lifecycle field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateAdRuleRequest) GetLifecycleOk() (*AdRuleLifecycle, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Lifecycle.Get(), o.Lifecycle.IsSet()
+}
+
+// HasLifecycle returns a boolean if a field has been set.
+func (o *CreateAdRuleRequest) HasLifecycle() bool {
+	if o != nil && o.Lifecycle.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLifecycle gets a reference to the given NullableAdRuleLifecycle and assigns it to the Lifecycle field.
+func (o *CreateAdRuleRequest) SetLifecycle(v AdRuleLifecycle) {
+	o.Lifecycle.Set(&v)
+}
+
+// SetLifecycleNil sets the value for Lifecycle to be an explicit nil
+func (o *CreateAdRuleRequest) SetLifecycleNil() {
+	o.Lifecycle.Set(nil)
+}
+
+// UnsetLifecycle ensures that no value is present for Lifecycle, not even an explicit nil
+func (o *CreateAdRuleRequest) UnsetLifecycle() {
+	o.Lifecycle.Unset()
+}
+
 // GetConditions returns the Conditions field value
 func (o *CreateAdRuleRequest) GetConditions() AdRuleConditions {
 	if o == nil {
@@ -398,6 +443,9 @@ func (o CreateAdRuleRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Filters) {
 		toSerialize["filters"] = o.Filters
+	}
+	if o.Lifecycle.IsSet() {
+		toSerialize["lifecycle"] = o.Lifecycle.Get()
 	}
 	toSerialize["conditions"] = o.Conditions
 	toSerialize["actions"] = o.Actions
