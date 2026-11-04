@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.485.0
+API version: 1.486.0
 Contact: support@zernio.com
 */
 
@@ -25,8 +25,10 @@ type CallRecordBilling struct {
 	TranscriptionSeconds *float32 `json:"transcriptionSeconds,omitempty"`
 	TranscriptionCostUSD *float32 `json:"transcriptionCostUSD,omitempty"`
 	// WhatsApp channel only. Meta per-minute charge, billed by Meta directly to your WABA. Display only; not billed by Zernio.
-	MetaCostUSD      *float32 `json:"metaCostUSD,omitempty"`
-	TelnyxCostUSD    *float32 `json:"telnyxCostUSD,omitempty"`
+	MetaCostUSD   *float32 `json:"metaCostUSD,omitempty"`
+	TelnyxCostUSD *float32 `json:"telnyxCostUSD,omitempty"`
+	// Seconds of the call that were recorded and billed as recording.
+	RecordingSeconds *float32 `json:"recordingSeconds,omitempty"`
 	RecordingCostUSD *float32 `json:"recordingCostUSD,omitempty"`
 	// Amount Zernio bills you = telephony leg + recording + transcription (excludes any Meta portion).
 	BillableCostUSD *float32 `json:"billableCostUSD,omitempty"`
@@ -244,6 +246,38 @@ func (o *CallRecordBilling) SetTelnyxCostUSD(v float32) {
 	o.TelnyxCostUSD = &v
 }
 
+// GetRecordingSeconds returns the RecordingSeconds field value if set, zero value otherwise.
+func (o *CallRecordBilling) GetRecordingSeconds() float32 {
+	if o == nil || IsNil(o.RecordingSeconds) {
+		var ret float32
+		return ret
+	}
+	return *o.RecordingSeconds
+}
+
+// GetRecordingSecondsOk returns a tuple with the RecordingSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CallRecordBilling) GetRecordingSecondsOk() (*float32, bool) {
+	if o == nil || IsNil(o.RecordingSeconds) {
+		return nil, false
+	}
+	return o.RecordingSeconds, true
+}
+
+// HasRecordingSeconds returns a boolean if a field has been set.
+func (o *CallRecordBilling) HasRecordingSeconds() bool {
+	if o != nil && !IsNil(o.RecordingSeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetRecordingSeconds gets a reference to the given float32 and assigns it to the RecordingSeconds field.
+func (o *CallRecordBilling) SetRecordingSeconds(v float32) {
+	o.RecordingSeconds = &v
+}
+
 // GetRecordingCostUSD returns the RecordingCostUSD field value if set, zero value otherwise.
 func (o *CallRecordBilling) GetRecordingCostUSD() float32 {
 	if o == nil || IsNil(o.RecordingCostUSD) {
@@ -399,6 +433,9 @@ func (o CallRecordBilling) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.TelnyxCostUSD) {
 		toSerialize["telnyxCostUSD"] = o.TelnyxCostUSD
+	}
+	if !IsNil(o.RecordingSeconds) {
+		toSerialize["recordingSeconds"] = o.RecordingSeconds
 	}
 	if !IsNil(o.RecordingCostUSD) {
 		toSerialize["recordingCostUSD"] = o.RecordingCostUSD
