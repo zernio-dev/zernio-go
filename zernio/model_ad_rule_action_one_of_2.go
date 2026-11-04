@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.475.0
+API version: 1.476.0
 Contact: support@zernio.com
 */
 
@@ -22,8 +22,10 @@ var _ MappedNullable = &AdRuleActionOneOf2{}
 
 // AdRuleActionOneOf2 struct for AdRuleActionOneOf2
 type AdRuleActionOneOf2 struct {
-	// Reactivate a campaign, ad set or ad a rule paused, once `cooldownMinutes` has passed since the pause. Objects you paused yourself are never touched.
+	// Reactivate a campaign, ad set or ad a rule paused, once `cooldownMinutes` has passed since the pause. Objects you paused yourself are left alone unless `includeManuallyPaused` is true.
 	Type string `json:"type"`
+	// Also reactivate paused objects that no rule paused, as soon as they match.
+	IncludeManuallyPaused *bool `json:"includeManuallyPaused,omitempty"`
 	// At most this many objects changed in any 24 hours, across runs. Matches over the limit are skipped with `daily_limit_reached` and tried again later.
 	MaxChangesPerDay *int32 `json:"maxChangesPerDay,omitempty"`
 }
@@ -72,6 +74,38 @@ func (o *AdRuleActionOneOf2) SetType(v string) {
 	o.Type = v
 }
 
+// GetIncludeManuallyPaused returns the IncludeManuallyPaused field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf2) GetIncludeManuallyPaused() bool {
+	if o == nil || IsNil(o.IncludeManuallyPaused) {
+		var ret bool
+		return ret
+	}
+	return *o.IncludeManuallyPaused
+}
+
+// GetIncludeManuallyPausedOk returns a tuple with the IncludeManuallyPaused field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf2) GetIncludeManuallyPausedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IncludeManuallyPaused) {
+		return nil, false
+	}
+	return o.IncludeManuallyPaused, true
+}
+
+// HasIncludeManuallyPaused returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf2) HasIncludeManuallyPaused() bool {
+	if o != nil && !IsNil(o.IncludeManuallyPaused) {
+		return true
+	}
+
+	return false
+}
+
+// SetIncludeManuallyPaused gets a reference to the given bool and assigns it to the IncludeManuallyPaused field.
+func (o *AdRuleActionOneOf2) SetIncludeManuallyPaused(v bool) {
+	o.IncludeManuallyPaused = &v
+}
+
 // GetMaxChangesPerDay returns the MaxChangesPerDay field value if set, zero value otherwise.
 func (o *AdRuleActionOneOf2) GetMaxChangesPerDay() int32 {
 	if o == nil || IsNil(o.MaxChangesPerDay) {
@@ -115,6 +149,9 @@ func (o AdRuleActionOneOf2) MarshalJSON() ([]byte, error) {
 func (o AdRuleActionOneOf2) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["type"] = o.Type
+	if !IsNil(o.IncludeManuallyPaused) {
+		toSerialize["includeManuallyPaused"] = o.IncludeManuallyPaused
+	}
 	if !IsNil(o.MaxChangesPerDay) {
 		toSerialize["maxChangesPerDay"] = o.MaxChangesPerDay
 	}
