@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.462.0
+API version: 1.463.0
 Contact: support@zernio.com
 */
 
@@ -12,29 +12,31 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
+	"time"
 )
 
 // checks if the AdRuleSchedule type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdRuleSchedule{}
 
-// AdRuleSchedule struct for AdRuleSchedule
+// AdRuleSchedule Either `everyMinutes` or `times`. Sending a schedule replaces the rule's whole timing. Without one, a new rule runs every 60 minutes.
 type AdRuleSchedule struct {
-	// How often the rule runs, in minutes.
-	EveryMinutes int32 `json:"everyMinutes"`
+	// How often the rule runs, in minutes. Null on a rule that runs at set times.
+	EveryMinutes NullableInt32 `json:"everyMinutes,omitempty"`
+	// Set weekly times in the ad account timezone, instead of an interval. A rule that changes ads needs a cooldown of at least the shortest gap between two times.
+	Times []AdRuleScheduleTimesInner `json:"times,omitempty"`
+	// The rule runs from this time on.
+	StartsAt NullableTime `json:"startsAt,omitempty"`
+	// The rule stops running after this time.
+	EndsAt NullableTime `json:"endsAt,omitempty"`
 }
-
-type _AdRuleSchedule AdRuleSchedule
 
 // NewAdRuleSchedule instantiates a new AdRuleSchedule object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdRuleSchedule(everyMinutes int32) *AdRuleSchedule {
+func NewAdRuleSchedule() *AdRuleSchedule {
 	this := AdRuleSchedule{}
-	this.EveryMinutes = everyMinutes
 	return &this
 }
 
@@ -46,28 +48,166 @@ func NewAdRuleScheduleWithDefaults() *AdRuleSchedule {
 	return &this
 }
 
-// GetEveryMinutes returns the EveryMinutes field value
+// GetEveryMinutes returns the EveryMinutes field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AdRuleSchedule) GetEveryMinutes() int32 {
-	if o == nil {
+	if o == nil || IsNil(o.EveryMinutes.Get()) {
 		var ret int32
 		return ret
 	}
-
-	return o.EveryMinutes
+	return *o.EveryMinutes.Get()
 }
 
-// GetEveryMinutesOk returns a tuple with the EveryMinutes field value
+// GetEveryMinutesOk returns a tuple with the EveryMinutes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AdRuleSchedule) GetEveryMinutesOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.EveryMinutes, true
+	return o.EveryMinutes.Get(), o.EveryMinutes.IsSet()
 }
 
-// SetEveryMinutes sets field value
+// HasEveryMinutes returns a boolean if a field has been set.
+func (o *AdRuleSchedule) HasEveryMinutes() bool {
+	if o != nil && o.EveryMinutes.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEveryMinutes gets a reference to the given NullableInt32 and assigns it to the EveryMinutes field.
 func (o *AdRuleSchedule) SetEveryMinutes(v int32) {
-	o.EveryMinutes = v
+	o.EveryMinutes.Set(&v)
+}
+
+// SetEveryMinutesNil sets the value for EveryMinutes to be an explicit nil
+func (o *AdRuleSchedule) SetEveryMinutesNil() {
+	o.EveryMinutes.Set(nil)
+}
+
+// UnsetEveryMinutes ensures that no value is present for EveryMinutes, not even an explicit nil
+func (o *AdRuleSchedule) UnsetEveryMinutes() {
+	o.EveryMinutes.Unset()
+}
+
+// GetTimes returns the Times field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdRuleSchedule) GetTimes() []AdRuleScheduleTimesInner {
+	if o == nil {
+		var ret []AdRuleScheduleTimesInner
+		return ret
+	}
+	return o.Times
+}
+
+// GetTimesOk returns a tuple with the Times field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleSchedule) GetTimesOk() ([]AdRuleScheduleTimesInner, bool) {
+	if o == nil || IsNil(o.Times) {
+		return nil, false
+	}
+	return o.Times, true
+}
+
+// HasTimes returns a boolean if a field has been set.
+func (o *AdRuleSchedule) HasTimes() bool {
+	if o != nil && !IsNil(o.Times) {
+		return true
+	}
+
+	return false
+}
+
+// SetTimes gets a reference to the given []AdRuleScheduleTimesInner and assigns it to the Times field.
+func (o *AdRuleSchedule) SetTimes(v []AdRuleScheduleTimesInner) {
+	o.Times = v
+}
+
+// GetStartsAt returns the StartsAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdRuleSchedule) GetStartsAt() time.Time {
+	if o == nil || IsNil(o.StartsAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.StartsAt.Get()
+}
+
+// GetStartsAtOk returns a tuple with the StartsAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleSchedule) GetStartsAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.StartsAt.Get(), o.StartsAt.IsSet()
+}
+
+// HasStartsAt returns a boolean if a field has been set.
+func (o *AdRuleSchedule) HasStartsAt() bool {
+	if o != nil && o.StartsAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetStartsAt gets a reference to the given NullableTime and assigns it to the StartsAt field.
+func (o *AdRuleSchedule) SetStartsAt(v time.Time) {
+	o.StartsAt.Set(&v)
+}
+
+// SetStartsAtNil sets the value for StartsAt to be an explicit nil
+func (o *AdRuleSchedule) SetStartsAtNil() {
+	o.StartsAt.Set(nil)
+}
+
+// UnsetStartsAt ensures that no value is present for StartsAt, not even an explicit nil
+func (o *AdRuleSchedule) UnsetStartsAt() {
+	o.StartsAt.Unset()
+}
+
+// GetEndsAt returns the EndsAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdRuleSchedule) GetEndsAt() time.Time {
+	if o == nil || IsNil(o.EndsAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.EndsAt.Get()
+}
+
+// GetEndsAtOk returns a tuple with the EndsAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleSchedule) GetEndsAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.EndsAt.Get(), o.EndsAt.IsSet()
+}
+
+// HasEndsAt returns a boolean if a field has been set.
+func (o *AdRuleSchedule) HasEndsAt() bool {
+	if o != nil && o.EndsAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEndsAt gets a reference to the given NullableTime and assigns it to the EndsAt field.
+func (o *AdRuleSchedule) SetEndsAt(v time.Time) {
+	o.EndsAt.Set(&v)
+}
+
+// SetEndsAtNil sets the value for EndsAt to be an explicit nil
+func (o *AdRuleSchedule) SetEndsAtNil() {
+	o.EndsAt.Set(nil)
+}
+
+// UnsetEndsAt ensures that no value is present for EndsAt, not even an explicit nil
+func (o *AdRuleSchedule) UnsetEndsAt() {
+	o.EndsAt.Unset()
 }
 
 func (o AdRuleSchedule) MarshalJSON() ([]byte, error) {
@@ -80,45 +220,19 @@ func (o AdRuleSchedule) MarshalJSON() ([]byte, error) {
 
 func (o AdRuleSchedule) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["everyMinutes"] = o.EveryMinutes
+	if o.EveryMinutes.IsSet() {
+		toSerialize["everyMinutes"] = o.EveryMinutes.Get()
+	}
+	if o.Times != nil {
+		toSerialize["times"] = o.Times
+	}
+	if o.StartsAt.IsSet() {
+		toSerialize["startsAt"] = o.StartsAt.Get()
+	}
+	if o.EndsAt.IsSet() {
+		toSerialize["endsAt"] = o.EndsAt.Get()
+	}
 	return toSerialize, nil
-}
-
-func (o *AdRuleSchedule) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"everyMinutes",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varAdRuleSchedule := _AdRuleSchedule{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAdRuleSchedule)
-
-	if err != nil {
-		return err
-	}
-
-	*o = AdRuleSchedule(varAdRuleSchedule)
-
-	return err
 }
 
 type NullableAdRuleSchedule struct {

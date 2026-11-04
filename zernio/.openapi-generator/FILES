@@ -157,6 +157,7 @@ model_ad_rule_run_evaluation_actions_inner.go
 model_ad_rule_run_evaluation_notification.go
 model_ad_rule_run_evaluation_rule.go
 model_ad_rule_schedule.go
+model_ad_rule_schedule_times_inner.go
 model_ad_schedule_window.go
 model_ad_status.go
 model_ad_tracking.go
