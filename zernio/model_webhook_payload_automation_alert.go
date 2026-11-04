@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.472.0
+API version: 1.473.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadAutomationAlert type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadAutomationAlert{}
 
-// WebhookPayloadAutomationAlert Webhook payload for `automation.alert.opened`, `automation.alert.escalated` and `automation.alert.resolved`: an alert episode of an automation with a lifecycle (an ad rule's `lifecycle`).  Sent as soon as the check records the change; a resolve that a pause or reactivation causes is sent once it applies. A streak that never opened sends nothing. Alerts closed outside a check (the rule turned off, deleted or its `lifecycle` removed between checks, or the daily cleanup) are not announced.
+// WebhookPayloadAutomationAlert Webhook payload for `automation.alert.opened`, `automation.alert.escalated` and `automation.alert.resolved`: an alert episode of an automation with a lifecycle (an ad rule's `lifecycle`).  Sent as soon as the check records the change; a resolve that a pause or reactivation causes is sent once it applies. A streak that never opened sends nothing.  Alerts closed outside a check (the rule turned off, deleted or its `lifecycle` removed between checks, or the daily cleanup) are not announced.
 type WebhookPayloadAutomationAlert struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery.
 	Id string `json:"id"`
