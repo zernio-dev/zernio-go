@@ -883,6 +883,7 @@ model_ctwa_single_response.go
 model_cursor_pagination.go
 model_custom_conversion.go
 model_custom_conversion_result.go
+model_days_live.go
 model_deactivate_sms_registration_200_response.go
 model_delete_account_group_200_response.go
 model_delete_ad_campaign_200_response.go
@@ -1555,6 +1556,7 @@ model_hide_ad_comment_200_response.go
 model_hide_ad_comment_request.go
 model_hide_inbox_comment_200_response.go
 model_hub_spot_settings.go
+model_ids.go
 model_imessage_audience_contact.go
 model_imessage_audience_contact_opt_in.go
 model_imessage_sandbox_contact.go
@@ -2043,6 +2045,7 @@ model_move_campaign_participant_200_response.go
 model_move_campaign_participant_200_response_submissions.go
 model_move_campaign_participant_request.go
 model_move_whats_app_number_to_profile_200_response.go
+model_name_or_goal.go
 model_o_auth_app.go
 model_o_auth_app_setup.go
 model_o_auth_app_setup_scope_areas_inner.go

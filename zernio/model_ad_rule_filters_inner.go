@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.481.3
+API version: 1.482.0
 Contact: support@zernio.com
 */
 
@@ -12,169 +12,162 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
-// checks if the AdRuleFiltersInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &AdRuleFiltersInner{}
-
-// AdRuleFiltersInner struct for AdRuleFiltersInner
+// AdRuleFiltersInner - struct for AdRuleFiltersInner
 type AdRuleFiltersInner struct {
-	// The object's own name, its campaign's or ad set's name, or the campaign goal (objective) as the platform reports it.
-	Field string `json:"field"`
-	Op    string `json:"op"`
-	Value string `json:"value"`
+	DaysLive   *DaysLive
+	Ids        *Ids
+	NameOrGoal *NameOrGoal
 }
 
-type _AdRuleFiltersInner AdRuleFiltersInner
-
-// NewAdRuleFiltersInner instantiates a new AdRuleFiltersInner object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewAdRuleFiltersInner(field string, op string, value string) *AdRuleFiltersInner {
-	this := AdRuleFiltersInner{}
-	this.Field = field
-	this.Op = op
-	this.Value = value
-	return &this
-}
-
-// NewAdRuleFiltersInnerWithDefaults instantiates a new AdRuleFiltersInner object
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set
-func NewAdRuleFiltersInnerWithDefaults() *AdRuleFiltersInner {
-	this := AdRuleFiltersInner{}
-	return &this
-}
-
-// GetField returns the Field field value
-func (o *AdRuleFiltersInner) GetField() string {
-	if o == nil {
-		var ret string
-		return ret
+// DaysLiveAsAdRuleFiltersInner is a convenience function that returns DaysLive wrapped in AdRuleFiltersInner
+func DaysLiveAsAdRuleFiltersInner(v *DaysLive) AdRuleFiltersInner {
+	return AdRuleFiltersInner{
+		DaysLive: v,
 	}
-
-	return o.Field
 }
 
-// GetFieldOk returns a tuple with the Field field value
-// and a boolean to check if the value has been set.
-func (o *AdRuleFiltersInner) GetFieldOk() (*string, bool) {
-	if o == nil {
-		return nil, false
+// IdsAsAdRuleFiltersInner is a convenience function that returns Ids wrapped in AdRuleFiltersInner
+func IdsAsAdRuleFiltersInner(v *Ids) AdRuleFiltersInner {
+	return AdRuleFiltersInner{
+		Ids: v,
 	}
-	return &o.Field, true
 }
 
-// SetField sets field value
-func (o *AdRuleFiltersInner) SetField(v string) {
-	o.Field = v
-}
-
-// GetOp returns the Op field value
-func (o *AdRuleFiltersInner) GetOp() string {
-	if o == nil {
-		var ret string
-		return ret
+// NameOrGoalAsAdRuleFiltersInner is a convenience function that returns NameOrGoal wrapped in AdRuleFiltersInner
+func NameOrGoalAsAdRuleFiltersInner(v *NameOrGoal) AdRuleFiltersInner {
+	return AdRuleFiltersInner{
+		NameOrGoal: v,
 	}
-
-	return o.Op
 }
 
-// GetOpOk returns a tuple with the Op field value
-// and a boolean to check if the value has been set.
-func (o *AdRuleFiltersInner) GetOpOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Op, true
-}
-
-// SetOp sets field value
-func (o *AdRuleFiltersInner) SetOp(v string) {
-	o.Op = v
-}
-
-// GetValue returns the Value field value
-func (o *AdRuleFiltersInner) GetValue() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Value
-}
-
-// GetValueOk returns a tuple with the Value field value
-// and a boolean to check if the value has been set.
-func (o *AdRuleFiltersInner) GetValueOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Value, true
-}
-
-// SetValue sets field value
-func (o *AdRuleFiltersInner) SetValue(v string) {
-	o.Value = v
-}
-
-func (o AdRuleFiltersInner) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
-	if err != nil {
-		return []byte{}, err
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o AdRuleFiltersInner) ToMap() (map[string]interface{}, error) {
-	toSerialize := map[string]interface{}{}
-	toSerialize["field"] = o.Field
-	toSerialize["op"] = o.Op
-	toSerialize["value"] = o.Value
-	return toSerialize, nil
-}
-
-func (o *AdRuleFiltersInner) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"field",
-		"op",
-		"value",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into DaysLive
+	err = newStrictDecoder(data).Decode(&dst.DaysLive)
+	if err == nil {
+		jsonDaysLive, _ := json.Marshal(dst.DaysLive)
+		if string(jsonDaysLive) == "{}" { // empty struct
+			dst.DaysLive = nil
+		} else {
+			if err = validator.Validate(dst.DaysLive); err != nil {
+				dst.DaysLive = nil
+			} else {
+				match++
+			}
 		}
+	} else {
+		dst.DaysLive = nil
 	}
 
-	varAdRuleFiltersInner := _AdRuleFiltersInner{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAdRuleFiltersInner)
-
-	if err != nil {
-		return err
+	// try to unmarshal data into Ids
+	err = newStrictDecoder(data).Decode(&dst.Ids)
+	if err == nil {
+		jsonIds, _ := json.Marshal(dst.Ids)
+		if string(jsonIds) == "{}" { // empty struct
+			dst.Ids = nil
+		} else {
+			if err = validator.Validate(dst.Ids); err != nil {
+				dst.Ids = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.Ids = nil
 	}
 
-	*o = AdRuleFiltersInner(varAdRuleFiltersInner)
+	// try to unmarshal data into NameOrGoal
+	err = newStrictDecoder(data).Decode(&dst.NameOrGoal)
+	if err == nil {
+		jsonNameOrGoal, _ := json.Marshal(dst.NameOrGoal)
+		if string(jsonNameOrGoal) == "{}" { // empty struct
+			dst.NameOrGoal = nil
+		} else {
+			if err = validator.Validate(dst.NameOrGoal); err != nil {
+				dst.NameOrGoal = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.NameOrGoal = nil
+	}
 
-	return err
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.DaysLive = nil
+		dst.Ids = nil
+		dst.NameOrGoal = nil
+
+		return fmt.Errorf("data matches more than one schema in oneOf(AdRuleFiltersInner)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("data failed to match schemas in oneOf(AdRuleFiltersInner)")
+	}
+}
+
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src AdRuleFiltersInner) MarshalJSON() ([]byte, error) {
+	if src.DaysLive != nil {
+		return json.Marshal(&src.DaysLive)
+	}
+
+	if src.Ids != nil {
+		return json.Marshal(&src.Ids)
+	}
+
+	if src.NameOrGoal != nil {
+		return json.Marshal(&src.NameOrGoal)
+	}
+
+	return nil, nil // no data in oneOf schemas
+}
+
+// Get the actual instance
+func (obj *AdRuleFiltersInner) GetActualInstance() interface{} {
+	if obj == nil {
+		return nil
+	}
+	if obj.DaysLive != nil {
+		return obj.DaysLive
+	}
+
+	if obj.Ids != nil {
+		return obj.Ids
+	}
+
+	if obj.NameOrGoal != nil {
+		return obj.NameOrGoal
+	}
+
+	// all schemas are nil
+	return nil
+}
+
+// Get the actual instance value
+func (obj AdRuleFiltersInner) GetActualInstanceValue() interface{} {
+	if obj.DaysLive != nil {
+		return *obj.DaysLive
+	}
+
+	if obj.Ids != nil {
+		return *obj.Ids
+	}
+
+	if obj.NameOrGoal != nil {
+		return *obj.NameOrGoal
+	}
+
+	// all schemas are nil
+	return nil
 }
 
 type NullableAdRuleFiltersInner struct {

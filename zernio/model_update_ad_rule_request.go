@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.481.3
+API version: 1.482.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ type UpdateAdRuleRequest struct {
 	Name        *string      `json:"name,omitempty"`
 	Level       *AdRuleLevel `json:"level,omitempty"`
 	CampaignIds []string     `json:"campaignIds,omitempty"`
-	// Narrows the objects the rule checks. Every filter must hold. Text compares without case, and a missing field reads as empty.
+	// Narrows the objects the rule checks. Every filter must hold. A campaign rule reads `name`, `campaign_id`, `goal` and `days_live`; an ad set rule also `campaign_name` and `adset_id`; an ad rule also `adset_name` and `ad_id`.
 	Filters []AdRuleFiltersInner `json:"filters,omitempty"`
 	// Null removes it; every matching run then acts and notifies again.
 	Lifecycle  NullableAdRuleLifecycle `json:"lifecycle,omitempty"`
