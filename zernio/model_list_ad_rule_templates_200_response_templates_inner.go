@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.463.0
+API version: 1.468.0
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,9 @@ type ListAdRuleTemplates200ResponseTemplatesInner struct {
 	Level       AdRuleLevel      `json:"level"`
 	Conditions  AdRuleConditions `json:"conditions"`
 	// Each type at most once, and at most one of `pause`, `activate`, `adjust_budget` and `duplicate`.
-	Actions         []AdRuleAction `json:"actions"`
+	Actions []AdRuleAction `json:"actions"`
+	// What the template is for: stop waste, grow what works, act at set times, or only tell you.
+	Goal            string         `json:"goal"`
 	Schedule        AdRuleSchedule `json:"schedule"`
 	CooldownMinutes int32          `json:"cooldownMinutes"`
 	Platforms       []string       `json:"platforms"`
@@ -40,7 +42,7 @@ type _ListAdRuleTemplates200ResponseTemplatesInner ListAdRuleTemplates200Respons
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewListAdRuleTemplates200ResponseTemplatesInner(id string, name string, description string, level AdRuleLevel, conditions AdRuleConditions, actions []AdRuleAction, schedule AdRuleSchedule, cooldownMinutes int32, platforms []string) *ListAdRuleTemplates200ResponseTemplatesInner {
+func NewListAdRuleTemplates200ResponseTemplatesInner(id string, name string, description string, level AdRuleLevel, conditions AdRuleConditions, actions []AdRuleAction, goal string, schedule AdRuleSchedule, cooldownMinutes int32, platforms []string) *ListAdRuleTemplates200ResponseTemplatesInner {
 	this := ListAdRuleTemplates200ResponseTemplatesInner{}
 	this.Id = id
 	this.Name = name
@@ -48,6 +50,7 @@ func NewListAdRuleTemplates200ResponseTemplatesInner(id string, name string, des
 	this.Level = level
 	this.Conditions = conditions
 	this.Actions = actions
+	this.Goal = goal
 	this.Schedule = schedule
 	this.CooldownMinutes = cooldownMinutes
 	this.Platforms = platforms
@@ -206,6 +209,30 @@ func (o *ListAdRuleTemplates200ResponseTemplatesInner) SetActions(v []AdRuleActi
 	o.Actions = v
 }
 
+// GetGoal returns the Goal field value
+func (o *ListAdRuleTemplates200ResponseTemplatesInner) GetGoal() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Goal
+}
+
+// GetGoalOk returns a tuple with the Goal field value
+// and a boolean to check if the value has been set.
+func (o *ListAdRuleTemplates200ResponseTemplatesInner) GetGoalOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Goal, true
+}
+
+// SetGoal sets field value
+func (o *ListAdRuleTemplates200ResponseTemplatesInner) SetGoal(v string) {
+	o.Goal = v
+}
+
 // GetSchedule returns the Schedule field value
 func (o *ListAdRuleTemplates200ResponseTemplatesInner) GetSchedule() AdRuleSchedule {
 	if o == nil {
@@ -296,6 +323,7 @@ func (o ListAdRuleTemplates200ResponseTemplatesInner) ToMap() (map[string]interf
 	toSerialize["level"] = o.Level
 	toSerialize["conditions"] = o.Conditions
 	toSerialize["actions"] = o.Actions
+	toSerialize["goal"] = o.Goal
 	toSerialize["schedule"] = o.Schedule
 	toSerialize["cooldownMinutes"] = o.CooldownMinutes
 	if o.Platforms != nil {
@@ -315,6 +343,7 @@ func (o *ListAdRuleTemplates200ResponseTemplatesInner) UnmarshalJSON(data []byte
 		"level",
 		"conditions",
 		"actions",
+		"goal",
 		"schedule",
 		"cooldownMinutes",
 		"platforms",

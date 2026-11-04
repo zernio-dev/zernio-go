@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.463.0
+API version: 1.468.0
 Contact: support@zernio.com
 */
 
@@ -33,8 +33,10 @@ type AdRule struct {
 	AdAccountId string      `json:"adAccountId"`
 	Level       AdRuleLevel `json:"level"`
 	// Platform campaign IDs the rule is limited to. Null checks the whole ad account.
-	CampaignIds []string         `json:"campaignIds"`
-	Conditions  AdRuleConditions `json:"conditions"`
+	CampaignIds []string `json:"campaignIds"`
+	// Narrows the objects the rule checks. Every filter must hold. Text compares without case, and a missing field reads as empty.
+	Filters    []AdRuleFiltersInner `json:"filters"`
+	Conditions AdRuleConditions     `json:"conditions"`
 	// Each type at most once, and at most one of `pause`, `activate`, `adjust_budget` and `duplicate`.
 	Actions         []AdRuleAction `json:"actions"`
 	Schedule        AdRuleSchedule `json:"schedule"`
@@ -53,7 +55,7 @@ type _AdRule AdRule
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdRule(id string, name string, accountId string, platform string, adAccountId string, level AdRuleLevel, campaignIds []string, conditions AdRuleConditions, actions []AdRuleAction, schedule AdRuleSchedule, cooldownMinutes int32, enabled bool, lastRunAt NullableTime, nextRunAt NullableTime, createdAt time.Time, updatedAt time.Time) *AdRule {
+func NewAdRule(id string, name string, accountId string, platform string, adAccountId string, level AdRuleLevel, campaignIds []string, filters []AdRuleFiltersInner, conditions AdRuleConditions, actions []AdRuleAction, schedule AdRuleSchedule, cooldownMinutes int32, enabled bool, lastRunAt NullableTime, nextRunAt NullableTime, createdAt time.Time, updatedAt time.Time) *AdRule {
 	this := AdRule{}
 	this.Id = id
 	this.Name = name
@@ -62,6 +64,7 @@ func NewAdRule(id string, name string, accountId string, platform string, adAcco
 	this.AdAccountId = adAccountId
 	this.Level = level
 	this.CampaignIds = campaignIds
+	this.Filters = filters
 	this.Conditions = conditions
 	this.Actions = actions
 	this.Schedule = schedule
@@ -250,6 +253,30 @@ func (o *AdRule) GetCampaignIdsOk() ([]string, bool) {
 // SetCampaignIds sets field value
 func (o *AdRule) SetCampaignIds(v []string) {
 	o.CampaignIds = v
+}
+
+// GetFilters returns the Filters field value
+func (o *AdRule) GetFilters() []AdRuleFiltersInner {
+	if o == nil {
+		var ret []AdRuleFiltersInner
+		return ret
+	}
+
+	return o.Filters
+}
+
+// GetFiltersOk returns a tuple with the Filters field value
+// and a boolean to check if the value has been set.
+func (o *AdRule) GetFiltersOk() ([]AdRuleFiltersInner, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Filters, true
+}
+
+// SetFilters sets field value
+func (o *AdRule) SetFilters(v []AdRuleFiltersInner) {
+	o.Filters = v
 }
 
 // GetConditions returns the Conditions field value
@@ -491,6 +518,7 @@ func (o AdRule) ToMap() (map[string]interface{}, error) {
 	if o.CampaignIds != nil {
 		toSerialize["campaignIds"] = o.CampaignIds
 	}
+	toSerialize["filters"] = o.Filters
 	toSerialize["conditions"] = o.Conditions
 	toSerialize["actions"] = o.Actions
 	toSerialize["schedule"] = o.Schedule
@@ -515,6 +543,7 @@ func (o *AdRule) UnmarshalJSON(data []byte) (err error) {
 		"adAccountId",
 		"level",
 		"campaignIds",
+		"filters",
 		"conditions",
 		"actions",
 		"schedule",

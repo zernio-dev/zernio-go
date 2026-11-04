@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.463.0
+API version: 1.468.0
 Contact: support@zernio.com
 */
 
@@ -20,10 +20,12 @@ var _ MappedNullable = &UpdateAdRuleRequest{}
 
 // UpdateAdRuleRequest struct for UpdateAdRuleRequest
 type UpdateAdRuleRequest struct {
-	Name        *string           `json:"name,omitempty"`
-	Level       *AdRuleLevel      `json:"level,omitempty"`
-	CampaignIds []string          `json:"campaignIds,omitempty"`
-	Conditions  *AdRuleConditions `json:"conditions,omitempty"`
+	Name        *string      `json:"name,omitempty"`
+	Level       *AdRuleLevel `json:"level,omitempty"`
+	CampaignIds []string     `json:"campaignIds,omitempty"`
+	// Narrows the objects the rule checks. Every filter must hold. Text compares without case, and a missing field reads as empty.
+	Filters    []AdRuleFiltersInner `json:"filters,omitempty"`
+	Conditions *AdRuleConditions    `json:"conditions,omitempty"`
 	// Each type at most once, and at most one of `pause`, `activate`, `adjust_budget` and `duplicate`.
 	Actions         []AdRuleAction  `json:"actions,omitempty"`
 	Schedule        *AdRuleSchedule `json:"schedule,omitempty"`
@@ -143,6 +145,38 @@ func (o *UpdateAdRuleRequest) HasCampaignIds() bool {
 // SetCampaignIds gets a reference to the given []string and assigns it to the CampaignIds field.
 func (o *UpdateAdRuleRequest) SetCampaignIds(v []string) {
 	o.CampaignIds = v
+}
+
+// GetFilters returns the Filters field value if set, zero value otherwise.
+func (o *UpdateAdRuleRequest) GetFilters() []AdRuleFiltersInner {
+	if o == nil || IsNil(o.Filters) {
+		var ret []AdRuleFiltersInner
+		return ret
+	}
+	return o.Filters
+}
+
+// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRuleRequest) GetFiltersOk() ([]AdRuleFiltersInner, bool) {
+	if o == nil || IsNil(o.Filters) {
+		return nil, false
+	}
+	return o.Filters, true
+}
+
+// HasFilters returns a boolean if a field has been set.
+func (o *UpdateAdRuleRequest) HasFilters() bool {
+	if o != nil && !IsNil(o.Filters) {
+		return true
+	}
+
+	return false
+}
+
+// SetFilters gets a reference to the given []AdRuleFiltersInner and assigns it to the Filters field.
+func (o *UpdateAdRuleRequest) SetFilters(v []AdRuleFiltersInner) {
+	o.Filters = v
 }
 
 // GetConditions returns the Conditions field value if set, zero value otherwise.
@@ -323,6 +357,9 @@ func (o UpdateAdRuleRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if o.CampaignIds != nil {
 		toSerialize["campaignIds"] = o.CampaignIds
+	}
+	if !IsNil(o.Filters) {
+		toSerialize["filters"] = o.Filters
 	}
 	if !IsNil(o.Conditions) {
 		toSerialize["conditions"] = o.Conditions
