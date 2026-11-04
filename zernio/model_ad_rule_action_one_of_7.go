@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.483.1
+API version: 1.484.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,8 @@ type AdRuleActionOneOf7 struct {
 	Limit float32 `json:"limit"`
 	// At most this many objects changed in any 24 hours, across runs. Matches over the limit are skipped with `daily_limit_reached` and tried again later.
 	MaxChangesPerDay *int32 `json:"maxChangesPerDay,omitempty"`
+	// At most this many changes to one object by this rule, counted over the last 400 days. An object at the limit is left alone like one in cooldown.
+	MaxChangesPerObject *int32 `json:"maxChangesPerObject,omitempty"`
 }
 
 type _AdRuleActionOneOf7 AdRuleActionOneOf7
@@ -184,6 +186,38 @@ func (o *AdRuleActionOneOf7) SetMaxChangesPerDay(v int32) {
 	o.MaxChangesPerDay = &v
 }
 
+// GetMaxChangesPerObject returns the MaxChangesPerObject field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf7) GetMaxChangesPerObject() int32 {
+	if o == nil || IsNil(o.MaxChangesPerObject) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxChangesPerObject
+}
+
+// GetMaxChangesPerObjectOk returns a tuple with the MaxChangesPerObject field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf7) GetMaxChangesPerObjectOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxChangesPerObject) {
+		return nil, false
+	}
+	return o.MaxChangesPerObject, true
+}
+
+// HasMaxChangesPerObject returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf7) HasMaxChangesPerObject() bool {
+	if o != nil && !IsNil(o.MaxChangesPerObject) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxChangesPerObject gets a reference to the given int32 and assigns it to the MaxChangesPerObject field.
+func (o *AdRuleActionOneOf7) SetMaxChangesPerObject(v int32) {
+	o.MaxChangesPerObject = &v
+}
+
 func (o AdRuleActionOneOf7) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -200,6 +234,9 @@ func (o AdRuleActionOneOf7) ToMap() (map[string]interface{}, error) {
 	toSerialize["limit"] = o.Limit
 	if !IsNil(o.MaxChangesPerDay) {
 		toSerialize["maxChangesPerDay"] = o.MaxChangesPerDay
+	}
+	if !IsNil(o.MaxChangesPerObject) {
+		toSerialize["maxChangesPerObject"] = o.MaxChangesPerObject
 	}
 	return toSerialize, nil
 }

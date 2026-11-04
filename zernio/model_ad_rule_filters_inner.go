@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.483.1
+API version: 1.484.0
 Contact: support@zernio.com
 */
 
@@ -19,9 +19,17 @@ import (
 
 // AdRuleFiltersInner - struct for AdRuleFiltersInner
 type AdRuleFiltersInner struct {
-	DaysLive   *DaysLive
-	Ids        *Ids
-	NameOrGoal *NameOrGoal
+	BudgetLevel *BudgetLevel
+	DaysLive    *DaysLive
+	Ids         *Ids
+	NameOrGoal  *NameOrGoal
+}
+
+// BudgetLevelAsAdRuleFiltersInner is a convenience function that returns BudgetLevel wrapped in AdRuleFiltersInner
+func BudgetLevelAsAdRuleFiltersInner(v *BudgetLevel) AdRuleFiltersInner {
+	return AdRuleFiltersInner{
+		BudgetLevel: v,
+	}
 }
 
 // DaysLiveAsAdRuleFiltersInner is a convenience function that returns DaysLive wrapped in AdRuleFiltersInner
@@ -49,6 +57,23 @@ func NameOrGoalAsAdRuleFiltersInner(v *NameOrGoal) AdRuleFiltersInner {
 func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
+	// try to unmarshal data into BudgetLevel
+	err = newStrictDecoder(data).Decode(&dst.BudgetLevel)
+	if err == nil {
+		jsonBudgetLevel, _ := json.Marshal(dst.BudgetLevel)
+		if string(jsonBudgetLevel) == "{}" { // empty struct
+			dst.BudgetLevel = nil
+		} else {
+			if err = validator.Validate(dst.BudgetLevel); err != nil {
+				dst.BudgetLevel = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.BudgetLevel = nil
+	}
+
 	// try to unmarshal data into DaysLive
 	err = newStrictDecoder(data).Decode(&dst.DaysLive)
 	if err == nil {
@@ -102,6 +127,7 @@ func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 
 	if match > 1 { // more than 1 match
 		// reset to nil
+		dst.BudgetLevel = nil
 		dst.DaysLive = nil
 		dst.Ids = nil
 		dst.NameOrGoal = nil
@@ -116,6 +142,10 @@ func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 
 // Marshal data from the first non-nil pointers in the struct to JSON
 func (src AdRuleFiltersInner) MarshalJSON() ([]byte, error) {
+	if src.BudgetLevel != nil {
+		return json.Marshal(&src.BudgetLevel)
+	}
+
 	if src.DaysLive != nil {
 		return json.Marshal(&src.DaysLive)
 	}
@@ -136,6 +166,10 @@ func (obj *AdRuleFiltersInner) GetActualInstance() interface{} {
 	if obj == nil {
 		return nil
 	}
+	if obj.BudgetLevel != nil {
+		return obj.BudgetLevel
+	}
+
 	if obj.DaysLive != nil {
 		return obj.DaysLive
 	}
@@ -154,6 +188,10 @@ func (obj *AdRuleFiltersInner) GetActualInstance() interface{} {
 
 // Get the actual instance value
 func (obj AdRuleFiltersInner) GetActualInstanceValue() interface{} {
+	if obj.BudgetLevel != nil {
+		return *obj.BudgetLevel
+	}
+
 	if obj.DaysLive != nil {
 		return *obj.DaysLive
 	}

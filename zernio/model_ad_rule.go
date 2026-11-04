@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.483.1
+API version: 1.484.0
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,7 @@ type AdRule struct {
 	Level       AdRuleLevel `json:"level"`
 	// Platform campaign IDs the rule is limited to. Null checks the whole ad account.
 	CampaignIds []string `json:"campaignIds"`
-	// Narrows the objects the rule checks. Every filter must hold. A campaign rule reads `name`, `campaign_id`, `goal` and `days_live`; an ad set rule also `campaign_name` and `adset_id`; an ad rule also `adset_name` and `ad_id`.
+	// Narrows the objects the rule checks. Every filter must hold. A campaign rule reads `name`, `campaign_id`, `goal`, `days_live` and `budget_level`; an ad set rule also `campaign_name` and `adset_id`; an ad rule also `adset_name` and `ad_id`.
 	Filters []AdRuleFiltersInner `json:"filters"`
 	// Null when every matching run acts and notifies.
 	Lifecycle  NullableAdRuleLifecycle `json:"lifecycle"`
