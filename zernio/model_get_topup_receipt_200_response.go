@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.482.0
+API version: 1.483.1
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,10 @@ var _ MappedNullable = &GetTopupReceipt200Response{}
 type GetTopupReceipt200Response struct {
 	Url    string `json:"url"`
 	Format string `json:"format"`
+	// The invoice PDF; null when the payment made no invoice.
+	InvoiceUrl NullableString `json:"invoiceUrl,omitempty"`
+	// Stripe's card receipt page for the charge.
+	ReceiptUrl NullableString `json:"receiptUrl,omitempty"`
 	// As in the top-up list.
 	AmountCents int32 `json:"amountCents"`
 	// Card fee paid, as in the top-up list.
@@ -102,6 +106,92 @@ func (o *GetTopupReceipt200Response) GetFormatOk() (*string, bool) {
 // SetFormat sets field value
 func (o *GetTopupReceipt200Response) SetFormat(v string) {
 	o.Format = v
+}
+
+// GetInvoiceUrl returns the InvoiceUrl field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetTopupReceipt200Response) GetInvoiceUrl() string {
+	if o == nil || IsNil(o.InvoiceUrl.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.InvoiceUrl.Get()
+}
+
+// GetInvoiceUrlOk returns a tuple with the InvoiceUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetTopupReceipt200Response) GetInvoiceUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.InvoiceUrl.Get(), o.InvoiceUrl.IsSet()
+}
+
+// HasInvoiceUrl returns a boolean if a field has been set.
+func (o *GetTopupReceipt200Response) HasInvoiceUrl() bool {
+	if o != nil && o.InvoiceUrl.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetInvoiceUrl gets a reference to the given NullableString and assigns it to the InvoiceUrl field.
+func (o *GetTopupReceipt200Response) SetInvoiceUrl(v string) {
+	o.InvoiceUrl.Set(&v)
+}
+
+// SetInvoiceUrlNil sets the value for InvoiceUrl to be an explicit nil
+func (o *GetTopupReceipt200Response) SetInvoiceUrlNil() {
+	o.InvoiceUrl.Set(nil)
+}
+
+// UnsetInvoiceUrl ensures that no value is present for InvoiceUrl, not even an explicit nil
+func (o *GetTopupReceipt200Response) UnsetInvoiceUrl() {
+	o.InvoiceUrl.Unset()
+}
+
+// GetReceiptUrl returns the ReceiptUrl field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetTopupReceipt200Response) GetReceiptUrl() string {
+	if o == nil || IsNil(o.ReceiptUrl.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ReceiptUrl.Get()
+}
+
+// GetReceiptUrlOk returns a tuple with the ReceiptUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetTopupReceipt200Response) GetReceiptUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ReceiptUrl.Get(), o.ReceiptUrl.IsSet()
+}
+
+// HasReceiptUrl returns a boolean if a field has been set.
+func (o *GetTopupReceipt200Response) HasReceiptUrl() bool {
+	if o != nil && o.ReceiptUrl.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetReceiptUrl gets a reference to the given NullableString and assigns it to the ReceiptUrl field.
+func (o *GetTopupReceipt200Response) SetReceiptUrl(v string) {
+	o.ReceiptUrl.Set(&v)
+}
+
+// SetReceiptUrlNil sets the value for ReceiptUrl to be an explicit nil
+func (o *GetTopupReceipt200Response) SetReceiptUrlNil() {
+	o.ReceiptUrl.Set(nil)
+}
+
+// UnsetReceiptUrl ensures that no value is present for ReceiptUrl, not even an explicit nil
+func (o *GetTopupReceipt200Response) UnsetReceiptUrl() {
+	o.ReceiptUrl.Unset()
 }
 
 // GetAmountCents returns the AmountCents field value
@@ -190,6 +280,12 @@ func (o GetTopupReceipt200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["url"] = o.Url
 	toSerialize["format"] = o.Format
+	if o.InvoiceUrl.IsSet() {
+		toSerialize["invoiceUrl"] = o.InvoiceUrl.Get()
+	}
+	if o.ReceiptUrl.IsSet() {
+		toSerialize["receiptUrl"] = o.ReceiptUrl.Get()
+	}
 	toSerialize["amountCents"] = o.AmountCents
 	toSerialize["feeCents"] = o.FeeCents.Get()
 	toSerialize["chargedCents"] = o.ChargedCents
