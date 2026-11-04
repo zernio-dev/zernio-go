@@ -138,6 +138,7 @@ func main() {
 | `client.AnalyticsAPI.GetPostTimeline(ctx)` | Get post analytics timeline |
 | `client.AnalyticsAPI.GetPostingFrequency(ctx)` | Get frequency vs engagement |
 | `client.AnalyticsAPI.GetTikTokAccountInsights(ctx)` | Get TikTok account-level insights |
+| `client.AnalyticsAPI.GetTikTokDemographics(ctx)` | Get TikTok follower demographics |
 | `client.AnalyticsAPI.GetTrackingWindow(ctx)` | Get a tracking window |
 | `client.AnalyticsAPI.GetYouTubeChannelInsights(ctx)` | Get YouTube channel insights |
 | `client.AnalyticsAPI.GetYouTubeDailyViews(ctx)` | Get YouTube daily views |

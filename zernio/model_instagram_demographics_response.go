@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.457.0
+API version: 1.458.0
 Contact: support@zernio.com
 */
 
@@ -28,8 +28,8 @@ type InstagramDemographicsResponse struct {
 	// The timeframe used for demographic data
 	Timeframe *string `json:"timeframe,omitempty"`
 	// Object keyed by breakdown dimension (age, city, country, gender)
-	Demographics map[string][]InstagramAccountInsightsResponseMetricsValueBreakdownsInner `json:"demographics,omitempty"`
-	Note         *string                                                                  `json:"note,omitempty"`
+	Demographics map[string][]GetTikTokDemographics200ResponseDemographicsValueInner `json:"demographics,omitempty"`
+	Note         *string                                                             `json:"note,omitempty"`
 }
 
 // NewInstagramDemographicsResponse instantiates a new InstagramDemographicsResponse object
@@ -210,9 +210,9 @@ func (o *InstagramDemographicsResponse) SetTimeframe(v string) {
 }
 
 // GetDemographics returns the Demographics field value if set, zero value otherwise.
-func (o *InstagramDemographicsResponse) GetDemographics() map[string][]InstagramAccountInsightsResponseMetricsValueBreakdownsInner {
+func (o *InstagramDemographicsResponse) GetDemographics() map[string][]GetTikTokDemographics200ResponseDemographicsValueInner {
 	if o == nil || IsNil(o.Demographics) {
-		var ret map[string][]InstagramAccountInsightsResponseMetricsValueBreakdownsInner
+		var ret map[string][]GetTikTokDemographics200ResponseDemographicsValueInner
 		return ret
 	}
 	return o.Demographics
@@ -220,9 +220,9 @@ func (o *InstagramDemographicsResponse) GetDemographics() map[string][]Instagram
 
 // GetDemographicsOk returns a tuple with the Demographics field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InstagramDemographicsResponse) GetDemographicsOk() (map[string][]InstagramAccountInsightsResponseMetricsValueBreakdownsInner, bool) {
+func (o *InstagramDemographicsResponse) GetDemographicsOk() (map[string][]GetTikTokDemographics200ResponseDemographicsValueInner, bool) {
 	if o == nil || IsNil(o.Demographics) {
-		return map[string][]InstagramAccountInsightsResponseMetricsValueBreakdownsInner{}, false
+		return map[string][]GetTikTokDemographics200ResponseDemographicsValueInner{}, false
 	}
 	return o.Demographics, true
 }
@@ -236,8 +236,8 @@ func (o *InstagramDemographicsResponse) HasDemographics() bool {
 	return false
 }
 
-// SetDemographics gets a reference to the given map[string][]InstagramAccountInsightsResponseMetricsValueBreakdownsInner and assigns it to the Demographics field.
-func (o *InstagramDemographicsResponse) SetDemographics(v map[string][]InstagramAccountInsightsResponseMetricsValueBreakdownsInner) {
+// SetDemographics gets a reference to the given map[string][]GetTikTokDemographics200ResponseDemographicsValueInner and assigns it to the Demographics field.
+func (o *InstagramDemographicsResponse) SetDemographics(v map[string][]GetTikTokDemographics200ResponseDemographicsValueInner) {
 	o.Demographics = v
 }
 

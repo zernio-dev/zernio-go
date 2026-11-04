@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.457.0
+API version: 1.458.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,7 @@ type InstagramAccountInsightsResponseMetricsValue struct {
 	// Daily values (for time_series, and always on monetary metrics)
 	Values []InstagramAccountInsightsResponseMetricsValueValuesInner `json:"values,omitempty"`
 	// Breakdown values (only for total_value with breakdown)
-	Breakdowns []InstagramAccountInsightsResponseMetricsValueBreakdownsInner `json:"breakdowns,omitempty"`
+	Breakdowns []GetTikTokDemographics200ResponseDemographicsValueInner `json:"breakdowns,omitempty"`
 	// Present on monetary metrics only. The scale of \"total\" and of every \"values[].value\", exactly as the platform returned them.  - \"micro_amount\": the platform returned an object carrying a micro amount; values are that integer, summed, unconverted. Zernio publishes no divisor because Meta documents none: divide by the scale you verified against the Page's own Meta Business Suite export. On Facebook Page insights this is always content_monetization_earnings. - \"unspecified\": the platform returned a bare number with no unit metadata, passed through as-is; the platform does not state whether it is major or minor currency units. On Facebook Page insights this is always monetization_approximate_earnings.
 	Unit *string `json:"unit,omitempty"`
 	// ISO 4217 currency of a monetary metric, or null when the platform omitted it. Always null on monetization_approximate_earnings, which Meta returns as a bare number with no currency; always present on content_monetization_earnings.
@@ -114,9 +114,9 @@ func (o *InstagramAccountInsightsResponseMetricsValue) SetValues(v []InstagramAc
 }
 
 // GetBreakdowns returns the Breakdowns field value if set, zero value otherwise.
-func (o *InstagramAccountInsightsResponseMetricsValue) GetBreakdowns() []InstagramAccountInsightsResponseMetricsValueBreakdownsInner {
+func (o *InstagramAccountInsightsResponseMetricsValue) GetBreakdowns() []GetTikTokDemographics200ResponseDemographicsValueInner {
 	if o == nil || IsNil(o.Breakdowns) {
-		var ret []InstagramAccountInsightsResponseMetricsValueBreakdownsInner
+		var ret []GetTikTokDemographics200ResponseDemographicsValueInner
 		return ret
 	}
 	return o.Breakdowns
@@ -124,7 +124,7 @@ func (o *InstagramAccountInsightsResponseMetricsValue) GetBreakdowns() []Instagr
 
 // GetBreakdownsOk returns a tuple with the Breakdowns field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InstagramAccountInsightsResponseMetricsValue) GetBreakdownsOk() ([]InstagramAccountInsightsResponseMetricsValueBreakdownsInner, bool) {
+func (o *InstagramAccountInsightsResponseMetricsValue) GetBreakdownsOk() ([]GetTikTokDemographics200ResponseDemographicsValueInner, bool) {
 	if o == nil || IsNil(o.Breakdowns) {
 		return nil, false
 	}
@@ -140,8 +140,8 @@ func (o *InstagramAccountInsightsResponseMetricsValue) HasBreakdowns() bool {
 	return false
 }
 
-// SetBreakdowns gets a reference to the given []InstagramAccountInsightsResponseMetricsValueBreakdownsInner and assigns it to the Breakdowns field.
-func (o *InstagramAccountInsightsResponseMetricsValue) SetBreakdowns(v []InstagramAccountInsightsResponseMetricsValueBreakdownsInner) {
+// SetBreakdowns gets a reference to the given []GetTikTokDemographics200ResponseDemographicsValueInner and assigns it to the Breakdowns field.
+func (o *InstagramAccountInsightsResponseMetricsValue) SetBreakdowns(v []GetTikTokDemographics200ResponseDemographicsValueInner) {
 	o.Breakdowns = v
 }
 

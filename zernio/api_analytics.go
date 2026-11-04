@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.457.0
+API version: 1.458.0
 Contact: support@zernio.com
 */
 
@@ -5600,13 +5600,13 @@ Returns account-level TikTok insights from /v2/user/info/ (live) plus historical
 
 ### Why the scope is narrow
 
-This ACCOUNT-level endpoint intentionally exposes only the four counter metrics below. These account-level figures are not on any public TikTok API, for any account type:
+This ACCOUNT-level endpoint intentionally exposes only the four counter metrics below. It does not return:
 
 - account-level impressions / reach
 - follower inflow / outflow breakdown
-- account-level watch time and audience demographics
+- account-level watch time
 
-TikTok's Research API doesn't expose them either, and is restricted to non-commercial academic use per TikTok's eligibility policy.
+Follower age, gender, country and city are on GET /v1/analytics/tiktok/demographics.
 
 ### Per-video metrics
 
@@ -5727,6 +5727,193 @@ func (a *AnalyticsAPIService) GetTikTokAccountInsightsExecute(r AnalyticsAPIGetT
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AnalyticsAPIGetTikTokDemographicsRequest struct {
+	ctx        context.Context
+	ApiService *AnalyticsAPIService
+	accountId  *string
+	breakdown  *string
+}
+
+// The Zernio SocialAccount ID for the TikTok account.
+func (r AnalyticsAPIGetTikTokDemographicsRequest) AccountId(accountId string) AnalyticsAPIGetTikTokDemographicsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Comma-separated list of demographic dimensions: age, gender, country, city. Defaults to all four.
+func (r AnalyticsAPIGetTikTokDemographicsRequest) Breakdown(breakdown string) AnalyticsAPIGetTikTokDemographicsRequest {
+	r.breakdown = &breakdown
+	return r
+}
+
+func (r AnalyticsAPIGetTikTokDemographicsRequest) Execute() (*GetTikTokDemographics200Response, *http.Response, error) {
+	return r.ApiService.GetTikTokDemographicsExecute(r)
+}
+
+/*
+GetTikTokDemographics Get TikTok follower demographics
+
+Returns the share of a TikTok account's followers by age, gender, country and city. Without `breakdown` it returns all four.
+
+- Each value is a share of followers from 0 to 1, and each list is sorted largest first. It is not a follower count.
+- Age, gender and country lists add up to 1. The city list can add up to less, because TikTok does not place every follower in a listed city.
+- These are followers of the account, not the viewers of its videos. Viewer countries per video are on GET /v1/analytics?postId=...
+- TikTok updates this data every 24-48 hours.
+
+### Requirements
+
+- The account needs at least 100 followers (400 `tiktok_insufficient_followers` otherwise).
+- The account owner must turn on Analytics in the TikTok app and have published at least one video. Until then an account with enough followers gets empty lists.
+- Requires the user.insights scope, which an account gets by connecting through the TikTok for Business app (412 `tiktok_insights_scope_missing` otherwise). Accounts on the original TikTok integration must reconnect.
+- Requires the Analytics add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AnalyticsAPIGetTikTokDemographicsRequest
+*/
+func (a *AnalyticsAPIService) GetTikTokDemographics(ctx context.Context) AnalyticsAPIGetTikTokDemographicsRequest {
+	return AnalyticsAPIGetTikTokDemographicsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetTikTokDemographics200Response
+func (a *AnalyticsAPIService) GetTikTokDemographicsExecute(r AnalyticsAPIGetTikTokDemographicsRequest) (*GetTikTokDemographics200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetTikTokDemographics200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AnalyticsAPIService.GetTikTokDemographics")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/analytics/tiktok/demographics"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.breakdown != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "breakdown", r.breakdown, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v GetAnalytics402Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 412 {
+			var v GetTikTokDemographics412Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
