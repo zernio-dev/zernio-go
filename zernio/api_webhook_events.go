@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.458.0
+API version: 1.459.0
 Contact: support@zernio.com
 */
 
@@ -1641,6 +1641,402 @@ func (a *WebhookEventsAPIService) OnApiChangelogPublishedExecute(r WebhookEvents
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadApiChangelogPublished
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAutomationActionAppliedRequest struct {
+	ctx                            context.Context
+	ApiService                     *WebhookEventsAPIService
+	webhookPayloadAutomationAction *WebhookPayloadAutomationAction
+}
+
+func (r WebhookEventsAPIOnAutomationActionAppliedRequest) WebhookPayloadAutomationAction(webhookPayloadAutomationAction WebhookPayloadAutomationAction) WebhookEventsAPIOnAutomationActionAppliedRequest {
+	r.webhookPayloadAutomationAction = &webhookPayloadAutomationAction
+	return r
+}
+
+func (r WebhookEventsAPIOnAutomationActionAppliedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAutomationActionAppliedExecute(r)
+}
+
+/*
+OnAutomationActionApplied Automation action applied event
+
+One change an automation made or tried, sent as it settles. See `WebhookPayloadAutomationAction`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAutomationActionAppliedRequest
+*/
+func (a *WebhookEventsAPIService) OnAutomationActionApplied(ctx context.Context) WebhookEventsAPIOnAutomationActionAppliedRequest {
+	return WebhookEventsAPIOnAutomationActionAppliedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAutomationActionAppliedExecute(r WebhookEventsAPIOnAutomationActionAppliedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAutomationActionApplied")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/automation.action.applied"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAutomationAction == nil {
+		return nil, reportError("webhookPayloadAutomationAction is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAutomationAction
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAutomationActionFailedRequest struct {
+	ctx                            context.Context
+	ApiService                     *WebhookEventsAPIService
+	webhookPayloadAutomationAction *WebhookPayloadAutomationAction
+}
+
+func (r WebhookEventsAPIOnAutomationActionFailedRequest) WebhookPayloadAutomationAction(webhookPayloadAutomationAction WebhookPayloadAutomationAction) WebhookEventsAPIOnAutomationActionFailedRequest {
+	r.webhookPayloadAutomationAction = &webhookPayloadAutomationAction
+	return r
+}
+
+func (r WebhookEventsAPIOnAutomationActionFailedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAutomationActionFailedExecute(r)
+}
+
+/*
+OnAutomationActionFailed Automation action failed event
+
+One change an automation made or tried, sent as it settles. See `WebhookPayloadAutomationAction`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAutomationActionFailedRequest
+*/
+func (a *WebhookEventsAPIService) OnAutomationActionFailed(ctx context.Context) WebhookEventsAPIOnAutomationActionFailedRequest {
+	return WebhookEventsAPIOnAutomationActionFailedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAutomationActionFailedExecute(r WebhookEventsAPIOnAutomationActionFailedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAutomationActionFailed")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/automation.action.failed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAutomationAction == nil {
+		return nil, reportError("webhookPayloadAutomationAction is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAutomationAction
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAutomationActionUnknownRequest struct {
+	ctx                            context.Context
+	ApiService                     *WebhookEventsAPIService
+	webhookPayloadAutomationAction *WebhookPayloadAutomationAction
+}
+
+func (r WebhookEventsAPIOnAutomationActionUnknownRequest) WebhookPayloadAutomationAction(webhookPayloadAutomationAction WebhookPayloadAutomationAction) WebhookEventsAPIOnAutomationActionUnknownRequest {
+	r.webhookPayloadAutomationAction = &webhookPayloadAutomationAction
+	return r
+}
+
+func (r WebhookEventsAPIOnAutomationActionUnknownRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAutomationActionUnknownExecute(r)
+}
+
+/*
+OnAutomationActionUnknown Automation action unknown event
+
+One change an automation made or tried, sent as it settles. See `WebhookPayloadAutomationAction`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAutomationActionUnknownRequest
+*/
+func (a *WebhookEventsAPIService) OnAutomationActionUnknown(ctx context.Context) WebhookEventsAPIOnAutomationActionUnknownRequest {
+	return WebhookEventsAPIOnAutomationActionUnknownRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAutomationActionUnknownExecute(r WebhookEventsAPIOnAutomationActionUnknownRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAutomationActionUnknown")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/automation.action.unknown"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAutomationAction == nil {
+		return nil, reportError("webhookPayloadAutomationAction is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAutomationAction
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAutomationCheckCompletedRequest struct {
+	ctx                                    context.Context
+	ApiService                             *WebhookEventsAPIService
+	webhookPayloadAutomationCheckCompleted *WebhookPayloadAutomationCheckCompleted
+}
+
+func (r WebhookEventsAPIOnAutomationCheckCompletedRequest) WebhookPayloadAutomationCheckCompleted(webhookPayloadAutomationCheckCompleted WebhookPayloadAutomationCheckCompleted) WebhookEventsAPIOnAutomationCheckCompletedRequest {
+	r.webhookPayloadAutomationCheckCompleted = &webhookPayloadAutomationCheckCompleted
+	return r
+}
+
+func (r WebhookEventsAPIOnAutomationCheckCompletedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAutomationCheckCompletedExecute(r)
+}
+
+/*
+OnAutomationCheckCompleted Automation check completed event
+
+Fired once per scheduled check of an automation, whatever its outcome. See `WebhookPayloadAutomationCheckCompleted`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAutomationCheckCompletedRequest
+*/
+func (a *WebhookEventsAPIService) OnAutomationCheckCompleted(ctx context.Context) WebhookEventsAPIOnAutomationCheckCompletedRequest {
+	return WebhookEventsAPIOnAutomationCheckCompletedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAutomationCheckCompletedExecute(r WebhookEventsAPIOnAutomationCheckCompletedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAutomationCheckCompleted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/automation.check.completed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAutomationCheckCompleted == nil {
+		return nil, reportError("webhookPayloadAutomationCheckCompleted is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAutomationCheckCompleted
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
