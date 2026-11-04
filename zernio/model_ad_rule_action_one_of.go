@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.459.0
+API version: 1.461.0
 Contact: support@zernio.com
 */
 
@@ -22,8 +22,10 @@ var _ MappedNullable = &AdRuleActionOneOf{}
 
 // AdRuleActionOneOf struct for AdRuleActionOneOf
 type AdRuleActionOneOf struct {
-	// Send the `ad_rule.triggered` webhook.
+	// Send the `ad_rule.triggered` webhook, and the alert to every `send` destination.
 	Type string `json:"type"`
+	// Also send a short alert through accounts you connected: what matched, the values and what the rule did. Up to 5 destinations, checked when the rule is saved.  A destination that fails is reported in the run's `notification`; it never undoes a change.
+	Send []AdRuleActionOneOfSendInner `json:"send,omitempty"`
 }
 
 type _AdRuleActionOneOf AdRuleActionOneOf
@@ -70,6 +72,38 @@ func (o *AdRuleActionOneOf) SetType(v string) {
 	o.Type = v
 }
 
+// GetSend returns the Send field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf) GetSend() []AdRuleActionOneOfSendInner {
+	if o == nil || IsNil(o.Send) {
+		var ret []AdRuleActionOneOfSendInner
+		return ret
+	}
+	return o.Send
+}
+
+// GetSendOk returns a tuple with the Send field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf) GetSendOk() ([]AdRuleActionOneOfSendInner, bool) {
+	if o == nil || IsNil(o.Send) {
+		return nil, false
+	}
+	return o.Send, true
+}
+
+// HasSend returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf) HasSend() bool {
+	if o != nil && !IsNil(o.Send) {
+		return true
+	}
+
+	return false
+}
+
+// SetSend gets a reference to the given []AdRuleActionOneOfSendInner and assigns it to the Send field.
+func (o *AdRuleActionOneOf) SetSend(v []AdRuleActionOneOfSendInner) {
+	o.Send = v
+}
+
 func (o AdRuleActionOneOf) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -81,6 +115,9 @@ func (o AdRuleActionOneOf) MarshalJSON() ([]byte, error) {
 func (o AdRuleActionOneOf) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["type"] = o.Type
+	if !IsNil(o.Send) {
+		toSerialize["send"] = o.Send
+	}
 	return toSerialize, nil
 }
 
