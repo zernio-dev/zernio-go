@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.486.0
+API version: 1.491.0
 Contact: support@zernio.com
 */
 
@@ -35,6 +35,8 @@ type AdRuleEvaluation struct {
 	Matched int32 `json:"matched"`
 	// Every delivering campaign or ad set in scope (for an `activate` rule, the rule-paused ones it may reactivate).
 	Objects []AdRuleObjectEvaluation `json:"objects"`
+	// Each group's totals, for a rule with groups. Null otherwise.
+	Groups []AdRuleEvaluationGroupsInner `json:"groups,omitempty"`
 }
 
 type _AdRuleEvaluation AdRuleEvaluation
@@ -233,6 +235,39 @@ func (o *AdRuleEvaluation) SetObjects(v []AdRuleObjectEvaluation) {
 	o.Objects = v
 }
 
+// GetGroups returns the Groups field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdRuleEvaluation) GetGroups() []AdRuleEvaluationGroupsInner {
+	if o == nil {
+		var ret []AdRuleEvaluationGroupsInner
+		return ret
+	}
+	return o.Groups
+}
+
+// GetGroupsOk returns a tuple with the Groups field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleEvaluation) GetGroupsOk() ([]AdRuleEvaluationGroupsInner, bool) {
+	if o == nil || IsNil(o.Groups) {
+		return nil, false
+	}
+	return o.Groups, true
+}
+
+// HasGroups returns a boolean if a field has been set.
+func (o *AdRuleEvaluation) HasGroups() bool {
+	if o != nil && !IsNil(o.Groups) {
+		return true
+	}
+
+	return false
+}
+
+// SetGroups gets a reference to the given []AdRuleEvaluationGroupsInner and assigns it to the Groups field.
+func (o *AdRuleEvaluation) SetGroups(v []AdRuleEvaluationGroupsInner) {
+	o.Groups = v
+}
+
 func (o AdRuleEvaluation) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -250,6 +285,9 @@ func (o AdRuleEvaluation) ToMap() (map[string]interface{}, error) {
 	toSerialize["currency"] = o.Currency.Get()
 	toSerialize["matched"] = o.Matched
 	toSerialize["objects"] = o.Objects
+	if o.Groups != nil {
+		toSerialize["groups"] = o.Groups
+	}
 	return toSerialize, nil
 }
 

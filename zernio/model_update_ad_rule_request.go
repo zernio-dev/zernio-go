@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.486.0
+API version: 1.491.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,8 @@ type UpdateAdRuleRequest struct {
 	CampaignIds []string     `json:"campaignIds,omitempty"`
 	// Narrows the objects the rule checks. Every filter must hold. A campaign rule reads `name`, `campaign_id`, `goal`, `days_live` and `budget_level`; an ad set rule also `campaign_name` and `adset_id`; an ad rule also `adset_name` and `ad_id`.
 	Filters []AdRuleFiltersInner `json:"filters,omitempty"`
+	// Null removes the groups; each campaign is then judged on its own.
+	Groups []AdRuleGroupsInner `json:"groups,omitempty"`
 	// Null removes it; every matching run then acts and notifies again.
 	Lifecycle  NullableAdRuleLifecycle `json:"lifecycle,omitempty"`
 	Conditions *AdRuleConditions       `json:"conditions,omitempty"`
@@ -179,6 +181,39 @@ func (o *UpdateAdRuleRequest) HasFilters() bool {
 // SetFilters gets a reference to the given []AdRuleFiltersInner and assigns it to the Filters field.
 func (o *UpdateAdRuleRequest) SetFilters(v []AdRuleFiltersInner) {
 	o.Filters = v
+}
+
+// GetGroups returns the Groups field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdRuleRequest) GetGroups() []AdRuleGroupsInner {
+	if o == nil {
+		var ret []AdRuleGroupsInner
+		return ret
+	}
+	return o.Groups
+}
+
+// GetGroupsOk returns a tuple with the Groups field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdRuleRequest) GetGroupsOk() ([]AdRuleGroupsInner, bool) {
+	if o == nil || IsNil(o.Groups) {
+		return nil, false
+	}
+	return o.Groups, true
+}
+
+// HasGroups returns a boolean if a field has been set.
+func (o *UpdateAdRuleRequest) HasGroups() bool {
+	if o != nil && !IsNil(o.Groups) {
+		return true
+	}
+
+	return false
+}
+
+// SetGroups gets a reference to the given []AdRuleGroupsInner and assigns it to the Groups field.
+func (o *UpdateAdRuleRequest) SetGroups(v []AdRuleGroupsInner) {
+	o.Groups = v
 }
 
 // GetLifecycle returns the Lifecycle field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -405,6 +440,9 @@ func (o UpdateAdRuleRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Filters) {
 		toSerialize["filters"] = o.Filters
+	}
+	if o.Groups != nil {
+		toSerialize["groups"] = o.Groups
 	}
 	if o.Lifecycle.IsSet() {
 		toSerialize["lifecycle"] = o.Lifecycle.Get()

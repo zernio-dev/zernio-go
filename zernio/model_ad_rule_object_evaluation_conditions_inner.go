@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.486.0
+API version: 1.491.0
 Contact: support@zernio.com
 */
 
@@ -22,14 +22,14 @@ var _ MappedNullable = &AdRuleObjectEvaluationConditionsInner{}
 
 // AdRuleObjectEvaluationConditionsInner struct for AdRuleObjectEvaluationConditionsInner
 type AdRuleObjectEvaluationConditionsInner struct {
-	// `ctr` is a percentage. `spend`, `cpc`, `cpm` and `cpa` are in the ad account currency. `reach` and `frequency` use the platform's de-duplicated reach, so they are accepted on Meta and TikTok only.  `daily_budget` is the object's synced daily budget. `budget_used` is spend over the window as a percent of that budget for each day of the window: `today` `>=` 200 means twice the budget spent.  Both read campaigns and ad sets with a daily budget of their own. A lifetime budget never matches.  `result:<key>` reads one of your own results (see [Campaign results](/guides/campaign-results)), on campaign rules only: the values you sent for the window, or a formula over them and the platform's numbers. A campaign with no value for it never matches.
+	// `ctr` is a percentage. `spend`, `cpc`, `cpm` and `cpa` are in the ad account currency. `reach` and `frequency` use the platform's de-duplicated reach, so they are accepted on Meta and TikTok only.  `daily_budget` is the object's synced daily budget. `budget_used` is spend over the window as a percent of that budget for each day of the window: `today` `>=` 200 means twice the budget spent.  Both read campaigns and ad sets with a daily budget of their own. A lifetime budget never matches.  `day_of_month` and `working_day_of_month` read today's date in the ad account's timezone, the same for every object: `working_day_of_month` `>=` 5 holds from the fifth weekday of the month (Monday to Friday, holidays not counted). They take `window: today`, no `compareTo` and no `top` or `bottom`.  `result:<key>` reads one of your own results (see [Campaign results](/guides/campaign-results)), on campaign rules only: the values you sent for the window, or a formula over them and the platform's numbers. A campaign with no value for it never matches.
 	Metric string `json:"metric"`
-	// Days in the ad account's own timezone. `last_7d` is the 7 full days before today; only `today` reads the day in progress.  `<from>_to_<to>_days_ago` is any range of full days, both ends included, such as `8_to_2_days_ago` to skip the 2 most recent days while their conversions still arrive. `from` is at least `to` and at most 90.
+	// Days in the ad account's own timezone. `last_7d` is the 7 full days before today; only `today` and `this_month` read the day in progress.  `this_month` runs from the 1st through today; `last_month` is the whole previous calendar month.  `<from>_to_<to>_days_ago` is any range of full days, both ends included, such as `8_to_2_days_ago` to skip the 2 most recent days while their conversions still arrive. `from` is at least `to` and at most 90.
 	Window string `json:"window"`
 	// `top` and `bottom` rank the rule's objects by the metric over the window, highest first for `top`, and match the first `value` (a whole number from 1 to 100). Objects with no value are not ranked; the run history shows each one's position.
 	Op    string  `json:"op"`
 	Value float32 `json:"value"`
-	// Makes the condition relative: `value` becomes a ratio of the metric over `window` to the same metric over this window. `previous_period` is the same number of days just before `window`; any other value is a window, such as `30_to_2_days_ago`.  Spend, impressions, clicks, conversions and reach are compared per day, so windows of different lengths compare fairly; rates such as `cpc` compare as they are. A comparison window with no value never matches.
+	// Makes the condition relative: `value` becomes a ratio of the metric over `window` to the same metric over this window, such as `30_to_2_days_ago`.  `previous_period` is the same number of days just before `window`. For `this_month` it is the same days of last month, and for `last_month` the month before.  Spend, impressions, clicks, conversions and reach are compared per day, so windows of different lengths compare fairly; rates such as `cpc` compare as they are. A comparison window with no value never matches.
 	CompareTo *string `json:"compareTo,omitempty"`
 	// The object's value over the window. Null when it cannot be computed.
 	Actual NullableFloat32 `json:"actual"`

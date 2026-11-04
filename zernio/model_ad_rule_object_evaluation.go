@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.486.0
+API version: 1.491.0
 Contact: support@zernio.com
 */
 
@@ -27,7 +27,9 @@ type AdRuleObjectEvaluation struct {
 	Name       string         `json:"name"`
 	CampaignId NullableString `json:"campaignId"`
 	// True when every condition holds.
-	Matched    bool                                    `json:"matched"`
+	Matched bool `json:"matched"`
+	// For a rule with groups: the group this campaign was judged in. `matched` and `conditions` are the group's.
+	Group      *string                                 `json:"group,omitempty"`
 	Conditions []AdRuleObjectEvaluationConditionsInner `json:"conditions"`
 }
 
@@ -153,6 +155,38 @@ func (o *AdRuleObjectEvaluation) SetMatched(v bool) {
 	o.Matched = v
 }
 
+// GetGroup returns the Group field value if set, zero value otherwise.
+func (o *AdRuleObjectEvaluation) GetGroup() string {
+	if o == nil || IsNil(o.Group) {
+		var ret string
+		return ret
+	}
+	return *o.Group
+}
+
+// GetGroupOk returns a tuple with the Group field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleObjectEvaluation) GetGroupOk() (*string, bool) {
+	if o == nil || IsNil(o.Group) {
+		return nil, false
+	}
+	return o.Group, true
+}
+
+// HasGroup returns a boolean if a field has been set.
+func (o *AdRuleObjectEvaluation) HasGroup() bool {
+	if o != nil && !IsNil(o.Group) {
+		return true
+	}
+
+	return false
+}
+
+// SetGroup gets a reference to the given string and assigns it to the Group field.
+func (o *AdRuleObjectEvaluation) SetGroup(v string) {
+	o.Group = &v
+}
+
 // GetConditions returns the Conditions field value
 func (o *AdRuleObjectEvaluation) GetConditions() []AdRuleObjectEvaluationConditionsInner {
 	if o == nil {
@@ -191,6 +225,9 @@ func (o AdRuleObjectEvaluation) ToMap() (map[string]interface{}, error) {
 	toSerialize["name"] = o.Name
 	toSerialize["campaignId"] = o.CampaignId.Get()
 	toSerialize["matched"] = o.Matched
+	if !IsNil(o.Group) {
+		toSerialize["group"] = o.Group
+	}
 	toSerialize["conditions"] = o.Conditions
 	return toSerialize, nil
 }
