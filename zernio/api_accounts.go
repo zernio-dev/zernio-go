@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.480.0
+API version: 1.481.0
 Contact: support@zernio.com
 */
 
@@ -1715,6 +1715,7 @@ type AccountsAPIListAccountsRequest struct {
 	order                  *string
 	includeOverLimit       *bool
 	excludeHidden          *bool
+	platforms              *string
 	adAccountRows          *bool
 	includeCreatorAccounts *bool
 	includeSandbox         *bool
@@ -1777,6 +1778,12 @@ func (r AccountsAPIListAccountsRequest) IncludeOverLimit(includeOverLimit bool) 
 // When true, leaves out accounts the dashboard does not show as connections:  - posting accounts with &#x60;enabled: false&#x60; (ads accounts are always kept, whatever their &#x60;enabled&#x60; value); - the internal &#x60;sms&#x60; and &#x60;phone&#x60; accounts behind each phone number.  Applied before pagination, so page totals and &#x60;statusCounts&#x60; count only the remaining accounts. Sandbox accounts added by &#x60;includeSandbox&#x60; are appended after this filter. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
 func (r AccountsAPIListAccountsRequest) ExcludeHidden(excludeHidden bool) AccountsAPIListAccountsRequest {
 	r.excludeHidden = &excludeHidden
+	return r
+}
+
+// Comma-separated platforms (up to 50) to list together, the several-platform form of &#x60;platform&#x60;. Applied before pagination.
+func (r AccountsAPIListAccountsRequest) Platforms(platforms string) AccountsAPIListAccountsRequest {
+	r.platforms = &platforms
 	return r
 }
 
@@ -1920,6 +1927,9 @@ func (a *AccountsAPIService) ListAccountsExecute(r AccountsAPIListAccountsReques
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "excludeHidden", defaultValue, "form", "")
 		r.excludeHidden = &defaultValue
+	}
+	if r.platforms != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platforms", r.platforms, "form", "")
 	}
 	if r.adAccountRows != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountRows", r.adAccountRows, "form", "")
