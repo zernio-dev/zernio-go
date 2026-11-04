@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.484.0
+API version: 1.485.0
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,8 @@ type AdRuleSchedule struct {
 	// The rule runs from this time on.
 	StartsAt NullableTime `json:"startsAt,omitempty"`
 	// The rule stops running after this time.
-	EndsAt NullableTime `json:"endsAt,omitempty"`
+	EndsAt     NullableTime              `json:"endsAt,omitempty"`
+	QuietHours *AdRuleScheduleQuietHours `json:"quietHours,omitempty"`
 }
 
 // NewAdRuleSchedule instantiates a new AdRuleSchedule object
@@ -210,6 +211,38 @@ func (o *AdRuleSchedule) UnsetEndsAt() {
 	o.EndsAt.Unset()
 }
 
+// GetQuietHours returns the QuietHours field value if set, zero value otherwise.
+func (o *AdRuleSchedule) GetQuietHours() AdRuleScheduleQuietHours {
+	if o == nil || IsNil(o.QuietHours) {
+		var ret AdRuleScheduleQuietHours
+		return ret
+	}
+	return *o.QuietHours
+}
+
+// GetQuietHoursOk returns a tuple with the QuietHours field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleSchedule) GetQuietHoursOk() (*AdRuleScheduleQuietHours, bool) {
+	if o == nil || IsNil(o.QuietHours) {
+		return nil, false
+	}
+	return o.QuietHours, true
+}
+
+// HasQuietHours returns a boolean if a field has been set.
+func (o *AdRuleSchedule) HasQuietHours() bool {
+	if o != nil && !IsNil(o.QuietHours) {
+		return true
+	}
+
+	return false
+}
+
+// SetQuietHours gets a reference to the given AdRuleScheduleQuietHours and assigns it to the QuietHours field.
+func (o *AdRuleSchedule) SetQuietHours(v AdRuleScheduleQuietHours) {
+	o.QuietHours = &v
+}
+
 func (o AdRuleSchedule) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -231,6 +264,9 @@ func (o AdRuleSchedule) ToMap() (map[string]interface{}, error) {
 	}
 	if o.EndsAt.IsSet() {
 		toSerialize["endsAt"] = o.EndsAt.Get()
+	}
+	if !IsNil(o.QuietHours) {
+		toSerialize["quietHours"] = o.QuietHours
 	}
 	return toSerialize, nil
 }
