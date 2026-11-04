@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.492.0
+API version: 1.493.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type UpdateAccount200Response struct {
 	Username      *string                            `json:"username,omitempty"`
 	DisplayName   *string                            `json:"displayName,omitempty"`
 	XCapabilities *UpdateAccountRequestXCapabilities `json:"xCapabilities,omitempty"`
+	// The resulting setting, returned only when the request body included `metaAdsSyncEnabled`.
+	MetaAdsSyncEnabled *bool `json:"metaAdsSyncEnabled,omitempty"`
 }
 
 // NewUpdateAccount200Response instantiates a new UpdateAccount200Response object
@@ -171,6 +173,38 @@ func (o *UpdateAccount200Response) SetXCapabilities(v UpdateAccountRequestXCapab
 	o.XCapabilities = &v
 }
 
+// GetMetaAdsSyncEnabled returns the MetaAdsSyncEnabled field value if set, zero value otherwise.
+func (o *UpdateAccount200Response) GetMetaAdsSyncEnabled() bool {
+	if o == nil || IsNil(o.MetaAdsSyncEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.MetaAdsSyncEnabled
+}
+
+// GetMetaAdsSyncEnabledOk returns a tuple with the MetaAdsSyncEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAccount200Response) GetMetaAdsSyncEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.MetaAdsSyncEnabled) {
+		return nil, false
+	}
+	return o.MetaAdsSyncEnabled, true
+}
+
+// HasMetaAdsSyncEnabled returns a boolean if a field has been set.
+func (o *UpdateAccount200Response) HasMetaAdsSyncEnabled() bool {
+	if o != nil && !IsNil(o.MetaAdsSyncEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetaAdsSyncEnabled gets a reference to the given bool and assigns it to the MetaAdsSyncEnabled field.
+func (o *UpdateAccount200Response) SetMetaAdsSyncEnabled(v bool) {
+	o.MetaAdsSyncEnabled = &v
+}
+
 func (o UpdateAccount200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -192,6 +226,9 @@ func (o UpdateAccount200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.XCapabilities) {
 		toSerialize["xCapabilities"] = o.XCapabilities
+	}
+	if !IsNil(o.MetaAdsSyncEnabled) {
+		toSerialize["metaAdsSyncEnabled"] = o.MetaAdsSyncEnabled
 	}
 	return toSerialize, nil
 }

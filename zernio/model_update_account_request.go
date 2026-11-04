@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.492.0
+API version: 1.493.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,8 @@ type UpdateAccountRequest struct {
 	Username      *string                            `json:"username,omitempty"`
 	DisplayName   *string                            `json:"displayName,omitempty"`
 	XCapabilities *UpdateAccountRequestXCapabilities `json:"xCapabilities,omitempty"`
+	// Facebook only (400 `invalid_field_value` on any other platform). Off by default for every Facebook account.  `true` makes this account sync the Meta ads of the ad accounts it reaches, like a `metaads` connection.  - The first sync starts at once (14 days, then 90 days of history in the background) and fires `account.ads.initial_sync_completed` for this `accountId` with `platform: metaads`. - It then refreshes on the Meta Ads schedule. - Each switch from `false` to `true` runs another initial sync and fires the webhook again. Sending `true` while it is on changes nothing. - Needs `ads_management` and `ads_read` on the account (403 `reconnect_required` otherwise, with `details.requiredPermissions`). - Needs ads access (403 `ads_addon_required`) and room in the managed ads allowance (403 `ads_allowance_exceeded`). - While a `metaads` connection has this account as `parentAccountId`, that connection syncs the ads instead.  Synced active ads count on the managed ads meter like ads from a Meta Ads connection.  `false` stops the sync. Ads already synced are kept, never deleted: they stop updating and stop counting on the meter, and a `metaads` connection of yours that reaches the same ad account takes them over. Posting, inbox and comments on the account are not affected.
+	MetaAdsSyncEnabled *bool `json:"metaAdsSyncEnabled,omitempty"`
 }
 
 // NewUpdateAccountRequest instantiates a new UpdateAccountRequest object
@@ -138,6 +140,38 @@ func (o *UpdateAccountRequest) SetXCapabilities(v UpdateAccountRequestXCapabilit
 	o.XCapabilities = &v
 }
 
+// GetMetaAdsSyncEnabled returns the MetaAdsSyncEnabled field value if set, zero value otherwise.
+func (o *UpdateAccountRequest) GetMetaAdsSyncEnabled() bool {
+	if o == nil || IsNil(o.MetaAdsSyncEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.MetaAdsSyncEnabled
+}
+
+// GetMetaAdsSyncEnabledOk returns a tuple with the MetaAdsSyncEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAccountRequest) GetMetaAdsSyncEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.MetaAdsSyncEnabled) {
+		return nil, false
+	}
+	return o.MetaAdsSyncEnabled, true
+}
+
+// HasMetaAdsSyncEnabled returns a boolean if a field has been set.
+func (o *UpdateAccountRequest) HasMetaAdsSyncEnabled() bool {
+	if o != nil && !IsNil(o.MetaAdsSyncEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetaAdsSyncEnabled gets a reference to the given bool and assigns it to the MetaAdsSyncEnabled field.
+func (o *UpdateAccountRequest) SetMetaAdsSyncEnabled(v bool) {
+	o.MetaAdsSyncEnabled = &v
+}
+
 func (o UpdateAccountRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -156,6 +190,9 @@ func (o UpdateAccountRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.XCapabilities) {
 		toSerialize["xCapabilities"] = o.XCapabilities
+	}
+	if !IsNil(o.MetaAdsSyncEnabled) {
+		toSerialize["metaAdsSyncEnabled"] = o.MetaAdsSyncEnabled
 	}
 	return toSerialize, nil
 }
