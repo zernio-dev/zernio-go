@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.473.0
+API version: 1.475.0
 Contact: support@zernio.com
 */
 
@@ -1505,9 +1505,9 @@ func (r AdRulesAPIUndoAdRuleActivityRequest) Execute() (*UndoAdRuleActivity200Re
 /*
 UndoAdRuleActivity Undo a change an ad rule made
 
-Puts back a pause, a reactivation or a budget change a rule applied, as a new change recorded in the activity feed. The rule's cooldown then covers the object.
+Puts back a pause, reactivation, budget or bid change, or name tag a rule applied, as a new change recorded in the activity feed. The rule's cooldown then covers the object.
 
-It is refused (409 `invalid_resource_state`) when the change was not applied, was already undone, is a copy, or when the object changed since: delivering again after a pause, paused again after a reactivation, or on another budget.
+It is refused (409 `invalid_resource_state`) when the change was not applied, was already undone, is a copy, or when the object changed since: delivering again after a pause, paused again after a reactivation, or on another budget, bid or name.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param activityId The `id` of an entry from `GET /v1/ads/rules/activity`.
