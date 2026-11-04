@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.461.0
+API version: 1.462.0
 Contact: support@zernio.com
 */
 
@@ -22,10 +22,12 @@ var _ MappedNullable = &AdRuleActionOneOf3{}
 
 // AdRuleActionOneOf3 struct for AdRuleActionOneOf3
 type AdRuleActionOneOf3 struct {
-	// Set the daily budget to an exact amount, such as a reset every midnight. Same level rules as the percent change.
+	// Copy the campaign or ad set with its ads, on Meta and TikTok campaigns and ad sets and LinkedIn campaigns. Not on ad-level rules.
 	Type string `json:"type"`
-	// The daily budget to set, in the ad account currency. An object already at it is skipped with `already_at_amount`.
-	Amount float32 `json:"amount"`
+	// How the copy starts. Defaults to `paused`.
+	Status *string `json:"status,omitempty"`
+	// Text added to the copy's name.
+	RenameSuffix *string `json:"renameSuffix,omitempty"`
 	// At most this many objects changed in any 24 hours, across runs. Matches over the limit are skipped with `daily_limit_reached` and tried again later.
 	MaxChangesPerDay *int32 `json:"maxChangesPerDay,omitempty"`
 }
@@ -36,10 +38,9 @@ type _AdRuleActionOneOf3 AdRuleActionOneOf3
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdRuleActionOneOf3(type_ string, amount float32) *AdRuleActionOneOf3 {
+func NewAdRuleActionOneOf3(type_ string) *AdRuleActionOneOf3 {
 	this := AdRuleActionOneOf3{}
 	this.Type = type_
-	this.Amount = amount
 	return &this
 }
 
@@ -75,28 +76,68 @@ func (o *AdRuleActionOneOf3) SetType(v string) {
 	o.Type = v
 }
 
-// GetAmount returns the Amount field value
-func (o *AdRuleActionOneOf3) GetAmount() float32 {
-	if o == nil {
-		var ret float32
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf3) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
 		return ret
 	}
-
-	return o.Amount
+	return *o.Status
 }
 
-// GetAmountOk returns a tuple with the Amount field value
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdRuleActionOneOf3) GetAmountOk() (*float32, bool) {
-	if o == nil {
+func (o *AdRuleActionOneOf3) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
 		return nil, false
 	}
-	return &o.Amount, true
+	return o.Status, true
 }
 
-// SetAmount sets field value
-func (o *AdRuleActionOneOf3) SetAmount(v float32) {
-	o.Amount = v
+// HasStatus returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf3) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *AdRuleActionOneOf3) SetStatus(v string) {
+	o.Status = &v
+}
+
+// GetRenameSuffix returns the RenameSuffix field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf3) GetRenameSuffix() string {
+	if o == nil || IsNil(o.RenameSuffix) {
+		var ret string
+		return ret
+	}
+	return *o.RenameSuffix
+}
+
+// GetRenameSuffixOk returns a tuple with the RenameSuffix field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf3) GetRenameSuffixOk() (*string, bool) {
+	if o == nil || IsNil(o.RenameSuffix) {
+		return nil, false
+	}
+	return o.RenameSuffix, true
+}
+
+// HasRenameSuffix returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf3) HasRenameSuffix() bool {
+	if o != nil && !IsNil(o.RenameSuffix) {
+		return true
+	}
+
+	return false
+}
+
+// SetRenameSuffix gets a reference to the given string and assigns it to the RenameSuffix field.
+func (o *AdRuleActionOneOf3) SetRenameSuffix(v string) {
+	o.RenameSuffix = &v
 }
 
 // GetMaxChangesPerDay returns the MaxChangesPerDay field value if set, zero value otherwise.
@@ -142,7 +183,12 @@ func (o AdRuleActionOneOf3) MarshalJSON() ([]byte, error) {
 func (o AdRuleActionOneOf3) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["type"] = o.Type
-	toSerialize["amount"] = o.Amount
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.RenameSuffix) {
+		toSerialize["renameSuffix"] = o.RenameSuffix
+	}
 	if !IsNil(o.MaxChangesPerDay) {
 		toSerialize["maxChangesPerDay"] = o.MaxChangesPerDay
 	}
@@ -155,7 +201,6 @@ func (o *AdRuleActionOneOf3) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"type",
-		"amount",
 	}
 
 	allProperties := make(map[string]interface{})

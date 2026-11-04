@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.461.0
+API version: 1.462.0
 Contact: support@zernio.com
 */
 
@@ -35,7 +35,7 @@ type AdRule struct {
 	// Platform campaign IDs the rule is limited to. Null checks the whole ad account.
 	CampaignIds []string         `json:"campaignIds"`
 	Conditions  AdRuleConditions `json:"conditions"`
-	// Each type at most once, and at most one of `pause`, `activate` and `adjust_budget`.
+	// Each type at most once, and at most one of `pause`, `activate`, `adjust_budget` and `duplicate`.
 	Actions         []AdRuleAction `json:"actions"`
 	Schedule        AdRuleSchedule `json:"schedule"`
 	CooldownMinutes int32          `json:"cooldownMinutes"`
