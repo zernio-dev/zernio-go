@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.469.0
+API version: 1.470.0
 Contact: support@zernio.com
 */
 
@@ -44,7 +44,11 @@ type AdRuleActivityEntry struct {
 	Reason              NullableString  `json:"reason"`
 	PreviousDailyBudget NullableFloat32 `json:"previousDailyBudget"`
 	NewDailyBudget      NullableFloat32 `json:"newDailyBudget"`
-	Currency            NullableString  `json:"currency"`
+	// The name before an `edit_name`.
+	PreviousName NullableString `json:"previousName"`
+	// The name an applied `edit_name` set.
+	NewName  NullableString `json:"newName"`
+	Currency NullableString `json:"currency"`
 }
 
 type _AdRuleActivityEntry AdRuleActivityEntry
@@ -53,7 +57,7 @@ type _AdRuleActivityEntry AdRuleActivityEntry
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdRuleActivityEntry(id string, ranAt time.Time, ruleId string, ruleName string, platform string, accountId string, adAccountId string, level string, objectId string, objectName NullableString, type_ string, status string, reason NullableString, previousDailyBudget NullableFloat32, newDailyBudget NullableFloat32, currency NullableString) *AdRuleActivityEntry {
+func NewAdRuleActivityEntry(id string, ranAt time.Time, ruleId string, ruleName string, platform string, accountId string, adAccountId string, level string, objectId string, objectName NullableString, type_ string, status string, reason NullableString, previousDailyBudget NullableFloat32, newDailyBudget NullableFloat32, previousName NullableString, newName NullableString, currency NullableString) *AdRuleActivityEntry {
 	this := AdRuleActivityEntry{}
 	this.Id = id
 	this.RanAt = ranAt
@@ -70,6 +74,8 @@ func NewAdRuleActivityEntry(id string, ranAt time.Time, ruleId string, ruleName 
 	this.Reason = reason
 	this.PreviousDailyBudget = previousDailyBudget
 	this.NewDailyBudget = newDailyBudget
+	this.PreviousName = previousName
+	this.NewName = newName
 	this.Currency = currency
 	return &this
 }
@@ -450,6 +456,58 @@ func (o *AdRuleActivityEntry) SetNewDailyBudget(v float32) {
 	o.NewDailyBudget.Set(&v)
 }
 
+// GetPreviousName returns the PreviousName field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *AdRuleActivityEntry) GetPreviousName() string {
+	if o == nil || o.PreviousName.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.PreviousName.Get()
+}
+
+// GetPreviousNameOk returns a tuple with the PreviousName field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleActivityEntry) GetPreviousNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PreviousName.Get(), o.PreviousName.IsSet()
+}
+
+// SetPreviousName sets field value
+func (o *AdRuleActivityEntry) SetPreviousName(v string) {
+	o.PreviousName.Set(&v)
+}
+
+// GetNewName returns the NewName field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *AdRuleActivityEntry) GetNewName() string {
+	if o == nil || o.NewName.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.NewName.Get()
+}
+
+// GetNewNameOk returns a tuple with the NewName field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleActivityEntry) GetNewNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NewName.Get(), o.NewName.IsSet()
+}
+
+// SetNewName sets field value
+func (o *AdRuleActivityEntry) SetNewName(v string) {
+	o.NewName.Set(&v)
+}
+
 // GetCurrency returns the Currency field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *AdRuleActivityEntry) GetCurrency() string {
@@ -501,6 +559,8 @@ func (o AdRuleActivityEntry) ToMap() (map[string]interface{}, error) {
 	toSerialize["reason"] = o.Reason.Get()
 	toSerialize["previousDailyBudget"] = o.PreviousDailyBudget.Get()
 	toSerialize["newDailyBudget"] = o.NewDailyBudget.Get()
+	toSerialize["previousName"] = o.PreviousName.Get()
+	toSerialize["newName"] = o.NewName.Get()
 	toSerialize["currency"] = o.Currency.Get()
 	return toSerialize, nil
 }
@@ -525,6 +585,8 @@ func (o *AdRuleActivityEntry) UnmarshalJSON(data []byte) (err error) {
 		"reason",
 		"previousDailyBudget",
 		"newDailyBudget",
+		"previousName",
+		"newName",
 		"currency",
 	}
 

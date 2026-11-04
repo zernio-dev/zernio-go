@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.469.0
+API version: 1.470.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,7 @@ type AdRuleAction struct {
 	AdRuleActionOneOf3 *AdRuleActionOneOf3
 	AdRuleActionOneOf4 *AdRuleActionOneOf4
 	AdRuleActionOneOf5 *AdRuleActionOneOf5
+	AdRuleActionOneOf6 *AdRuleActionOneOf6
 }
 
 // AdRuleActionOneOfAsAdRuleAction is a convenience function that returns AdRuleActionOneOf wrapped in AdRuleAction
@@ -66,6 +67,13 @@ func AdRuleActionOneOf4AsAdRuleAction(v *AdRuleActionOneOf4) AdRuleAction {
 func AdRuleActionOneOf5AsAdRuleAction(v *AdRuleActionOneOf5) AdRuleAction {
 	return AdRuleAction{
 		AdRuleActionOneOf5: v,
+	}
+}
+
+// AdRuleActionOneOf6AsAdRuleAction is a convenience function that returns AdRuleActionOneOf6 wrapped in AdRuleAction
+func AdRuleActionOneOf6AsAdRuleAction(v *AdRuleActionOneOf6) AdRuleAction {
+	return AdRuleAction{
+		AdRuleActionOneOf6: v,
 	}
 }
 
@@ -175,6 +183,23 @@ func (dst *AdRuleAction) UnmarshalJSON(data []byte) error {
 		dst.AdRuleActionOneOf5 = nil
 	}
 
+	// try to unmarshal data into AdRuleActionOneOf6
+	err = newStrictDecoder(data).Decode(&dst.AdRuleActionOneOf6)
+	if err == nil {
+		jsonAdRuleActionOneOf6, _ := json.Marshal(dst.AdRuleActionOneOf6)
+		if string(jsonAdRuleActionOneOf6) == "{}" { // empty struct
+			dst.AdRuleActionOneOf6 = nil
+		} else {
+			if err = validator.Validate(dst.AdRuleActionOneOf6); err != nil {
+				dst.AdRuleActionOneOf6 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AdRuleActionOneOf6 = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.AdRuleActionOneOf = nil
@@ -183,6 +208,7 @@ func (dst *AdRuleAction) UnmarshalJSON(data []byte) error {
 		dst.AdRuleActionOneOf3 = nil
 		dst.AdRuleActionOneOf4 = nil
 		dst.AdRuleActionOneOf5 = nil
+		dst.AdRuleActionOneOf6 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(AdRuleAction)")
 	} else if match == 1 {
@@ -218,6 +244,10 @@ func (src AdRuleAction) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AdRuleActionOneOf5)
 	}
 
+	if src.AdRuleActionOneOf6 != nil {
+		return json.Marshal(&src.AdRuleActionOneOf6)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -250,6 +280,10 @@ func (obj *AdRuleAction) GetActualInstance() interface{} {
 		return obj.AdRuleActionOneOf5
 	}
 
+	if obj.AdRuleActionOneOf6 != nil {
+		return obj.AdRuleActionOneOf6
+	}
+
 	// all schemas are nil
 	return nil
 }
@@ -278,6 +312,10 @@ func (obj AdRuleAction) GetActualInstanceValue() interface{} {
 
 	if obj.AdRuleActionOneOf5 != nil {
 		return *obj.AdRuleActionOneOf5
+	}
+
+	if obj.AdRuleActionOneOf6 != nil {
+		return *obj.AdRuleActionOneOf6
 	}
 
 	// all schemas are nil

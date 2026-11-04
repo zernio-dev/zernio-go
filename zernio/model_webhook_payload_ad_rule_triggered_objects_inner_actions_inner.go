@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.469.0
+API version: 1.470.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,10 @@ type WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner struct {
 	PreviousDailyBudget NullableFloat32 `json:"previousDailyBudget"`
 	// On `adjust_budget`, the daily budget after the change. Null when nothing changed.
 	NewDailyBudget NullableFloat32 `json:"newDailyBudget"`
+	// On `edit_name`, the object's name before the change. Null otherwise.
+	PreviousName NullableString `json:"previousName"`
+	// On `edit_name`, the name after the change. Null when nothing changed.
+	NewName NullableString `json:"newName"`
 }
 
 type _WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner
@@ -39,13 +43,15 @@ type _WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner WebhookPayloadAdRule
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadAdRuleTriggeredObjectsInnerActionsInner(type_ string, status string, reason NullableString, previousDailyBudget NullableFloat32, newDailyBudget NullableFloat32) *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner {
+func NewWebhookPayloadAdRuleTriggeredObjectsInnerActionsInner(type_ string, status string, reason NullableString, previousDailyBudget NullableFloat32, newDailyBudget NullableFloat32, previousName NullableString, newName NullableString) *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner {
 	this := WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner{}
 	this.Type = type_
 	this.Status = status
 	this.Reason = reason
 	this.PreviousDailyBudget = previousDailyBudget
 	this.NewDailyBudget = newDailyBudget
+	this.PreviousName = previousName
+	this.NewName = newName
 	return &this
 }
 
@@ -183,6 +189,58 @@ func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) SetNewDailyBudge
 	o.NewDailyBudget.Set(&v)
 }
 
+// GetPreviousName returns the PreviousName field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) GetPreviousName() string {
+	if o == nil || o.PreviousName.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.PreviousName.Get()
+}
+
+// GetPreviousNameOk returns a tuple with the PreviousName field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) GetPreviousNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PreviousName.Get(), o.PreviousName.IsSet()
+}
+
+// SetPreviousName sets field value
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) SetPreviousName(v string) {
+	o.PreviousName.Set(&v)
+}
+
+// GetNewName returns the NewName field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) GetNewName() string {
+	if o == nil || o.NewName.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.NewName.Get()
+}
+
+// GetNewNameOk returns a tuple with the NewName field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) GetNewNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NewName.Get(), o.NewName.IsSet()
+}
+
+// SetNewName sets field value
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) SetNewName(v string) {
+	o.NewName.Set(&v)
+}
+
 func (o WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -198,6 +256,8 @@ func (o WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) ToMap() (map[stri
 	toSerialize["reason"] = o.Reason.Get()
 	toSerialize["previousDailyBudget"] = o.PreviousDailyBudget.Get()
 	toSerialize["newDailyBudget"] = o.NewDailyBudget.Get()
+	toSerialize["previousName"] = o.PreviousName.Get()
+	toSerialize["newName"] = o.NewName.Get()
 	return toSerialize, nil
 }
 
@@ -211,6 +271,8 @@ func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) UnmarshalJSON(da
 		"reason",
 		"previousDailyBudget",
 		"newDailyBudget",
+		"previousName",
+		"newName",
 	}
 
 	allProperties := make(map[string]interface{})

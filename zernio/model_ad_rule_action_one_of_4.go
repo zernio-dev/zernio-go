@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.469.0
+API version: 1.470.0
 Contact: support@zernio.com
 */
 
@@ -20,12 +20,16 @@ import (
 // checks if the AdRuleActionOneOf4 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdRuleActionOneOf4{}
 
-// AdRuleActionOneOf4 struct for AdRuleActionOneOf4
+// AdRuleActionOneOf4 Exactly one of `add` and `remove`.
 type AdRuleActionOneOf4 struct {
-	// Set the daily budget to an exact amount, such as a reset every midnight. Same level rules as the percent change.
+	// Tag the object by its name. Meta, Google and LinkedIn campaigns and ad sets, and TikTok campaigns, ad groups and ads. An object whose name already has the tag (or lacks it, for `remove`) is skipped with `name_unchanged`.
 	Type string `json:"type"`
-	// The daily budget to set, in the ad account currency. An object already at it is skipped with `already_at_amount`.
-	Amount float32 `json:"amount"`
+	// Text to add, like `[WINNER]`. Compared without case.
+	Add *string `json:"add,omitempty"`
+	// Where `add` goes. Defaults to `start`.
+	At *string `json:"at,omitempty"`
+	// Text to take out of the name, every copy of it.
+	Remove *string `json:"remove,omitempty"`
 	// At most this many objects changed in any 24 hours, across runs. Matches over the limit are skipped with `daily_limit_reached` and tried again later.
 	MaxChangesPerDay *int32 `json:"maxChangesPerDay,omitempty"`
 }
@@ -36,10 +40,9 @@ type _AdRuleActionOneOf4 AdRuleActionOneOf4
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdRuleActionOneOf4(type_ string, amount float32) *AdRuleActionOneOf4 {
+func NewAdRuleActionOneOf4(type_ string) *AdRuleActionOneOf4 {
 	this := AdRuleActionOneOf4{}
 	this.Type = type_
-	this.Amount = amount
 	return &this
 }
 
@@ -75,28 +78,100 @@ func (o *AdRuleActionOneOf4) SetType(v string) {
 	o.Type = v
 }
 
-// GetAmount returns the Amount field value
-func (o *AdRuleActionOneOf4) GetAmount() float32 {
-	if o == nil {
-		var ret float32
+// GetAdd returns the Add field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf4) GetAdd() string {
+	if o == nil || IsNil(o.Add) {
+		var ret string
 		return ret
 	}
-
-	return o.Amount
+	return *o.Add
 }
 
-// GetAmountOk returns a tuple with the Amount field value
+// GetAddOk returns a tuple with the Add field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdRuleActionOneOf4) GetAmountOk() (*float32, bool) {
-	if o == nil {
+func (o *AdRuleActionOneOf4) GetAddOk() (*string, bool) {
+	if o == nil || IsNil(o.Add) {
 		return nil, false
 	}
-	return &o.Amount, true
+	return o.Add, true
 }
 
-// SetAmount sets field value
-func (o *AdRuleActionOneOf4) SetAmount(v float32) {
-	o.Amount = v
+// HasAdd returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf4) HasAdd() bool {
+	if o != nil && !IsNil(o.Add) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdd gets a reference to the given string and assigns it to the Add field.
+func (o *AdRuleActionOneOf4) SetAdd(v string) {
+	o.Add = &v
+}
+
+// GetAt returns the At field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf4) GetAt() string {
+	if o == nil || IsNil(o.At) {
+		var ret string
+		return ret
+	}
+	return *o.At
+}
+
+// GetAtOk returns a tuple with the At field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf4) GetAtOk() (*string, bool) {
+	if o == nil || IsNil(o.At) {
+		return nil, false
+	}
+	return o.At, true
+}
+
+// HasAt returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf4) HasAt() bool {
+	if o != nil && !IsNil(o.At) {
+		return true
+	}
+
+	return false
+}
+
+// SetAt gets a reference to the given string and assigns it to the At field.
+func (o *AdRuleActionOneOf4) SetAt(v string) {
+	o.At = &v
+}
+
+// GetRemove returns the Remove field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf4) GetRemove() string {
+	if o == nil || IsNil(o.Remove) {
+		var ret string
+		return ret
+	}
+	return *o.Remove
+}
+
+// GetRemoveOk returns a tuple with the Remove field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf4) GetRemoveOk() (*string, bool) {
+	if o == nil || IsNil(o.Remove) {
+		return nil, false
+	}
+	return o.Remove, true
+}
+
+// HasRemove returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf4) HasRemove() bool {
+	if o != nil && !IsNil(o.Remove) {
+		return true
+	}
+
+	return false
+}
+
+// SetRemove gets a reference to the given string and assigns it to the Remove field.
+func (o *AdRuleActionOneOf4) SetRemove(v string) {
+	o.Remove = &v
 }
 
 // GetMaxChangesPerDay returns the MaxChangesPerDay field value if set, zero value otherwise.
@@ -142,7 +217,15 @@ func (o AdRuleActionOneOf4) MarshalJSON() ([]byte, error) {
 func (o AdRuleActionOneOf4) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["type"] = o.Type
-	toSerialize["amount"] = o.Amount
+	if !IsNil(o.Add) {
+		toSerialize["add"] = o.Add
+	}
+	if !IsNil(o.At) {
+		toSerialize["at"] = o.At
+	}
+	if !IsNil(o.Remove) {
+		toSerialize["remove"] = o.Remove
+	}
 	if !IsNil(o.MaxChangesPerDay) {
 		toSerialize["maxChangesPerDay"] = o.MaxChangesPerDay
 	}
@@ -155,7 +238,6 @@ func (o *AdRuleActionOneOf4) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"type",
-		"amount",
 	}
 
 	allProperties := make(map[string]interface{})
