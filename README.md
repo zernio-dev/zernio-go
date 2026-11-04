@@ -549,6 +549,7 @@ func main() {
 | `client.AdRulesAPI.UpdateAdRule(ctx)` | Update an ad rule |
 | `client.AdRulesAPI.DeleteAdRule(ctx)` | Delete an ad rule |
 | `client.AdRulesAPI.PreviewAdRule(ctx)` | Preview an ad rule |
+| `client.AdRulesAPI.UndoAdRuleActivity(ctx)` | Undo a change an ad rule made |
 
 ### Ad Targeting
 | Method | Description |
