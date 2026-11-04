@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.476.1
+API version: 1.480.0
 Contact: support@zernio.com
 */
 
@@ -28,11 +28,11 @@ type WebhookPayloadCampaignBudgetDepleted struct {
 	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Use it to route the event to your tenant without storing Zernio profile ids.  Present on every event tied to a profile, absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once.
 	Profiles []WebhookProfilesInner `json:"profiles,omitempty"`
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
-	Test     *bool                                        `json:"test,omitempty"`
-	Event    string                                       `json:"event"`
-	Account  WebhookAdsAccount                            `json:"account"`
-	AdObject WebhookPayloadCampaignBudgetDepletedAdObject `json:"adObject"`
-	Budget   WebhookPayloadCampaignBudgetDepletedBudget   `json:"budget"`
+	Test     *bool                                      `json:"test,omitempty"`
+	Event    string                                     `json:"event"`
+	Account  WebhookAdsAccount                          `json:"account"`
+	AdObject WebhookPayloadCampaignCreatedAdObject      `json:"adObject"`
+	Budget   WebhookPayloadCampaignBudgetDepletedBudget `json:"budget"`
 	// UTC time at which Zernio generated this event.
 	Timestamp time.Time `json:"timestamp"`
 }
@@ -43,7 +43,7 @@ type _WebhookPayloadCampaignBudgetDepleted WebhookPayloadCampaignBudgetDepleted
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadCampaignBudgetDepleted(id string, event string, account WebhookAdsAccount, adObject WebhookPayloadCampaignBudgetDepletedAdObject, budget WebhookPayloadCampaignBudgetDepletedBudget, timestamp time.Time) *WebhookPayloadCampaignBudgetDepleted {
+func NewWebhookPayloadCampaignBudgetDepleted(id string, event string, account WebhookAdsAccount, adObject WebhookPayloadCampaignCreatedAdObject, budget WebhookPayloadCampaignBudgetDepletedBudget, timestamp time.Time) *WebhookPayloadCampaignBudgetDepleted {
 	this := WebhookPayloadCampaignBudgetDepleted{}
 	this.Id = id
 	this.Event = event
@@ -199,9 +199,9 @@ func (o *WebhookPayloadCampaignBudgetDepleted) SetAccount(v WebhookAdsAccount) {
 }
 
 // GetAdObject returns the AdObject field value
-func (o *WebhookPayloadCampaignBudgetDepleted) GetAdObject() WebhookPayloadCampaignBudgetDepletedAdObject {
+func (o *WebhookPayloadCampaignBudgetDepleted) GetAdObject() WebhookPayloadCampaignCreatedAdObject {
 	if o == nil {
-		var ret WebhookPayloadCampaignBudgetDepletedAdObject
+		var ret WebhookPayloadCampaignCreatedAdObject
 		return ret
 	}
 
@@ -210,7 +210,7 @@ func (o *WebhookPayloadCampaignBudgetDepleted) GetAdObject() WebhookPayloadCampa
 
 // GetAdObjectOk returns a tuple with the AdObject field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadCampaignBudgetDepleted) GetAdObjectOk() (*WebhookPayloadCampaignBudgetDepletedAdObject, bool) {
+func (o *WebhookPayloadCampaignBudgetDepleted) GetAdObjectOk() (*WebhookPayloadCampaignCreatedAdObject, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -218,7 +218,7 @@ func (o *WebhookPayloadCampaignBudgetDepleted) GetAdObjectOk() (*WebhookPayloadC
 }
 
 // SetAdObject sets field value
-func (o *WebhookPayloadCampaignBudgetDepleted) SetAdObject(v WebhookPayloadCampaignBudgetDepletedAdObject) {
+func (o *WebhookPayloadCampaignBudgetDepleted) SetAdObject(v WebhookPayloadCampaignCreatedAdObject) {
 	o.AdObject = v
 }
 
