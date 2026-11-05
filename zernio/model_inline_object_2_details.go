@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.499.2
+API version: 1.500.0
 Contact: support@zernio.com
 */
 
@@ -18,18 +18,13 @@ import (
 // checks if the InlineObject2Details type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &InlineObject2Details{}
 
-// InlineObject2Details Structured context for SDK clients that want to render their own UX. Keys vary by `reason`.
+// InlineObject2Details struct for InlineObject2Details
 type InlineObject2Details struct {
-	// How many accounts the free tier allows. Only set when reason=free_tier_exceeded.
-	FreeTierAccountLimit *int32 `json:"free_tier_account_limit,omitempty"`
-	// How many accounts the team currently has connected. Set when reason=free_tier_exceeded or reason=enterprise_required.
-	CurrentAccountCount *int32 `json:"current_account_count,omitempty"`
-	// Whether the team currently has a card on file in Stripe. Set when reason=free_tier_exceeded or reason=twitter_passthrough.
-	HasPaymentMethod *bool `json:"has_payment_method,omitempty"`
-	// One-time card verification charge in USD cents, credited to usage. Only set when reason=card_verification_required.
-	VerificationAmountCents *int32 `json:"verification_amount_cents,omitempty"`
-	// The negotiated connected-account cap from the team's enterprise contract. Self-service teams have no cap and never receive this reason. Only set when reason=enterprise_required.
-	EffectiveAccountLimit *int32 `json:"effective_account_limit,omitempty"`
+	CurrentCount      *int32  `json:"currentCount,omitempty"`
+	Limit             *int32  `json:"limit,omitempty"`
+	RetryAfterSeconds *int32  `json:"retryAfterSeconds,omitempty"`
+	Scope             *string `json:"scope,omitempty"`
+	Window            *string `json:"window,omitempty"`
 }
 
 // NewInlineObject2Details instantiates a new InlineObject2Details object
@@ -49,164 +44,164 @@ func NewInlineObject2DetailsWithDefaults() *InlineObject2Details {
 	return &this
 }
 
-// GetFreeTierAccountLimit returns the FreeTierAccountLimit field value if set, zero value otherwise.
-func (o *InlineObject2Details) GetFreeTierAccountLimit() int32 {
-	if o == nil || IsNil(o.FreeTierAccountLimit) {
+// GetCurrentCount returns the CurrentCount field value if set, zero value otherwise.
+func (o *InlineObject2Details) GetCurrentCount() int32 {
+	if o == nil || IsNil(o.CurrentCount) {
 		var ret int32
 		return ret
 	}
-	return *o.FreeTierAccountLimit
+	return *o.CurrentCount
 }
 
-// GetFreeTierAccountLimitOk returns a tuple with the FreeTierAccountLimit field value if set, nil otherwise
+// GetCurrentCountOk returns a tuple with the CurrentCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InlineObject2Details) GetFreeTierAccountLimitOk() (*int32, bool) {
-	if o == nil || IsNil(o.FreeTierAccountLimit) {
+func (o *InlineObject2Details) GetCurrentCountOk() (*int32, bool) {
+	if o == nil || IsNil(o.CurrentCount) {
 		return nil, false
 	}
-	return o.FreeTierAccountLimit, true
+	return o.CurrentCount, true
 }
 
-// HasFreeTierAccountLimit returns a boolean if a field has been set.
-func (o *InlineObject2Details) HasFreeTierAccountLimit() bool {
-	if o != nil && !IsNil(o.FreeTierAccountLimit) {
+// HasCurrentCount returns a boolean if a field has been set.
+func (o *InlineObject2Details) HasCurrentCount() bool {
+	if o != nil && !IsNil(o.CurrentCount) {
 		return true
 	}
 
 	return false
 }
 
-// SetFreeTierAccountLimit gets a reference to the given int32 and assigns it to the FreeTierAccountLimit field.
-func (o *InlineObject2Details) SetFreeTierAccountLimit(v int32) {
-	o.FreeTierAccountLimit = &v
+// SetCurrentCount gets a reference to the given int32 and assigns it to the CurrentCount field.
+func (o *InlineObject2Details) SetCurrentCount(v int32) {
+	o.CurrentCount = &v
 }
 
-// GetCurrentAccountCount returns the CurrentAccountCount field value if set, zero value otherwise.
-func (o *InlineObject2Details) GetCurrentAccountCount() int32 {
-	if o == nil || IsNil(o.CurrentAccountCount) {
+// GetLimit returns the Limit field value if set, zero value otherwise.
+func (o *InlineObject2Details) GetLimit() int32 {
+	if o == nil || IsNil(o.Limit) {
 		var ret int32
 		return ret
 	}
-	return *o.CurrentAccountCount
+	return *o.Limit
 }
 
-// GetCurrentAccountCountOk returns a tuple with the CurrentAccountCount field value if set, nil otherwise
+// GetLimitOk returns a tuple with the Limit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InlineObject2Details) GetCurrentAccountCountOk() (*int32, bool) {
-	if o == nil || IsNil(o.CurrentAccountCount) {
+func (o *InlineObject2Details) GetLimitOk() (*int32, bool) {
+	if o == nil || IsNil(o.Limit) {
 		return nil, false
 	}
-	return o.CurrentAccountCount, true
+	return o.Limit, true
 }
 
-// HasCurrentAccountCount returns a boolean if a field has been set.
-func (o *InlineObject2Details) HasCurrentAccountCount() bool {
-	if o != nil && !IsNil(o.CurrentAccountCount) {
+// HasLimit returns a boolean if a field has been set.
+func (o *InlineObject2Details) HasLimit() bool {
+	if o != nil && !IsNil(o.Limit) {
 		return true
 	}
 
 	return false
 }
 
-// SetCurrentAccountCount gets a reference to the given int32 and assigns it to the CurrentAccountCount field.
-func (o *InlineObject2Details) SetCurrentAccountCount(v int32) {
-	o.CurrentAccountCount = &v
+// SetLimit gets a reference to the given int32 and assigns it to the Limit field.
+func (o *InlineObject2Details) SetLimit(v int32) {
+	o.Limit = &v
 }
 
-// GetHasPaymentMethod returns the HasPaymentMethod field value if set, zero value otherwise.
-func (o *InlineObject2Details) GetHasPaymentMethod() bool {
-	if o == nil || IsNil(o.HasPaymentMethod) {
-		var ret bool
-		return ret
-	}
-	return *o.HasPaymentMethod
-}
-
-// GetHasPaymentMethodOk returns a tuple with the HasPaymentMethod field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *InlineObject2Details) GetHasPaymentMethodOk() (*bool, bool) {
-	if o == nil || IsNil(o.HasPaymentMethod) {
-		return nil, false
-	}
-	return o.HasPaymentMethod, true
-}
-
-// HasHasPaymentMethod returns a boolean if a field has been set.
-func (o *InlineObject2Details) HasHasPaymentMethod() bool {
-	if o != nil && !IsNil(o.HasPaymentMethod) {
-		return true
-	}
-
-	return false
-}
-
-// SetHasPaymentMethod gets a reference to the given bool and assigns it to the HasPaymentMethod field.
-func (o *InlineObject2Details) SetHasPaymentMethod(v bool) {
-	o.HasPaymentMethod = &v
-}
-
-// GetVerificationAmountCents returns the VerificationAmountCents field value if set, zero value otherwise.
-func (o *InlineObject2Details) GetVerificationAmountCents() int32 {
-	if o == nil || IsNil(o.VerificationAmountCents) {
+// GetRetryAfterSeconds returns the RetryAfterSeconds field value if set, zero value otherwise.
+func (o *InlineObject2Details) GetRetryAfterSeconds() int32 {
+	if o == nil || IsNil(o.RetryAfterSeconds) {
 		var ret int32
 		return ret
 	}
-	return *o.VerificationAmountCents
+	return *o.RetryAfterSeconds
 }
 
-// GetVerificationAmountCentsOk returns a tuple with the VerificationAmountCents field value if set, nil otherwise
+// GetRetryAfterSecondsOk returns a tuple with the RetryAfterSeconds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InlineObject2Details) GetVerificationAmountCentsOk() (*int32, bool) {
-	if o == nil || IsNil(o.VerificationAmountCents) {
+func (o *InlineObject2Details) GetRetryAfterSecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.RetryAfterSeconds) {
 		return nil, false
 	}
-	return o.VerificationAmountCents, true
+	return o.RetryAfterSeconds, true
 }
 
-// HasVerificationAmountCents returns a boolean if a field has been set.
-func (o *InlineObject2Details) HasVerificationAmountCents() bool {
-	if o != nil && !IsNil(o.VerificationAmountCents) {
+// HasRetryAfterSeconds returns a boolean if a field has been set.
+func (o *InlineObject2Details) HasRetryAfterSeconds() bool {
+	if o != nil && !IsNil(o.RetryAfterSeconds) {
 		return true
 	}
 
 	return false
 }
 
-// SetVerificationAmountCents gets a reference to the given int32 and assigns it to the VerificationAmountCents field.
-func (o *InlineObject2Details) SetVerificationAmountCents(v int32) {
-	o.VerificationAmountCents = &v
+// SetRetryAfterSeconds gets a reference to the given int32 and assigns it to the RetryAfterSeconds field.
+func (o *InlineObject2Details) SetRetryAfterSeconds(v int32) {
+	o.RetryAfterSeconds = &v
 }
 
-// GetEffectiveAccountLimit returns the EffectiveAccountLimit field value if set, zero value otherwise.
-func (o *InlineObject2Details) GetEffectiveAccountLimit() int32 {
-	if o == nil || IsNil(o.EffectiveAccountLimit) {
-		var ret int32
+// GetScope returns the Scope field value if set, zero value otherwise.
+func (o *InlineObject2Details) GetScope() string {
+	if o == nil || IsNil(o.Scope) {
+		var ret string
 		return ret
 	}
-	return *o.EffectiveAccountLimit
+	return *o.Scope
 }
 
-// GetEffectiveAccountLimitOk returns a tuple with the EffectiveAccountLimit field value if set, nil otherwise
+// GetScopeOk returns a tuple with the Scope field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InlineObject2Details) GetEffectiveAccountLimitOk() (*int32, bool) {
-	if o == nil || IsNil(o.EffectiveAccountLimit) {
+func (o *InlineObject2Details) GetScopeOk() (*string, bool) {
+	if o == nil || IsNil(o.Scope) {
 		return nil, false
 	}
-	return o.EffectiveAccountLimit, true
+	return o.Scope, true
 }
 
-// HasEffectiveAccountLimit returns a boolean if a field has been set.
-func (o *InlineObject2Details) HasEffectiveAccountLimit() bool {
-	if o != nil && !IsNil(o.EffectiveAccountLimit) {
+// HasScope returns a boolean if a field has been set.
+func (o *InlineObject2Details) HasScope() bool {
+	if o != nil && !IsNil(o.Scope) {
 		return true
 	}
 
 	return false
 }
 
-// SetEffectiveAccountLimit gets a reference to the given int32 and assigns it to the EffectiveAccountLimit field.
-func (o *InlineObject2Details) SetEffectiveAccountLimit(v int32) {
-	o.EffectiveAccountLimit = &v
+// SetScope gets a reference to the given string and assigns it to the Scope field.
+func (o *InlineObject2Details) SetScope(v string) {
+	o.Scope = &v
+}
+
+// GetWindow returns the Window field value if set, zero value otherwise.
+func (o *InlineObject2Details) GetWindow() string {
+	if o == nil || IsNil(o.Window) {
+		var ret string
+		return ret
+	}
+	return *o.Window
+}
+
+// GetWindowOk returns a tuple with the Window field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject2Details) GetWindowOk() (*string, bool) {
+	if o == nil || IsNil(o.Window) {
+		return nil, false
+	}
+	return o.Window, true
+}
+
+// HasWindow returns a boolean if a field has been set.
+func (o *InlineObject2Details) HasWindow() bool {
+	if o != nil && !IsNil(o.Window) {
+		return true
+	}
+
+	return false
+}
+
+// SetWindow gets a reference to the given string and assigns it to the Window field.
+func (o *InlineObject2Details) SetWindow(v string) {
+	o.Window = &v
 }
 
 func (o InlineObject2Details) MarshalJSON() ([]byte, error) {
@@ -219,20 +214,20 @@ func (o InlineObject2Details) MarshalJSON() ([]byte, error) {
 
 func (o InlineObject2Details) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.FreeTierAccountLimit) {
-		toSerialize["free_tier_account_limit"] = o.FreeTierAccountLimit
+	if !IsNil(o.CurrentCount) {
+		toSerialize["currentCount"] = o.CurrentCount
 	}
-	if !IsNil(o.CurrentAccountCount) {
-		toSerialize["current_account_count"] = o.CurrentAccountCount
+	if !IsNil(o.Limit) {
+		toSerialize["limit"] = o.Limit
 	}
-	if !IsNil(o.HasPaymentMethod) {
-		toSerialize["has_payment_method"] = o.HasPaymentMethod
+	if !IsNil(o.RetryAfterSeconds) {
+		toSerialize["retryAfterSeconds"] = o.RetryAfterSeconds
 	}
-	if !IsNil(o.VerificationAmountCents) {
-		toSerialize["verification_amount_cents"] = o.VerificationAmountCents
+	if !IsNil(o.Scope) {
+		toSerialize["scope"] = o.Scope
 	}
-	if !IsNil(o.EffectiveAccountLimit) {
-		toSerialize["effective_account_limit"] = o.EffectiveAccountLimit
+	if !IsNil(o.Window) {
+		toSerialize["window"] = o.Window
 	}
 	return toSerialize, nil
 }

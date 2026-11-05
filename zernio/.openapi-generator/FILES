@@ -1589,6 +1589,8 @@ model_inline_object.go
 model_inline_object_1.go
 model_inline_object_2.go
 model_inline_object_2_details.go
+model_inline_object_3.go
+model_inline_object_3_details.go
 model_instagram_account_insights_response.go
 model_instagram_account_insights_response_date_range.go
 model_instagram_account_insights_response_metrics_value.go
