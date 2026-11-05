@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.496.1
+API version: 1.496.2
 Contact: support@zernio.com
 */
 
@@ -51,10 +51,10 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	TimezoneOffsetHoursUtc *float32 `json:"timezoneOffsetHoursUtc,omitempty"`
 	// Meta only. Minimum daily budget for the account, in the account currency's major units. This is the impressions-billed minimum; other billing events have higher minimums. Absent when the connected token cannot read it.
 	MinimumDailyBudget *float32 `json:"minimumDailyBudget,omitempty"`
-	// Meta only. Meta's `funding_source` ID for the ad account, forwarded unchanged. ABSENT both when this connection's token cannot see billing and when the account has no payment method; read `billingStatus` to tell the two apart.
+	// Meta only. Meta's `funding_source` ID for the ad account, forwarded unchanged. ABSENT when this connection's token cannot see billing, when the account has no payment method, and for accounts paid through Business Billing Hub, which still create ads. Absence alone is not a missing payment method.
 	FundingSource        *string                                                     `json:"fundingSource,omitempty"`
 	FundingSourceDetails *ListAdAccounts200ResponseAccountsInnerFundingSourceDetails `json:"fundingSourceDetails,omitempty"`
-	// Meta only. Whether the ad account has a payment method:  - `missing`: `accountStatus` is `3` (UNSETTLED) or `9` (IN_GRACE_PERIOD), `disableReason` is `3` (RISK_PAYMENT), or the connected person has the MANAGE task on the account (admin, who always sees billing) and Meta returns no funding source. - `missing`, effect: ad creation fails at the ad step with Meta code 100 / subcode 1359188. Add a payment method in Meta's Billing & payments center. - `ok`: Meta returns a funding source. This is presence, not validity: Meta can still refuse the card or balance at ad creation. - `unknown`: the connected person is not an admin of the account, or the token cannot read the billing fields.
+	// Meta only. Whether the ad account has a payment method:  - `missing`: `accountStatus` is `3` (UNSETTLED) or `9` (IN_GRACE_PERIOD), or `disableReason` is `3` (RISK_PAYMENT). - `missing`, effect: ad creation fails at the ad step with Meta code 100 / subcode 1359188. Add a payment method in Meta's Billing & payments center. - `ok`: Meta returns a funding source. This is presence, not validity: Meta can still refuse the card or balance at ad creation. - `unknown`: Meta returns no funding source. The token may not see billing, the account may have no payment method, or it is paid through Business Billing Hub (Meta omits the funding source there even for admins). Meta decides at ad creation.
 	BillingStatus *string `json:"billingStatus,omitempty"`
 	// Meta and X only. Whether the account can create/run ads now. Always present on every Meta and X account. Absent (treat as true) on other platforms.
 	Selectable *bool `json:"selectable,omitempty"`
