@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.500.0
+API version: 1.500.1
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the WebhookPayloadMessageMetadataUnsupported type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageMetadataUnsupported{}
 
-// WebhookPayloadMessageMetadataUnsupported WhatsApp only. Meta's own reason this message has no renderable body. Present when Meta attached an error to the inbound payload; in practice the `unsupported`, `errors` and `unknown` types (code 131051: message type currently not supported). `text` on those messages is the fixed `[Unsupported message]` placeholder.
+// WebhookPayloadMessageMetadataUnsupported WhatsApp only. Meta's own reason this message has no renderable body. Present when Meta attached an error to the inbound payload; in practice the `unsupported`, `errors` and `unknown` types (code 131051: message type currently not supported). `text` on those messages is the fixed `[Unsupported message]` placeholder.  Also present with code 131052 when Meta could not download media the sender attached, except on numbers also using the WhatsApp Business app. The file is not available, so the sender has to send it again.
 type WebhookPayloadMessageMetadataUnsupported struct {
 	// Meta's numeric error code (e.g. 131051).
 	Code *int32 `json:"code,omitempty"`
