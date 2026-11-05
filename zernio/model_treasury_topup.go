@@ -28,11 +28,13 @@ type TreasuryTopup struct {
 	PayoutBatch *TreasuryTopupPayoutBatch `json:"payoutBatch,omitempty"`
 	// True for a balance top-up (there is no card fee) and a `payout_batch` payment: Zernio pays the Stripe processing fee, so you are credited the whole charge. False on a top-up made before 2026-11-05.
 	FeeCoveredByZernio *bool `json:"feeCoveredByZernio,omitempty"`
-	// The amount you asked for. A top-up charges exactly this and credits it whole. Top-ups from 2026-11-02 to 2026-11-05 charged a card fee on top and credited what Stripe delivered; older ones charged this amount and credited it minus the fee.
+	// The amount you asked for. A top-up credits exactly this and charges it plus tax (taxCents). Top-ups from 2026-11-02 to 2026-11-05 charged a card fee on top and credited what Stripe delivered; older ones charged this amount and credited it minus the fee.
 	AmountCents *int32 `json:"amountCents,omitempty"`
 	// Card fee you paid: 0 when Zernio covers it (feeCoveredByZernio). On an older top-up, the fee Stripe took once paid, the fee charged on top before, or null.
 	FeeCents NullableInt32 `json:"feeCents,omitempty"`
-	// What your card was charged: amountCents, or amountCents plus the card fee on a top-up from 2026-11-02 to 2026-11-05.
+	// Tax charged on top of amountCents once paid (VAT where it applies, since 2026-11-05); 0 before payment, when reverse charged, outside the EU, and on older top-ups.
+	TaxCents *int32 `json:"taxCents,omitempty"`
+	// What your card was charged: amountCents plus taxCents, or amountCents plus the card fee on a top-up from 2026-11-02 to 2026-11-05.
 	ChargedCents *int32 `json:"chargedCents,omitempty"`
 	// feeCents once the top-up is paid; null before. Kept for older clients: read feeCents.
 	StripeFeeCents NullableInt32 `json:"stripeFeeCents,omitempty"`
@@ -42,7 +44,7 @@ type TreasuryTopup struct {
 	Status      *string      `json:"status,omitempty"`
 	CreatedAt   *time.Time   `json:"createdAt,omitempty"`
 	SucceededAt NullableTime `json:"succeededAt,omitempty"`
-	// A Checkout invoice exists for this payment (Checkout payments before 2026-10-29). Every paid payment has a card receipt (getTopupReceipt); a paid top-up has a statement (getTopupStatement).
+	// The paid payment has an invoice (getTopupInvoice): every balance top-up paid since 2026-11-05 (unless charged without one for a Stripe credit balance), and Checkout payments before 2026-10-29. Every paid payment has a card receipt (getTopupReceipt).
 	HasInvoice *bool `json:"hasInvoice,omitempty"`
 }
 
@@ -296,6 +298,38 @@ func (o *TreasuryTopup) SetFeeCentsNil() {
 // UnsetFeeCents ensures that no value is present for FeeCents, not even an explicit nil
 func (o *TreasuryTopup) UnsetFeeCents() {
 	o.FeeCents.Unset()
+}
+
+// GetTaxCents returns the TaxCents field value if set, zero value otherwise.
+func (o *TreasuryTopup) GetTaxCents() int32 {
+	if o == nil || IsNil(o.TaxCents) {
+		var ret int32
+		return ret
+	}
+	return *o.TaxCents
+}
+
+// GetTaxCentsOk returns a tuple with the TaxCents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TreasuryTopup) GetTaxCentsOk() (*int32, bool) {
+	if o == nil || IsNil(o.TaxCents) {
+		return nil, false
+	}
+	return o.TaxCents, true
+}
+
+// HasTaxCents returns a boolean if a field has been set.
+func (o *TreasuryTopup) HasTaxCents() bool {
+	if o != nil && !IsNil(o.TaxCents) {
+		return true
+	}
+
+	return false
+}
+
+// SetTaxCents gets a reference to the given int32 and assigns it to the TaxCents field.
+func (o *TreasuryTopup) SetTaxCents(v int32) {
+	o.TaxCents = &v
 }
 
 // GetChargedCents returns the ChargedCents field value if set, zero value otherwise.
@@ -585,6 +619,9 @@ func (o TreasuryTopup) ToMap() (map[string]interface{}, error) {
 	}
 	if o.FeeCents.IsSet() {
 		toSerialize["feeCents"] = o.FeeCents.Get()
+	}
+	if !IsNil(o.TaxCents) {
+		toSerialize["taxCents"] = o.TaxCents
 	}
 	if !IsNil(o.ChargedCents) {
 		toSerialize["chargedCents"] = o.ChargedCents

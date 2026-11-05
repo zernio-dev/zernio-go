@@ -32,7 +32,9 @@ type GetTopupReceipt200Response struct {
 	AmountCents int32 `json:"amountCents"`
 	// Card fee paid, as in the top-up list.
 	FeeCents NullableInt32 `json:"feeCents"`
-	// What the card was charged, the total on the receipt.
+	// Tax charged on top of amountCents, as in the top-up list.
+	TaxCents *int32 `json:"taxCents,omitempty"`
+	// What the card was charged, tax included: the total on the receipt.
 	ChargedCents int32 `json:"chargedCents"`
 }
 
@@ -244,6 +246,38 @@ func (o *GetTopupReceipt200Response) SetFeeCents(v int32) {
 	o.FeeCents.Set(&v)
 }
 
+// GetTaxCents returns the TaxCents field value if set, zero value otherwise.
+func (o *GetTopupReceipt200Response) GetTaxCents() int32 {
+	if o == nil || IsNil(o.TaxCents) {
+		var ret int32
+		return ret
+	}
+	return *o.TaxCents
+}
+
+// GetTaxCentsOk returns a tuple with the TaxCents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetTopupReceipt200Response) GetTaxCentsOk() (*int32, bool) {
+	if o == nil || IsNil(o.TaxCents) {
+		return nil, false
+	}
+	return o.TaxCents, true
+}
+
+// HasTaxCents returns a boolean if a field has been set.
+func (o *GetTopupReceipt200Response) HasTaxCents() bool {
+	if o != nil && !IsNil(o.TaxCents) {
+		return true
+	}
+
+	return false
+}
+
+// SetTaxCents gets a reference to the given int32 and assigns it to the TaxCents field.
+func (o *GetTopupReceipt200Response) SetTaxCents(v int32) {
+	o.TaxCents = &v
+}
+
 // GetChargedCents returns the ChargedCents field value
 func (o *GetTopupReceipt200Response) GetChargedCents() int32 {
 	if o == nil {
@@ -288,6 +322,9 @@ func (o GetTopupReceipt200Response) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["amountCents"] = o.AmountCents
 	toSerialize["feeCents"] = o.FeeCents.Get()
+	if !IsNil(o.TaxCents) {
+		toSerialize["taxCents"] = o.TaxCents
+	}
 	toSerialize["chargedCents"] = o.ChargedCents
 	return toSerialize, nil
 }

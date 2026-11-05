@@ -817,9 +817,13 @@ func (r TreasuryAPICreateTopupRequest) Execute() (*CreateTopup201Response, *http
 /*
 CreateTopup Create a top-up
 
-Charges the billing owner's saved card (the default one, or `paymentMethodId`) exactly `amountCents`, while the payer is present, and credits your balance the same amount. There is no card fee.
+Charges the billing owner's saved card (the default one, or `paymentMethodId`) `amountCents` plus tax, while the payer is present, and credits your balance `amountCents`. There is no card fee.
 
-Each top-up has a card receipt (`GET /v1/balance/top-ups/{topupId}/receipt`) and a top-up statement without VAT (`GET /v1/balance/top-ups/{topupId}/statement`): the balance is taxed when it is used, on your monthly invoice.
+Tax is added on top of the amount (`taxCents`, `totalCents`): VAT at 21% in Spain, at the customer's country rate for EU consumers; an EU business with a valid VAT id is reverse charged (no VAT, `reverseCharge: true`); outside the EU there is none.
+
+Usage paid from the balance carries no further VAT. Get the figures before paying with `POST /v1/balance/top-ups/preview`.
+
+Each top-up has an invoice, with VAT where it applies (`GET /v1/balance/top-ups/{topupId}/invoice`), and a card receipt (`GET /v1/balance/top-ups/{topupId}/receipt`).
 
 - `status: succeeded`: the card was charged. `amountCents` is credited to `availableCents` within seconds. Transfers to payees can use it from 7 days after the charge.
 - `status: requires_action`: the bank asked for 3D Secure. Complete it with Stripe.js `handleNextAction({ clientSecret })`, then call `POST /v1/balance/top-ups/{topupId}/confirm`. One left unconfirmed is cancelled after 30 minutes.
@@ -829,6 +833,7 @@ Each top-up has a card receipt (`GET /v1/balance/top-ups/{topupId}/receipt`) and
 - 402 `payment_required`: no saved card.
 - 402 `card_declined`: the bank's reason.
 - 400: `method: bank_transfer` (bank transfers are not available yet).
+- 400 `invalid_billing_address`: the billing address gives no tax location. Add it in Billing, then retry.
 
 Needs an owner, admin or billing admin, signed in or through a full-access key they created.
 
@@ -1437,6 +1442,160 @@ func (a *TreasuryAPIService) GetPayoutBatchExecute(r TreasuryAPIGetPayoutBatchRe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type TreasuryAPIGetTopupInvoiceRequest struct {
+	ctx        context.Context
+	ApiService *TreasuryAPIService
+	topupId    string
+}
+
+func (r TreasuryAPIGetTopupInvoiceRequest) Execute() (*GetTopupInvoice200Response, *http.Response, error) {
+	return r.ApiService.GetTopupInvoiceExecute(r)
+}
+
+/*
+GetTopupInvoice Get a top-up invoice
+
+The invoice for a paid balance top-up: the PDF of the Stripe invoice it was paid through.
+
+It shows the amount added to your balance and the tax charged on top: VAT where it applies, or a reverse charge note for an EU business with a valid VAT id. Usage paid from the balance carries no further VAT.
+
+- `format: pdf` is the invoice PDF; `format: page` is its Stripe-hosted page when the PDF is not ready.
+- 404 before the top-up is paid, and for a payment with no invoice (top-ups before 2026-11-05, creator payout payments). Its card receipt is at getTopupReceipt.
+
+The link is short-lived, so fetch it when you need it. A profile-scoped key answers 403.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param topupId
+	@return TreasuryAPIGetTopupInvoiceRequest
+*/
+func (a *TreasuryAPIService) GetTopupInvoice(ctx context.Context, topupId string) TreasuryAPIGetTopupInvoiceRequest {
+	return TreasuryAPIGetTopupInvoiceRequest{
+		ApiService: a,
+		ctx:        ctx,
+		topupId:    topupId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetTopupInvoice200Response
+func (a *TreasuryAPIService) GetTopupInvoiceExecute(r TreasuryAPIGetTopupInvoiceRequest) (*GetTopupInvoice200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetTopupInvoice200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TreasuryAPIService.GetTopupInvoice")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/balance/top-ups/{topupId}/invoice"
+	localVarPath = strings.Replace(localVarPath, "{"+"topupId"+"}", url.PathEscape(parameterValueToString(r.topupId, "topupId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject3
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v InlineObject1
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type TreasuryAPIGetTopupReceiptRequest struct {
 	ctx        context.Context
 	ApiService *TreasuryAPIService
@@ -1450,7 +1609,9 @@ func (r TreasuryAPIGetTopupReceiptRequest) Execute() (*GetTopupReceipt200Respons
 /*
 GetTopupReceipt Get a top-up receipt
 
-The receipt for a paid top-up or creator payout payment (`purpose: payout_batch`). `format: pdf` is the Checkout invoice PDF (payments before 2026-10-29); `format: page` is Stripe's card receipt page. A top-up's statement is at getTopupStatement. The link is short-lived, so fetch it when you need it. A profile-scoped key answers 403.
+The receipt for a paid top-up or creator payout payment (`purpose: payout_batch`). `url` is the payment's invoice PDF when it has one (`format: pdf`), else Stripe's card receipt page (`format: page`); `invoiceUrl` and `receiptUrl` give each on its own.
+
+The invoice alone is at getTopupInvoice. The link is short-lived, so fetch it when you need it. A profile-scoped key answers 403.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param topupId
@@ -1590,23 +1751,29 @@ type TreasuryAPIGetTopupStatementRequest struct {
 	topupId    string
 }
 
-func (r TreasuryAPIGetTopupStatementRequest) Execute() (*GetTopupStatement200Response, *http.Response, error) {
+func (r TreasuryAPIGetTopupStatementRequest) Execute() (*GetTopupInvoice200Response, *http.Response, error) {
 	return r.ApiService.GetTopupStatementExecute(r)
 }
 
 /*
-GetTopupStatement Get a top-up statement
+GetTopupStatement Get a top-up invoice (alias)
 
-The statement for a paid balance top-up: the PDF of the Stripe invoice it was paid through. It shows the amount added to your balance and no VAT: money added to the balance is taxed when it is used, on your monthly invoice.
+Alias of getTopupInvoice, kept for clients written against its first name.
 
-- `format: pdf` is the statement PDF; `format: page` is its Stripe-hosted page when the PDF is not ready.
-- 404 before the top-up is paid, and for a payment with no statement (top-ups before 2026-11-05, creator payout payments). Its card receipt is at getTopupReceipt.
+The invoice for a paid balance top-up: the PDF of the Stripe invoice it was paid through.
+
+It shows the amount added to your balance and the tax charged on top: VAT where it applies, or a reverse charge note for an EU business with a valid VAT id. Usage paid from the balance carries no further VAT.
+
+- `format: pdf` is the invoice PDF; `format: page` is its Stripe-hosted page when the PDF is not ready.
+- 404 before the top-up is paid, and for a payment with no invoice (top-ups before 2026-11-05, creator payout payments). Its card receipt is at getTopupReceipt.
 
 The link is short-lived, so fetch it when you need it. A profile-scoped key answers 403.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param topupId
 	@return TreasuryAPIGetTopupStatementRequest
+
+Deprecated
 */
 func (a *TreasuryAPIService) GetTopupStatement(ctx context.Context, topupId string) TreasuryAPIGetTopupStatementRequest {
 	return TreasuryAPIGetTopupStatementRequest{
@@ -1618,13 +1785,15 @@ func (a *TreasuryAPIService) GetTopupStatement(ctx context.Context, topupId stri
 
 // Execute executes the request
 //
-//	@return GetTopupStatement200Response
-func (a *TreasuryAPIService) GetTopupStatementExecute(r TreasuryAPIGetTopupStatementRequest) (*GetTopupStatement200Response, *http.Response, error) {
+//	@return GetTopupInvoice200Response
+//
+// Deprecated
+func (a *TreasuryAPIService) GetTopupStatementExecute(r TreasuryAPIGetTopupStatementRequest) (*GetTopupInvoice200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetTopupStatement200Response
+		localVarReturnValue *GetTopupInvoice200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TreasuryAPIService.GetTopupStatement")
@@ -2245,6 +2414,153 @@ func (a *TreasuryAPIService) ListTransfersExecute(r TreasuryAPIListTransfersRequ
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject3
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v InlineObject1
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type TreasuryAPIPreviewTopupRequest struct {
+	ctx                 context.Context
+	ApiService          *TreasuryAPIService
+	previewTopupRequest *PreviewTopupRequest
+}
+
+func (r TreasuryAPIPreviewTopupRequest) PreviewTopupRequest(previewTopupRequest PreviewTopupRequest) TreasuryAPIPreviewTopupRequest {
+	r.previewTopupRequest = &previewTopupRequest
+	return r
+}
+
+func (r TreasuryAPIPreviewTopupRequest) Execute() (*PreviewTopup200Response, *http.Response, error) {
+	return r.ApiService.PreviewTopupExecute(r)
+}
+
+/*
+PreviewTopup Preview a top-up's tax
+
+The tax a top-up of `amountCents` will carry and the total the card is charged, calculated by Stripe Tax from the billing owner's billing address and tax ids, as the top-up's invoice will be. Charges nothing.
+
+- 400 `invalid_billing_address`: the billing address gives no tax location, so a top-up would be refused too.
+
+Needs a full-access key or a signed-in session; a profile-scoped key answers 403.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return TreasuryAPIPreviewTopupRequest
+*/
+func (a *TreasuryAPIService) PreviewTopup(ctx context.Context) TreasuryAPIPreviewTopupRequest {
+	return TreasuryAPIPreviewTopupRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return PreviewTopup200Response
+func (a *TreasuryAPIService) PreviewTopupExecute(r TreasuryAPIPreviewTopupRequest) (*PreviewTopup200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PreviewTopup200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TreasuryAPIService.PreviewTopup")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/balance/top-ups/preview"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.previewTopupRequest == nil {
+		return localVarReturnValue, nil, reportError("previewTopupRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.previewTopupRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

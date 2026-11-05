@@ -22,7 +22,7 @@ var _ MappedNullable = &CreateTopupRequest{}
 
 // CreateTopupRequest struct for CreateTopupRequest
 type CreateTopupRequest struct {
-	// Amount to charge and credit to your balance, in cents: $5 to $100,000. No card fee.
+	// Amount to credit to your balance, in cents: $5 to $100,000. Tax is charged on top; no card fee.
 	AmountCents int32 `json:"amountCents"`
 	// Only card is available. bank_transfer returns 400 \"Bank transfers are not available yet.\"
 	Method string `json:"method"`

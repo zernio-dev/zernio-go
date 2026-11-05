@@ -23,11 +23,19 @@ var _ MappedNullable = &CreateTopup201Response{}
 // CreateTopup201Response struct for CreateTopup201Response
 type CreateTopup201Response struct {
 	TopupId string `json:"topupId"`
-	// Charged and credited to your balance once paid.
+	// Credited to your balance once paid.
 	AmountCents int32 `json:"amountCents"`
+	// Tax added on top of amountCents (VAT where it applies). 0 when reverse charged or outside the EU.
+	TaxCents int32 `json:"taxCents"`
+	// What the card is charged: amountCents + taxCents.
+	TotalCents int32 `json:"totalCents"`
+	// The tax and its rate, for example \"VAT 21%\". Null when no tax is charged.
+	TaxLabel NullableString `json:"taxLabel"`
+	// True for an EU business with a valid VAT id: no VAT is charged and the invoice says reverse charge.
+	ReverseCharge bool `json:"reverseCharge"`
 	// Always 0: there is no card fee. Kept for older clients.
 	FeeCents int32 `json:"feeCents"`
-	// What the card is charged: amountCents. Kept for older clients.
+	// Same as totalCents. Kept for older clients.
 	ChargedCents int32 `json:"chargedCents"`
 	// Always true. Kept for older clients.
 	FeeIsExact bool   `json:"feeIsExact"`
@@ -42,10 +50,14 @@ type _CreateTopup201Response CreateTopup201Response
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateTopup201Response(topupId string, amountCents int32, feeCents int32, chargedCents int32, feeIsExact bool, status string, clientSecret NullableString) *CreateTopup201Response {
+func NewCreateTopup201Response(topupId string, amountCents int32, taxCents int32, totalCents int32, taxLabel NullableString, reverseCharge bool, feeCents int32, chargedCents int32, feeIsExact bool, status string, clientSecret NullableString) *CreateTopup201Response {
 	this := CreateTopup201Response{}
 	this.TopupId = topupId
 	this.AmountCents = amountCents
+	this.TaxCents = taxCents
+	this.TotalCents = totalCents
+	this.TaxLabel = taxLabel
+	this.ReverseCharge = reverseCharge
 	this.FeeCents = feeCents
 	this.ChargedCents = chargedCents
 	this.FeeIsExact = feeIsExact
@@ -108,6 +120,104 @@ func (o *CreateTopup201Response) GetAmountCentsOk() (*int32, bool) {
 // SetAmountCents sets field value
 func (o *CreateTopup201Response) SetAmountCents(v int32) {
 	o.AmountCents = v
+}
+
+// GetTaxCents returns the TaxCents field value
+func (o *CreateTopup201Response) GetTaxCents() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.TaxCents
+}
+
+// GetTaxCentsOk returns a tuple with the TaxCents field value
+// and a boolean to check if the value has been set.
+func (o *CreateTopup201Response) GetTaxCentsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.TaxCents, true
+}
+
+// SetTaxCents sets field value
+func (o *CreateTopup201Response) SetTaxCents(v int32) {
+	o.TaxCents = v
+}
+
+// GetTotalCents returns the TotalCents field value
+func (o *CreateTopup201Response) GetTotalCents() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.TotalCents
+}
+
+// GetTotalCentsOk returns a tuple with the TotalCents field value
+// and a boolean to check if the value has been set.
+func (o *CreateTopup201Response) GetTotalCentsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.TotalCents, true
+}
+
+// SetTotalCents sets field value
+func (o *CreateTopup201Response) SetTotalCents(v int32) {
+	o.TotalCents = v
+}
+
+// GetTaxLabel returns the TaxLabel field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *CreateTopup201Response) GetTaxLabel() string {
+	if o == nil || o.TaxLabel.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.TaxLabel.Get()
+}
+
+// GetTaxLabelOk returns a tuple with the TaxLabel field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateTopup201Response) GetTaxLabelOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TaxLabel.Get(), o.TaxLabel.IsSet()
+}
+
+// SetTaxLabel sets field value
+func (o *CreateTopup201Response) SetTaxLabel(v string) {
+	o.TaxLabel.Set(&v)
+}
+
+// GetReverseCharge returns the ReverseCharge field value
+func (o *CreateTopup201Response) GetReverseCharge() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.ReverseCharge
+}
+
+// GetReverseChargeOk returns a tuple with the ReverseCharge field value
+// and a boolean to check if the value has been set.
+func (o *CreateTopup201Response) GetReverseChargeOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ReverseCharge, true
+}
+
+// SetReverseCharge sets field value
+func (o *CreateTopup201Response) SetReverseCharge(v bool) {
+	o.ReverseCharge = v
 }
 
 // GetFeeCents returns the FeeCents field value
@@ -244,6 +354,10 @@ func (o CreateTopup201Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["topupId"] = o.TopupId
 	toSerialize["amountCents"] = o.AmountCents
+	toSerialize["taxCents"] = o.TaxCents
+	toSerialize["totalCents"] = o.TotalCents
+	toSerialize["taxLabel"] = o.TaxLabel.Get()
+	toSerialize["reverseCharge"] = o.ReverseCharge
 	toSerialize["feeCents"] = o.FeeCents
 	toSerialize["chargedCents"] = o.ChargedCents
 	toSerialize["feeIsExact"] = o.FeeIsExact
@@ -259,6 +373,10 @@ func (o *CreateTopup201Response) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"topupId",
 		"amountCents",
+		"taxCents",
+		"totalCents",
+		"taxLabel",
+		"reverseCharge",
 		"feeCents",
 		"chargedCents",
 		"feeIsExact",
