@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.499.0
+API version: 1.499.1
 Contact: support@zernio.com
 */
 
@@ -35,11 +35,13 @@ type GetInboxPostComments200ResponseCommentsInner struct {
 	Replies []map[string]interface{} `json:"replies,omitempty"`
 	// Facebook only. True when replies[] (capped at 10) does not hold the comment's full reply thread.  Fetch the rest by passing the comment id as the `commentId` query parameter to GET /v1/inbox/comments/{postId} (or, for backwards compatibility, as `postId`).  Absent (not false) on every other platform, including Instagram, which has no equivalent signal.
 	RepliesHasMore *bool `json:"repliesHasMore,omitempty"`
-	CanReply       *bool `json:"canReply,omitempty"`
-	CanDelete      *bool `json:"canDelete,omitempty"`
-	// Whether this comment can be hidden (Facebook, Instagram, Threads)
+	// Whether this comment can be replied to. Always present.
+	CanReply *bool `json:"canReply,omitempty"`
+	// Whether DELETE is expected to work on this comment. True for the account's own comments, and for anyone's comment on Facebook, Instagram and YouTube. On TikTok, TikTok's own flag decides. False does not block the call: the platform decides. Always present.
+	CanDelete *bool `json:"canDelete,omitempty"`
+	// Whether hide is supported for this comment's platform (Facebook, Instagram, Threads, X, TikTok). It does not check each comment: X needs a conversation started by the account, and Threads only hides top-level replies. Always present.
 	CanHide *bool `json:"canHide,omitempty"`
-	// Whether this comment can be liked (Facebook, X, Bluesky, Reddit, LinkedIn)
+	// Whether this comment can be liked (Facebook, X, Bluesky, Reddit, LinkedIn, TikTok). Always present.
 	CanLike *bool `json:"canLike,omitempty"`
 	// Whether the comment is currently hidden. On Instagram accounts connected through Facebook Login, Meta leaves hidden comments (and their replies) out of the list entirely, so they never appear with isHidden true; Instagram Login accounts and Facebook Pages return them with isHidden true.
 	IsHidden *bool `json:"isHidden,omitempty"`
