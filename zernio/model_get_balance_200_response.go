@@ -20,7 +20,7 @@ var _ MappedNullable = &GetBalance200Response{}
 
 // GetBalance200Response struct for GetBalance200Response
 type GetBalance200Response struct {
-	// Your balance, including card top-ups paid in the last 7 days (see payoutLockedCents). Negative after a dispute or refund of a top-up that was already spent, or, on balance billing, when pay-per-use already in flight (a connected call, an SMS already with the carrier) lands past zero; the next top-up covers it. Transfers are refused while it is negative.
+	// Your balance, including card top-ups paid in the last 7 days (see payoutLockedCents). It goes negative after a dispute or refund of a spent top-up, or when pay-per-use already in flight lands past zero. The next top-up covers it. Transfers are refused while it is negative.
 	AvailableCents *int32 `json:"availableCents,omitempty"`
 	// Part of availableCents from card top-ups charged in the last 7 days, net of refunds and disputes. Transfers to payees cannot use it yet; a transfer that needs it answers 409 `payout_funds_locked` with the day it can be sent.
 	PayoutLockedCents *int32 `json:"payoutLockedCents,omitempty"`
