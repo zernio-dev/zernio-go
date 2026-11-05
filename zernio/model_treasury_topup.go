@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.500.1
+API version: 1.501.0
 Contact: support@zernio.com
 */
 
@@ -26,23 +26,23 @@ type TreasuryTopup struct {
 	// `balance` funds your balance; `payout_batch` is the card payment of one payout batch, which pays its creators directly.
 	Purpose     *string                   `json:"purpose,omitempty"`
 	PayoutBatch *TreasuryTopupPayoutBatch `json:"payoutBatch,omitempty"`
-	// True for a `payout_batch` payment: Zernio pays the Stripe processing fee out of its transfer fee, so you are credited the whole charge.
+	// True for a balance top-up (there is no card fee) and a `payout_batch` payment: Zernio pays the Stripe processing fee, so you are credited the whole charge. False on a top-up made before 2026-11-05.
 	FeeCoveredByZernio *bool `json:"feeCoveredByZernio,omitempty"`
-	// The amount you asked for. A top-up charges the card fee on top of it and credits what Stripe delivers, at least this amount. Older top-ups charged this amount and credited it minus the fee.
+	// The amount you asked for. A top-up charges exactly this and credits it whole. Top-ups from 2026-11-02 to 2026-11-05 charged a card fee on top and credited what Stripe delivered; older ones charged this amount and credited it minus the fee.
 	AmountCents *int32 `json:"amountCents,omitempty"`
-	// Card fee. Once paid, the fee Stripe took (chargedCents minus netCents). Before, the fee charged on top, or null on an older top-up. 0 when Zernio covers it (`payout_batch`).
+	// Card fee you paid: 0 when Zernio covers it (feeCoveredByZernio). On an older top-up, the fee Stripe took once paid, the fee charged on top before, or null.
 	FeeCents NullableInt32 `json:"feeCents,omitempty"`
-	// What your card was charged: amountCents plus the card fee charged on top, or amountCents on an older top-up and on a `payout_batch` payment.
+	// What your card was charged: amountCents, or amountCents plus the card fee on a top-up from 2026-11-02 to 2026-11-05.
 	ChargedCents *int32 `json:"chargedCents,omitempty"`
 	// feeCents once the top-up is paid; null before. Kept for older clients: read feeCents.
 	StripeFeeCents NullableInt32 `json:"stripeFeeCents,omitempty"`
-	// Amount credited to your balance, what Stripe delivered; null until paid. At least amountCents on a top-up that charged the fee on top, and amountCents on `payout_batch` payments.
+	// Amount credited to your balance; null until paid. amountCents when feeCoveredByZernio; on an older top-up, what Stripe delivered.
 	NetCents NullableInt32 `json:"netCents,omitempty"`
 	// `pending` until the card is charged (or 3D Secure is finished) and credited. `expired` means it ended unpaid: cancelled, or 3D Secure left unfinished for 30 minutes. Only `pending` counts toward pendingTopupCents.
 	Status      *string      `json:"status,omitempty"`
 	CreatedAt   *time.Time   `json:"createdAt,omitempty"`
 	SucceededAt NullableTime `json:"succeededAt,omitempty"`
-	// A Stripe invoice exists for this payment (Checkout payments). Every paid payment has a card receipt; see getTopupReceipt.
+	// A Checkout invoice exists for this payment (Checkout payments before 2026-10-29). Every paid payment has a card receipt (getTopupReceipt); a paid top-up has a statement (getTopupStatement).
 	HasInvoice *bool `json:"hasInvoice,omitempty"`
 }
 

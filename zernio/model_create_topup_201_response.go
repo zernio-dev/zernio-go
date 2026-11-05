@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.500.1
+API version: 1.501.0
 Contact: support@zernio.com
 */
 
@@ -23,13 +23,13 @@ var _ MappedNullable = &CreateTopup201Response{}
 // CreateTopup201Response struct for CreateTopup201Response
 type CreateTopup201Response struct {
 	TopupId string `json:"topupId"`
-	// Credited to your balance once paid: exactly this when feeIsExact, else at least this.
+	// Charged and credited to your balance once paid.
 	AmountCents int32 `json:"amountCents"`
-	// Card fee, charged on top of amountCents.
+	// Always 0: there is no card fee. Kept for older clients.
 	FeeCents int32 `json:"feeCents"`
-	// What the card is charged: amountCents plus feeCents.
+	// What the card is charged: amountCents. Kept for older clients.
 	ChargedCents int32 `json:"chargedCents"`
-	// True when feeCents is exactly Stripe's fee for this card. False when it is the region's highest rate, so Stripe may take less and the difference is added to your balance.
+	// Always true. Kept for older clients.
 	FeeIsExact bool   `json:"feeIsExact"`
 	Status     string `json:"status"`
 	// PaymentIntent client secret for Stripe.js handleNextAction; set only when status is requires_action

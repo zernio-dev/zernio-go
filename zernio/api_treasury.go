@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.500.1
+API version: 1.501.0
 Contact: support@zernio.com
 */
 
@@ -817,15 +817,11 @@ func (r TreasuryAPICreateTopupRequest) Execute() (*CreateTopup201Response, *http
 /*
 CreateTopup Create a top-up
 
-Charges the billing owner's saved card (the default one, or `paymentMethodId`) `amountCents` plus the card fee, while the payer is present, and credits your balance what Stripe delivers.
+Charges the billing owner's saved card (the default one, or `paymentMethodId`) exactly `amountCents`, while the payer is present, and credits your balance the same amount. There is no card fee.
 
-The card fee is Stripe's own rate for the card, learned from its past charges (`GET /v1/balance/top-ups/card-fee` answers it).
+Each top-up has a card receipt (`GET /v1/balance/top-ups/{topupId}/receipt`) and a top-up statement without VAT (`GET /v1/balance/top-ups/{topupId}/statement`): the balance is taxed when it is used, on your monthly invoice.
 
-- When `feeIsExact` is true you receive exactly `amountCents`.
-- When it is false (the first top-up on a card issued in the EEA, or Link, where Stripe prices by card product) the fee is the highest rate for the card's region.
-- You then receive at least `amountCents`: if Stripe charges less, the difference is added to your balance.
-
-- `status: succeeded`: the card was charged. What Stripe delivered is credited to `availableCents` within seconds. Transfers to payees can use it from 7 days after the charge.
+- `status: succeeded`: the card was charged. `amountCents` is credited to `availableCents` within seconds. Transfers to payees can use it from 7 days after the charge.
 - `status: requires_action`: the bank asked for 3D Secure. Complete it with Stripe.js `handleNextAction({ clientSecret })`, then call `POST /v1/balance/top-ups/{topupId}/confirm`. One left unconfirmed is cancelled after 30 minutes.
 
 ### Errors
@@ -1441,68 +1437,56 @@ func (a *TreasuryAPIService) GetPayoutBatchExecute(r TreasuryAPIGetPayoutBatchRe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type TreasuryAPIGetTopupCardFeeRequest struct {
-	ctx             context.Context
-	ApiService      *TreasuryAPIService
-	paymentMethodId *string
+type TreasuryAPIGetTopupReceiptRequest struct {
+	ctx        context.Context
+	ApiService *TreasuryAPIService
+	topupId    string
 }
 
-// A saved card of the billing owner&#39;s (&#x60;pm_...&#x60;). Defaults to the default payment method.
-func (r TreasuryAPIGetTopupCardFeeRequest) PaymentMethodId(paymentMethodId string) TreasuryAPIGetTopupCardFeeRequest {
-	r.paymentMethodId = &paymentMethodId
-	return r
-}
-
-func (r TreasuryAPIGetTopupCardFeeRequest) Execute() (*GetTopupCardFee200Response, *http.Response, error) {
-	return r.ApiService.GetTopupCardFeeExecute(r)
+func (r TreasuryAPIGetTopupReceiptRequest) Execute() (*GetTopupReceipt200Response, *http.Response, error) {
+	return r.ApiService.GetTopupReceiptExecute(r)
 }
 
 /*
-GetTopupCardFee Get the card fee for a top-up
+GetTopupReceipt Get a top-up receipt
 
-The card fee a top-up on the billing owner's saved card pays: `feeBps` of the charge plus `fixedCents`. The card is charged the smallest amount that leaves `amountCents` once Stripe takes `round_half_up(charge * feeBps / 10000) + fixedCents`.
-
-The rate is Stripe's own for the card, learned from its past charges.
-
-`feeIsExact` is false for a card Zernio has not charged yet whose region Stripe prices by card product (EEA) or whose country is unknown (Link). The rate is then that region's highest, and the top-up credits at least the amount.
-
-Needs an owner, admin or billing admin, signed in or through a full-access key they created.
+The receipt for a paid top-up or creator payout payment (`purpose: payout_batch`). `format: pdf` is the Checkout invoice PDF (payments before 2026-10-29); `format: page` is Stripe's card receipt page. A top-up's statement is at getTopupStatement. The link is short-lived, so fetch it when you need it. A profile-scoped key answers 403.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return TreasuryAPIGetTopupCardFeeRequest
+	@param topupId
+	@return TreasuryAPIGetTopupReceiptRequest
 */
-func (a *TreasuryAPIService) GetTopupCardFee(ctx context.Context) TreasuryAPIGetTopupCardFeeRequest {
-	return TreasuryAPIGetTopupCardFeeRequest{
+func (a *TreasuryAPIService) GetTopupReceipt(ctx context.Context, topupId string) TreasuryAPIGetTopupReceiptRequest {
+	return TreasuryAPIGetTopupReceiptRequest{
 		ApiService: a,
 		ctx:        ctx,
+		topupId:    topupId,
 	}
 }
 
 // Execute executes the request
 //
-//	@return GetTopupCardFee200Response
-func (a *TreasuryAPIService) GetTopupCardFeeExecute(r TreasuryAPIGetTopupCardFeeRequest) (*GetTopupCardFee200Response, *http.Response, error) {
+//	@return GetTopupReceipt200Response
+func (a *TreasuryAPIService) GetTopupReceiptExecute(r TreasuryAPIGetTopupReceiptRequest) (*GetTopupReceipt200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetTopupCardFee200Response
+		localVarReturnValue *GetTopupReceipt200Response
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TreasuryAPIService.GetTopupCardFee")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TreasuryAPIService.GetTopupReceipt")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/v1/balance/top-ups/card-fee"
+	localVarPath := localBasePath + "/v1/balance/top-ups/{topupId}/receipt"
+	localVarPath = strings.Replace(localVarPath, "{"+"topupId"+"}", url.PathEscape(parameterValueToString(r.topupId, "topupId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.paymentMethodId != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "paymentMethodId", r.paymentMethodId, "form", "")
-	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1554,7 +1538,7 @@ func (a *TreasuryAPIService) GetTopupCardFeeExecute(r TreasuryAPIGetTopupCardFee
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v ErrorResponse
+			var v InlineObject3
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1565,7 +1549,7 @@ func (a *TreasuryAPIService) GetTopupCardFeeExecute(r TreasuryAPIGetTopupCardFee
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v ErrorResponse
+			var v InlineObject1
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1600,27 +1584,32 @@ func (a *TreasuryAPIService) GetTopupCardFeeExecute(r TreasuryAPIGetTopupCardFee
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type TreasuryAPIGetTopupReceiptRequest struct {
+type TreasuryAPIGetTopupStatementRequest struct {
 	ctx        context.Context
 	ApiService *TreasuryAPIService
 	topupId    string
 }
 
-func (r TreasuryAPIGetTopupReceiptRequest) Execute() (*GetTopupReceipt200Response, *http.Response, error) {
-	return r.ApiService.GetTopupReceiptExecute(r)
+func (r TreasuryAPIGetTopupStatementRequest) Execute() (*GetTopupStatement200Response, *http.Response, error) {
+	return r.ApiService.GetTopupStatementExecute(r)
 }
 
 /*
-GetTopupReceipt Get a top-up receipt
+GetTopupStatement Get a top-up statement
 
-The receipt for a paid top-up or creator payout payment (`purpose: payout_batch`). `format: pdf` is the Stripe invoice PDF; `format: page` is Stripe's receipt page, for payments that have no invoice. The link is short-lived, so fetch it when you need it. A profile-scoped key answers 403.
+The statement for a paid balance top-up: the PDF of the Stripe invoice it was paid through. It shows the amount added to your balance and no VAT: money added to the balance is taxed when it is used, on your monthly invoice.
+
+- `format: pdf` is the statement PDF; `format: page` is its Stripe-hosted page when the PDF is not ready.
+- 404 before the top-up is paid, and for a payment with no statement (top-ups before 2026-11-05, creator payout payments). Its card receipt is at getTopupReceipt.
+
+The link is short-lived, so fetch it when you need it. A profile-scoped key answers 403.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param topupId
-	@return TreasuryAPIGetTopupReceiptRequest
+	@return TreasuryAPIGetTopupStatementRequest
 */
-func (a *TreasuryAPIService) GetTopupReceipt(ctx context.Context, topupId string) TreasuryAPIGetTopupReceiptRequest {
-	return TreasuryAPIGetTopupReceiptRequest{
+func (a *TreasuryAPIService) GetTopupStatement(ctx context.Context, topupId string) TreasuryAPIGetTopupStatementRequest {
+	return TreasuryAPIGetTopupStatementRequest{
 		ApiService: a,
 		ctx:        ctx,
 		topupId:    topupId,
@@ -1629,21 +1618,21 @@ func (a *TreasuryAPIService) GetTopupReceipt(ctx context.Context, topupId string
 
 // Execute executes the request
 //
-//	@return GetTopupReceipt200Response
-func (a *TreasuryAPIService) GetTopupReceiptExecute(r TreasuryAPIGetTopupReceiptRequest) (*GetTopupReceipt200Response, *http.Response, error) {
+//	@return GetTopupStatement200Response
+func (a *TreasuryAPIService) GetTopupStatementExecute(r TreasuryAPIGetTopupStatementRequest) (*GetTopupStatement200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetTopupReceipt200Response
+		localVarReturnValue *GetTopupStatement200Response
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TreasuryAPIService.GetTopupReceipt")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TreasuryAPIService.GetTopupStatement")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/v1/balance/top-ups/{topupId}/receipt"
+	localVarPath := localBasePath + "/v1/balance/top-ups/{topupId}/statement"
 	localVarPath = strings.Replace(localVarPath, "{"+"topupId"+"}", url.PathEscape(parameterValueToString(r.topupId, "topupId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
