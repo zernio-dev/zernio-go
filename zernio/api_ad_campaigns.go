@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.496.0
+API version: 1.496.1
 Contact: support@zernio.com
 */
 
@@ -3090,7 +3090,7 @@ It duplicates the ad via Meta's native `POST /{ad-id}/copies`. The copy is creat
 
 - `adSetId` retargets the copy into another ad set; omitted = the source's own ad set.
 - Accepts the Zernio ad id or the platform ad id.
-- Sync discovery is triggered automatically (`syncAfter: false` to skip).
+- A sync discovery starts automatically and runs after the response (`syncAfter: false` to skip). The copy is readable through Zernio once it finishes, usually within a few minutes. Until then, calls that take a copied id return 404, so retry them.
 
 ### Creative settings
 
@@ -3271,7 +3271,9 @@ Duplicating an ACTIVE campaign with `INHERITED_FROM_SOURCE` starts a second fron
 
 ### Sync
 
-The new hierarchy is asynchronous to materialize in our DB, and we trigger sync discovery automatically. Set `syncAfter: false` to skip and poll `/v1/ads/tree` on your own cadence.
+The copy exists on the platform when this call returns. The new hierarchy reaches our DB through a sync discovery that starts automatically and runs after the response, usually within a few minutes.
+
+Poll `/v1/ads/tree` until it appears; until then, calls that take a copied id return 404, so retry them. Set `syncAfter: false` to skip the sync; the copy then appears on a later scheduled sync.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Source platform campaign ID
@@ -3418,7 +3420,7 @@ The copy is created paused so callers can review before launching.
 - So an ad set with any number of ads copies: Meta refuses a single deep copy of 3 or more objects.
 - `statusOption` applies to the ad set and every ad.
 - If an ad copy fails, the partial ad set copy is deleted and the request fails with Meta's error.
-- Sync discovery is triggered automatically (`syncAfter: false` to skip).
+- A sync discovery starts automatically and runs after the response (`syncAfter: false` to skip). The copy is readable through Zernio once it finishes, usually within a few minutes. Until then, calls that take a copied id return 404, so retry them.
 
 TikTok: the ad group is read and recreated under the campaign with its targeting, bidding,
 budget and schedule (start reset to now); `deepCopy: true` recreates its ads too (default

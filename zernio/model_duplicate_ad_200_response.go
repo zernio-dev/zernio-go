@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.496.0
+API version: 1.496.1
 Contact: support@zernio.com
 */
 
@@ -21,9 +21,10 @@ var _ MappedNullable = &DuplicateAd200Response{}
 // DuplicateAd200Response struct for DuplicateAd200Response
 type DuplicateAd200Response struct {
 	// Platform ID of the new ad
-	CopiedAdId *string                `json:"copiedAdId,omitempty"`
-	Discovery  *string                `json:"discovery,omitempty"`
-	Raw        map[string]interface{} `json:"raw,omitempty"`
+	CopiedAdId *string `json:"copiedAdId,omitempty"`
+	// The copy exists on the platform in all three cases.  - `triggered`: an ads sync started and runs after this response, so the copy may not be readable through Zernio yet. - `skipped`: no sync started, so the copy appears on a later scheduled sync. - `failed`: the sync could not start. A sync that errors after the response is not reported here.
+	Discovery *string                `json:"discovery,omitempty"`
+	Raw       map[string]interface{} `json:"raw,omitempty"`
 }
 
 // NewDuplicateAd200Response instantiates a new DuplicateAd200Response object
