@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.503.0
+API version: 1.504.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &GetBalance200Response{}
 
 // GetBalance200Response struct for GetBalance200Response
 type GetBalance200Response struct {
-	// Your balance, including card top-ups paid in the last 7 days (see payoutLockedCents). Negative after a dispute or refund of a top-up that was already spent; transfers are refused while it is negative.
+	// Your balance, including card top-ups paid in the last 7 days (see payoutLockedCents). Negative after a dispute or refund of a top-up that was already spent, or, on balance billing, when pay-per-use already in flight (a connected call, an SMS already with the carrier) lands past zero; the next top-up covers it. Transfers are refused while it is negative.
 	AvailableCents *int32 `json:"availableCents,omitempty"`
 	// Part of availableCents from card top-ups charged in the last 7 days, net of refunds and disputes. Transfers to payees cannot use it yet; a transfer that needs it answers 409 `payout_funds_locked` with the day it can be sent.
 	PayoutLockedCents *int32 `json:"payoutLockedCents,omitempty"`
