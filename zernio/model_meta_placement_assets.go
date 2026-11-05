@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.497.0
+API version: 1.498.0
 Contact: support@zernio.com
 */
 
@@ -20,12 +20,14 @@ import (
 // checks if the MetaPlacementAssets type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &MetaPlacementAssets{}
 
-// MetaPlacementAssets Meta placement asset customization: pin a SPECIFIC asset (image OR video) to each placement group on a SINGLE ad (e.g. a 4:5 image on Feed and a 9:16 image on Stories/Reels). This is what Meta Ads Manager produces with \"different creative per placement\".  Mapped to the creative's `asset_feed_spec` (`optimization_type: PLACEMENT`) + `asset_customization_rules`.  - Each rule can pin one `headline`, `body` and `description`; omitted fields and unmatched placements use the request's top-level copy. - Each rule's `placements` accepts the same fields as the top-level `placements` object. Meta enforces co-selection rules and returns an actionable error.  A block is all-image OR all-video, never mixed (Meta's asset_feed_spec carries one ad format). Exactly one catch-all default is required.  - Image mode: `defaultImageUrl` + `rules[].imageUrl`. - Video mode: `defaultVideoUrl` + `rules[].videoUrl`, with optional `thumbnailUrl`/`defaultThumbnailUrl` posters (Meta auto-generates them when omitted).  Meta controls text rendering by placement and format. Validation accepts these fields but does not prove every field appears in delivery. Preview the ad, and put copy that must always be visible into the image or video itself.
+// MetaPlacementAssets Meta placement asset customization: pin a SPECIFIC asset (image OR video) to each placement group on a SINGLE ad (e.g. a 4:5 image on Feed and a 9:16 image on Stories/Reels). This is what Meta Ads Manager produces with \"different creative per placement\".  Mapped to the creative's `asset_feed_spec` (`optimization_type: PLACEMENT`) + `asset_customization_rules`.  - Each rule can pin one `headline`, `body` and `description`; omitted fields and unmatched placements use the request's top-level copy. - Each rule's `placements` accepts the same fields as the top-level `placements` object. Meta enforces co-selection rules and returns an actionable error.  A block is all-image OR all-video, never mixed (Meta's asset_feed_spec carries one ad format). Exactly one catch-all default is required.  - Image mode: `defaultImageUrl` + `rules[].imageUrl`. - Video mode: `defaultVideoUrl` or `defaultVideoId` + `rules[].videoUrl` or `rules[].videoId`, with optional `thumbnailUrl`/`defaultThumbnailUrl` posters (Meta auto-generates them when omitted). An id reuses a video already on the ad account and wins over a URL in the same slot; the two can mix across slots.  Meta controls text rendering by placement and format. Validation accepts these fields but does not prove every field appears in delivery. Preview the ad, and put copy that must always be visible into the image or video itself.
 type MetaPlacementAssets struct {
 	// Image mode. Catch-all image for any placement no rule matches. Required in image mode (Meta mandates a default rule).
 	DefaultImageUrl *string `json:"defaultImageUrl,omitempty"`
-	// Video mode. Catch-all video for any placement no rule matches. Required in video mode.
+	// Video mode. Catch-all video for any placement no rule matches. Video mode requires this or `defaultVideoId`.
 	DefaultVideoUrl *string `json:"defaultVideoUrl,omitempty"`
+	// Video mode. ID of a video already on the ad account, used as the catch-all instead of uploading `defaultVideoUrl`. Wins over `defaultVideoUrl`. A video still processing after 30 seconds returns 409.
+	DefaultVideoId *string `json:"defaultVideoId,omitempty"`
 	// Video mode (optional). Poster image for the default video; Meta auto-generates one when omitted.
 	DefaultThumbnailUrl *string `json:"defaultThumbnailUrl,omitempty"`
 	// One entry per placement group you want to pin a specific asset to.
@@ -116,6 +118,38 @@ func (o *MetaPlacementAssets) SetDefaultVideoUrl(v string) {
 	o.DefaultVideoUrl = &v
 }
 
+// GetDefaultVideoId returns the DefaultVideoId field value if set, zero value otherwise.
+func (o *MetaPlacementAssets) GetDefaultVideoId() string {
+	if o == nil || IsNil(o.DefaultVideoId) {
+		var ret string
+		return ret
+	}
+	return *o.DefaultVideoId
+}
+
+// GetDefaultVideoIdOk returns a tuple with the DefaultVideoId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetaPlacementAssets) GetDefaultVideoIdOk() (*string, bool) {
+	if o == nil || IsNil(o.DefaultVideoId) {
+		return nil, false
+	}
+	return o.DefaultVideoId, true
+}
+
+// HasDefaultVideoId returns a boolean if a field has been set.
+func (o *MetaPlacementAssets) HasDefaultVideoId() bool {
+	if o != nil && !IsNil(o.DefaultVideoId) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultVideoId gets a reference to the given string and assigns it to the DefaultVideoId field.
+func (o *MetaPlacementAssets) SetDefaultVideoId(v string) {
+	o.DefaultVideoId = &v
+}
+
 // GetDefaultThumbnailUrl returns the DefaultThumbnailUrl field value if set, zero value otherwise.
 func (o *MetaPlacementAssets) GetDefaultThumbnailUrl() string {
 	if o == nil || IsNil(o.DefaultThumbnailUrl) {
@@ -187,6 +221,9 @@ func (o MetaPlacementAssets) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DefaultVideoUrl) {
 		toSerialize["defaultVideoUrl"] = o.DefaultVideoUrl
+	}
+	if !IsNil(o.DefaultVideoId) {
+		toSerialize["defaultVideoId"] = o.DefaultVideoId
 	}
 	if !IsNil(o.DefaultThumbnailUrl) {
 		toSerialize["defaultThumbnailUrl"] = o.DefaultThumbnailUrl

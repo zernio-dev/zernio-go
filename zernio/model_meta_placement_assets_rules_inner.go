@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.497.0
+API version: 1.498.0
 Contact: support@zernio.com
 */
 
@@ -24,8 +24,10 @@ var _ MappedNullable = &MetaPlacementAssetsRulesInner{}
 type MetaPlacementAssetsRulesInner struct {
 	// Image mode. The image to deliver for this rule's placements.
 	ImageUrl *string `json:"imageUrl,omitempty"`
-	// Video mode. The video to deliver for this rule's placements.
+	// Video mode. The video to deliver for this rule's placements. Each rule needs this or `videoId`.
 	VideoUrl *string `json:"videoUrl,omitempty"`
+	// Video mode. ID of a video already on the ad account, used for this rule instead of uploading `videoUrl`. Wins over `videoUrl`. A video still processing after 30 seconds returns 409.
+	VideoId *string `json:"videoId,omitempty"`
 	// Video mode (optional). Poster image for this rule's video; auto-generated when omitted.
 	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
 	// One headline pinned to this rule. Omit to inherit the top-level headline.
@@ -119,6 +121,38 @@ func (o *MetaPlacementAssetsRulesInner) HasVideoUrl() bool {
 // SetVideoUrl gets a reference to the given string and assigns it to the VideoUrl field.
 func (o *MetaPlacementAssetsRulesInner) SetVideoUrl(v string) {
 	o.VideoUrl = &v
+}
+
+// GetVideoId returns the VideoId field value if set, zero value otherwise.
+func (o *MetaPlacementAssetsRulesInner) GetVideoId() string {
+	if o == nil || IsNil(o.VideoId) {
+		var ret string
+		return ret
+	}
+	return *o.VideoId
+}
+
+// GetVideoIdOk returns a tuple with the VideoId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetaPlacementAssetsRulesInner) GetVideoIdOk() (*string, bool) {
+	if o == nil || IsNil(o.VideoId) {
+		return nil, false
+	}
+	return o.VideoId, true
+}
+
+// HasVideoId returns a boolean if a field has been set.
+func (o *MetaPlacementAssetsRulesInner) HasVideoId() bool {
+	if o != nil && !IsNil(o.VideoId) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoId gets a reference to the given string and assigns it to the VideoId field.
+func (o *MetaPlacementAssetsRulesInner) SetVideoId(v string) {
+	o.VideoId = &v
 }
 
 // GetThumbnailUrl returns the ThumbnailUrl field value if set, zero value otherwise.
@@ -288,6 +322,9 @@ func (o MetaPlacementAssetsRulesInner) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.VideoUrl) {
 		toSerialize["videoUrl"] = o.VideoUrl
+	}
+	if !IsNil(o.VideoId) {
+		toSerialize["videoId"] = o.VideoId
 	}
 	if !IsNil(o.ThumbnailUrl) {
 		toSerialize["thumbnailUrl"] = o.ThumbnailUrl
