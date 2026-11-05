@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.498.0
+API version: 1.499.0
 Contact: support@zernio.com
 */
 
@@ -26,9 +26,11 @@ type WebhookPayloadCommerceOrder struct {
 	Id    *string `json:"id,omitempty"`
 	Event *string `json:"event,omitempty"`
 	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
-	Timestamp *time.Time                           `json:"timestamp,omitempty"`
-	Store     *WebhookPayloadCommerceProductStore  `json:"store,omitempty"`
-	Resource  *WebhookPayloadCommerceOrderResource `json:"resource,omitempty"`
+	Timestamp *time.Time `json:"timestamp,omitempty"`
+	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Use it to route the event to your tenant without storing Zernio profile ids.  Present on every event tied to a profile, absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once.
+	Profiles []WebhookProfilesInner               `json:"profiles,omitempty"`
+	Store    *WebhookPayloadCommerceProductStore  `json:"store,omitempty"`
+	Resource *WebhookPayloadCommerceOrderResource `json:"resource,omitempty"`
 }
 
 // NewWebhookPayloadCommerceOrder instantiates a new WebhookPayloadCommerceOrder object
@@ -176,6 +178,38 @@ func (o *WebhookPayloadCommerceOrder) SetTimestamp(v time.Time) {
 	o.Timestamp = &v
 }
 
+// GetProfiles returns the Profiles field value if set, zero value otherwise.
+func (o *WebhookPayloadCommerceOrder) GetProfiles() []WebhookProfilesInner {
+	if o == nil || IsNil(o.Profiles) {
+		var ret []WebhookProfilesInner
+		return ret
+	}
+	return o.Profiles
+}
+
+// GetProfilesOk returns a tuple with the Profiles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadCommerceOrder) GetProfilesOk() ([]WebhookProfilesInner, bool) {
+	if o == nil || IsNil(o.Profiles) {
+		return nil, false
+	}
+	return o.Profiles, true
+}
+
+// HasProfiles returns a boolean if a field has been set.
+func (o *WebhookPayloadCommerceOrder) HasProfiles() bool {
+	if o != nil && !IsNil(o.Profiles) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfiles gets a reference to the given []WebhookProfilesInner and assigns it to the Profiles field.
+func (o *WebhookPayloadCommerceOrder) SetProfiles(v []WebhookProfilesInner) {
+	o.Profiles = v
+}
+
 // GetStore returns the Store field value if set, zero value otherwise.
 func (o *WebhookPayloadCommerceOrder) GetStore() WebhookPayloadCommerceProductStore {
 	if o == nil || IsNil(o.Store) {
@@ -261,6 +295,9 @@ func (o WebhookPayloadCommerceOrder) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Timestamp) {
 		toSerialize["timestamp"] = o.Timestamp
+	}
+	if !IsNil(o.Profiles) {
+		toSerialize["profiles"] = o.Profiles
 	}
 	if !IsNil(o.Store) {
 		toSerialize["store"] = o.Store
