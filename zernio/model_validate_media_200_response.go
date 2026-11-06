@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.517.2
+API version: 1.518.1
 Contact: support@zernio.com
 */
 
@@ -23,12 +23,24 @@ type ValidateMedia200Response struct {
 	Valid *bool   `json:"valid,omitempty"`
 	Url   *string `json:"url,omitempty"`
 	// Error message if valid is false
-	Error       *string `json:"error,omitempty"`
+	Error *string `json:"error,omitempty"`
+	// Stable reason when valid is false. MEDIA_UNDECODABLE: the bytes are not a valid image, video or PDF. MEDIA_URL_UNREACHABLE: HTTP error, timeout or network failure. MEDIA_URL_NOT_ALLOWED: not a public HTTP(S) URL.
+	Code *string `json:"code,omitempty"`
+	// Content-Type header the server sent (may disagree with the detected format)
 	ContentType *string `json:"contentType,omitempty"`
 	// File size in bytes
 	Size          NullableInt32 `json:"size,omitempty"`
 	SizeFormatted *string       `json:"sizeFormatted,omitempty"`
-	Type          *string       `json:"type,omitempty"`
+	// Detected from the file bytes
+	Type *string `json:"type,omitempty"`
+	// Detected format (jpeg, png, webp, gif, heif, mp4, mov, webm, pdf, ...)
+	Format *string `json:"format,omitempty"`
+	// Image width in pixels (images only)
+	Width *int32 `json:"width,omitempty"`
+	// Image height in pixels (images only)
+	Height *int32 `json:"height,omitempty"`
+	// How deeply the content was verified. decoded: every pixel decoded. header: file signature and header verified (videos, PDFs, HEIC/AVIF, images over 32 MB).
+	Inspection *string `json:"inspection,omitempty"`
 	// Per-platform size limit comparison (only present when size and type are known)
 	PlatformLimits map[string]ValidateMedia200ResponsePlatformLimitsValue `json:"platformLimits,omitempty"`
 }
@@ -144,6 +156,38 @@ func (o *ValidateMedia200Response) HasError() bool {
 // SetError gets a reference to the given string and assigns it to the Error field.
 func (o *ValidateMedia200Response) SetError(v string) {
 	o.Error = &v
+}
+
+// GetCode returns the Code field value if set, zero value otherwise.
+func (o *ValidateMedia200Response) GetCode() string {
+	if o == nil || IsNil(o.Code) {
+		var ret string
+		return ret
+	}
+	return *o.Code
+}
+
+// GetCodeOk returns a tuple with the Code field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ValidateMedia200Response) GetCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.Code) {
+		return nil, false
+	}
+	return o.Code, true
+}
+
+// HasCode returns a boolean if a field has been set.
+func (o *ValidateMedia200Response) HasCode() bool {
+	if o != nil && !IsNil(o.Code) {
+		return true
+	}
+
+	return false
+}
+
+// SetCode gets a reference to the given string and assigns it to the Code field.
+func (o *ValidateMedia200Response) SetCode(v string) {
+	o.Code = &v
 }
 
 // GetContentType returns the ContentType field value if set, zero value otherwise.
@@ -285,6 +329,134 @@ func (o *ValidateMedia200Response) SetType(v string) {
 	o.Type = &v
 }
 
+// GetFormat returns the Format field value if set, zero value otherwise.
+func (o *ValidateMedia200Response) GetFormat() string {
+	if o == nil || IsNil(o.Format) {
+		var ret string
+		return ret
+	}
+	return *o.Format
+}
+
+// GetFormatOk returns a tuple with the Format field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ValidateMedia200Response) GetFormatOk() (*string, bool) {
+	if o == nil || IsNil(o.Format) {
+		return nil, false
+	}
+	return o.Format, true
+}
+
+// HasFormat returns a boolean if a field has been set.
+func (o *ValidateMedia200Response) HasFormat() bool {
+	if o != nil && !IsNil(o.Format) {
+		return true
+	}
+
+	return false
+}
+
+// SetFormat gets a reference to the given string and assigns it to the Format field.
+func (o *ValidateMedia200Response) SetFormat(v string) {
+	o.Format = &v
+}
+
+// GetWidth returns the Width field value if set, zero value otherwise.
+func (o *ValidateMedia200Response) GetWidth() int32 {
+	if o == nil || IsNil(o.Width) {
+		var ret int32
+		return ret
+	}
+	return *o.Width
+}
+
+// GetWidthOk returns a tuple with the Width field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ValidateMedia200Response) GetWidthOk() (*int32, bool) {
+	if o == nil || IsNil(o.Width) {
+		return nil, false
+	}
+	return o.Width, true
+}
+
+// HasWidth returns a boolean if a field has been set.
+func (o *ValidateMedia200Response) HasWidth() bool {
+	if o != nil && !IsNil(o.Width) {
+		return true
+	}
+
+	return false
+}
+
+// SetWidth gets a reference to the given int32 and assigns it to the Width field.
+func (o *ValidateMedia200Response) SetWidth(v int32) {
+	o.Width = &v
+}
+
+// GetHeight returns the Height field value if set, zero value otherwise.
+func (o *ValidateMedia200Response) GetHeight() int32 {
+	if o == nil || IsNil(o.Height) {
+		var ret int32
+		return ret
+	}
+	return *o.Height
+}
+
+// GetHeightOk returns a tuple with the Height field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ValidateMedia200Response) GetHeightOk() (*int32, bool) {
+	if o == nil || IsNil(o.Height) {
+		return nil, false
+	}
+	return o.Height, true
+}
+
+// HasHeight returns a boolean if a field has been set.
+func (o *ValidateMedia200Response) HasHeight() bool {
+	if o != nil && !IsNil(o.Height) {
+		return true
+	}
+
+	return false
+}
+
+// SetHeight gets a reference to the given int32 and assigns it to the Height field.
+func (o *ValidateMedia200Response) SetHeight(v int32) {
+	o.Height = &v
+}
+
+// GetInspection returns the Inspection field value if set, zero value otherwise.
+func (o *ValidateMedia200Response) GetInspection() string {
+	if o == nil || IsNil(o.Inspection) {
+		var ret string
+		return ret
+	}
+	return *o.Inspection
+}
+
+// GetInspectionOk returns a tuple with the Inspection field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ValidateMedia200Response) GetInspectionOk() (*string, bool) {
+	if o == nil || IsNil(o.Inspection) {
+		return nil, false
+	}
+	return o.Inspection, true
+}
+
+// HasInspection returns a boolean if a field has been set.
+func (o *ValidateMedia200Response) HasInspection() bool {
+	if o != nil && !IsNil(o.Inspection) {
+		return true
+	}
+
+	return false
+}
+
+// SetInspection gets a reference to the given string and assigns it to the Inspection field.
+func (o *ValidateMedia200Response) SetInspection(v string) {
+	o.Inspection = &v
+}
+
 // GetPlatformLimits returns the PlatformLimits field value if set, zero value otherwise.
 func (o *ValidateMedia200Response) GetPlatformLimits() map[string]ValidateMedia200ResponsePlatformLimitsValue {
 	if o == nil || IsNil(o.PlatformLimits) {
@@ -336,6 +508,9 @@ func (o ValidateMedia200Response) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
 	}
+	if !IsNil(o.Code) {
+		toSerialize["code"] = o.Code
+	}
 	if !IsNil(o.ContentType) {
 		toSerialize["contentType"] = o.ContentType
 	}
@@ -347,6 +522,18 @@ func (o ValidateMedia200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Type) {
 		toSerialize["type"] = o.Type
+	}
+	if !IsNil(o.Format) {
+		toSerialize["format"] = o.Format
+	}
+	if !IsNil(o.Width) {
+		toSerialize["width"] = o.Width
+	}
+	if !IsNil(o.Height) {
+		toSerialize["height"] = o.Height
+	}
+	if !IsNil(o.Inspection) {
+		toSerialize["inspection"] = o.Inspection
 	}
 	if !IsNil(o.PlatformLimits) {
 		toSerialize["platformLimits"] = o.PlatformLimits

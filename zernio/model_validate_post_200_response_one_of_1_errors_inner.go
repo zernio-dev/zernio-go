@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.517.2
+API version: 1.518.1
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &ValidatePost200ResponseOneOf1ErrorsInner{}
 type ValidatePost200ResponseOneOf1ErrorsInner struct {
 	Platform *string `json:"platform,omitempty"`
 	Error    *string `json:"error,omitempty"`
+	// Present on media errors. MEDIA_UNDECODABLE means the bytes at the URL are not a valid image, video or PDF.
+	Code *string `json:"code,omitempty"`
 }
 
 // NewValidatePost200ResponseOneOf1ErrorsInner instantiates a new ValidatePost200ResponseOneOf1ErrorsInner object
@@ -105,6 +107,38 @@ func (o *ValidatePost200ResponseOneOf1ErrorsInner) SetError(v string) {
 	o.Error = &v
 }
 
+// GetCode returns the Code field value if set, zero value otherwise.
+func (o *ValidatePost200ResponseOneOf1ErrorsInner) GetCode() string {
+	if o == nil || IsNil(o.Code) {
+		var ret string
+		return ret
+	}
+	return *o.Code
+}
+
+// GetCodeOk returns a tuple with the Code field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ValidatePost200ResponseOneOf1ErrorsInner) GetCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.Code) {
+		return nil, false
+	}
+	return o.Code, true
+}
+
+// HasCode returns a boolean if a field has been set.
+func (o *ValidatePost200ResponseOneOf1ErrorsInner) HasCode() bool {
+	if o != nil && !IsNil(o.Code) {
+		return true
+	}
+
+	return false
+}
+
+// SetCode gets a reference to the given string and assigns it to the Code field.
+func (o *ValidatePost200ResponseOneOf1ErrorsInner) SetCode(v string) {
+	o.Code = &v
+}
+
 func (o ValidatePost200ResponseOneOf1ErrorsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +154,9 @@ func (o ValidatePost200ResponseOneOf1ErrorsInner) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
+	}
+	if !IsNil(o.Code) {
+		toSerialize["code"] = o.Code
 	}
 	return toSerialize, nil
 }
