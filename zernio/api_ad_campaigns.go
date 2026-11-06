@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.508.2
+API version: 1.509.0
 Contact: support@zernio.com
 */
 
@@ -4656,7 +4656,7 @@ type AdCampaignsAPIGetAdTreeRequest struct {
 	limit         *int32
 	source        *string
 	platform      *string
-	status        *AdStatus
+	status        *string
 	adAccountId   *string
 	pageId        *string
 	accountId     *string
@@ -4698,8 +4698,8 @@ func (r AdCampaignsAPIGetAdTreeRequest) Platform(platform string) AdCampaignsAPI
 	return r
 }
 
-// Filter by derived campaign status (post-aggregation)
-func (r AdCampaignsAPIGetAdTreeRequest) Status(status AdStatus) AdCampaignsAPIGetAdTreeRequest {
+// Filter by derived campaign status (post-aggregation). &#x60;not_deleted&#x60; keeps every status except &#x60;cancelled&#x60;.
+func (r AdCampaignsAPIGetAdTreeRequest) Status(status string) AdCampaignsAPIGetAdTreeRequest {
 	r.status = &status
 	return r
 }
@@ -4835,7 +4835,7 @@ Use `dailyLevel` (`campaign` default, or `adset` / `ad`) to choose which levels 
 
 Deleting an ad or a campaign is a soft delete: the Ad documents move to `status: cancelled` and are kept indefinitely. Their historical spend still counts toward the metrics of any date range they fall in. There is no pruning job and no retention window.
 
-Filter on `status` if your view should hide them, but do that after reading the totals, not before.
+Pass `status=not_deleted` if your view should hide them, but do that after reading the totals, not before.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIGetAdTreeRequest
@@ -6294,7 +6294,7 @@ type AdCampaignsAPIListAdCampaignsRequest struct {
 	limit        *int32
 	source       *string
 	platform     *string
-	status       *AdStatus
+	status       *string
 	adAccountId  *string
 	campaignId   *string
 	pageId       *string
@@ -6335,8 +6335,8 @@ func (r AdCampaignsAPIListAdCampaignsRequest) Platform(platform string) AdCampai
 	return r
 }
 
-// Filter by derived campaign status (post-aggregation)
-func (r AdCampaignsAPIListAdCampaignsRequest) Status(status AdStatus) AdCampaignsAPIListAdCampaignsRequest {
+// Filter by derived campaign status (post-aggregation). &#x60;not_deleted&#x60; keeps every status except &#x60;cancelled&#x60;.
+func (r AdCampaignsAPIListAdCampaignsRequest) Status(status string) AdCampaignsAPIListAdCampaignsRequest {
 	r.status = &status
 	return r
 }
