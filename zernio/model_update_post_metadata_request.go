@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.510.0
+API version: 1.511.0
 Contact: support@zernio.com
 */
 
@@ -46,6 +46,10 @@ type UpdatePostMetadataRequest struct {
 	ContainsSyntheticMedia *bool `json:"containsSyntheticMedia,omitempty"`
 	// YouTube playlist ID to add the video to (e.g. 'PLxxxxxxxxxxxxx'). Use GET /v1/accounts/{id}/youtube-playlists to list available playlists. Only playlists owned by the channel are supported.
 	PlaylistId *string `json:"playlistId,omitempty"`
+	// Language of the title and description (BCP-47, e.g. ko).
+	DefaultLanguage *string `json:"defaultLanguage,omitempty"`
+	// Spoken language of the video (BCP-47, e.g. ko). When a video has no audio language, YouTube may set en-US once its metadata is updated.
+	DefaultAudioLanguage *string `json:"defaultAudioLanguage,omitempty"`
 }
 
 type _UpdatePostMetadataRequest UpdatePostMetadataRequest
@@ -444,6 +448,70 @@ func (o *UpdatePostMetadataRequest) SetPlaylistId(v string) {
 	o.PlaylistId = &v
 }
 
+// GetDefaultLanguage returns the DefaultLanguage field value if set, zero value otherwise.
+func (o *UpdatePostMetadataRequest) GetDefaultLanguage() string {
+	if o == nil || IsNil(o.DefaultLanguage) {
+		var ret string
+		return ret
+	}
+	return *o.DefaultLanguage
+}
+
+// GetDefaultLanguageOk returns a tuple with the DefaultLanguage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdatePostMetadataRequest) GetDefaultLanguageOk() (*string, bool) {
+	if o == nil || IsNil(o.DefaultLanguage) {
+		return nil, false
+	}
+	return o.DefaultLanguage, true
+}
+
+// HasDefaultLanguage returns a boolean if a field has been set.
+func (o *UpdatePostMetadataRequest) HasDefaultLanguage() bool {
+	if o != nil && !IsNil(o.DefaultLanguage) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultLanguage gets a reference to the given string and assigns it to the DefaultLanguage field.
+func (o *UpdatePostMetadataRequest) SetDefaultLanguage(v string) {
+	o.DefaultLanguage = &v
+}
+
+// GetDefaultAudioLanguage returns the DefaultAudioLanguage field value if set, zero value otherwise.
+func (o *UpdatePostMetadataRequest) GetDefaultAudioLanguage() string {
+	if o == nil || IsNil(o.DefaultAudioLanguage) {
+		var ret string
+		return ret
+	}
+	return *o.DefaultAudioLanguage
+}
+
+// GetDefaultAudioLanguageOk returns a tuple with the DefaultAudioLanguage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdatePostMetadataRequest) GetDefaultAudioLanguageOk() (*string, bool) {
+	if o == nil || IsNil(o.DefaultAudioLanguage) {
+		return nil, false
+	}
+	return o.DefaultAudioLanguage, true
+}
+
+// HasDefaultAudioLanguage returns a boolean if a field has been set.
+func (o *UpdatePostMetadataRequest) HasDefaultAudioLanguage() bool {
+	if o != nil && !IsNil(o.DefaultAudioLanguage) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultAudioLanguage gets a reference to the given string and assigns it to the DefaultAudioLanguage field.
+func (o *UpdatePostMetadataRequest) SetDefaultAudioLanguage(v string) {
+	o.DefaultAudioLanguage = &v
+}
+
 func (o UpdatePostMetadataRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -487,6 +555,12 @@ func (o UpdatePostMetadataRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PlaylistId) {
 		toSerialize["playlistId"] = o.PlaylistId
+	}
+	if !IsNil(o.DefaultLanguage) {
+		toSerialize["defaultLanguage"] = o.DefaultLanguage
+	}
+	if !IsNil(o.DefaultAudioLanguage) {
+		toSerialize["defaultAudioLanguage"] = o.DefaultAudioLanguage
 	}
 	return toSerialize, nil
 }
