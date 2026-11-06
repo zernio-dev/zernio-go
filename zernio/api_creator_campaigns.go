@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.508.1
+API version: 1.508.2
 Contact: support@zernio.com
 */
 
@@ -191,7 +191,7 @@ type CreatorCampaignsAPIApproveCampaignSubmissionRequest struct {
 	idempotencyKey *string
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
 func (r CreatorCampaignsAPIApproveCampaignSubmissionRequest) IdempotencyKey(idempotencyKey string) CreatorCampaignsAPIApproveCampaignSubmissionRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -544,7 +544,7 @@ func (r CreatorCampaignsAPICreateCampaignAdjustmentRequest) CreateCampaignAdjust
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
 func (r CreatorCampaignsAPICreateCampaignAdjustmentRequest) IdempotencyKey(idempotencyKey string) CreatorCampaignsAPICreateCampaignAdjustmentRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -886,7 +886,7 @@ func (r CreatorCampaignsAPICreateCampaignParticipantRequest) CreateCampaignParti
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
 func (r CreatorCampaignsAPICreateCampaignParticipantRequest) IdempotencyKey(idempotencyKey string) CreatorCampaignsAPICreateCampaignParticipantRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -1073,7 +1073,7 @@ type CreatorCampaignsAPICreateCampaignPayoutBatchRequest struct {
 	createCampaignPayoutBatchRequest *CreateCampaignPayoutBatchRequest
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
 func (r CreatorCampaignsAPICreateCampaignPayoutBatchRequest) IdempotencyKey(idempotencyKey string) CreatorCampaignsAPICreateCampaignPayoutBatchRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -1291,7 +1291,7 @@ func (r CreatorCampaignsAPICreateCreatorCampaignRequest) CreateCreatorCampaignRe
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
 func (r CreatorCampaignsAPICreateCreatorCampaignRequest) IdempotencyKey(idempotencyKey string) CreatorCampaignsAPICreateCreatorCampaignRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -3558,7 +3558,7 @@ func (r CreatorCampaignsAPIRaiseCreatorCampaignBudgetRequest) RaiseCreatorCampai
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
 func (r CreatorCampaignsAPIRaiseCreatorCampaignBudgetRequest) IdempotencyKey(idempotencyKey string) CreatorCampaignsAPIRaiseCreatorCampaignBudgetRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -3907,7 +3907,7 @@ func (r CreatorCampaignsAPIRejectCampaignSubmissionRequest) RejectCampaignSubmis
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
 func (r CreatorCampaignsAPIRejectCampaignSubmissionRequest) IdempotencyKey(idempotencyKey string) CreatorCampaignsAPIRejectCampaignSubmissionRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -4240,7 +4240,7 @@ type CreatorCampaignsAPIReopenCampaignSubmissionRequest struct {
 	idempotencyKey *string
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
 func (r CreatorCampaignsAPIReopenCampaignSubmissionRequest) IdempotencyKey(idempotencyKey string) CreatorCampaignsAPIReopenCampaignSubmissionRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -4424,7 +4424,7 @@ type CreatorCampaignsAPIResendCampaignParticipantInviteRequest struct {
 	idempotencyKey *string
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
 func (r CreatorCampaignsAPIResendCampaignParticipantInviteRequest) IdempotencyKey(idempotencyKey string) CreatorCampaignsAPIResendCampaignParticipantInviteRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -4607,7 +4607,7 @@ func (r CreatorCampaignsAPISettleCampaignParticipantRequest) SettleCampaignParti
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
 func (r CreatorCampaignsAPISettleCampaignParticipantRequest) IdempotencyKey(idempotencyKey string) CreatorCampaignsAPISettleCampaignParticipantRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
