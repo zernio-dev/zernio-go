@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.520.0
+API version: 1.521.1
 Contact: support@zernio.com
 */
 
@@ -50,7 +50,7 @@ type CreatorCampaign struct {
 	MaxPostAgeMinutes NullableInt32 `json:"maxPostAgeMinutes"`
 	// When the campaign was first activated. Without `startsAt`, posts must be published after this moment.
 	ActivatedAt NullableTime `json:"activatedAt"`
-	// none: settle records a payout made elsewhere. external: you pay from your own rails on campaign_payout.payable and settle with your reference. treasury: settle moves the money from your Zernio balance to the creator's Stripe account, and the creator sets up payouts from their campaign page.
+	// none: settle records a payout made elsewhere. external: you pay from your own rails on campaign_payout.payable and settle with your reference. treasury: you pay by card with a payout batch and Zernio pays each creator in your name 7 days after the charge.
 	Settlement        string                          `json:"settlement"`
 	Economics         CreatorCampaignEconomics        `json:"economics"`
 	Caps              CreatorCampaignCaps             `json:"caps"`

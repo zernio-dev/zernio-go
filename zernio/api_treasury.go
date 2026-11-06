@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.520.0
+API version: 1.521.1
 Contact: support@zernio.com
 */
 
@@ -819,9 +819,9 @@ CreateTopup Create a top-up
 
 Charges the billing owner's saved card (the default one, or `paymentMethodId`) `amountCents` plus tax, while the payer is present, and credits your balance `amountCents`. There is no card fee.
 
-Tax is added on top of the amount (`taxCents`, `totalCents`): VAT at 21% in Spain, at the customer's country rate for EU consumers; an EU business with a valid VAT id is reverse charged (no VAT, `reverseCharge: true`); outside the EU there is none.
+Tax is added on top of the amount (`taxCents`, `totalCents`): VAT at 21% in Spain, at the customer's country rate for EU consumers; an EU business whose VAT id VIES confirms is reverse charged (no VAT, `reverseCharge: true`); outside the EU there is none.
 
-Usage paid from the balance carries no further VAT. Get the figures before paying with `POST /v1/balance/top-ups/preview`.
+The invoice also states the VAT in euros at the ECB rate of its date. Usage paid from the balance carries no further VAT. Get the figures before paying with `POST /v1/balance/top-ups/preview`.
 
 Each top-up has an invoice, with VAT where it applies (`GET /v1/balance/top-ups/{topupId}/invoice`), and a card receipt (`GET /v1/balance/top-ups/{topupId}/receipt`).
 
@@ -993,38 +993,21 @@ func (r TreasuryAPICreateTransferRequest) IdempotencyKey(idempotencyKey string) 
 	return r
 }
 
-func (r TreasuryAPICreateTransferRequest) Execute() (*TreasuryTransfer, *http.Response, error) {
+func (r TreasuryAPICreateTransferRequest) Execute() (*http.Response, error) {
 	return r.ApiService.CreateTransferExecute(r)
 }
 
 /*
-CreateTransfer Create a transfer
+CreateTransfer Create a transfer (removed)
 
-Moves money from your balance to a payee.
+Removed on 2026-11-06: the balance no longer pays creators. Every call answers 410.
 
-### Fee
-
-The payee receives the full `amountCents`. Zernio's fee (4%, 50 cent minimum) is added on top, so your balance is debited `totalCents` = `amountCents` + `feeCents`.
-
-### Who can call it
-
-Needs an owner, admin or billing admin, signed in or through a full-access key they created. A profile-scoped key answers 403.
-
-### Errors
-
-- 402: the balance does not cover the amount plus the fee.
-- 402: the balance is negative after a dispute or refund of a card top-up ("Your balance is negative after a dispute or refund of a card top-up. Add funds to cover it before sending transfers.").
-- 409: the payee has not finished onboarding, or the Idempotency-Key is still processing.
-- 409 `payout_funds_locked`: money from a card top-up can be transferred from 7 days after the charge. The message names the amount and the day ("$100.00 from your card top-up on Oct 29 can be paid out from Nov 5.").
-
-### Retries
-
-A same-key retry never makes the transfer twice within Stripe's 24-hour idempotency window. It answers 409 while another request is still waiting on Stripe for it.
-
-A transfer Stripe has not confirmed after 24 hours answers 409 until the daily reconciliation marks it paid (Stripe made it) or failed (it did not).
+Pay creators with one card payment per payout batch: `POST /v1/creator-campaigns/{campaignId}/payout-batches`. `GET /v1/transfers` still lists the transfers payout batches made.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return TreasuryAPICreateTransferRequest
+
+Deprecated
 */
 func (a *TreasuryAPIService) CreateTransfer(ctx context.Context) TreasuryAPICreateTransferRequest {
 	return TreasuryAPICreateTransferRequest{
@@ -1034,19 +1017,17 @@ func (a *TreasuryAPIService) CreateTransfer(ctx context.Context) TreasuryAPICrea
 }
 
 // Execute executes the request
-//
-//	@return TreasuryTransfer
-func (a *TreasuryAPIService) CreateTransferExecute(r TreasuryAPICreateTransferRequest) (*TreasuryTransfer, *http.Response, error) {
+// Deprecated
+func (a *TreasuryAPIService) CreateTransferExecute(r TreasuryAPICreateTransferRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod  = http.MethodPost
-		localVarPostBody    interface{}
-		formFiles           []formFile
-		localVarReturnValue *TreasuryTransfer
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TreasuryAPIService.CreateTransfer")
 	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/v1/transfers"
@@ -1055,7 +1036,7 @@ func (a *TreasuryAPIService) CreateTransferExecute(r TreasuryAPICreateTransferRe
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 	if r.createTransferRequest == nil {
-		return localVarReturnValue, nil, reportError("createTransferRequest is required and must be specified")
+		return nil, reportError("createTransferRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1082,19 +1063,19 @@ func (a *TreasuryAPIService) CreateTransferExecute(r TreasuryAPICreateTransferRe
 	localVarPostBody = r.createTransferRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
-		return localVarReturnValue, nil, err
+		return nil, err
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
+		return localVarHTTPResponse, err
 	}
 
 	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
 	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
+		return localVarHTTPResponse, err
 	}
 
 	if localVarHTTPResponse.StatusCode >= 300 {
@@ -1102,74 +1083,31 @@ func (a *TreasuryAPIService) CreateTransferExecute(r TreasuryAPICreateTransferRe
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+			return localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 403 {
+		if localVarHTTPResponse.StatusCode == 410 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v GetYouTubeDailyViews400Response
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 409 {
-			var v ErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarHTTPResponse, newErr
 	}
 
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
+	return localVarHTTPResponse, nil
 }
 
 type TreasuryAPIGetAutoRechargeRequest struct {
@@ -1303,16 +1241,13 @@ GetBalance Get balance
 
 Returns your team's balance:
 
-- the balance you can transfer
-- the part of it that cannot be paid out to creators yet (`payoutLockedCents`, `payoutLocks`)
+- the balance pay-per-use draws on
 - top-ups still waiting for payment
-- your latest top-ups
+- your latest top-ups and payout batch payments
 
-A card top-up is in `availableCents` as soon as it is paid. Transfers to payees can use it from 7 days after the charge, so a stolen card cannot be turned straight into payouts.
+A card top-up is in `availableCents` as soon as it is paid. The balance never pays creators: payouts are charged to your card per payout batch.
 
-A transfer debits its amount plus the fee added on top; the payee receives the full amount.
-
-A card dispute or refund on a top-up is debited from the available balance and can make it negative. Transfers are refused until it is positive again.
+A card dispute or refund is debited from the available balance and can make it negative. New payout batches are refused until it is positive again.
 
 A profile-scoped key answers 403, since the balance belongs to the whole team.
 

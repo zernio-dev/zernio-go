@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.520.0
+API version: 1.521.1
 Contact: support@zernio.com
 */
 
@@ -31,12 +31,14 @@ type PayoutBatchItem struct {
 	FeeCents int32 `json:"feeCents"`
 	// amountCents plus feeCents.
 	TotalCents int32 `json:"totalCents"`
-	// `skipped`: not paid because payout setup was not finished, or the card payment never completed; the amount is payable again. `failed`: Stripe refused the transfer; the amount is payable again.
+	// `skipped`: payout setup not finished, or the card payment never completed. `failed`: Stripe refused the transfer. `refunded`: failed or skipped after the card hold; its payout, fee and VAT on the fee went back to the card through a credit note. The amount is payable again in every case.
 	Status string `json:"status"`
 	// Why the item was not paid, in plain words.
 	FailureReason NullableString `json:"failureReason"`
 	// The treasury transfer that paid this item.
 	TransferId NullableString `json:"transferId"`
+	// What went back to the card for a `refunded` item: payout, fee and VAT on the fee. Null otherwise.
+	RefundedCents NullableInt32 `json:"refundedCents"`
 }
 
 type _PayoutBatchItem PayoutBatchItem
@@ -45,7 +47,7 @@ type _PayoutBatchItem PayoutBatchItem
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPayoutBatchItem(id string, participantId string, creator PayoutBatchItemCreator, amountCents int32, feeCents int32, totalCents int32, status string, failureReason NullableString, transferId NullableString) *PayoutBatchItem {
+func NewPayoutBatchItem(id string, participantId string, creator PayoutBatchItemCreator, amountCents int32, feeCents int32, totalCents int32, status string, failureReason NullableString, transferId NullableString, refundedCents NullableInt32) *PayoutBatchItem {
 	this := PayoutBatchItem{}
 	this.Id = id
 	this.ParticipantId = participantId
@@ -56,6 +58,7 @@ func NewPayoutBatchItem(id string, participantId string, creator PayoutBatchItem
 	this.Status = status
 	this.FailureReason = failureReason
 	this.TransferId = transferId
+	this.RefundedCents = refundedCents
 	return &this
 }
 
@@ -287,6 +290,32 @@ func (o *PayoutBatchItem) SetTransferId(v string) {
 	o.TransferId.Set(&v)
 }
 
+// GetRefundedCents returns the RefundedCents field value
+// If the value is explicit nil, the zero value for int32 will be returned
+func (o *PayoutBatchItem) GetRefundedCents() int32 {
+	if o == nil || o.RefundedCents.Get() == nil {
+		var ret int32
+		return ret
+	}
+
+	return *o.RefundedCents.Get()
+}
+
+// GetRefundedCentsOk returns a tuple with the RefundedCents field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PayoutBatchItem) GetRefundedCentsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RefundedCents.Get(), o.RefundedCents.IsSet()
+}
+
+// SetRefundedCents sets field value
+func (o *PayoutBatchItem) SetRefundedCents(v int32) {
+	o.RefundedCents.Set(&v)
+}
+
 func (o PayoutBatchItem) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -306,6 +335,7 @@ func (o PayoutBatchItem) ToMap() (map[string]interface{}, error) {
 	toSerialize["status"] = o.Status
 	toSerialize["failureReason"] = o.FailureReason.Get()
 	toSerialize["transferId"] = o.TransferId.Get()
+	toSerialize["refundedCents"] = o.RefundedCents.Get()
 	return toSerialize, nil
 }
 
@@ -323,6 +353,7 @@ func (o *PayoutBatchItem) UnmarshalJSON(data []byte) (err error) {
 		"status",
 		"failureReason",
 		"transferId",
+		"refundedCents",
 	}
 
 	allProperties := make(map[string]interface{})

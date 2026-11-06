@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.520.0
+API version: 1.521.1
 Contact: support@zernio.com
 */
 
@@ -31,7 +31,7 @@ type TreasuryTransfer struct {
 	AmountCents *int32 `json:"amountCents,omitempty"`
 	// Zernio fee added on top, 4% with a 50 cent minimum
 	FeeCents *int32 `json:"feeCents,omitempty"`
-	// Amount debited from your balance: amountCents plus feeCents
+	// amountCents plus feeCents, both paid by the payout batch card charge
 	TotalCents    *int32                     `json:"totalCents,omitempty"`
 	Currency      *string                    `json:"currency,omitempty"`
 	Reference     *TreasuryTransferReference `json:"reference,omitempty"`

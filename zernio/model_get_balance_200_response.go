@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.520.0
+API version: 1.521.1
 Contact: support@zernio.com
 */
 
@@ -20,13 +20,15 @@ var _ MappedNullable = &GetBalance200Response{}
 
 // GetBalance200Response struct for GetBalance200Response
 type GetBalance200Response struct {
-	// Your balance, including card top-ups paid in the last 7 days (see payoutLockedCents). It goes negative after a dispute or refund of a spent top-up, or when pay-per-use already in flight lands past zero. The next top-up covers it. Transfers are refused while it is negative.
+	// Your balance. It goes negative after a dispute or refund of a spent top-up, or when pay-per-use already in flight lands past zero. The next top-up covers it. New payout batches are refused while it is negative.
 	AvailableCents *int32 `json:"availableCents,omitempty"`
 	// Balance billing only (absent otherwise). Promotional and support credit Zernio added to your balance. Pay-per-use spends it before availableCents. It is never paid out to payees and is not part of availableCents.
 	PromoCents *int32 `json:"promoCents,omitempty"`
-	// Part of availableCents from card top-ups charged in the last 7 days, net of refunds and disputes. Transfers to payees cannot use it yet; a transfer that needs it answers 409 `payout_funds_locked` with the day it can be sent.
+	// Always 0. The balance no longer pays creators, so none of it is locked from them.
+	// Deprecated
 	PayoutLockedCents *int32 `json:"payoutLockedCents,omitempty"`
-	// The card top-ups behind payoutLockedCents, soonest first.
+	// Always empty. The balance no longer pays creators.
+	// Deprecated
 	PayoutLocks []GetBalance200ResponsePayoutLocksInner `json:"payoutLocks,omitempty"`
 	// Card top-ups paid before 2026-10-29 that were held and are moving to availableCents (within the hour). Always 0 after that.
 	PendingCents *int32 `json:"pendingCents,omitempty"`
@@ -120,6 +122,7 @@ func (o *GetBalance200Response) SetPromoCents(v int32) {
 }
 
 // GetPayoutLockedCents returns the PayoutLockedCents field value if set, zero value otherwise.
+// Deprecated
 func (o *GetBalance200Response) GetPayoutLockedCents() int32 {
 	if o == nil || IsNil(o.PayoutLockedCents) {
 		var ret int32
@@ -130,6 +133,7 @@ func (o *GetBalance200Response) GetPayoutLockedCents() int32 {
 
 // GetPayoutLockedCentsOk returns a tuple with the PayoutLockedCents field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *GetBalance200Response) GetPayoutLockedCentsOk() (*int32, bool) {
 	if o == nil || IsNil(o.PayoutLockedCents) {
 		return nil, false
@@ -147,11 +151,13 @@ func (o *GetBalance200Response) HasPayoutLockedCents() bool {
 }
 
 // SetPayoutLockedCents gets a reference to the given int32 and assigns it to the PayoutLockedCents field.
+// Deprecated
 func (o *GetBalance200Response) SetPayoutLockedCents(v int32) {
 	o.PayoutLockedCents = &v
 }
 
 // GetPayoutLocks returns the PayoutLocks field value if set, zero value otherwise.
+// Deprecated
 func (o *GetBalance200Response) GetPayoutLocks() []GetBalance200ResponsePayoutLocksInner {
 	if o == nil || IsNil(o.PayoutLocks) {
 		var ret []GetBalance200ResponsePayoutLocksInner
@@ -162,6 +168,7 @@ func (o *GetBalance200Response) GetPayoutLocks() []GetBalance200ResponsePayoutLo
 
 // GetPayoutLocksOk returns a tuple with the PayoutLocks field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *GetBalance200Response) GetPayoutLocksOk() ([]GetBalance200ResponsePayoutLocksInner, bool) {
 	if o == nil || IsNil(o.PayoutLocks) {
 		return nil, false
@@ -179,6 +186,7 @@ func (o *GetBalance200Response) HasPayoutLocks() bool {
 }
 
 // SetPayoutLocks gets a reference to the given []GetBalance200ResponsePayoutLocksInner and assigns it to the PayoutLocks field.
+// Deprecated
 func (o *GetBalance200Response) SetPayoutLocks(v []GetBalance200ResponsePayoutLocksInner) {
 	o.PayoutLocks = v
 }

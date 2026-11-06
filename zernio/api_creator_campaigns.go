@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.520.0
+API version: 1.521.1
 Contact: support@zernio.com
 */
 
@@ -1091,15 +1091,19 @@ func (r CreatorCampaignsAPICreateCampaignPayoutBatchRequest) Execute() (*CreateC
 /*
 CreateCampaignPayoutBatch Pay creators with one card payment
 
-Pays exactly what is owed to the creators of a `treasury` campaign by charging the billing owner's saved card, with no redirect.
+Pays exactly what is owed to the creators of a `treasury` campaign by charging the billing owner's saved card, with no redirect. Payouts are never paid from your balance.
 
 ### How it works
 
 1. Every payable creator who finished payout setup (or only `participantIds`, minus `excludeParticipantIds`) is held in `settling`.
-2. The saved card (the default one, or `paymentMethodId`) is charged the total plus the fee (4% per creator, 50 cent minimum) while the payer is present.
-3. Once the charge succeeds, each creator gets a transfer funded by it, and the batch ends `paid` or `partially_failed`.
+2. The saved card (the default one, or `paymentMethodId`) pays one invoice while the payer is present: the payouts, plus the fee (4% per creator, 50 cent minimum) and the VAT on the fee where it applies.
+3. Card payments are held 7 days against chargebacks (`releasesAt`). Then each creator gets a transfer funded by the charge, and the batch ends `paid` or `partially_failed`.
 
-A creator whose payouts were disabled before the payment landed is skipped and stays payable.
+Zernio collects the payouts and pays each creator on your behalf and in your name, so the payouts carry no VAT.
+
+A creator whose payouts were disabled before the hold ended is skipped and stays payable. A charge refunded or disputed during the hold pays nobody: every amount is payable again.
+
+Preview the charge with `POST /v1/creator-campaigns/{campaignId}/payout-batches/preview`.
 
 ### 3D Secure
 
@@ -1112,7 +1116,9 @@ One left unfinished is cancelled after 30 minutes and every amount is payable ag
 - 402 `payment_required`: no saved card. Nothing is held.
 - 402 `card_declined`: the bank's reason; every amount is payable again.
 - 402: card payouts are limited to $10,000.00 gross per rolling 30 days by default. Over it the call answers "Over your instant payout limit. Top up your balance to pay more this month, or contact support to raise the limit."
+- 402: your balance is negative after a dispute or refund.
 - 400: nothing payable ("Nothing is payable.").
+- 400 `invalid_billing_address`: Stripe cannot place your billing address, so it cannot tax the fee. Nothing is held.
 
 ### Access and retries
 
@@ -3545,6 +3551,168 @@ func (a *CreatorCampaignsAPIService) PauseCreatorCampaignExecute(r CreatorCampai
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type CreatorCampaignsAPIPreviewCampaignPayoutBatchRequest struct {
+	ctx                               context.Context
+	ApiService                        *CreatorCampaignsAPIService
+	campaignId                        string
+	previewCampaignPayoutBatchRequest *PreviewCampaignPayoutBatchRequest
+}
+
+func (r CreatorCampaignsAPIPreviewCampaignPayoutBatchRequest) PreviewCampaignPayoutBatchRequest(previewCampaignPayoutBatchRequest PreviewCampaignPayoutBatchRequest) CreatorCampaignsAPIPreviewCampaignPayoutBatchRequest {
+	r.previewCampaignPayoutBatchRequest = &previewCampaignPayoutBatchRequest
+	return r
+}
+
+func (r CreatorCampaignsAPIPreviewCampaignPayoutBatchRequest) Execute() (*PreviewCampaignPayoutBatch200Response, *http.Response, error) {
+	return r.ApiService.PreviewCampaignPayoutBatchExecute(r)
+}
+
+/*
+PreviewCampaignPayoutBatch Preview a payout batch
+
+What `POST /v1/creator-campaigns/{campaignId}/payout-batches` with the same body would charge your card now. Holds and charges nothing.
+
+The payouts carry no VAT. `taxCents` is the VAT on Zernio's fee where it applies, from Stripe Tax for your billing address: 21% in Spain, your country's rate for EU consumers, reverse charged (`reverseCharge: true`, no VAT) for EU businesses whose VAT id VIES confirms, none outside the EU.
+
+Creators who have not finished payout setup are left out, as paying would.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Campaign ID.
+	@return CreatorCampaignsAPIPreviewCampaignPayoutBatchRequest
+*/
+func (a *CreatorCampaignsAPIService) PreviewCampaignPayoutBatch(ctx context.Context, campaignId string) CreatorCampaignsAPIPreviewCampaignPayoutBatchRequest {
+	return CreatorCampaignsAPIPreviewCampaignPayoutBatchRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return PreviewCampaignPayoutBatch200Response
+func (a *CreatorCampaignsAPIService) PreviewCampaignPayoutBatchExecute(r CreatorCampaignsAPIPreviewCampaignPayoutBatchRequest) (*PreviewCampaignPayoutBatch200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PreviewCampaignPayoutBatch200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CreatorCampaignsAPIService.PreviewCampaignPayoutBatch")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/creator-campaigns/{campaignId}/payout-batches/preview"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.previewCampaignPayoutBatchRequest == nil {
+		return localVarReturnValue, nil, reportError("previewCampaignPayoutBatchRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.previewCampaignPayoutBatchRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type CreatorCampaignsAPIRaiseCreatorCampaignBudgetRequest struct {
 	ctx                               context.Context
 	ApiService                        *CreatorCampaignsAPIService
@@ -4620,7 +4788,7 @@ func (r CreatorCampaignsAPISettleCampaignParticipantRequest) Execute() (*SettleC
 /*
 SettleCampaignParticipant Settle campaign participant
 
-Records a payout of the participant's payable balance and fires `campaign_payout.settled`.
+Records a payout of the participant's payable balance and fires `campaign_payout.settled`. No money moves through Zernio.
 
 Omit `amountCents` to settle the whole payable balance. An amount above it answers 400, and nothing payable answers 409. Send an `Idempotency-Key` so a retry never records the payout twice.
 
@@ -4628,33 +4796,7 @@ Omit `amountCents` to settle the whole payable balance. An amount above it answe
 
 - `none` settlement: records a payout you made elsewhere.
 - `external` settlement: pay from your own rails when `campaign_payout.payable` fires, then call this with your payout id in `externalReference` (required in this mode).
-- `treasury` settlement: transfers the amount from your Zernio balance to the creator's connected Stripe account, then records it with the Stripe transfer id as `externalReference`.
-
-### Treasury payouts
-
-The transfer fee (4%, $0.50 minimum) is added on top: the creator receives the full amount and your balance is debited `totalCents`.
-
-- The creator must have finished payout setup from their campaign page (409 otherwise).
-- A balance that does not cover the amount plus the fee answers 402.
-- Money from a card top-up charged under 7 days ago cannot be paid out yet: a payout that needs it answers 409 `payout_funds_locked` with the day it can be sent.
-
-Set `recordOnly: true` to record a payout you made yourself instead of moving money through the treasury (the webhook then carries `recorded: true`).
-
-A treasury payout needs an owner, admin or billing admin, signed in or through a full-access key they created (403 otherwise). Recording with `recordOnly` does not.
-
-#### While Stripe confirms the transfer
-
-The amount sits in the participant's `settling` balance; a reject in that window cannot reverse it.
-
-- If Stripe refuses the transfer, the amount returns to payable.
-- If Stripe does not answer, the amount stays in `settling`. The next settle call for this participant finishes that payout first (even with nothing payable left).
-
-#### Conflicts (409)
-
-- A retry asking for a different `amountCents` than the payout in progress answers 409 with the amount in progress.
-- A settle while another request is still waiting on Stripe for the same payout answers 409 ("This payout is being sent to Stripe right now. Try again in a minute.").
-- A payout Stripe has not confirmed after 24 hours answers 409 ("This payout is being confirmed with Stripe. Try again after the next reconciliation (within 24 hours).") until the daily reconciliation finishes it: settled if Stripe made the transfer, returned to payable if it did not.
-- A creator held by an unfinished payout batch answers 409 ("This creator is in a card payout that is not finished yet.").
+- `treasury` settlement: send `recordOnly: true` to record a payout you made yourself (the webhook then carries `recorded: true`). Without it the call answers 409: Zernio pays creators of these campaigns by card with `POST /v1/creator-campaigns/{campaignId}/payout-batches`, never from your balance.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Campaign ID.
@@ -4763,17 +4905,6 @@ func (a *CreatorCampaignsAPIService) SettleCampaignParticipantExecute(r CreatorC
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 402 {
-			var v ErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -4806,16 +4937,6 @@ func (a *CreatorCampaignsAPIService) SettleCampaignParticipantExecute(r CreatorC
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 502 {
-			var v ErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

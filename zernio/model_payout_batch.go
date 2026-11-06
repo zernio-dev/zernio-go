@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.520.0
+API version: 1.521.1
 Contact: support@zernio.com
 */
 
@@ -25,19 +25,21 @@ var _ MappedNullable = &PayoutBatch{}
 type PayoutBatch struct {
 	Id         string         `json:"id"`
 	CampaignId NullableString `json:"campaignId"`
-	// `awaiting_payment` until the card charge succeeds (3D Secure included); `paying` while transfers go out; then `paid`, `partially_failed` (some items failed or were skipped), `failed` (the card was declined, or none paid) or `expired` (the payment was cancelled unpaid, every amount is payable again).
+	// `awaiting_payment` until the card charge succeeds (3D Secure included); `paying` during the 7-day card hold and while transfers go out; then `paid`, `partially_failed` (some items failed or were skipped), `failed` (the card was declined, or none paid) or `expired` (the payment was cancelled unpaid, every amount is payable again).
 	Status string `json:"status"`
 	Method string `json:"method"`
 	// Total the creators receive.
 	AmountCents int32 `json:"amountCents"`
 	// Total Zernio fee.
 	FeeCents int32 `json:"feeCents"`
-	// The card charge: amountCents plus feeCents.
+	// amountCents plus feeCents. The card is charged this plus the VAT on the fee where it applies (see the batch invoice).
 	TotalCents int32             `json:"totalCents"`
 	Items      []PayoutBatchItem `json:"items"`
 	PaidAt     NullableTime      `json:"paidAt"`
-	FinishedAt NullableTime      `json:"finishedAt"`
-	CreatedAt  time.Time         `json:"createdAt"`
+	// When the 7-day card hold ends and the creators are paid. Null until the charge succeeds.
+	ReleasesAt NullableTime `json:"releasesAt"`
+	FinishedAt NullableTime `json:"finishedAt"`
+	CreatedAt  time.Time    `json:"createdAt"`
 }
 
 type _PayoutBatch PayoutBatch
@@ -46,7 +48,7 @@ type _PayoutBatch PayoutBatch
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPayoutBatch(id string, campaignId NullableString, status string, method string, amountCents int32, feeCents int32, totalCents int32, items []PayoutBatchItem, paidAt NullableTime, finishedAt NullableTime, createdAt time.Time) *PayoutBatch {
+func NewPayoutBatch(id string, campaignId NullableString, status string, method string, amountCents int32, feeCents int32, totalCents int32, items []PayoutBatchItem, paidAt NullableTime, releasesAt NullableTime, finishedAt NullableTime, createdAt time.Time) *PayoutBatch {
 	this := PayoutBatch{}
 	this.Id = id
 	this.CampaignId = campaignId
@@ -57,6 +59,7 @@ func NewPayoutBatch(id string, campaignId NullableString, status string, method 
 	this.TotalCents = totalCents
 	this.Items = items
 	this.PaidAt = paidAt
+	this.ReleasesAt = releasesAt
 	this.FinishedAt = finishedAt
 	this.CreatedAt = createdAt
 	return &this
@@ -290,6 +293,32 @@ func (o *PayoutBatch) SetPaidAt(v time.Time) {
 	o.PaidAt.Set(&v)
 }
 
+// GetReleasesAt returns the ReleasesAt field value
+// If the value is explicit nil, the zero value for time.Time will be returned
+func (o *PayoutBatch) GetReleasesAt() time.Time {
+	if o == nil || o.ReleasesAt.Get() == nil {
+		var ret time.Time
+		return ret
+	}
+
+	return *o.ReleasesAt.Get()
+}
+
+// GetReleasesAtOk returns a tuple with the ReleasesAt field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PayoutBatch) GetReleasesAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ReleasesAt.Get(), o.ReleasesAt.IsSet()
+}
+
+// SetReleasesAt sets field value
+func (o *PayoutBatch) SetReleasesAt(v time.Time) {
+	o.ReleasesAt.Set(&v)
+}
+
 // GetFinishedAt returns the FinishedAt field value
 // If the value is explicit nil, the zero value for time.Time will be returned
 func (o *PayoutBatch) GetFinishedAt() time.Time {
@@ -359,6 +388,7 @@ func (o PayoutBatch) ToMap() (map[string]interface{}, error) {
 	toSerialize["totalCents"] = o.TotalCents
 	toSerialize["items"] = o.Items
 	toSerialize["paidAt"] = o.PaidAt.Get()
+	toSerialize["releasesAt"] = o.ReleasesAt.Get()
 	toSerialize["finishedAt"] = o.FinishedAt.Get()
 	toSerialize["createdAt"] = o.CreatedAt
 	return toSerialize, nil
@@ -378,6 +408,7 @@ func (o *PayoutBatch) UnmarshalJSON(data []byte) (err error) {
 		"totalCents",
 		"items",
 		"paidAt",
+		"releasesAt",
 		"finishedAt",
 		"createdAt",
 	}
