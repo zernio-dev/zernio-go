@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.511.0
+API version: 1.512.0
 Contact: support@zernio.com
 */
 
@@ -36,7 +36,8 @@ type ConversionEvent struct {
 	// Item-level detail for ecommerce events.
 	Items []ConversionEventItemsInner `json:"items,omitempty"`
 	// URL where the conversion originated (used by Meta).
-	SourceUrl *string `json:"sourceUrl,omitempty"`
+	SourceUrl *string                  `json:"sourceUrl,omitempty"`
+	Campaign  *ConversionEventCampaign `json:"campaign,omitempty"`
 	// Where the conversion happened. Used by Meta. Google also requires an event source internally; omitting this field sends OTHER to Google. Send an explicit value for accurate origin reporting. `business_messaging` (Meta) marks an event from a WhatsApp, Messenger or Instagram Direct conversation and needs `messaging`.
 	ActionSource *string                   `json:"actionSource,omitempty"`
 	Messaging    *ConversionEventMessaging `json:"messaging,omitempty"`
@@ -291,6 +292,38 @@ func (o *ConversionEvent) SetSourceUrl(v string) {
 	o.SourceUrl = &v
 }
 
+// GetCampaign returns the Campaign field value if set, zero value otherwise.
+func (o *ConversionEvent) GetCampaign() ConversionEventCampaign {
+	if o == nil || IsNil(o.Campaign) {
+		var ret ConversionEventCampaign
+		return ret
+	}
+	return *o.Campaign
+}
+
+// GetCampaignOk returns a tuple with the Campaign field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEvent) GetCampaignOk() (*ConversionEventCampaign, bool) {
+	if o == nil || IsNil(o.Campaign) {
+		return nil, false
+	}
+	return o.Campaign, true
+}
+
+// HasCampaign returns a boolean if a field has been set.
+func (o *ConversionEvent) HasCampaign() bool {
+	if o != nil && !IsNil(o.Campaign) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaign gets a reference to the given ConversionEventCampaign and assigns it to the Campaign field.
+func (o *ConversionEvent) SetCampaign(v ConversionEventCampaign) {
+	o.Campaign = &v
+}
+
 // GetActionSource returns the ActionSource field value if set, zero value otherwise.
 func (o *ConversionEvent) GetActionSource() string {
 	if o == nil || IsNil(o.ActionSource) {
@@ -412,6 +445,9 @@ func (o ConversionEvent) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SourceUrl) {
 		toSerialize["sourceUrl"] = o.SourceUrl
+	}
+	if !IsNil(o.Campaign) {
+		toSerialize["campaign"] = o.Campaign
 	}
 	if !IsNil(o.ActionSource) {
 		toSerialize["actionSource"] = o.ActionSource

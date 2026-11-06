@@ -568,6 +568,7 @@ model_conversion_action.go
 model_conversion_action_tag_snippets_inner.go
 model_conversion_destination.go
 model_conversion_event.go
+model_conversion_event_campaign.go
 model_conversion_event_items_inner.go
 model_conversion_event_messaging.go
 model_conversion_event_user.go
