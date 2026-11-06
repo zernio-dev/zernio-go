@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.518.2
+API version: 1.519.0
 Contact: support@zernio.com
 */
 
@@ -1485,6 +1485,232 @@ func (a *WebhookEventsAPIService) OnAdRuleTriggeredExecute(r WebhookEventsAPIOnA
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadAdRuleTriggered
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAdSetCreatedRequest struct {
+	ctx                        context.Context
+	ApiService                 *WebhookEventsAPIService
+	webhookPayloadAdSetCreated *WebhookPayloadAdSetCreated
+}
+
+func (r WebhookEventsAPIOnAdSetCreatedRequest) WebhookPayloadAdSetCreated(webhookPayloadAdSetCreated WebhookPayloadAdSetCreated) WebhookEventsAPIOnAdSetCreatedRequest {
+	r.webhookPayloadAdSetCreated = &webhookPayloadAdSetCreated
+	return r
+}
+
+func (r WebhookEventsAPIOnAdSetCreatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAdSetCreatedExecute(r)
+}
+
+/*
+OnAdSetCreated Ad set created event
+
+An ad set was created through Zernio (`source: "zernio"`).
+
+### When it fires
+
+Fires once the ad set row is recorded, so `GET /v1/ads/ad-sets/{adSetId}` finds it.
+
+### Payload notes
+
+`adObject.campaign` is the campaign the ad set belongs to, or null when the platform has none.
+
+### When it does not fire
+
+History loaded when an account connects is never announced.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAdSetCreatedRequest
+*/
+func (a *WebhookEventsAPIService) OnAdSetCreated(ctx context.Context) WebhookEventsAPIOnAdSetCreatedRequest {
+	return WebhookEventsAPIOnAdSetCreatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAdSetCreatedExecute(r WebhookEventsAPIOnAdSetCreatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAdSetCreated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/ad_set.created"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAdSetCreated == nil {
+		return nil, reportError("webhookPayloadAdSetCreated is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAdSetCreated
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAdSetUpdatedRequest struct {
+	ctx                        context.Context
+	ApiService                 *WebhookEventsAPIService
+	webhookPayloadAdSetUpdated *WebhookPayloadAdSetUpdated
+}
+
+func (r WebhookEventsAPIOnAdSetUpdatedRequest) WebhookPayloadAdSetUpdated(webhookPayloadAdSetUpdated WebhookPayloadAdSetUpdated) WebhookEventsAPIOnAdSetUpdatedRequest {
+	r.webhookPayloadAdSetUpdated = &webhookPayloadAdSetUpdated
+	return r
+}
+
+func (r WebhookEventsAPIOnAdSetUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAdSetUpdatedExecute(r)
+}
+
+/*
+OnAdSetUpdated Ad set updated event
+
+An ad set was edited through Zernio (`source: "zernio"`).
+
+### When it fires
+
+Fires after the platform and Zernio both accepted the edit.
+
+### Deduplication
+
+Events are not deduplicated, so every edit is announced. Use the event `id` to drop repeats.
+
+### Payload notes
+
+`changes` lists the edited fields: `name`, `status` (the ad set's own on/off switch), `budget`, `bid`, `schedule`, `targeting` or `settings`. Ignore unknown values. It never carries old or new values, so read the ad set.
+
+### When it does not fire
+
+Budget and targeting edits made through `PUT /v1/ads/{adId}` arrive as `ad.updated`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAdSetUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnAdSetUpdated(ctx context.Context) WebhookEventsAPIOnAdSetUpdatedRequest {
+	return WebhookEventsAPIOnAdSetUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAdSetUpdatedExecute(r WebhookEventsAPIOnAdSetUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAdSetUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/ad_set.updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAdSetUpdated == nil {
+		return nil, reportError("webhookPayloadAdSetUpdated is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAdSetUpdated
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -5249,7 +5475,7 @@ From the sync, `changes` covers only `name`, `status` and `schedule`. Schedule i
 
 ### When it does not fire
 
-Budget edits made outside Zernio, ad set edits and history loaded at connect are not announced. Ad rule changes arrive as `ad_rule.triggered`.
+Budget edits made outside Zernio and history loaded at connect are not announced. Ad set edits made through Zernio arrive as `ad_set.updated`. Ad rule changes arrive as `ad_rule.triggered`.
 
 ### Google sub-resources
 
