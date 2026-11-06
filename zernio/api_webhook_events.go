@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.517.0
+API version: 1.517.1
 Contact: support@zernio.com
 */
 
@@ -9332,7 +9332,8 @@ Fired when an already-published TikTok platform entry gets its public URL backfi
 TikTok exposes the numeric video id asynchronously (often minutes after PUBLISH_COMPLETE), so the terminal events can carry an empty `publishedUrl` for TikTok. This event delivers `platform.publishedUrl` and the resolved `platform.platformPostId` once available.
 
 - Fires at most once per platform target.
-- Never fires for drafts or private posts (no public URL exists).
+- Never fires for private posts (no public URL exists).
+- For a draft, fires when the creator posts the draft publicly from the TikTok app. A draft the creator never posts never fires it.
 - The payload shape is identical to `post.platform.published`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.517.0
+API version: 1.517.1
 Contact: support@zernio.com
 */
 
@@ -42,9 +42,9 @@ type TikTokPlatformData struct {
 	ExpressConsentGiven *bool `json:"expressConsentGiven,omitempty"`
 	// Optional override. Defaults based on provided media items.
 	MediaType *string `json:"mediaType,omitempty"`
-	// Optional for video posts. Timestamp in milliseconds to select which frame to use as thumbnail (defaults to 1000ms/1 second). Ignored when videoCoverImageUrl is provided.
+	// Optional for video posts. Timestamp in milliseconds to select which frame to use as thumbnail (defaults to 1000ms/1 second). Ignored when the videoCoverImageUrl image becomes the cover, and used when Zernio skips that image (see videoCoverImageUrl).
 	VideoCoverTimestampMs *int32 `json:"videoCoverTimestampMs,omitempty"`
-	// Optional for video posts. URL of a custom thumbnail image (JPG, PNG, or WebP, max 20MB). Any downloadable URL works: we rehost it ourselves. Overrides videoCoverTimestampMs when provided.  The image is stitched as a single frame at the start of the video to serve as the cover. Accounts connected through the TikTok for Business app instead hand it to TikTok as the cover, with no stitching, falling back to videoCoverTimestampMs without it.
+	// Optional for video posts. URL of a custom thumbnail image (JPG, PNG, or WebP, max 20MB). Any downloadable URL works: we rehost it ourselves. Overrides videoCoverTimestampMs when provided.  The image is stitched as a single frame at the start of the video to serve as the cover.  When the image shape is far from the video shape (it would fill less than half of the frame, for example a landscape cover on a vertical video), or the stitch fails, Zernio skips the image and TikTok uses videoCoverTimestampMs.  Accounts connected through the TikTok for Business app instead hand it to TikTok as the cover, with no stitching, falling back to videoCoverTimestampMs without it.
 	VideoCoverImageUrl *string `json:"videoCoverImageUrl,omitempty"`
 	// Optional for photo carousels. Index of image to use as cover, 0-based (defaults to 0/first image).
 	PhotoCoverIndex *int32 `json:"photoCoverIndex,omitempty"`
