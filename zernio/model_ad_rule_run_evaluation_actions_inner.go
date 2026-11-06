@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.512.0
+API version: 1.513.0
 Contact: support@zernio.com
 */
 
@@ -33,6 +33,9 @@ type AdRuleRunEvaluationActionsInner struct {
 	NewName             *string  `json:"newName,omitempty"`
 	PreviousBidAmount   *float32 `json:"previousBidAmount,omitempty"`
 	NewBidAmount        *float32 `json:"newBidAmount,omitempty"`
+	TargetMetric        *string  `json:"targetMetric,omitempty"`
+	PreviousTarget      *float32 `json:"previousTarget,omitempty"`
+	NewTarget           *float32 `json:"newTarget,omitempty"`
 }
 
 type _AdRuleRunEvaluationActionsInner AdRuleRunEvaluationActionsInner
@@ -353,6 +356,102 @@ func (o *AdRuleRunEvaluationActionsInner) SetNewBidAmount(v float32) {
 	o.NewBidAmount = &v
 }
 
+// GetTargetMetric returns the TargetMetric field value if set, zero value otherwise.
+func (o *AdRuleRunEvaluationActionsInner) GetTargetMetric() string {
+	if o == nil || IsNil(o.TargetMetric) {
+		var ret string
+		return ret
+	}
+	return *o.TargetMetric
+}
+
+// GetTargetMetricOk returns a tuple with the TargetMetric field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleRunEvaluationActionsInner) GetTargetMetricOk() (*string, bool) {
+	if o == nil || IsNil(o.TargetMetric) {
+		return nil, false
+	}
+	return o.TargetMetric, true
+}
+
+// HasTargetMetric returns a boolean if a field has been set.
+func (o *AdRuleRunEvaluationActionsInner) HasTargetMetric() bool {
+	if o != nil && !IsNil(o.TargetMetric) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetMetric gets a reference to the given string and assigns it to the TargetMetric field.
+func (o *AdRuleRunEvaluationActionsInner) SetTargetMetric(v string) {
+	o.TargetMetric = &v
+}
+
+// GetPreviousTarget returns the PreviousTarget field value if set, zero value otherwise.
+func (o *AdRuleRunEvaluationActionsInner) GetPreviousTarget() float32 {
+	if o == nil || IsNil(o.PreviousTarget) {
+		var ret float32
+		return ret
+	}
+	return *o.PreviousTarget
+}
+
+// GetPreviousTargetOk returns a tuple with the PreviousTarget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleRunEvaluationActionsInner) GetPreviousTargetOk() (*float32, bool) {
+	if o == nil || IsNil(o.PreviousTarget) {
+		return nil, false
+	}
+	return o.PreviousTarget, true
+}
+
+// HasPreviousTarget returns a boolean if a field has been set.
+func (o *AdRuleRunEvaluationActionsInner) HasPreviousTarget() bool {
+	if o != nil && !IsNil(o.PreviousTarget) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreviousTarget gets a reference to the given float32 and assigns it to the PreviousTarget field.
+func (o *AdRuleRunEvaluationActionsInner) SetPreviousTarget(v float32) {
+	o.PreviousTarget = &v
+}
+
+// GetNewTarget returns the NewTarget field value if set, zero value otherwise.
+func (o *AdRuleRunEvaluationActionsInner) GetNewTarget() float32 {
+	if o == nil || IsNil(o.NewTarget) {
+		var ret float32
+		return ret
+	}
+	return *o.NewTarget
+}
+
+// GetNewTargetOk returns a tuple with the NewTarget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleRunEvaluationActionsInner) GetNewTargetOk() (*float32, bool) {
+	if o == nil || IsNil(o.NewTarget) {
+		return nil, false
+	}
+	return o.NewTarget, true
+}
+
+// HasNewTarget returns a boolean if a field has been set.
+func (o *AdRuleRunEvaluationActionsInner) HasNewTarget() bool {
+	if o != nil && !IsNil(o.NewTarget) {
+		return true
+	}
+
+	return false
+}
+
+// SetNewTarget gets a reference to the given float32 and assigns it to the NewTarget field.
+func (o *AdRuleRunEvaluationActionsInner) SetNewTarget(v float32) {
+	o.NewTarget = &v
+}
+
 func (o AdRuleRunEvaluationActionsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -386,6 +485,15 @@ func (o AdRuleRunEvaluationActionsInner) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.NewBidAmount) {
 		toSerialize["newBidAmount"] = o.NewBidAmount
+	}
+	if !IsNil(o.TargetMetric) {
+		toSerialize["targetMetric"] = o.TargetMetric
+	}
+	if !IsNil(o.PreviousTarget) {
+		toSerialize["previousTarget"] = o.PreviousTarget
+	}
+	if !IsNil(o.NewTarget) {
+		toSerialize["newTarget"] = o.NewTarget
 	}
 	return toSerialize, nil
 }

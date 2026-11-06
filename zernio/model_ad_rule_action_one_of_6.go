@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.512.0
+API version: 1.513.0
 Contact: support@zernio.com
 */
 
@@ -20,12 +20,26 @@ import (
 // checks if the AdRuleActionOneOf6 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdRuleActionOneOf6{}
 
-// AdRuleActionOneOf6 struct for AdRuleActionOneOf6
+// AdRuleActionOneOf6 Exactly one of `percent` and `amount`.
 type AdRuleActionOneOf6 struct {
-	// Set the daily budget to an exact amount, such as a reset every midnight. Same level rules as the percent change.
+	// Move daily budget from the matched objects ranked worst by `metric` to those ranked best, keeping the total the same. Campaign or ad set rules where the budget sits at that level: objects whose budget sits at another level (Meta CBO and ad set budgets), Google shared budgets and lifetime budgets are left out. Changes are reserved all at once: when `maxChangesPerDay` would hold back any of them, none is made. A receiver is raised only after every giver's cut applied (else it fails with `reallocation_incomplete` and the move is tried again next run). Amounts move in the currency's smallest unit (whole units for JPY or KRW). Counts as raising live spend for the free ads allowance. Not with `lifecycle` or `groups`.
 	Type string `json:"type"`
-	// The daily budget to set, in the ad account currency. An object already at it is skipped with `already_at_amount`.
-	Amount float32 `json:"amount"`
+	// What objects are ranked by: any condition metric except `day_of_month` and `working_day_of_month`, or a result metric (`result:<key>`) on campaign rules. Objects without a value are not ranked, except one that spent with no result on a metric where lower is best (a CPA with no conversions): it ranks worst and only gives.
+	Metric string `json:"metric"`
+	// The period the metric is read over, like a condition window.
+	Window string `json:"window"`
+	// Which end of the ranking is best. Defaults to `lowest` for `cpa`, `cpc`, `cpm`, `frequency` and result metrics whose formula has spend above the line (cost per sale, %CAC), `highest` otherwise.
+	Best *string                `json:"best,omitempty"`
+	From AdRuleActionOneOf6From `json:"from"`
+	To   AdRuleActionOneOf6From `json:"to"`
+	// The share of each giver's daily budget it gives.
+	Percent *int32 `json:"percent,omitempty"`
+	// The total to move each run, in the ad account currency, taken evenly from the givers.
+	Amount *float32 `json:"amount,omitempty"`
+	// A giver never goes below this daily budget. A giver also always keeps a tenth of its budget.
+	MinBudget *float32 `json:"minBudget,omitempty"`
+	// A receiver never goes above this daily budget; what receivers cannot take stays with the givers.
+	MaxBudget *float32 `json:"maxBudget,omitempty"`
 	// At most this many objects changed in any 24 hours, across runs. Matches over the limit are skipped with `daily_limit_reached` and tried again later.
 	MaxChangesPerDay *int32 `json:"maxChangesPerDay,omitempty"`
 	// At most this many changes to one object by this rule, counted over the last 400 days. An object at the limit is left alone like one in cooldown.
@@ -38,10 +52,13 @@ type _AdRuleActionOneOf6 AdRuleActionOneOf6
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdRuleActionOneOf6(type_ string, amount float32) *AdRuleActionOneOf6 {
+func NewAdRuleActionOneOf6(type_ string, metric string, window string, from AdRuleActionOneOf6From, to AdRuleActionOneOf6From) *AdRuleActionOneOf6 {
 	this := AdRuleActionOneOf6{}
 	this.Type = type_
-	this.Amount = amount
+	this.Metric = metric
+	this.Window = window
+	this.From = from
+	this.To = to
 	return &this
 }
 
@@ -77,28 +94,260 @@ func (o *AdRuleActionOneOf6) SetType(v string) {
 	o.Type = v
 }
 
-// GetAmount returns the Amount field value
-func (o *AdRuleActionOneOf6) GetAmount() float32 {
+// GetMetric returns the Metric field value
+func (o *AdRuleActionOneOf6) GetMetric() string {
 	if o == nil {
-		var ret float32
+		var ret string
 		return ret
 	}
 
-	return o.Amount
+	return o.Metric
 }
 
-// GetAmountOk returns a tuple with the Amount field value
+// GetMetricOk returns a tuple with the Metric field value
 // and a boolean to check if the value has been set.
-func (o *AdRuleActionOneOf6) GetAmountOk() (*float32, bool) {
+func (o *AdRuleActionOneOf6) GetMetricOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Amount, true
+	return &o.Metric, true
 }
 
-// SetAmount sets field value
+// SetMetric sets field value
+func (o *AdRuleActionOneOf6) SetMetric(v string) {
+	o.Metric = v
+}
+
+// GetWindow returns the Window field value
+func (o *AdRuleActionOneOf6) GetWindow() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Window
+}
+
+// GetWindowOk returns a tuple with the Window field value
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf6) GetWindowOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Window, true
+}
+
+// SetWindow sets field value
+func (o *AdRuleActionOneOf6) SetWindow(v string) {
+	o.Window = v
+}
+
+// GetBest returns the Best field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf6) GetBest() string {
+	if o == nil || IsNil(o.Best) {
+		var ret string
+		return ret
+	}
+	return *o.Best
+}
+
+// GetBestOk returns a tuple with the Best field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf6) GetBestOk() (*string, bool) {
+	if o == nil || IsNil(o.Best) {
+		return nil, false
+	}
+	return o.Best, true
+}
+
+// HasBest returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf6) HasBest() bool {
+	if o != nil && !IsNil(o.Best) {
+		return true
+	}
+
+	return false
+}
+
+// SetBest gets a reference to the given string and assigns it to the Best field.
+func (o *AdRuleActionOneOf6) SetBest(v string) {
+	o.Best = &v
+}
+
+// GetFrom returns the From field value
+func (o *AdRuleActionOneOf6) GetFrom() AdRuleActionOneOf6From {
+	if o == nil {
+		var ret AdRuleActionOneOf6From
+		return ret
+	}
+
+	return o.From
+}
+
+// GetFromOk returns a tuple with the From field value
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf6) GetFromOk() (*AdRuleActionOneOf6From, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.From, true
+}
+
+// SetFrom sets field value
+func (o *AdRuleActionOneOf6) SetFrom(v AdRuleActionOneOf6From) {
+	o.From = v
+}
+
+// GetTo returns the To field value
+func (o *AdRuleActionOneOf6) GetTo() AdRuleActionOneOf6From {
+	if o == nil {
+		var ret AdRuleActionOneOf6From
+		return ret
+	}
+
+	return o.To
+}
+
+// GetToOk returns a tuple with the To field value
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf6) GetToOk() (*AdRuleActionOneOf6From, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.To, true
+}
+
+// SetTo sets field value
+func (o *AdRuleActionOneOf6) SetTo(v AdRuleActionOneOf6From) {
+	o.To = v
+}
+
+// GetPercent returns the Percent field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf6) GetPercent() int32 {
+	if o == nil || IsNil(o.Percent) {
+		var ret int32
+		return ret
+	}
+	return *o.Percent
+}
+
+// GetPercentOk returns a tuple with the Percent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf6) GetPercentOk() (*int32, bool) {
+	if o == nil || IsNil(o.Percent) {
+		return nil, false
+	}
+	return o.Percent, true
+}
+
+// HasPercent returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf6) HasPercent() bool {
+	if o != nil && !IsNil(o.Percent) {
+		return true
+	}
+
+	return false
+}
+
+// SetPercent gets a reference to the given int32 and assigns it to the Percent field.
+func (o *AdRuleActionOneOf6) SetPercent(v int32) {
+	o.Percent = &v
+}
+
+// GetAmount returns the Amount field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf6) GetAmount() float32 {
+	if o == nil || IsNil(o.Amount) {
+		var ret float32
+		return ret
+	}
+	return *o.Amount
+}
+
+// GetAmountOk returns a tuple with the Amount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf6) GetAmountOk() (*float32, bool) {
+	if o == nil || IsNil(o.Amount) {
+		return nil, false
+	}
+	return o.Amount, true
+}
+
+// HasAmount returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf6) HasAmount() bool {
+	if o != nil && !IsNil(o.Amount) {
+		return true
+	}
+
+	return false
+}
+
+// SetAmount gets a reference to the given float32 and assigns it to the Amount field.
 func (o *AdRuleActionOneOf6) SetAmount(v float32) {
-	o.Amount = v
+	o.Amount = &v
+}
+
+// GetMinBudget returns the MinBudget field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf6) GetMinBudget() float32 {
+	if o == nil || IsNil(o.MinBudget) {
+		var ret float32
+		return ret
+	}
+	return *o.MinBudget
+}
+
+// GetMinBudgetOk returns a tuple with the MinBudget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf6) GetMinBudgetOk() (*float32, bool) {
+	if o == nil || IsNil(o.MinBudget) {
+		return nil, false
+	}
+	return o.MinBudget, true
+}
+
+// HasMinBudget returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf6) HasMinBudget() bool {
+	if o != nil && !IsNil(o.MinBudget) {
+		return true
+	}
+
+	return false
+}
+
+// SetMinBudget gets a reference to the given float32 and assigns it to the MinBudget field.
+func (o *AdRuleActionOneOf6) SetMinBudget(v float32) {
+	o.MinBudget = &v
+}
+
+// GetMaxBudget returns the MaxBudget field value if set, zero value otherwise.
+func (o *AdRuleActionOneOf6) GetMaxBudget() float32 {
+	if o == nil || IsNil(o.MaxBudget) {
+		var ret float32
+		return ret
+	}
+	return *o.MaxBudget
+}
+
+// GetMaxBudgetOk returns a tuple with the MaxBudget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleActionOneOf6) GetMaxBudgetOk() (*float32, bool) {
+	if o == nil || IsNil(o.MaxBudget) {
+		return nil, false
+	}
+	return o.MaxBudget, true
+}
+
+// HasMaxBudget returns a boolean if a field has been set.
+func (o *AdRuleActionOneOf6) HasMaxBudget() bool {
+	if o != nil && !IsNil(o.MaxBudget) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxBudget gets a reference to the given float32 and assigns it to the MaxBudget field.
+func (o *AdRuleActionOneOf6) SetMaxBudget(v float32) {
+	o.MaxBudget = &v
 }
 
 // GetMaxChangesPerDay returns the MaxChangesPerDay field value if set, zero value otherwise.
@@ -176,7 +425,25 @@ func (o AdRuleActionOneOf6) MarshalJSON() ([]byte, error) {
 func (o AdRuleActionOneOf6) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["type"] = o.Type
-	toSerialize["amount"] = o.Amount
+	toSerialize["metric"] = o.Metric
+	toSerialize["window"] = o.Window
+	if !IsNil(o.Best) {
+		toSerialize["best"] = o.Best
+	}
+	toSerialize["from"] = o.From
+	toSerialize["to"] = o.To
+	if !IsNil(o.Percent) {
+		toSerialize["percent"] = o.Percent
+	}
+	if !IsNil(o.Amount) {
+		toSerialize["amount"] = o.Amount
+	}
+	if !IsNil(o.MinBudget) {
+		toSerialize["minBudget"] = o.MinBudget
+	}
+	if !IsNil(o.MaxBudget) {
+		toSerialize["maxBudget"] = o.MaxBudget
+	}
 	if !IsNil(o.MaxChangesPerDay) {
 		toSerialize["maxChangesPerDay"] = o.MaxChangesPerDay
 	}
@@ -192,7 +459,10 @@ func (o *AdRuleActionOneOf6) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"type",
-		"amount",
+		"metric",
+		"window",
+		"from",
+		"to",
 	}
 
 	allProperties := make(map[string]interface{})

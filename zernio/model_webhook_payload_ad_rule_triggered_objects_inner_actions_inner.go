@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.512.0
+API version: 1.513.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,7 @@ type WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner struct {
 	Type string `json:"type"`
 	// Action result.  - `skipped`: the action could not or need not apply (already paused or active, budget at its limit, a budget that is unknown, not daily or set at another level, no live ads, or a permanent refusal from the platform). - `failed`: it errored and will be retried on the next run.
 	Status string `json:"status"`
-	// Why the action was skipped or failed: `already_paused`, `already_active`, `at_limit`, `budget_unknown`, `budget_not_daily`, `budget_level_mismatch`, `no_live_ads`, `daily_limit_reached` (held back by the action's `maxChangesPerDay`), `ads_allowance_exceeded` (a reactivation or budget increase for a team past its free live-ads allowance), or the platform's message. Null when done.
+	// Why the action was skipped or failed: `already_paused`, `already_active`, `at_limit`, `budget_unknown`, `budget_not_daily`, `budget_level_mismatch`, `no_live_ads`, `daily_limit_reached` (held back by the action's `maxChangesPerDay`), `ads_allowance_exceeded` (a reactivation or budget increase for a team past its free live-ads allowance), `budget_shared`, `reallocation_incomplete` (failed: a receiver left alone because a giver's cut did not apply, tried again next run), `portfolio_bid_strategy`, `unsupported_bid_strategy`, `no_target_cpa`, `no_target_roas`, or the platform's message. Null when done.
 	Reason NullableString `json:"reason"`
 	// On `adjust_budget`, the daily budget before the change, in the ad account currency. Null otherwise.
 	PreviousDailyBudget NullableFloat32 `json:"previousDailyBudget"`
@@ -39,6 +39,12 @@ type WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner struct {
 	PreviousBidAmount NullableFloat32 `json:"previousBidAmount"`
 	// On `adjust_bid`, the cap after the change. Null when nothing changed.
 	NewBidAmount NullableFloat32 `json:"newBidAmount"`
+	// On `adjust_target`, which target moved. Null otherwise.
+	TargetMetric NullableString `json:"targetMetric"`
+	// On `adjust_target`, the target before the change. Null otherwise.
+	PreviousTarget NullableFloat32 `json:"previousTarget"`
+	// On `adjust_target`, the target after the change. Null when nothing changed.
+	NewTarget NullableFloat32 `json:"newTarget"`
 }
 
 type _WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner
@@ -47,7 +53,7 @@ type _WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner WebhookPayloadAdRule
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadAdRuleTriggeredObjectsInnerActionsInner(type_ string, status string, reason NullableString, previousDailyBudget NullableFloat32, newDailyBudget NullableFloat32, previousName NullableString, newName NullableString, previousBidAmount NullableFloat32, newBidAmount NullableFloat32) *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner {
+func NewWebhookPayloadAdRuleTriggeredObjectsInnerActionsInner(type_ string, status string, reason NullableString, previousDailyBudget NullableFloat32, newDailyBudget NullableFloat32, previousName NullableString, newName NullableString, previousBidAmount NullableFloat32, newBidAmount NullableFloat32, targetMetric NullableString, previousTarget NullableFloat32, newTarget NullableFloat32) *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner {
 	this := WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner{}
 	this.Type = type_
 	this.Status = status
@@ -58,6 +64,9 @@ func NewWebhookPayloadAdRuleTriggeredObjectsInnerActionsInner(type_ string, stat
 	this.NewName = newName
 	this.PreviousBidAmount = previousBidAmount
 	this.NewBidAmount = newBidAmount
+	this.TargetMetric = targetMetric
+	this.PreviousTarget = previousTarget
+	this.NewTarget = newTarget
 	return &this
 }
 
@@ -299,6 +308,84 @@ func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) SetNewBidAmount(
 	o.NewBidAmount.Set(&v)
 }
 
+// GetTargetMetric returns the TargetMetric field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) GetTargetMetric() string {
+	if o == nil || o.TargetMetric.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.TargetMetric.Get()
+}
+
+// GetTargetMetricOk returns a tuple with the TargetMetric field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) GetTargetMetricOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TargetMetric.Get(), o.TargetMetric.IsSet()
+}
+
+// SetTargetMetric sets field value
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) SetTargetMetric(v string) {
+	o.TargetMetric.Set(&v)
+}
+
+// GetPreviousTarget returns the PreviousTarget field value
+// If the value is explicit nil, the zero value for float32 will be returned
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) GetPreviousTarget() float32 {
+	if o == nil || o.PreviousTarget.Get() == nil {
+		var ret float32
+		return ret
+	}
+
+	return *o.PreviousTarget.Get()
+}
+
+// GetPreviousTargetOk returns a tuple with the PreviousTarget field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) GetPreviousTargetOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PreviousTarget.Get(), o.PreviousTarget.IsSet()
+}
+
+// SetPreviousTarget sets field value
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) SetPreviousTarget(v float32) {
+	o.PreviousTarget.Set(&v)
+}
+
+// GetNewTarget returns the NewTarget field value
+// If the value is explicit nil, the zero value for float32 will be returned
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) GetNewTarget() float32 {
+	if o == nil || o.NewTarget.Get() == nil {
+		var ret float32
+		return ret
+	}
+
+	return *o.NewTarget.Get()
+}
+
+// GetNewTargetOk returns a tuple with the NewTarget field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) GetNewTargetOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NewTarget.Get(), o.NewTarget.IsSet()
+}
+
+// SetNewTarget sets field value
+func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) SetNewTarget(v float32) {
+	o.NewTarget.Set(&v)
+}
+
 func (o WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -318,6 +405,9 @@ func (o WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) ToMap() (map[stri
 	toSerialize["newName"] = o.NewName.Get()
 	toSerialize["previousBidAmount"] = o.PreviousBidAmount.Get()
 	toSerialize["newBidAmount"] = o.NewBidAmount.Get()
+	toSerialize["targetMetric"] = o.TargetMetric.Get()
+	toSerialize["previousTarget"] = o.PreviousTarget.Get()
+	toSerialize["newTarget"] = o.NewTarget.Get()
 	return toSerialize, nil
 }
 
@@ -335,6 +425,9 @@ func (o *WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) UnmarshalJSON(da
 		"newName",
 		"previousBidAmount",
 		"newBidAmount",
+		"targetMetric",
+		"previousTarget",
+		"newTarget",
 	}
 
 	allProperties := make(map[string]interface{})

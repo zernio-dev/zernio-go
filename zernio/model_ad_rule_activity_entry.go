@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.512.0
+API version: 1.513.0
 Contact: support@zernio.com
 */
 
@@ -52,7 +52,13 @@ type AdRuleActivityEntry struct {
 	PreviousBidAmount NullableFloat32 `json:"previousBidAmount"`
 	// The cap an applied `adjust_bid` set.
 	NewBidAmount NullableFloat32 `json:"newBidAmount"`
-	Currency     NullableString  `json:"currency"`
+	// Which target an `adjust_target` moved.
+	TargetMetric NullableString `json:"targetMetric"`
+	// The target CPA or target ROAS before an `adjust_target`.
+	PreviousTarget NullableFloat32 `json:"previousTarget"`
+	// The target an applied `adjust_target` set.
+	NewTarget NullableFloat32 `json:"newTarget"`
+	Currency  NullableString  `json:"currency"`
 }
 
 type _AdRuleActivityEntry AdRuleActivityEntry
@@ -61,7 +67,7 @@ type _AdRuleActivityEntry AdRuleActivityEntry
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdRuleActivityEntry(id string, ranAt time.Time, ruleId string, ruleName string, platform string, accountId string, adAccountId string, level string, objectId string, objectName NullableString, type_ string, status string, reason NullableString, previousDailyBudget NullableFloat32, newDailyBudget NullableFloat32, previousName NullableString, newName NullableString, previousBidAmount NullableFloat32, newBidAmount NullableFloat32, currency NullableString) *AdRuleActivityEntry {
+func NewAdRuleActivityEntry(id string, ranAt time.Time, ruleId string, ruleName string, platform string, accountId string, adAccountId string, level string, objectId string, objectName NullableString, type_ string, status string, reason NullableString, previousDailyBudget NullableFloat32, newDailyBudget NullableFloat32, previousName NullableString, newName NullableString, previousBidAmount NullableFloat32, newBidAmount NullableFloat32, targetMetric NullableString, previousTarget NullableFloat32, newTarget NullableFloat32, currency NullableString) *AdRuleActivityEntry {
 	this := AdRuleActivityEntry{}
 	this.Id = id
 	this.RanAt = ranAt
@@ -82,6 +88,9 @@ func NewAdRuleActivityEntry(id string, ranAt time.Time, ruleId string, ruleName 
 	this.NewName = newName
 	this.PreviousBidAmount = previousBidAmount
 	this.NewBidAmount = newBidAmount
+	this.TargetMetric = targetMetric
+	this.PreviousTarget = previousTarget
+	this.NewTarget = newTarget
 	this.Currency = currency
 	return &this
 }
@@ -566,6 +575,84 @@ func (o *AdRuleActivityEntry) SetNewBidAmount(v float32) {
 	o.NewBidAmount.Set(&v)
 }
 
+// GetTargetMetric returns the TargetMetric field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *AdRuleActivityEntry) GetTargetMetric() string {
+	if o == nil || o.TargetMetric.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.TargetMetric.Get()
+}
+
+// GetTargetMetricOk returns a tuple with the TargetMetric field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleActivityEntry) GetTargetMetricOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TargetMetric.Get(), o.TargetMetric.IsSet()
+}
+
+// SetTargetMetric sets field value
+func (o *AdRuleActivityEntry) SetTargetMetric(v string) {
+	o.TargetMetric.Set(&v)
+}
+
+// GetPreviousTarget returns the PreviousTarget field value
+// If the value is explicit nil, the zero value for float32 will be returned
+func (o *AdRuleActivityEntry) GetPreviousTarget() float32 {
+	if o == nil || o.PreviousTarget.Get() == nil {
+		var ret float32
+		return ret
+	}
+
+	return *o.PreviousTarget.Get()
+}
+
+// GetPreviousTargetOk returns a tuple with the PreviousTarget field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleActivityEntry) GetPreviousTargetOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PreviousTarget.Get(), o.PreviousTarget.IsSet()
+}
+
+// SetPreviousTarget sets field value
+func (o *AdRuleActivityEntry) SetPreviousTarget(v float32) {
+	o.PreviousTarget.Set(&v)
+}
+
+// GetNewTarget returns the NewTarget field value
+// If the value is explicit nil, the zero value for float32 will be returned
+func (o *AdRuleActivityEntry) GetNewTarget() float32 {
+	if o == nil || o.NewTarget.Get() == nil {
+		var ret float32
+		return ret
+	}
+
+	return *o.NewTarget.Get()
+}
+
+// GetNewTargetOk returns a tuple with the NewTarget field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleActivityEntry) GetNewTargetOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NewTarget.Get(), o.NewTarget.IsSet()
+}
+
+// SetNewTarget sets field value
+func (o *AdRuleActivityEntry) SetNewTarget(v float32) {
+	o.NewTarget.Set(&v)
+}
+
 // GetCurrency returns the Currency field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *AdRuleActivityEntry) GetCurrency() string {
@@ -621,6 +708,9 @@ func (o AdRuleActivityEntry) ToMap() (map[string]interface{}, error) {
 	toSerialize["newName"] = o.NewName.Get()
 	toSerialize["previousBidAmount"] = o.PreviousBidAmount.Get()
 	toSerialize["newBidAmount"] = o.NewBidAmount.Get()
+	toSerialize["targetMetric"] = o.TargetMetric.Get()
+	toSerialize["previousTarget"] = o.PreviousTarget.Get()
+	toSerialize["newTarget"] = o.NewTarget.Get()
 	toSerialize["currency"] = o.Currency.Get()
 	return toSerialize, nil
 }
@@ -649,6 +739,9 @@ func (o *AdRuleActivityEntry) UnmarshalJSON(data []byte) (err error) {
 		"newName",
 		"previousBidAmount",
 		"newBidAmount",
+		"targetMetric",
+		"previousTarget",
+		"newTarget",
 		"currency",
 	}
 

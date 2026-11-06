@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.512.0
+API version: 1.513.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type AdRuleAction struct {
 	AdRuleActionOneOf5 *AdRuleActionOneOf5
 	AdRuleActionOneOf6 *AdRuleActionOneOf6
 	AdRuleActionOneOf7 *AdRuleActionOneOf7
+	AdRuleActionOneOf8 *AdRuleActionOneOf8
+	AdRuleActionOneOf9 *AdRuleActionOneOf9
 }
 
 // AdRuleActionOneOfAsAdRuleAction is a convenience function that returns AdRuleActionOneOf wrapped in AdRuleAction
@@ -82,6 +84,20 @@ func AdRuleActionOneOf6AsAdRuleAction(v *AdRuleActionOneOf6) AdRuleAction {
 func AdRuleActionOneOf7AsAdRuleAction(v *AdRuleActionOneOf7) AdRuleAction {
 	return AdRuleAction{
 		AdRuleActionOneOf7: v,
+	}
+}
+
+// AdRuleActionOneOf8AsAdRuleAction is a convenience function that returns AdRuleActionOneOf8 wrapped in AdRuleAction
+func AdRuleActionOneOf8AsAdRuleAction(v *AdRuleActionOneOf8) AdRuleAction {
+	return AdRuleAction{
+		AdRuleActionOneOf8: v,
+	}
+}
+
+// AdRuleActionOneOf9AsAdRuleAction is a convenience function that returns AdRuleActionOneOf9 wrapped in AdRuleAction
+func AdRuleActionOneOf9AsAdRuleAction(v *AdRuleActionOneOf9) AdRuleAction {
+	return AdRuleAction{
+		AdRuleActionOneOf9: v,
 	}
 }
 
@@ -225,6 +241,40 @@ func (dst *AdRuleAction) UnmarshalJSON(data []byte) error {
 		dst.AdRuleActionOneOf7 = nil
 	}
 
+	// try to unmarshal data into AdRuleActionOneOf8
+	err = newStrictDecoder(data).Decode(&dst.AdRuleActionOneOf8)
+	if err == nil {
+		jsonAdRuleActionOneOf8, _ := json.Marshal(dst.AdRuleActionOneOf8)
+		if string(jsonAdRuleActionOneOf8) == "{}" { // empty struct
+			dst.AdRuleActionOneOf8 = nil
+		} else {
+			if err = validator.Validate(dst.AdRuleActionOneOf8); err != nil {
+				dst.AdRuleActionOneOf8 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AdRuleActionOneOf8 = nil
+	}
+
+	// try to unmarshal data into AdRuleActionOneOf9
+	err = newStrictDecoder(data).Decode(&dst.AdRuleActionOneOf9)
+	if err == nil {
+		jsonAdRuleActionOneOf9, _ := json.Marshal(dst.AdRuleActionOneOf9)
+		if string(jsonAdRuleActionOneOf9) == "{}" { // empty struct
+			dst.AdRuleActionOneOf9 = nil
+		} else {
+			if err = validator.Validate(dst.AdRuleActionOneOf9); err != nil {
+				dst.AdRuleActionOneOf9 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AdRuleActionOneOf9 = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.AdRuleActionOneOf = nil
@@ -235,6 +285,8 @@ func (dst *AdRuleAction) UnmarshalJSON(data []byte) error {
 		dst.AdRuleActionOneOf5 = nil
 		dst.AdRuleActionOneOf6 = nil
 		dst.AdRuleActionOneOf7 = nil
+		dst.AdRuleActionOneOf8 = nil
+		dst.AdRuleActionOneOf9 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(AdRuleAction)")
 	} else if match == 1 {
@@ -278,6 +330,14 @@ func (src AdRuleAction) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AdRuleActionOneOf7)
 	}
 
+	if src.AdRuleActionOneOf8 != nil {
+		return json.Marshal(&src.AdRuleActionOneOf8)
+	}
+
+	if src.AdRuleActionOneOf9 != nil {
+		return json.Marshal(&src.AdRuleActionOneOf9)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -318,6 +378,14 @@ func (obj *AdRuleAction) GetActualInstance() interface{} {
 		return obj.AdRuleActionOneOf7
 	}
 
+	if obj.AdRuleActionOneOf8 != nil {
+		return obj.AdRuleActionOneOf8
+	}
+
+	if obj.AdRuleActionOneOf9 != nil {
+		return obj.AdRuleActionOneOf9
+	}
+
 	// all schemas are nil
 	return nil
 }
@@ -354,6 +422,14 @@ func (obj AdRuleAction) GetActualInstanceValue() interface{} {
 
 	if obj.AdRuleActionOneOf7 != nil {
 		return *obj.AdRuleActionOneOf7
+	}
+
+	if obj.AdRuleActionOneOf8 != nil {
+		return *obj.AdRuleActionOneOf8
+	}
+
+	if obj.AdRuleActionOneOf9 != nil {
+		return *obj.AdRuleActionOneOf9
 	}
 
 	// all schemas are nil
