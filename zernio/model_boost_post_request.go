@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.507.1
+API version: 1.508.0
 Contact: support@zernio.com
 */
 
@@ -129,6 +129,8 @@ type BoostPostRequest struct {
 	AttributionSpec []BoostPostRequestAttributionSpecInner `json:"attributionSpec,omitempty"`
 	// Meta only. Extra primary-text options Meta rotates on the boosted post (asset_feed_spec.bodies with DEGREES_OF_FREEDOM). The post keeps its own text as one of the options. Works for Facebook posts and Instagram media.  Under a conversions or traffic goal, Meta also wants a website URL on the options, taken from `linkUrl` (send it with a `callToAction`). Engagement boosts need none.
 	Bodies []string `json:"bodies,omitempty"`
+	// Meta only (a 400 elsewhere). When Meta answers a create with a 5xx and reading the parent back by name finds no such object, Zernio sends the create again (at most 3 POSTs per object, never for an object created ACTIVE) and reports it in `recoveredWrites`.  `false` never sends it again: the request fails with 502 and `details.unconfirmedWrite`, so you can check the parent yourself. One object found by name is still reused.
+	RetryOnServerError *bool `json:"retryOnServerError,omitempty"`
 	// Meta only (a 400 elsewhere). Controls the fallback when Meta refuses an existing Instagram video as the ad (subcode 1815279).  - First, Zernio copies the video into the ad account and retries on the original post. - Then it falls back to a new Facebook video in a new Page post, which does not show the original post's likes and comments.  The response reports which in `instagramVideoFallback`. Messaging boosts never use the unlinked copy. `false` skips every fallback and returns Meta's error.
 	RehostOnInstagramVideoRejection *bool                             `json:"rehostOnInstagramVideoRejection,omitempty"`
 	SmartTargeting                  *UpdateAdSetRequestSmartTargeting `json:"smartTargeting,omitempty"`
@@ -152,6 +154,8 @@ func NewBoostPostRequest(accountId string, adAccountId string, name string, goal
 	this.AdAccountId = adAccountId
 	this.Name = name
 	this.Goal = goal
+	var retryOnServerError bool = true
+	this.RetryOnServerError = &retryOnServerError
 	var rehostOnInstagramVideoRejection bool = true
 	this.RehostOnInstagramVideoRejection = &rehostOnInstagramVideoRejection
 	var validateOnly bool = false
@@ -164,6 +168,8 @@ func NewBoostPostRequest(accountId string, adAccountId string, name string, goal
 // but it doesn't guarantee that properties required by API are set
 func NewBoostPostRequestWithDefaults() *BoostPostRequest {
 	this := BoostPostRequest{}
+	var retryOnServerError bool = true
+	this.RetryOnServerError = &retryOnServerError
 	var rehostOnInstagramVideoRejection bool = true
 	this.RehostOnInstagramVideoRejection = &rehostOnInstagramVideoRejection
 	var validateOnly bool = false
@@ -1882,6 +1888,38 @@ func (o *BoostPostRequest) SetBodies(v []string) {
 	o.Bodies = v
 }
 
+// GetRetryOnServerError returns the RetryOnServerError field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetRetryOnServerError() bool {
+	if o == nil || IsNil(o.RetryOnServerError) {
+		var ret bool
+		return ret
+	}
+	return *o.RetryOnServerError
+}
+
+// GetRetryOnServerErrorOk returns a tuple with the RetryOnServerError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetRetryOnServerErrorOk() (*bool, bool) {
+	if o == nil || IsNil(o.RetryOnServerError) {
+		return nil, false
+	}
+	return o.RetryOnServerError, true
+}
+
+// HasRetryOnServerError returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasRetryOnServerError() bool {
+	if o != nil && !IsNil(o.RetryOnServerError) {
+		return true
+	}
+
+	return false
+}
+
+// SetRetryOnServerError gets a reference to the given bool and assigns it to the RetryOnServerError field.
+func (o *BoostPostRequest) SetRetryOnServerError(v bool) {
+	o.RetryOnServerError = &v
+}
+
 // GetRehostOnInstagramVideoRejection returns the RehostOnInstagramVideoRejection field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetRehostOnInstagramVideoRejection() bool {
 	if o == nil || IsNil(o.RehostOnInstagramVideoRejection) {
@@ -2205,6 +2243,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Bodies) {
 		toSerialize["bodies"] = o.Bodies
+	}
+	if !IsNil(o.RetryOnServerError) {
+		toSerialize["retryOnServerError"] = o.RetryOnServerError
 	}
 	if !IsNil(o.RehostOnInstagramVideoRejection) {
 		toSerialize["rehostOnInstagramVideoRejection"] = o.RehostOnInstagramVideoRejection

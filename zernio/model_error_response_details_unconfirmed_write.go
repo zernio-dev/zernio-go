@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.507.1
+API version: 1.508.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the ErrorResponseDetailsUnconfirmedWrite type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ErrorResponseDetailsUnconfirmedWrite{}
 
-// ErrorResponseDetailsUnconfirmedWrite Meta ad create failures only, when Meta answered a create with a 5xx or a non-JSON body, or dropped the connection after the request was sent, and reading the parent back by name did not settle it: several objects of the same name, a parent that could not be read, or (after a dropped connection or a non-JSON body) no such object. Zernio did not retry it.
+// ErrorResponseDetailsUnconfirmedWrite Meta ad create failures only, when Meta answered a create with a 5xx or a non-JSON body, or dropped the connection after the request was sent, and reading the parent back by name did not settle it: several objects of the same name, a parent that could not be read, or (after a dropped connection, a non-JSON body, or a 5xx with `retryOnServerError: false`) no such object. Zernio did not retry it.
 type ErrorResponseDetailsUnconfirmedWrite struct {
 	Type *string `json:"type,omitempty"`
 	// Where to look for it: the ad set for an ad, the campaign for an ad set, the ad account otherwise.

@@ -2047,6 +2047,7 @@ model_meta_product_catalog.go
 model_meta_product_feed.go
 model_meta_product_feed_schedule.go
 model_meta_product_set.go
+model_meta_recovered_writes_inner.go
 model_money.go
 model_money_amount.go
 model_move_account_to_profile_200_response.go

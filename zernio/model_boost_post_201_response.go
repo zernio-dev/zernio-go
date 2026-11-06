@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.507.1
+API version: 1.508.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,8 @@ type BoostPost201Response struct {
 	Ad                     *Ad                     `json:"ad,omitempty"`
 	Message                *string                 `json:"message,omitempty"`
 	InstagramVideoFallback *InstagramVideoFallback `json:"instagramVideoFallback,omitempty"`
+	// Meta only, present only when needed. Every object this request did not get confirmed by its first POST: found by name after Meta lost or failed its answer (`adopted`), or created by a second POST after a Meta 5xx (`repostedAfter`).  A re-POSTed object may have a twin from the first POST that Meta wrote late: check its parent for a duplicate name. Send `retryOnServerError: false` to never re-POST.
+	RecoveredWrites []MetaRecoveredWritesInner `json:"recoveredWrites,omitempty"`
 	// Human-readable notes about the boost.  - **With instagramVideoFallback:** one line saying how the Instagram video was boosted. - **`activation_failed:` (Meta):** Meta refused the final switch to ACTIVE of the campaign, ad set or ad this boost created. Nothing was deleted and `message` says not everything is ACTIVE. - **`activation_failed:` content:** names what was kept PAUSED and what was switched ACTIVE, and quotes Meta's error and the status calls that switch the PAUSED ones on later. - **`replayed_paused:`:** a retry without Idempotency-Key inside the 10-minute dedup window found the stored ad PAUSED although it asks for ACTIVE. Carries the same status calls.
 	Warnings []string `json:"warnings,omitempty"`
 }
@@ -140,6 +142,38 @@ func (o *BoostPost201Response) SetInstagramVideoFallback(v InstagramVideoFallbac
 	o.InstagramVideoFallback = &v
 }
 
+// GetRecoveredWrites returns the RecoveredWrites field value if set, zero value otherwise.
+func (o *BoostPost201Response) GetRecoveredWrites() []MetaRecoveredWritesInner {
+	if o == nil || IsNil(o.RecoveredWrites) {
+		var ret []MetaRecoveredWritesInner
+		return ret
+	}
+	return o.RecoveredWrites
+}
+
+// GetRecoveredWritesOk returns a tuple with the RecoveredWrites field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPost201Response) GetRecoveredWritesOk() ([]MetaRecoveredWritesInner, bool) {
+	if o == nil || IsNil(o.RecoveredWrites) {
+		return nil, false
+	}
+	return o.RecoveredWrites, true
+}
+
+// HasRecoveredWrites returns a boolean if a field has been set.
+func (o *BoostPost201Response) HasRecoveredWrites() bool {
+	if o != nil && !IsNil(o.RecoveredWrites) {
+		return true
+	}
+
+	return false
+}
+
+// SetRecoveredWrites gets a reference to the given []MetaRecoveredWritesInner and assigns it to the RecoveredWrites field.
+func (o *BoostPost201Response) SetRecoveredWrites(v []MetaRecoveredWritesInner) {
+	o.RecoveredWrites = v
+}
+
 // GetWarnings returns the Warnings field value if set, zero value otherwise.
 func (o *BoostPost201Response) GetWarnings() []string {
 	if o == nil || IsNil(o.Warnings) {
@@ -190,6 +224,9 @@ func (o BoostPost201Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.InstagramVideoFallback) {
 		toSerialize["instagramVideoFallback"] = o.InstagramVideoFallback
+	}
+	if !IsNil(o.RecoveredWrites) {
+		toSerialize["recoveredWrites"] = o.RecoveredWrites
 	}
 	if !IsNil(o.Warnings) {
 		toSerialize["warnings"] = o.Warnings

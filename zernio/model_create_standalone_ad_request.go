@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.507.1
+API version: 1.508.0
 Contact: support@zernio.com
 */
 
@@ -55,6 +55,8 @@ type CreateStandaloneAdRequest struct {
 	MultiAdvertiser *string `json:"multiAdvertiser,omitempty"`
 	// Meta only. Meta's \"Ad includes media created or edited with AI\" disclosure (the Ads Manager checkbox), stored on the creative as `generative_asset_spec.transparency_metadata.self_disclosure`.  - OPT_IN: checks it. - OPT_OUT: explicitly declares no AI media. - Omitted: leaves Meta's default.  Applied to each new creative (standalone, creatives[] and attach shapes) and preserved when a creative is rebuilt. This sets the disclosure on the ad; whether and when the viewer-facing label renders is Meta's decision.
 	AiDisclosure *string `json:"aiDisclosure,omitempty"`
+	// Meta only (a 400 elsewhere). When Meta answers a create with a 5xx and reading the parent back by name finds no such object, Zernio sends the create again (at most 3 POSTs per object, never for an object created ACTIVE) and reports it in `recoveredWrites`.  `false` never sends it again: the request fails with 502 and `details.unconfirmedWrite`, so you can check the parent yourself. One object found by name is still reused.
+	RetryOnServerError *bool `json:"retryOnServerError,omitempty"`
 	// Validate the request without creating anything. Supported on Meta, TikTok, ChatGPT (OpenAI) and Google Performance Max / Demand Gen. Any other platform, or a Google campaignType other than pmax or demand_gen, returns 501 `feature_not_available`.  **Google Performance Max**: validates the complete atomic campaign and asset group, with no resource creation or local persistence. Validation still downloads image URLs and consumes quota.  **Meta**: validates the inline campaign, ad set, creative and ad with execution_options validate_only. Nothing is uploaded or created; validation bypasses Idempotency-Key storage. Success returns 200 with per-node results; a Meta rejection returns an error.  Before the dry run, Meta validateOnly runs the account status and payment checks of GET /v1/ads/accounts/health: an ad account that is not ready answers its blocker `code` (`ad_account_unusable`, `ad_account_payment_required`) with `details.hint` and `details.fix`, and Meta is not called.  - Supported: a single image or existing video.id (each also with bodies[] / headlines[] Multiple Text Options), all-image placementAssets with per-rule copy and text pools, placementAssets with an existing video id in every slot and no thumbnails, or existingCreativeId. - Return 400: dynamicCreative, translations, carouselCards, placement videos by URL or with thumbnails, new video uploads, creatives[], adSetId, RESERVED buying. - Placement validation uses existing Instagram identities only. Existing campaign or creative nodes are marked skipped. - When Meta cannot dry-run the nested tree, the campaign and creative are validated alone and the adSet and ad nodes return unverified with the reason. This covers code 2, and two errors Meta returns but then creates normally (below). - Code 1 (unknown error) on an OFFSITE_CONVERSIONS ad set nested in a new campaign (some website-conversion ad sets). - Code 100 subcode 2446880 \"WhatsApp number required\" on an ad that does not message on WhatsApp (intermittent). If the creative's own dry run also asks for a WhatsApp number, the creative is unverified too. Messaging ads still fail on 2446880.  **ChatGPT (OpenAI)**: no platform dry-run. Zernio runs every check it knows (creative lengths, budget, bid strategy, targeting) plus live lookups of the conversion event and target countries, and uploads or creates nothing. OpenAI's own checks (image fetch, currency-specific minimums, ad review) run only on a real create.  **TikTok**: TikTok has no dry-run. Zernio runs the input checks and the read-only TikTok calls a real create makes. It uploads or creates nothing: no video, Brand Identity, campaign, ad group or ad. A failure returns the same 4xx a real create would.  - Advertiser: `message` names its currency when TikTok returns it. - Identity: `identityId` is authorized on the advertiser (the `identity` node). `message` names the identity and type the ad would run as. - `existingCampaignId`: exists and is not an Upgraded Smart+ campaign. - Pixel and optimization event resolve on the advertiser, and the schedule and targeting build. - Not checked (marked `unverified` with the reason): the video (format, size, length, cover), the ad group as TikTok would create it (the budget minimum for the advertiser currency, location and audience ids, bid), a new campaign, and TikTok's review of the ad text, call to action and landing page. - A Brand Identity a real create would make from `brandIdentity` is not made: the `identity` node is `unverified`. - Supported: the single standalone video ad. `smartPlus` and `adSetId` return 400.
 	ValidateOnly *bool `json:"validateOnly,omitempty"`
 	// Budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this number in minor units, an easy and expensive mix-up.  Required on legacy, multi-creative and Performance Max shapes. Inherited on attach.  **OpenAI Ads:** in the ad account currency, minimum 1. OpenAI can require a higher daily minimum for some currencies and names it in the error.
@@ -262,6 +264,8 @@ func NewCreateStandaloneAdRequest(accountId string, adAccountId string) *CreateS
 	this.AdAccountId = adAccountId
 	var buyingType string = "AUCTION"
 	this.BuyingType = &buyingType
+	var retryOnServerError bool = true
+	this.RetryOnServerError = &retryOnServerError
 	var budgetLevel string = "adset"
 	this.BudgetLevel = &budgetLevel
 	var campaignType string = "display"
@@ -278,6 +282,8 @@ func NewCreateStandaloneAdRequestWithDefaults() *CreateStandaloneAdRequest {
 	this := CreateStandaloneAdRequest{}
 	var buyingType string = "AUCTION"
 	this.BuyingType = &buyingType
+	var retryOnServerError bool = true
+	this.RetryOnServerError = &retryOnServerError
 	var budgetLevel string = "adset"
 	this.BudgetLevel = &budgetLevel
 	var campaignType string = "display"
@@ -846,6 +852,38 @@ func (o *CreateStandaloneAdRequest) HasAiDisclosure() bool {
 // SetAiDisclosure gets a reference to the given string and assigns it to the AiDisclosure field.
 func (o *CreateStandaloneAdRequest) SetAiDisclosure(v string) {
 	o.AiDisclosure = &v
+}
+
+// GetRetryOnServerError returns the RetryOnServerError field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetRetryOnServerError() bool {
+	if o == nil || IsNil(o.RetryOnServerError) {
+		var ret bool
+		return ret
+	}
+	return *o.RetryOnServerError
+}
+
+// GetRetryOnServerErrorOk returns a tuple with the RetryOnServerError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetRetryOnServerErrorOk() (*bool, bool) {
+	if o == nil || IsNil(o.RetryOnServerError) {
+		return nil, false
+	}
+	return o.RetryOnServerError, true
+}
+
+// HasRetryOnServerError returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasRetryOnServerError() bool {
+	if o != nil && !IsNil(o.RetryOnServerError) {
+		return true
+	}
+
+	return false
+}
+
+// SetRetryOnServerError gets a reference to the given bool and assigns it to the RetryOnServerError field.
+func (o *CreateStandaloneAdRequest) SetRetryOnServerError(v bool) {
+	o.RetryOnServerError = &v
 }
 
 // GetValidateOnly returns the ValidateOnly field value if set, zero value otherwise.
@@ -4159,6 +4197,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AiDisclosure) {
 		toSerialize["aiDisclosure"] = o.AiDisclosure
+	}
+	if !IsNil(o.RetryOnServerError) {
+		toSerialize["retryOnServerError"] = o.RetryOnServerError
 	}
 	if !IsNil(o.ValidateOnly) {
 		toSerialize["validateOnly"] = o.ValidateOnly

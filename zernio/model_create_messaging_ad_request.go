@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.507.1
+API version: 1.508.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &CreateMessagingAdRequest{}
 
 // CreateMessagingAdRequest struct for CreateMessagingAdRequest
 type CreateMessagingAdRequest struct {
+	// When Meta answers a create with a 5xx and reading the parent back by name finds no such object, Zernio sends the create again (at most 3 POSTs per object, never for an object created ACTIVE) and reports it in `recoveredWrites`.  `false` never sends it again: the request fails with 502 and `details.unconfirmedWrite`, so you can check the parent yourself. One object found by name is still reused.
+	RetryOnServerError *bool `json:"retryOnServerError,omitempty"`
 	// Meta enhancement settings for single or attached ads, and defaults for creatives[]. An item replaces the entire map, including with an empty object.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	Tracking         *AdTracking       `json:"tracking,omitempty"`
@@ -179,6 +181,8 @@ type _CreateMessagingAdRequest CreateMessagingAdRequest
 // will change when the set of required properties is changed
 func NewCreateMessagingAdRequest(accountId string, adAccountId string, name string) *CreateMessagingAdRequest {
 	this := CreateMessagingAdRequest{}
+	var retryOnServerError bool = true
+	this.RetryOnServerError = &retryOnServerError
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
 	this.Name = name
@@ -190,7 +194,41 @@ func NewCreateMessagingAdRequest(accountId string, adAccountId string, name stri
 // but it doesn't guarantee that properties required by API are set
 func NewCreateMessagingAdRequestWithDefaults() *CreateMessagingAdRequest {
 	this := CreateMessagingAdRequest{}
+	var retryOnServerError bool = true
+	this.RetryOnServerError = &retryOnServerError
 	return &this
+}
+
+// GetRetryOnServerError returns the RetryOnServerError field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetRetryOnServerError() bool {
+	if o == nil || IsNil(o.RetryOnServerError) {
+		var ret bool
+		return ret
+	}
+	return *o.RetryOnServerError
+}
+
+// GetRetryOnServerErrorOk returns a tuple with the RetryOnServerError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetRetryOnServerErrorOk() (*bool, bool) {
+	if o == nil || IsNil(o.RetryOnServerError) {
+		return nil, false
+	}
+	return o.RetryOnServerError, true
+}
+
+// HasRetryOnServerError returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasRetryOnServerError() bool {
+	if o != nil && !IsNil(o.RetryOnServerError) {
+		return true
+	}
+
+	return false
+}
+
+// SetRetryOnServerError gets a reference to the given bool and assigns it to the RetryOnServerError field.
+func (o *CreateMessagingAdRequest) SetRetryOnServerError(v bool) {
+	o.RetryOnServerError = &v
 }
 
 // GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
@@ -2678,6 +2716,9 @@ func (o CreateMessagingAdRequest) MarshalJSON() ([]byte, error) {
 
 func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.RetryOnServerError) {
+		toSerialize["retryOnServerError"] = o.RetryOnServerError
+	}
 	if !IsNil(o.CreativeFeatures) {
 		toSerialize["creativeFeatures"] = o.CreativeFeatures
 	}

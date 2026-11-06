@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.507.1
+API version: 1.508.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type CtwaSingleResponse struct {
 	// The persisted Ad document.
 	Ad      map[string]interface{} `json:"ad"`
 	Message string                 `json:"message"`
+	// Meta only, present only when needed. Every object this request did not get confirmed by its first POST: found by name after Meta lost or failed its answer (`adopted`), or created by a second POST after a Meta 5xx (`repostedAfter`).  A re-POSTed object may have a twin from the first POST that Meta wrote late: check its parent for a duplicate name. Send `retryOnServerError: false` to never re-POST.
+	RecoveredWrites []MetaRecoveredWritesInner `json:"recoveredWrites,omitempty"`
 	// Present when Meta created the ad set differently from the request:  - Multi-destination ad set (`destinations` including whatsapp) that Meta kept without the requested `whatsappPhoneNumber` in its promoted_object, which an existing ad set cannot change. A WhatsApp-only ad set returns no such warning, because every ad routes conversations by the number on its WhatsApp button. - The ad set joined a CBO campaign (`existingCampaignId`) whose own bid strategy applies, so a different `bidStrategy` or a `roasAverageFloor` that strategy cannot take was not applied. - An entry starting with `activation_failed:`: Meta refused the final switch to ACTIVE. Nothing was deleted. The entry names what was kept PAUSED and what was switched ACTIVE, and quotes Meta's error and the status calls that switch the PAUSED ones on later.
 	Warnings []string `json:"warnings,omitempty"`
 }
@@ -124,6 +126,38 @@ func (o *CtwaSingleResponse) SetMessage(v string) {
 	o.Message = v
 }
 
+// GetRecoveredWrites returns the RecoveredWrites field value if set, zero value otherwise.
+func (o *CtwaSingleResponse) GetRecoveredWrites() []MetaRecoveredWritesInner {
+	if o == nil || IsNil(o.RecoveredWrites) {
+		var ret []MetaRecoveredWritesInner
+		return ret
+	}
+	return o.RecoveredWrites
+}
+
+// GetRecoveredWritesOk returns a tuple with the RecoveredWrites field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaSingleResponse) GetRecoveredWritesOk() ([]MetaRecoveredWritesInner, bool) {
+	if o == nil || IsNil(o.RecoveredWrites) {
+		return nil, false
+	}
+	return o.RecoveredWrites, true
+}
+
+// HasRecoveredWrites returns a boolean if a field has been set.
+func (o *CtwaSingleResponse) HasRecoveredWrites() bool {
+	if o != nil && !IsNil(o.RecoveredWrites) {
+		return true
+	}
+
+	return false
+}
+
+// SetRecoveredWrites gets a reference to the given []MetaRecoveredWritesInner and assigns it to the RecoveredWrites field.
+func (o *CtwaSingleResponse) SetRecoveredWrites(v []MetaRecoveredWritesInner) {
+	o.RecoveredWrites = v
+}
+
 // GetWarnings returns the Warnings field value if set, zero value otherwise.
 func (o *CtwaSingleResponse) GetWarnings() []string {
 	if o == nil || IsNil(o.Warnings) {
@@ -169,6 +203,9 @@ func (o CtwaSingleResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize["adType"] = o.AdType
 	toSerialize["ad"] = o.Ad
 	toSerialize["message"] = o.Message
+	if !IsNil(o.RecoveredWrites) {
+		toSerialize["recoveredWrites"] = o.RecoveredWrites
+	}
 	if !IsNil(o.Warnings) {
 		toSerialize["warnings"] = o.Warnings
 	}
