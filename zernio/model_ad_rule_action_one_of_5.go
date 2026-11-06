@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.514.0
+API version: 1.514.1
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &AdRuleActionOneOf5{}
 
 // AdRuleActionOneOf5 Either `amount`, or `direction`, `percent` and `limit`.
 type AdRuleActionOneOf5 struct {
-	// Move a Google campaign's target CPA or target ROAS inside the strategy it is on (Target CPA or Maximize conversions for `cpa`, Target ROAS or Maximize conversion value for `roas`), never switching strategies. Campaign rules on Google only. Skipped with `portfolio_bid_strategy` on a portfolio strategy, `unsupported_bid_strategy` on one with no target (Manual CPC, Maximize clicks), and `no_target_cpa` or `no_target_roas` when the strategy holds no such target. A target CPA in a zero-decimal currency is rounded to whole units.
+	// Move a Google campaign's target CPA or target ROAS inside the strategy it is on (Target CPA or Maximize conversions for `cpa`, Target ROAS or Maximize conversion value for `roas`), never switching strategies. Campaign rules on Google only.  Skipped with `portfolio_bid_strategy` on a portfolio strategy, `unsupported_bid_strategy` on one with no target (Manual CPC, Maximize clicks), and `no_target_cpa` or `no_target_roas` when the strategy holds no such target. A target CPA in a zero-decimal currency is rounded to whole units.
 	Type string `json:"type"`
 	// Which target moves: `cpa` in the ad account currency, `roas` as a ratio (3 is 300%).
 	Target string `json:"target"`
