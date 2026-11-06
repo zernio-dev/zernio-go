@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.515.0
+API version: 1.516.0
 Contact: support@zernio.com
 */
 
@@ -71,7 +71,7 @@ type CreateStandaloneAdRequest struct {
 	AdSetStatus *string `json:"adSetStatus,omitempty"`
 	// Sets the switch of the new ad alone, also when attaching to an existing ad set with `adSetId`, and overrides `status` for it. Same precedence as `adSetStatus`. Omitted, it follows `status`.  - LinkedIn: a creative held off is created DRAFT, because LinkedIn refuses PAUSED on a creative until its review is APPROVED. A DRAFT creative is not submitted for review and cannot serve; it reads `paused`. Resuming the ad (PUT /v1/ads/{adId}/status `active`) switches it ACTIVE, which starts the review. - X: returns a 400. A promoted post has no switch of its own, so hold the line item with `adSetStatus`. - `PAUSED` with `buyingType: RESERVED`: returns a 400 (Meta creates the first Reach and Frequency ad ACTIVE). - Performance Max and Demand Gen: accept PAUSED only.
 	AdStatus *AdActivationStatus `json:"adStatus,omitempty"`
-	// Meta only. Where the budget lives, which selects the Meta budget model:  - `adset` (default): ABO (Ad-set Budget Optimization). The budget is set on the ad set. Back-compatible; omit this field to keep it. - `campaign`: CBO (Campaign Budget Optimization / Advantage Campaign Budget). The budget AND `bidStrategy` are set on the CAMPAIGN, and Meta distributes spend across ad sets automatically.  The returned ad stores the applied `budgetLevel`, and the budget in `campaignBudget` (CBO) or `adSetBudget` (ABO). Edit CBO budgets with `PUT /v1/ads/campaigns/{campaignId}` and ABO budgets with `PUT /v1/ads/ad-sets/{adSetId}`.  Meta requires the budget at exactly one level, never both. Non-Meta platforms ignore this field. Ignored on the attach shape (`adSetId`), which inherits the existing budget.
+	// Meta only. Where the budget lives, which selects the Meta budget model:  - `adset` (used when omitted): ABO (Ad-set Budget Optimization). The budget is set on the ad set. - `campaign`: CBO (Campaign Budget Optimization / Advantage Campaign Budget). The budget AND `bidStrategy` are set on the CAMPAIGN, and Meta distributes spend across ad sets automatically.  The returned ad stores the applied `budgetLevel`, and the budget in `campaignBudget` (CBO) or `adSetBudget` (ABO). Edit CBO budgets with `PUT /v1/ads/campaigns/{campaignId}` and ABO budgets with `PUT /v1/ads/ad-sets/{adSetId}`.  Meta requires the budget at exactly one level, never both. Ignored on the Meta attach shape (`adSetId`), which inherits the existing budget.  Google Demand Gen also reads it. A new Demand Gen campaign accepts only `campaign` or no value. With `existingCampaignId` or `adSetId`, omit it: the budget stays on the existing campaign. Other platforms ignore it.
 	BudgetLevel *string `json:"budgetLevel,omitempty"`
 	// ISO 4217 currency code matching the ad account's currency (e.g. `USD`). Meta only. Optional: Zernio resolves it from the ad account when omitted. The value selects the minor-unit exponent Zernio converts budget/bid amounts by before calling Meta (most currencies are cents; zero-decimal currencies like JPY/KRW are sent as-is).
 	Currency *string `json:"currency,omitempty"`
@@ -181,7 +181,7 @@ type CreateStandaloneAdRequest struct {
 	PlacementAssets *MetaPlacementAssets `json:"placementAssets,omitempty"`
 	// Custom audience ID for targeting
 	AudienceId *string `json:"audienceId,omitempty"`
-	// Google only. Performance Max requires assetGroup and Demand Gen requires demandGen; both are always created PAUSED. With `adSetId` it defaults to the ad group's own campaign type instead of display.
+	// Google only. Omitted, it is display on a new campaign, and the existing campaign's own type with `existingCampaignId` or `adSetId` (Search, Display or Demand Gen; other types return 422). Performance Max requires assetGroup and Demand Gen requires demandGen; both are always created PAUSED.
 	CampaignType *string `json:"campaignType,omitempty"`
 	// Google only (400 elsewhere). Set on the new campaign; a request that joins an existing campaign (`existingCampaignId` or `adSetId`) returns 400, change that campaign with PUT /v1/ads/campaigns/{campaignId}/targeting instead. `presence` reaches only people in or regularly in the targeted locations.
 	LocationTargetingType *GoogleLocationTargetingType `json:"locationTargetingType,omitempty"`
@@ -264,12 +264,6 @@ func NewCreateStandaloneAdRequest(accountId string, adAccountId string) *CreateS
 	this.AdAccountId = adAccountId
 	var buyingType string = "AUCTION"
 	this.BuyingType = &buyingType
-	var retryOnServerError bool = true
-	this.RetryOnServerError = &retryOnServerError
-	var budgetLevel string = "adset"
-	this.BudgetLevel = &budgetLevel
-	var campaignType string = "display"
-	this.CampaignType = &campaignType
 	var gender string = "all"
 	this.Gender = &gender
 	return &this
@@ -282,12 +276,6 @@ func NewCreateStandaloneAdRequestWithDefaults() *CreateStandaloneAdRequest {
 	this := CreateStandaloneAdRequest{}
 	var buyingType string = "AUCTION"
 	this.BuyingType = &buyingType
-	var retryOnServerError bool = true
-	this.RetryOnServerError = &retryOnServerError
-	var budgetLevel string = "adset"
-	this.BudgetLevel = &budgetLevel
-	var campaignType string = "display"
-	this.CampaignType = &campaignType
 	var gender string = "all"
 	this.Gender = &gender
 	return &this
