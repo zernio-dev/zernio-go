@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.519.0
+API version: 1.520.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadAdSetUpdated type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadAdSetUpdated{}
 
-// WebhookPayloadAdSetUpdated Webhook payload for the `ad_set.updated` event. Fires when an ad set is edited through Zernio (API, MCP or dashboard), after the platform and Zernio both accepted the edit, once per user who can see the ad set.  `changes` names the edited fields and never their values: read the ad set with `GET /v1/ads/ad-sets/{adSetId}` for the current state. Ignore values you do not know, new ones can be added. Budget and targeting edits made through `PUT /v1/ads/{adId}` arrive as `ad.updated`.  Events are not deduplicated: every edit is announced. Use the event `id` to drop repeats.
+// WebhookPayloadAdSetUpdated Webhook payload for the `ad_set.updated` event. Fires when an ad set is edited through Zernio (API, MCP or dashboard), after the platform and Zernio both accepted the edit, once per user who can see the ad set. It also fires when the sync detects an edit made outside Zernio.  `source` is `zernio` for edits through Zernio, `platform` for edits the sync detected outside Zernio, up to one sync interval late, sent only to the user whose sync saw it.  From the sync, `changes` covers only `name` and `status` (status not on Reddit). Never for history loaded when an account connects.  `changes` names the edited fields and never their values: read the ad set with `GET /v1/ads/ad-sets/{adSetId}` for the current state. Ignore values you do not know, new ones can be added. Budget and targeting edits made through `PUT /v1/ads/{adId}` arrive as `ad.updated`.  Events are not deduplicated: every edit is announced. Use the event `id` to drop repeats.
 type WebhookPayloadAdSetUpdated struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery.
 	Id string `json:"id"`
@@ -34,7 +34,7 @@ type WebhookPayloadAdSetUpdated struct {
 	AdObject WebhookPayloadAdSetCreatedAdObject `json:"adObject"`
 	// Fields edited by this request. `status` is the ad set's own on/off switch. Ignore values you do not know.
 	Changes []string `json:"changes"`
-	// Where the edit was made. `zernio` for edits through Zernio.
+	// Where the edit was made. `zernio` for edits through Zernio, `platform` for edits the sync detected outside Zernio.
 	Source string `json:"source"`
 	// UTC time at which Zernio generated this event.
 	Timestamp time.Time `json:"timestamp"`

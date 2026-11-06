@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.519.0
+API version: 1.520.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadAdSetCreated type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadAdSetCreated{}
 
-// WebhookPayloadAdSetCreated Webhook payload for the `ad_set.created` event. Fires when an ad set is created through Zernio (API, MCP or dashboard), once per ad set, after its row is recorded so `GET /v1/ads/ad-sets/{adSetId}` finds it.  History loaded when an account connects is never announced.  An ad set is announced at most once per 24 hours.
+// WebhookPayloadAdSetCreated Webhook payload for the `ad_set.created` event. Fires when an ad set is created through Zernio (API, MCP or dashboard) or detected by the sync, once per ad set, after its row is recorded so `GET /v1/ads/ad-sets/{adSetId}` finds it.  `source` is `zernio` for ad sets created through Zernio and `platform` for ad sets our sync detected, up to one sync interval later. History loaded when an account connects, and ad sets created more than 7 days ago, are never announced.  An ad set is announced at most once per 24 hours.
 type WebhookPayloadAdSetCreated struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery.
 	Id string `json:"id"`
@@ -32,7 +32,7 @@ type WebhookPayloadAdSetCreated struct {
 	Event    string                             `json:"event"`
 	Account  WebhookAdsAccount                  `json:"account"`
 	AdObject WebhookPayloadAdSetCreatedAdObject `json:"adObject"`
-	// Where the ad set was created. `zernio` for ad sets created through Zernio.
+	// Where the ad set was created. `zernio` for ad sets created through Zernio, `platform` for ad sets the sync detected.
 	Source string `json:"source"`
 	// UTC time at which Zernio generated this event.
 	Timestamp time.Time `json:"timestamp"`

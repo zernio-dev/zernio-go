@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.519.0
+API version: 1.520.0
 Contact: support@zernio.com
 */
 
@@ -1531,11 +1531,11 @@ func (r WebhookEventsAPIOnAdSetCreatedRequest) Execute() (*http.Response, error)
 /*
 OnAdSetCreated Ad set created event
 
-An ad set was created through Zernio (`source: "zernio"`).
+An ad set was created through Zernio (`source: "zernio"`) or detected by the sync (`source: "platform"`).
 
 ### When it fires
 
-Fires once the ad set row is recorded, so `GET /v1/ads/ad-sets/{adSetId}` finds it.
+Fires once the ad set row is recorded, so `GET /v1/ads/ad-sets/{adSetId}` finds it. A detected ad set arrives up to one sync interval late.
 
 ### Payload notes
 
@@ -1543,7 +1543,7 @@ Fires once the ad set row is recorded, so `GET /v1/ads/ad-sets/{adSetId}` finds 
 
 ### When it does not fire
 
-History loaded when an account connects is never announced.
+History loaded when an account connects, and ad sets created more than 7 days ago, are never announced.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnAdSetCreatedRequest
@@ -1642,11 +1642,11 @@ func (r WebhookEventsAPIOnAdSetUpdatedRequest) Execute() (*http.Response, error)
 /*
 OnAdSetUpdated Ad set updated event
 
-An ad set was edited through Zernio (`source: "zernio"`).
+An ad set was edited through Zernio (`source: "zernio"`), or outside Zernio and detected by the sync (`source: "platform"`).
 
 ### When it fires
 
-Fires after the platform and Zernio both accepted the edit.
+Fires after the platform and Zernio both accepted the edit. Outside edits arrive up to one sync interval late, and only to the user whose sync saw them.
 
 ### Deduplication
 
@@ -1656,9 +1656,13 @@ Events are not deduplicated, so every edit is announced. Use the event `id` to d
 
 `changes` lists the edited fields: `name`, `status` (the ad set's own on/off switch), `budget`, `bid`, `schedule`, `targeting` or `settings`. Ignore unknown values. It never carries old or new values, so read the ad set.
 
+### What the sync detects
+
+From the sync, `changes` covers only `name` and `status`. Status is not detected on Reddit.
+
 ### When it does not fire
 
-Budget and targeting edits made through `PUT /v1/ads/{adId}` arrive as `ad.updated`.
+History loaded when an account connects is never announced. Budget and targeting edits made through `PUT /v1/ads/{adId}` arrive as `ad.updated`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnAdSetUpdatedRequest
@@ -5475,7 +5479,7 @@ From the sync, `changes` covers only `name`, `status` and `schedule`. Schedule i
 
 ### When it does not fire
 
-Budget edits made outside Zernio and history loaded at connect are not announced. Ad set edits made through Zernio arrive as `ad_set.updated`. Ad rule changes arrive as `ad_rule.triggered`.
+Budget edits made outside Zernio and history loaded at connect are not announced. Ad set edits arrive as `ad_set.updated`. Ad rule changes arrive as `ad_rule.triggered`.
 
 ### Google sub-resources
 
