@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.509.0
+API version: 1.510.0
 Contact: support@zernio.com
 */
 
@@ -39,6 +39,8 @@ type CreateAdCreativeRequest struct {
 	// Existing library image hash (POST /v1/ads/images or GET /v1/ads/images).
 	ImageHash     *string                                     `json:"imageHash,omitempty"`
 	CarouselCards []CreateAdCreativeRequestCarouselCardsInner `json:"carouselCards,omitempty"`
+	// Meta only. The Instagram account the creative runs as, mapped to `instagram_user_id`: an id from `GET /v1/ads/instagram-accounts`, including a Page-backed one.  - Given, it is never swapped. One the ad account cannot use returns 400 `insufficient_permissions` on `instagramAccountId`. - Omitted, it uses the account linked to the Page. When the ad account has no access to that one, it retries once with an authorized Instagram account, or returns 422 on `instagramAccountId` when there is none.
+	InstagramAccountId *string `json:"instagramAccountId,omitempty"`
 	// Only with `carouselCards` (a 400 without them). Sets `link_data.multi_share_optimized`:  - `false`: keeps the cards in the order given. Meta then takes at most 5 cards, so `false` with more than 5 cards is a 400. - `true`: lets Meta reorder them for performance. - Omitted: nothing is sent and Meta's default (`true`) applies.
 	OptimizeCardOrder *bool `json:"optimizeCardOrder,omitempty"`
 	// Appended to every outbound URL (e.g. utm_source=fb).
@@ -361,6 +363,38 @@ func (o *CreateAdCreativeRequest) SetCarouselCards(v []CreateAdCreativeRequestCa
 	o.CarouselCards = v
 }
 
+// GetInstagramAccountId returns the InstagramAccountId field value if set, zero value otherwise.
+func (o *CreateAdCreativeRequest) GetInstagramAccountId() string {
+	if o == nil || IsNil(o.InstagramAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.InstagramAccountId
+}
+
+// GetInstagramAccountIdOk returns a tuple with the InstagramAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCreativeRequest) GetInstagramAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.InstagramAccountId) {
+		return nil, false
+	}
+	return o.InstagramAccountId, true
+}
+
+// HasInstagramAccountId returns a boolean if a field has been set.
+func (o *CreateAdCreativeRequest) HasInstagramAccountId() bool {
+	if o != nil && !IsNil(o.InstagramAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetInstagramAccountId gets a reference to the given string and assigns it to the InstagramAccountId field.
+func (o *CreateAdCreativeRequest) SetInstagramAccountId(v string) {
+	o.InstagramAccountId = &v
+}
+
 // GetOptimizeCardOrder returns the OptimizeCardOrder field value if set, zero value otherwise.
 func (o *CreateAdCreativeRequest) GetOptimizeCardOrder() bool {
 	if o == nil || IsNil(o.OptimizeCardOrder) {
@@ -583,6 +617,9 @@ func (o CreateAdCreativeRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CarouselCards) {
 		toSerialize["carouselCards"] = o.CarouselCards
+	}
+	if !IsNil(o.InstagramAccountId) {
+		toSerialize["instagramAccountId"] = o.InstagramAccountId
 	}
 	if !IsNil(o.OptimizeCardOrder) {
 		toSerialize["optimizeCardOrder"] = o.OptimizeCardOrder

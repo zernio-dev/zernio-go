@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.509.0
+API version: 1.510.0
 Contact: support@zernio.com
 */
 
@@ -55,7 +55,7 @@ Provide exactly one of:
 
 ### Other fields
 
-- The Page (and linked Instagram account, when present) is resolved from `accountId` as the story actor.
+- The Page (and linked Instagram account, when present) is resolved from `accountId` as the story actor. `instagramAccountId` overrides the Instagram account.
 - `creativeFeatures` configures Advantage+ enhancements.
 - `promotion` is not supported and any object is rejected with 400.
 
