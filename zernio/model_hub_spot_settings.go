@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.513.1
+API version: 1.514.0
 Contact: support@zernio.com
 */
 
@@ -37,6 +37,8 @@ type HubSpotSettings struct {
 	LogMessages bool `json:"logMessages"`
 	// Whether Zernio sends closed-won deals as Purchase events to the profile's event destinations.
 	ReportDeals bool `json:"reportDeals"`
+	// Whether closed-won deals count as sales on the ad campaign that brought their contact, in campaign results and ad rules.
+	UseDealsAsResults bool `json:"useDealsAsResults"`
 }
 
 type _HubSpotSettings HubSpotSettings
@@ -45,7 +47,7 @@ type _HubSpotSettings HubSpotSettings
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewHubSpotSettings(id string, platform string, hubId string, hubDomain NullableString, scopes []string, syncContacts bool, logMessages bool, reportDeals bool) *HubSpotSettings {
+func NewHubSpotSettings(id string, platform string, hubId string, hubDomain NullableString, scopes []string, syncContacts bool, logMessages bool, reportDeals bool, useDealsAsResults bool) *HubSpotSettings {
 	this := HubSpotSettings{}
 	this.Id = id
 	this.Platform = platform
@@ -55,6 +57,7 @@ func NewHubSpotSettings(id string, platform string, hubId string, hubDomain Null
 	this.SyncContacts = syncContacts
 	this.LogMessages = logMessages
 	this.ReportDeals = reportDeals
+	this.UseDealsAsResults = useDealsAsResults
 	return &this
 }
 
@@ -260,6 +263,30 @@ func (o *HubSpotSettings) SetReportDeals(v bool) {
 	o.ReportDeals = v
 }
 
+// GetUseDealsAsResults returns the UseDealsAsResults field value
+func (o *HubSpotSettings) GetUseDealsAsResults() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.UseDealsAsResults
+}
+
+// GetUseDealsAsResultsOk returns a tuple with the UseDealsAsResults field value
+// and a boolean to check if the value has been set.
+func (o *HubSpotSettings) GetUseDealsAsResultsOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UseDealsAsResults, true
+}
+
+// SetUseDealsAsResults sets field value
+func (o *HubSpotSettings) SetUseDealsAsResults(v bool) {
+	o.UseDealsAsResults = v
+}
+
 func (o HubSpotSettings) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -278,6 +305,7 @@ func (o HubSpotSettings) ToMap() (map[string]interface{}, error) {
 	toSerialize["syncContacts"] = o.SyncContacts
 	toSerialize["logMessages"] = o.LogMessages
 	toSerialize["reportDeals"] = o.ReportDeals
+	toSerialize["useDealsAsResults"] = o.UseDealsAsResults
 	return toSerialize, nil
 }
 
@@ -294,6 +322,7 @@ func (o *HubSpotSettings) UnmarshalJSON(data []byte) (err error) {
 		"syncContacts",
 		"logMessages",
 		"reportDeals",
+		"useDealsAsResults",
 	}
 
 	allProperties := make(map[string]interface{})
