@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.522.3
+API version: 1.523.0
 Contact: support@zernio.com
 */
 
@@ -29,7 +29,7 @@ type CreatorPortalPayoutSetup struct {
 	// The country the request came from, to preselect before payout setup starts. Null once the payout account has a country, and outside treasury mode.
 	SuggestedCountry NullableString `json:"suggestedCountry"`
 	// Treasury payouts sent to the creator.
-	Transfers []CreatorPortalPayoutSetupTransfersInner `json:"transfers"`
+	Transfers []GetBalance200ResponseRecentCreditRechargesInner `json:"transfers"`
 }
 
 type _CreatorPortalPayoutSetup CreatorPortalPayoutSetup
@@ -38,7 +38,7 @@ type _CreatorPortalPayoutSetup CreatorPortalPayoutSetup
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatorPortalPayoutSetup(mode string, status string, country NullableString, suggestedCountry NullableString, transfers []CreatorPortalPayoutSetupTransfersInner) *CreatorPortalPayoutSetup {
+func NewCreatorPortalPayoutSetup(mode string, status string, country NullableString, suggestedCountry NullableString, transfers []GetBalance200ResponseRecentCreditRechargesInner) *CreatorPortalPayoutSetup {
 	this := CreatorPortalPayoutSetup{}
 	this.Mode = mode
 	this.Status = status
@@ -157,9 +157,9 @@ func (o *CreatorPortalPayoutSetup) SetSuggestedCountry(v string) {
 }
 
 // GetTransfers returns the Transfers field value
-func (o *CreatorPortalPayoutSetup) GetTransfers() []CreatorPortalPayoutSetupTransfersInner {
+func (o *CreatorPortalPayoutSetup) GetTransfers() []GetBalance200ResponseRecentCreditRechargesInner {
 	if o == nil {
-		var ret []CreatorPortalPayoutSetupTransfersInner
+		var ret []GetBalance200ResponseRecentCreditRechargesInner
 		return ret
 	}
 
@@ -168,7 +168,7 @@ func (o *CreatorPortalPayoutSetup) GetTransfers() []CreatorPortalPayoutSetupTran
 
 // GetTransfersOk returns a tuple with the Transfers field value
 // and a boolean to check if the value has been set.
-func (o *CreatorPortalPayoutSetup) GetTransfersOk() ([]CreatorPortalPayoutSetupTransfersInner, bool) {
+func (o *CreatorPortalPayoutSetup) GetTransfersOk() ([]GetBalance200ResponseRecentCreditRechargesInner, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -176,7 +176,7 @@ func (o *CreatorPortalPayoutSetup) GetTransfersOk() ([]CreatorPortalPayoutSetupT
 }
 
 // SetTransfers sets field value
-func (o *CreatorPortalPayoutSetup) SetTransfers(v []CreatorPortalPayoutSetupTransfersInner) {
+func (o *CreatorPortalPayoutSetup) SetTransfers(v []GetBalance200ResponseRecentCreditRechargesInner) {
 	o.Transfers = v
 }
 

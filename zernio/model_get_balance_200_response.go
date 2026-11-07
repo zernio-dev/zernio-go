@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.522.3
+API version: 1.523.0
 Contact: support@zernio.com
 */
 
@@ -38,6 +38,8 @@ type GetBalance200Response struct {
 	PendingTopupCents *int32          `json:"pendingTopupCents,omitempty"`
 	Currency          *string         `json:"currency,omitempty"`
 	RecentTopups      []TreasuryTopup `json:"recentTopups,omitempty"`
+	// Balance billing only (absent otherwise). The 10 newest recharges paid from the account credit you held when you moved to the balance, newest first. Nothing was charged to your card and there is no invoice. The amount was added to promoCents with the credit's own expiry.
+	RecentCreditRecharges []GetBalance200ResponseRecentCreditRechargesInner `json:"recentCreditRecharges,omitempty"`
 }
 
 // NewGetBalance200Response instantiates a new GetBalance200Response object
@@ -351,6 +353,38 @@ func (o *GetBalance200Response) SetRecentTopups(v []TreasuryTopup) {
 	o.RecentTopups = v
 }
 
+// GetRecentCreditRecharges returns the RecentCreditRecharges field value if set, zero value otherwise.
+func (o *GetBalance200Response) GetRecentCreditRecharges() []GetBalance200ResponseRecentCreditRechargesInner {
+	if o == nil || IsNil(o.RecentCreditRecharges) {
+		var ret []GetBalance200ResponseRecentCreditRechargesInner
+		return ret
+	}
+	return o.RecentCreditRecharges
+}
+
+// GetRecentCreditRechargesOk returns a tuple with the RecentCreditRecharges field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetBalance200Response) GetRecentCreditRechargesOk() ([]GetBalance200ResponseRecentCreditRechargesInner, bool) {
+	if o == nil || IsNil(o.RecentCreditRecharges) {
+		return nil, false
+	}
+	return o.RecentCreditRecharges, true
+}
+
+// HasRecentCreditRecharges returns a boolean if a field has been set.
+func (o *GetBalance200Response) HasRecentCreditRecharges() bool {
+	if o != nil && !IsNil(o.RecentCreditRecharges) {
+		return true
+	}
+
+	return false
+}
+
+// SetRecentCreditRecharges gets a reference to the given []GetBalance200ResponseRecentCreditRechargesInner and assigns it to the RecentCreditRecharges field.
+func (o *GetBalance200Response) SetRecentCreditRecharges(v []GetBalance200ResponseRecentCreditRechargesInner) {
+	o.RecentCreditRecharges = v
+}
+
 func (o GetBalance200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -387,6 +421,9 @@ func (o GetBalance200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RecentTopups) {
 		toSerialize["recentTopups"] = o.RecentTopups
+	}
+	if !IsNil(o.RecentCreditRecharges) {
+		toSerialize["recentCreditRecharges"] = o.RecentCreditRecharges
 	}
 	return toSerialize, nil
 }
