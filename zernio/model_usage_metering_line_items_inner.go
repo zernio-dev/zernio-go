@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.523.0
+API version: 1.524.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type UsageMeteringLineItemsInner struct {
 	Product  *string  `json:"product,omitempty"`
 	TotalUsd *float32 `json:"totalUsd,omitempty"`
 	Quantity *float32 `json:"quantity,omitempty"`
+	// Present only on pay-per-use paid from the prepaid balance (balance billing). That spend is included in `days` and `totals` but is not on the monthly invoice.
+	PaidFrom *string `json:"paidFrom,omitempty"`
 }
 
 // NewUsageMeteringLineItemsInner instantiates a new UsageMeteringLineItemsInner object
@@ -171,6 +173,38 @@ func (o *UsageMeteringLineItemsInner) SetQuantity(v float32) {
 	o.Quantity = &v
 }
 
+// GetPaidFrom returns the PaidFrom field value if set, zero value otherwise.
+func (o *UsageMeteringLineItemsInner) GetPaidFrom() string {
+	if o == nil || IsNil(o.PaidFrom) {
+		var ret string
+		return ret
+	}
+	return *o.PaidFrom
+}
+
+// GetPaidFromOk returns a tuple with the PaidFrom field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageMeteringLineItemsInner) GetPaidFromOk() (*string, bool) {
+	if o == nil || IsNil(o.PaidFrom) {
+		return nil, false
+	}
+	return o.PaidFrom, true
+}
+
+// HasPaidFrom returns a boolean if a field has been set.
+func (o *UsageMeteringLineItemsInner) HasPaidFrom() bool {
+	if o != nil && !IsNil(o.PaidFrom) {
+		return true
+	}
+
+	return false
+}
+
+// SetPaidFrom gets a reference to the given string and assigns it to the PaidFrom field.
+func (o *UsageMeteringLineItemsInner) SetPaidFrom(v string) {
+	o.PaidFrom = &v
+}
+
 func (o UsageMeteringLineItemsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -192,6 +226,9 @@ func (o UsageMeteringLineItemsInner) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Quantity) {
 		toSerialize["quantity"] = o.Quantity
+	}
+	if !IsNil(o.PaidFrom) {
+		toSerialize["paidFrom"] = o.PaidFrom
 	}
 	return toSerialize, nil
 }
