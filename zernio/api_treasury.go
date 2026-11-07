@@ -17,6 +17,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 )
 
@@ -1654,9 +1655,16 @@ type TreasuryAPIGetTopupReceiptRequest struct {
 	ctx        context.Context
 	ApiService *TreasuryAPIService
 	topupId    string
+	download   *bool
 }
 
-func (r TreasuryAPIGetTopupReceiptRequest) Execute() (*GetTopupReceipt200Response, *http.Response, error) {
+// true answers the card receipt itself as a PDF file (application/pdf, as an attachment) instead of the JSON links.
+func (r TreasuryAPIGetTopupReceiptRequest) Download(download bool) TreasuryAPIGetTopupReceiptRequest {
+	r.download = &download
+	return r
+}
+
+func (r TreasuryAPIGetTopupReceiptRequest) Execute() (*os.File, *http.Response, error) {
 	return r.ApiService.GetTopupReceiptExecute(r)
 }
 
@@ -1681,13 +1689,13 @@ func (a *TreasuryAPIService) GetTopupReceipt(ctx context.Context, topupId string
 
 // Execute executes the request
 //
-//	@return GetTopupReceipt200Response
-func (a *TreasuryAPIService) GetTopupReceiptExecute(r TreasuryAPIGetTopupReceiptRequest) (*GetTopupReceipt200Response, *http.Response, error) {
+//	@return *os.File
+func (a *TreasuryAPIService) GetTopupReceiptExecute(r TreasuryAPIGetTopupReceiptRequest) (*os.File, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetTopupReceipt200Response
+		localVarReturnValue *os.File
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TreasuryAPIService.GetTopupReceipt")
@@ -1702,6 +1710,9 @@ func (a *TreasuryAPIService) GetTopupReceiptExecute(r TreasuryAPIGetTopupReceipt
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.download != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "download", r.download, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1712,7 +1723,7 @@ func (a *TreasuryAPIService) GetTopupReceiptExecute(r TreasuryAPIGetTopupReceipt
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
+	localVarHTTPHeaderAccepts := []string{"application/pdf", "application/json"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
