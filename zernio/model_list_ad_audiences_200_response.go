@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.524.0
+API version: 1.525.0
 Contact: support@zernio.com
 */
 
@@ -21,6 +21,8 @@ var _ MappedNullable = &ListAdAudiences200Response{}
 // ListAdAudiences200Response struct for ListAdAudiences200Response
 type ListAdAudiences200Response struct {
 	Audiences []ListAdAudiences200ResponseAudiencesInner `json:"audiences,omitempty"`
+	// Meta only. True when the ad account has more than 1,000 custom audiences and the list stops at the first 1,000.
+	Truncated *bool `json:"truncated,omitempty"`
 }
 
 // NewListAdAudiences200Response instantiates a new ListAdAudiences200Response object
@@ -72,6 +74,38 @@ func (o *ListAdAudiences200Response) SetAudiences(v []ListAdAudiences200Response
 	o.Audiences = v
 }
 
+// GetTruncated returns the Truncated field value if set, zero value otherwise.
+func (o *ListAdAudiences200Response) GetTruncated() bool {
+	if o == nil || IsNil(o.Truncated) {
+		var ret bool
+		return ret
+	}
+	return *o.Truncated
+}
+
+// GetTruncatedOk returns a tuple with the Truncated field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAudiences200Response) GetTruncatedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Truncated) {
+		return nil, false
+	}
+	return o.Truncated, true
+}
+
+// HasTruncated returns a boolean if a field has been set.
+func (o *ListAdAudiences200Response) HasTruncated() bool {
+	if o != nil && !IsNil(o.Truncated) {
+		return true
+	}
+
+	return false
+}
+
+// SetTruncated gets a reference to the given bool and assigns it to the Truncated field.
+func (o *ListAdAudiences200Response) SetTruncated(v bool) {
+	o.Truncated = &v
+}
+
 func (o ListAdAudiences200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -84,6 +118,9 @@ func (o ListAdAudiences200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Audiences) {
 		toSerialize["audiences"] = o.Audiences
+	}
+	if !IsNil(o.Truncated) {
+		toSerialize["truncated"] = o.Truncated
 	}
 	return toSerialize, nil
 }
