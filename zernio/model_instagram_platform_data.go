@@ -24,7 +24,7 @@ type InstagramPlatformData struct {
 	ContentType *string `json:"contentType,omitempty"`
 	// For Reels only. When true (default), the Reel appears on both the Reels tab and your main profile feed. Set to false to post to the Reels tab only.
 	ShareToFeed *bool `json:"shareToFeed,omitempty"`
-	// Up to 3 Instagram usernames to invite as collaborators (feed/Reels only). Collaborators are supported on Instagram and Facebook Page Reels only. TikTok, YouTube, Threads, LinkedIn, X and Pinterest do not expose collaborators in their public APIs.
+	// Up to 3 Instagram usernames to invite as collaborators (feed/Reels only). Collaborators are supported on Instagram and Facebook Page Reels only. TikTok, YouTube, Threads, LinkedIn, X and Pinterest do not expose collaborators in their public APIs.  A collaborator Instagram rejects does not fail the post on its own: Zernio retries once without the usernames Instagram named (all of them when it names none). If the retry fails, the post fails with that error.  No error or webhook reports the removal: read droppedCollaborators on the Instagram entry of `GET /v1/posts/{postId}`. Invites stay pending until each collaborator accepts; `GET /v1/accounts/{accountId}/instagram/media/{mediaId}/collaborators` shows who accepted.
 	Collaborators []string `json:"collaborators,omitempty"`
 	// Output only. Set by Zernio when Instagram rejected these collaborators and the retry was sent without them.
 	DroppedCollaborators []InstagramPlatformDataDroppedCollaboratorsInner `json:"droppedCollaborators,omitempty"`
