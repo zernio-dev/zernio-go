@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.521.1
+API version: 1.522.0
 Contact: support@zernio.com
 */
 
@@ -33,8 +33,10 @@ type Ad struct {
 	// Platform review state of this ad, independent of delivery `status` / `configuredStatus`. Absent when the platform reports no review signal.
 	ReviewStatus *AdReviewStatus `json:"reviewStatus,omitempty"`
 	AdType       *string         `json:"adType,omitempty"`
-	// Creative format, classified from the media the creative carries. `null` when the creative carries no media to classify. An unsynced creative and a genuine text-only ad are indistinguishable, so neither is guessed at. Returned by `GET /v1/ads`, `GET /v1/ads/{adId}` and the ad nodes of `GET /v1/ads/tree`.
+	// Creative format. Returned by `GET /v1/ads`, `GET /v1/ads/{adId}` and the ad nodes of `GET /v1/ads/tree`. `text` was added in 1.522.0, so treat unknown values as unclassified.  - Google: from the ad type. Search ads (`RESPONSIVE_SEARCH_AD`, `EXPANDED_TEXT_AD`, `TEXT_AD`, `EXPANDED_DYNAMIC_SEARCH_AD`, `CALL_AD`) are `text`, video ads or any ad with a YouTube video are `video`, `DEMAND_GEN_CAROUSEL_AD` is `carousel`, other ads with images are `image`. - Pinterest: from `creative_type`. `VIDEO` and `MAX_VIDEO` are `video`, `CAROUSEL` is `carousel`, `REGULAR` and `SHOPPING` are `image`, others are `image` when the pin has an image. - X: from the tweet media. `photo` is `image`, `video` and `animated_gif` are `video`. Card and text-only tweets are `null`. - Other platforms: from the media the creative carries. Two or more images or cards are `carousel`.  `null` when nothing classifies it: no media and no known format, or a Performance Max asset group. A Google ad not re-synced since 1.522.0 is still classified by its media until the next sync (about 3 hours).
 	CreativeType NullableString `json:"creativeType,omitempty"`
+	// The platform's own creative or ad type, as stored by the last sync. Omitted when the platform reports none.  - Google: `ad_group_ad.ad.type` (e.g. `RESPONSIVE_SEARCH_AD`, `RESPONSIVE_DISPLAY_AD`, `VIDEO_RESPONSIVE_AD`). - Pinterest: the ad `creative_type` (e.g. `REGULAR`, `VIDEO`, `CAROUSEL`). - X: the promoted tweet's media type (`photo`, `video`, `animated_gif`). - TikTok: `ad_format`. LinkedIn: the campaign `format`. Meta: the creative `object_type`.
+	PlatformCreativeType *string `json:"platformCreativeType,omitempty"`
 	// Available goals vary by platform:  - **Meta (Facebook/Instagram):** all 11, including `lead_conversion` (website pixel lead optimization), `catalog_sales` (Advantage+ catalog ads), `page_likes` (Page Likes conversion location under Engagement) and `page_visits` (Page visits and followers under Traffic). - **TikTok:** engagement, traffic, awareness, video_views, lead_generation, conversions, app_promotion. - **LinkedIn:** all Meta goals except app_promotion / lead_conversion / catalog_sales / page_likes / page_visits. - **X:** engagement, traffic, awareness, video_views, app_promotion. - **Pinterest:** only engagement, traffic, awareness, video_views. - **Google Ads:** only engagement, traffic, awareness (video_views is rejected at create with 422 FEATURE_NOT_AVAILABLE).
 	Goal *string `json:"goal,omitempty"`
 	// True for ads synced from platform ad managers
@@ -404,6 +406,38 @@ func (o *Ad) SetCreativeTypeNil() {
 // UnsetCreativeType ensures that no value is present for CreativeType, not even an explicit nil
 func (o *Ad) UnsetCreativeType() {
 	o.CreativeType.Unset()
+}
+
+// GetPlatformCreativeType returns the PlatformCreativeType field value if set, zero value otherwise.
+func (o *Ad) GetPlatformCreativeType() string {
+	if o == nil || IsNil(o.PlatformCreativeType) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformCreativeType
+}
+
+// GetPlatformCreativeTypeOk returns a tuple with the PlatformCreativeType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Ad) GetPlatformCreativeTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PlatformCreativeType) {
+		return nil, false
+	}
+	return o.PlatformCreativeType, true
+}
+
+// HasPlatformCreativeType returns a boolean if a field has been set.
+func (o *Ad) HasPlatformCreativeType() bool {
+	if o != nil && !IsNil(o.PlatformCreativeType) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformCreativeType gets a reference to the given string and assigns it to the PlatformCreativeType field.
+func (o *Ad) SetPlatformCreativeType(v string) {
+	o.PlatformCreativeType = &v
 }
 
 // GetGoal returns the Goal field value if set, zero value otherwise.
@@ -1437,6 +1471,9 @@ func (o Ad) ToMap() (map[string]interface{}, error) {
 	}
 	if o.CreativeType.IsSet() {
 		toSerialize["creativeType"] = o.CreativeType.Get()
+	}
+	if !IsNil(o.PlatformCreativeType) {
+		toSerialize["platformCreativeType"] = o.PlatformCreativeType
 	}
 	if !IsNil(o.Goal) {
 		toSerialize["goal"] = o.Goal
