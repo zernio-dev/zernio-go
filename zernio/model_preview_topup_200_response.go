@@ -32,6 +32,8 @@ type PreviewTopup200Response struct {
 	TaxLabel NullableString `json:"taxLabel"`
 	// True for an EU business with a valid VAT id: no VAT, reverse charge.
 	ReverseCharge bool `json:"reverseCharge"`
+	// Two-letter country the tax was placed in, from the billing address. Null when Stripe Tax returned no address.
+	Country NullableString `json:"country,omitempty"`
 }
 
 type _PreviewTopup200Response PreviewTopup200Response
@@ -180,6 +182,49 @@ func (o *PreviewTopup200Response) SetReverseCharge(v bool) {
 	o.ReverseCharge = v
 }
 
+// GetCountry returns the Country field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PreviewTopup200Response) GetCountry() string {
+	if o == nil || IsNil(o.Country.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Country.Get()
+}
+
+// GetCountryOk returns a tuple with the Country field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PreviewTopup200Response) GetCountryOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Country.Get(), o.Country.IsSet()
+}
+
+// HasCountry returns a boolean if a field has been set.
+func (o *PreviewTopup200Response) HasCountry() bool {
+	if o != nil && o.Country.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCountry gets a reference to the given NullableString and assigns it to the Country field.
+func (o *PreviewTopup200Response) SetCountry(v string) {
+	o.Country.Set(&v)
+}
+
+// SetCountryNil sets the value for Country to be an explicit nil
+func (o *PreviewTopup200Response) SetCountryNil() {
+	o.Country.Set(nil)
+}
+
+// UnsetCountry ensures that no value is present for Country, not even an explicit nil
+func (o *PreviewTopup200Response) UnsetCountry() {
+	o.Country.Unset()
+}
+
 func (o PreviewTopup200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -195,6 +240,9 @@ func (o PreviewTopup200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize["totalCents"] = o.TotalCents
 	toSerialize["taxLabel"] = o.TaxLabel.Get()
 	toSerialize["reverseCharge"] = o.ReverseCharge
+	if o.Country.IsSet() {
+		toSerialize["country"] = o.Country.Get()
+	}
 	return toSerialize, nil
 }
 
