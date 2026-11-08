@@ -22,6 +22,10 @@ var _ MappedNullable = &GetBalance200Response{}
 type GetBalance200Response struct {
 	// Your balance. It goes negative after a dispute or refund of a spent top-up, or when pay-per-use already in flight lands past zero. The next top-up covers it. New payout batches are refused while it is negative.
 	AvailableCents *int32 `json:"availableCents,omitempty"`
+	// True when the account pays pay-per-use from this prepaid balance (new signups). Absent otherwise: that pay-per-use is on the monthly invoice.
+	BalanceBilling *bool `json:"balanceBilling,omitempty"`
+	// Balance billing only (absent otherwise). What pay-per-use can still spend: availableCents plus promoCents, minus usage not yet posted. At 0 or below, new pay-per-use answers 402 `insufficient_balance`.
+	SpendableCents *int32 `json:"spendableCents,omitempty"`
 	// Balance billing only (absent otherwise). Promotional and support credit Zernio added to your balance. Pay-per-use spends it before availableCents. It is never paid out to payees and is not part of availableCents.
 	PromoCents *int32 `json:"promoCents,omitempty"`
 	// Always 0. The balance no longer pays creators, so none of it is locked from them.
@@ -89,6 +93,70 @@ func (o *GetBalance200Response) HasAvailableCents() bool {
 // SetAvailableCents gets a reference to the given int32 and assigns it to the AvailableCents field.
 func (o *GetBalance200Response) SetAvailableCents(v int32) {
 	o.AvailableCents = &v
+}
+
+// GetBalanceBilling returns the BalanceBilling field value if set, zero value otherwise.
+func (o *GetBalance200Response) GetBalanceBilling() bool {
+	if o == nil || IsNil(o.BalanceBilling) {
+		var ret bool
+		return ret
+	}
+	return *o.BalanceBilling
+}
+
+// GetBalanceBillingOk returns a tuple with the BalanceBilling field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetBalance200Response) GetBalanceBillingOk() (*bool, bool) {
+	if o == nil || IsNil(o.BalanceBilling) {
+		return nil, false
+	}
+	return o.BalanceBilling, true
+}
+
+// HasBalanceBilling returns a boolean if a field has been set.
+func (o *GetBalance200Response) HasBalanceBilling() bool {
+	if o != nil && !IsNil(o.BalanceBilling) {
+		return true
+	}
+
+	return false
+}
+
+// SetBalanceBilling gets a reference to the given bool and assigns it to the BalanceBilling field.
+func (o *GetBalance200Response) SetBalanceBilling(v bool) {
+	o.BalanceBilling = &v
+}
+
+// GetSpendableCents returns the SpendableCents field value if set, zero value otherwise.
+func (o *GetBalance200Response) GetSpendableCents() int32 {
+	if o == nil || IsNil(o.SpendableCents) {
+		var ret int32
+		return ret
+	}
+	return *o.SpendableCents
+}
+
+// GetSpendableCentsOk returns a tuple with the SpendableCents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetBalance200Response) GetSpendableCentsOk() (*int32, bool) {
+	if o == nil || IsNil(o.SpendableCents) {
+		return nil, false
+	}
+	return o.SpendableCents, true
+}
+
+// HasSpendableCents returns a boolean if a field has been set.
+func (o *GetBalance200Response) HasSpendableCents() bool {
+	if o != nil && !IsNil(o.SpendableCents) {
+		return true
+	}
+
+	return false
+}
+
+// SetSpendableCents gets a reference to the given int32 and assigns it to the SpendableCents field.
+func (o *GetBalance200Response) SetSpendableCents(v int32) {
+	o.SpendableCents = &v
 }
 
 // GetPromoCents returns the PromoCents field value if set, zero value otherwise.
@@ -397,6 +465,12 @@ func (o GetBalance200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.AvailableCents) {
 		toSerialize["availableCents"] = o.AvailableCents
+	}
+	if !IsNil(o.BalanceBilling) {
+		toSerialize["balanceBilling"] = o.BalanceBilling
+	}
+	if !IsNil(o.SpendableCents) {
+		toSerialize["spendableCents"] = o.SpendableCents
 	}
 	if !IsNil(o.PromoCents) {
 		toSerialize["promoCents"] = o.PromoCents
