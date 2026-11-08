@@ -3267,7 +3267,7 @@ func (r WebhookEventsAPIOnBalanceLowRequest) Execute() (*http.Response, error) {
 /*
 OnBalanceLow Balance low event
 
-Balance billing only. The balance dropped below the low-balance alert set on auto-recharge (`alertBelowCents` on `GET /v1/balance/auto-recharge`).
+Balance billing only. The balance dropped below the low-balance alert set on auto top-up (`alertBelowCents` on `GET /v1/balance/auto-recharge`).
 
 ### When it fires
 

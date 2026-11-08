@@ -1096,7 +1096,7 @@ Pays exactly what is owed to the creators of a `treasury` campaign by charging t
 ### How it works
 
 1. Every payable creator who finished payout setup (or only `participantIds`, minus `excludeParticipantIds`) is held in `settling`.
-2. The saved card (the default one, or `paymentMethodId`) pays one invoice while the payer is present: the payouts, plus the fee (4% per creator, 50 cent minimum) and the VAT on the fee where it applies.
+2. The saved card (the default one, or `paymentMethodId`) pays one invoice while the payer is present: the payouts, plus the fee (4%, 50 cents minimum per payout) and the VAT on the fee where it applies.
 3. Card payments are held 7 days against chargebacks (`releasesAt`). Then each creator gets a transfer funded by the charge, and the batch ends `paid` or `partially_failed`.
 
 Zernio collects the payouts and pays each creator on your behalf and in your name, so the payouts carry no VAT.

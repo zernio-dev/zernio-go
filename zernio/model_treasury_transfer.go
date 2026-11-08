@@ -29,7 +29,7 @@ type TreasuryTransfer struct {
 	DestinationType *string        `json:"destinationType,omitempty"`
 	// Amount the payee receives, in full
 	AmountCents *int32 `json:"amountCents,omitempty"`
-	// Zernio fee added on top, 4% with a 50 cent minimum
+	// Zernio fee added on top: 4%, 50 cents minimum per payout.
 	FeeCents *int32 `json:"feeCents,omitempty"`
 	// amountCents plus feeCents, both paid by the payout batch card charge
 	TotalCents    *int32                     `json:"totalCents,omitempty"`

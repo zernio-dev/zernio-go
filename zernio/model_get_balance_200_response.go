@@ -42,7 +42,7 @@ type GetBalance200Response struct {
 	PendingTopupCents *int32          `json:"pendingTopupCents,omitempty"`
 	Currency          *string         `json:"currency,omitempty"`
 	RecentTopups      []TreasuryTopup `json:"recentTopups,omitempty"`
-	// Balance billing only (absent otherwise). The 10 newest recharges paid from the account credit you held when you moved to the balance, newest first. Nothing was charged to your card and there is no invoice. The amount was added to promoCents with the credit's own expiry.
+	// Balance billing only (absent otherwise). The 10 newest auto top-ups paid from the account credit you held when you moved to the balance, newest first. Nothing was charged to your card and there is no invoice. The amount was added to promoCents with the credit's own expiry.
 	RecentCreditRecharges []GetBalance200ResponseRecentCreditRechargesInner `json:"recentCreditRecharges,omitempty"`
 }
 

@@ -20,13 +20,13 @@ var _ MappedNullable = &UpdateAutoRechargeRequest{}
 
 // UpdateAutoRechargeRequest struct for UpdateAutoRechargeRequest
 type UpdateAutoRechargeRequest struct {
-	// Turns auto-recharge on or off. A rule switched off by failed charges stays off until the card is updated.
+	// Turns auto top-up on or off. A rule switched off by failed charges stays off until the card is updated.
 	Enabled *bool `json:"enabled,omitempty"`
-	// Recharge when the balance drops below this, in cents. At least $5.
+	// Top up when the balance drops below this, in cents. At least $5.
 	BelowCents *int32 `json:"belowCents,omitempty"`
-	// Recharge back up to this, in cents. More than $5 above belowCents.
+	// Top back up to this, in cents. More than $5 above belowCents.
 	ToCents *int32 `json:"toCents,omitempty"`
-	// Most auto-recharge may add per calendar month (UTC), before tax. Null for no limit.
+	// Most auto top-up may add per calendar month (UTC), before tax. Null for no limit.
 	MonthlyLimitCents NullableInt32 `json:"monthlyLimitCents,omitempty"`
 	// Email the billing owner once each time the balance drops below this. Null for no email.
 	AlertBelowCents      NullableInt32 `json:"alertBelowCents,omitempty"`

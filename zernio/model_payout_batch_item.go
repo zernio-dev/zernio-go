@@ -27,7 +27,7 @@ type PayoutBatchItem struct {
 	Creator       PayoutBatchItemCreator `json:"creator"`
 	// What the creator receives, in full.
 	AmountCents int32 `json:"amountCents"`
-	// Zernio fee on top: 4% with a 50 cent minimum.
+	// Zernio fee on top: 4%, 50 cents minimum per payout.
 	FeeCents int32 `json:"feeCents"`
 	// amountCents plus feeCents.
 	TotalCents int32 `json:"totalCents"`

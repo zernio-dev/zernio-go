@@ -23,13 +23,13 @@ var _ MappedNullable = &AutoRecharge{}
 
 // AutoRecharge struct for AutoRecharge
 type AutoRecharge struct {
-	// Whether auto-recharge is on. Charges happen only when this is true and disabledReason is null.
+	// Whether auto top-up is on. Charges happen only when this is true and disabledReason is null.
 	Enabled bool `json:"enabled"`
-	// Recharge when the balance drops below this, in cents.
+	// Top up when the balance drops below this, in cents.
 	BelowCents int32 `json:"belowCents"`
-	// Recharge back up to this, in cents. The charge is toCents minus the balance, plus tax.
+	// Top back up to this, in cents. The charge is toCents minus the balance, plus tax.
 	ToCents int32 `json:"toCents"`
-	// Most auto-recharge may add per calendar month (UTC), before tax; null for no limit.
+	// Most auto top-up may add per calendar month (UTC), before tax; null for no limit.
 	MonthlyLimitCents NullableInt32 `json:"monthlyLimitCents"`
 	// Low-balance email threshold, sent once per drop below it; null for none.
 	AlertBelowCents NullableInt32 `json:"alertBelowCents"`
@@ -37,9 +37,9 @@ type AutoRecharge struct {
 	DisabledReason NullableString `json:"disabledReason"`
 	// Failed charges in a row; 0 once one goes through.
 	RetryCount int32 `json:"retryCount"`
-	// When a declined recharge is tried again; null when none is waiting.
+	// When a declined auto top-up is tried again; null when none is waiting.
 	NextRetryAt NullableTime `json:"nextRetryAt"`
-	// Auto-recharge top-ups this calendar month (UTC), paid or being paid, before tax.
+	// Auto top-ups this calendar month (UTC), paid or being paid, before tax.
 	MonthRechargedCents int32 `json:"monthRechargedCents"`
 }
 

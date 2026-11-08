@@ -26,7 +26,7 @@ type PreviewCampaignPayoutBatch200Response struct {
 	PayoutCount int32 `json:"payoutCount"`
 	// Total the creators receive.
 	AmountCents int32 `json:"amountCents"`
-	// Zernio fee: 4% per creator, 50 cent minimum.
+	// Zernio fee: 4%, 50 cents minimum per payout.
 	FeeCents int32 `json:"feeCents"`
 	// VAT on the fee, 0 when none applies.
 	TaxCents int32 `json:"taxCents"`
