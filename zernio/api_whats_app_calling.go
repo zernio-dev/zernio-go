@@ -1454,7 +1454,7 @@ func (a *WhatsAppCallingAPIService) InitiateWhatsAppCallExecute(r WhatsAppCallin
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v ErrorResponse
+			var v BalanceRequiredError
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

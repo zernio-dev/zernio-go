@@ -3027,6 +3027,339 @@ func (a *WebhookEventsAPIService) OnAutomationCheckCompletedExecute(r WebhookEve
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnBalanceChargedRequest struct {
+	ctx                          context.Context
+	ApiService                   *WebhookEventsAPIService
+	webhookPayloadBalanceCharged *WebhookPayloadBalanceCharged
+}
+
+func (r WebhookEventsAPIOnBalanceChargedRequest) WebhookPayloadBalanceCharged(webhookPayloadBalanceCharged WebhookPayloadBalanceCharged) WebhookEventsAPIOnBalanceChargedRequest {
+	r.webhookPayloadBalanceCharged = &webhookPayloadBalanceCharged
+	return r
+}
+
+func (r WebhookEventsAPIOnBalanceChargedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnBalanceChargedExecute(r)
+}
+
+/*
+OnBalanceCharged Balance charged event
+
+Balance billing only. A card top-up of the balance succeeded: one someone made (`trigger: manual`) or one the auto top-up rule made (`trigger: auto_top_up`).
+
+### When it fires
+
+Once per top-up, when the payment is credited to the balance. Stripe emails the billing owner its receipt for the charge.
+
+### Payload notes
+
+`topup.amountCents` was added to the balance; the card was charged `topup.chargedCents`, which is that plus `topup.taxCents` (VAT, 0 when none applies). The invoice and receipt are at `GET /v1/balance/top-ups/{topupId}/invoice` and `/receipt`.
+
+### Who receives it
+
+The billing owner's endpoints, like `balance.low`. Restricted keys need the `money` resource group.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnBalanceChargedRequest
+*/
+func (a *WebhookEventsAPIService) OnBalanceCharged(ctx context.Context) WebhookEventsAPIOnBalanceChargedRequest {
+	return WebhookEventsAPIOnBalanceChargedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnBalanceChargedExecute(r WebhookEventsAPIOnBalanceChargedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnBalanceCharged")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/balance.charged"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadBalanceCharged == nil {
+		return nil, reportError("webhookPayloadBalanceCharged is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadBalanceCharged
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnBalanceEmptyRequest struct {
+	ctx                        context.Context
+	ApiService                 *WebhookEventsAPIService
+	webhookPayloadBalanceEmpty *WebhookPayloadBalanceEmpty
+}
+
+func (r WebhookEventsAPIOnBalanceEmptyRequest) WebhookPayloadBalanceEmpty(webhookPayloadBalanceEmpty WebhookPayloadBalanceEmpty) WebhookEventsAPIOnBalanceEmptyRequest {
+	r.webhookPayloadBalanceEmpty = &webhookPayloadBalanceEmpty
+	return r
+}
+
+func (r WebhookEventsAPIOnBalanceEmptyRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnBalanceEmptyExecute(r)
+}
+
+/*
+OnBalanceEmpty Balance empty event
+
+Balance billing only. The balance reached $0 and no auto top-up covered it (auto top-up off, the card declined, or the monthly limit reached), so new pay-per-use (SMS, calls, numbers, X and the rest) answers 402 with `code` until the balance is funded.
+
+### When it fires
+
+Once per time the balance runs out, within about a minute of the usage that emptied it. Funding the balance and running out again fires it again.
+
+### Who receives it
+
+The billing owner's endpoints, like `balance.low`. Restricted keys need the `money` resource group.
+
+### How to act
+
+Send the user to `fundingUrl`, or, for `usage_limit_reached`, raise `monthlyLimitCents` with `PATCH /v1/balance/auto-recharge`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnBalanceEmptyRequest
+*/
+func (a *WebhookEventsAPIService) OnBalanceEmpty(ctx context.Context) WebhookEventsAPIOnBalanceEmptyRequest {
+	return WebhookEventsAPIOnBalanceEmptyRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnBalanceEmptyExecute(r WebhookEventsAPIOnBalanceEmptyRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnBalanceEmpty")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/balance.empty"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadBalanceEmpty == nil {
+		return nil, reportError("webhookPayloadBalanceEmpty is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadBalanceEmpty
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnBalanceLowRequest struct {
+	ctx                      context.Context
+	ApiService               *WebhookEventsAPIService
+	webhookPayloadBalanceLow *WebhookPayloadBalanceLow
+}
+
+func (r WebhookEventsAPIOnBalanceLowRequest) WebhookPayloadBalanceLow(webhookPayloadBalanceLow WebhookPayloadBalanceLow) WebhookEventsAPIOnBalanceLowRequest {
+	r.webhookPayloadBalanceLow = &webhookPayloadBalanceLow
+	return r
+}
+
+func (r WebhookEventsAPIOnBalanceLowRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnBalanceLowExecute(r)
+}
+
+/*
+OnBalanceLow Balance low event
+
+Balance billing only. The balance dropped below the low-balance alert set on auto-recharge (`alertBelowCents` on `GET /v1/balance/auto-recharge`).
+
+### When it fires
+
+Once per drop below the threshold; a balance back at or above it re-arms the next one. It does not fire when an auto top-up is already covering the drop, and never when no alert is set.
+
+### Who receives it
+
+It belongs to the billing owner, not to a profile or account: endpoints scoped with `profileIds` or `accountIds` do not receive it. Restricted keys need the `money` resource group.
+
+### How to act
+
+Send the user to `fundingUrl` (Billing with the top-up drawer open), or top up through the API.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnBalanceLowRequest
+*/
+func (a *WebhookEventsAPIService) OnBalanceLow(ctx context.Context) WebhookEventsAPIOnBalanceLowRequest {
+	return WebhookEventsAPIOnBalanceLowRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnBalanceLowExecute(r WebhookEventsAPIOnBalanceLowRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnBalanceLow")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/balance.low"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadBalanceLow == nil {
+		return nil, reportError("webhookPayloadBalanceLow is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadBalanceLow
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnBrandedCallingIdentityActionRequiredRequest struct {
 	ctx                                           context.Context
 	ApiService                                    *WebhookEventsAPIService
