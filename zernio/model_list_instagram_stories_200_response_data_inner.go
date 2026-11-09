@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.542.0
+API version: 1.543.0
 Contact: support@zernio.com
 */
 
@@ -37,6 +37,9 @@ type ListInstagramStories200ResponseDataInner struct {
 	ThumbnailUrl NullableString `json:"thumbnailUrl,omitempty"`
 	// When the story was posted.
 	Timestamp NullableTime `json:"timestamp,omitempty"`
+	// Only with `includeExpired=true`. True for an archived story that is no longer live; its media urls point to Zernio storage.
+	Expired *bool                                            `json:"expired,omitempty"`
+	Metrics *ListInstagramStories200ResponseDataInnerMetrics `json:"metrics,omitempty"`
 }
 
 type _ListInstagramStories200ResponseDataInner ListInstagramStories200ResponseDataInner
@@ -341,6 +344,70 @@ func (o *ListInstagramStories200ResponseDataInner) UnsetTimestamp() {
 	o.Timestamp.Unset()
 }
 
+// GetExpired returns the Expired field value if set, zero value otherwise.
+func (o *ListInstagramStories200ResponseDataInner) GetExpired() bool {
+	if o == nil || IsNil(o.Expired) {
+		var ret bool
+		return ret
+	}
+	return *o.Expired
+}
+
+// GetExpiredOk returns a tuple with the Expired field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInstagramStories200ResponseDataInner) GetExpiredOk() (*bool, bool) {
+	if o == nil || IsNil(o.Expired) {
+		return nil, false
+	}
+	return o.Expired, true
+}
+
+// HasExpired returns a boolean if a field has been set.
+func (o *ListInstagramStories200ResponseDataInner) HasExpired() bool {
+	if o != nil && !IsNil(o.Expired) {
+		return true
+	}
+
+	return false
+}
+
+// SetExpired gets a reference to the given bool and assigns it to the Expired field.
+func (o *ListInstagramStories200ResponseDataInner) SetExpired(v bool) {
+	o.Expired = &v
+}
+
+// GetMetrics returns the Metrics field value if set, zero value otherwise.
+func (o *ListInstagramStories200ResponseDataInner) GetMetrics() ListInstagramStories200ResponseDataInnerMetrics {
+	if o == nil || IsNil(o.Metrics) {
+		var ret ListInstagramStories200ResponseDataInnerMetrics
+		return ret
+	}
+	return *o.Metrics
+}
+
+// GetMetricsOk returns a tuple with the Metrics field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInstagramStories200ResponseDataInner) GetMetricsOk() (*ListInstagramStories200ResponseDataInnerMetrics, bool) {
+	if o == nil || IsNil(o.Metrics) {
+		return nil, false
+	}
+	return o.Metrics, true
+}
+
+// HasMetrics returns a boolean if a field has been set.
+func (o *ListInstagramStories200ResponseDataInner) HasMetrics() bool {
+	if o != nil && !IsNil(o.Metrics) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetrics gets a reference to the given ListInstagramStories200ResponseDataInnerMetrics and assigns it to the Metrics field.
+func (o *ListInstagramStories200ResponseDataInner) SetMetrics(v ListInstagramStories200ResponseDataInnerMetrics) {
+	o.Metrics = &v
+}
+
 func (o ListInstagramStories200ResponseDataInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -369,6 +436,12 @@ func (o ListInstagramStories200ResponseDataInner) ToMap() (map[string]interface{
 	}
 	if o.Timestamp.IsSet() {
 		toSerialize["timestamp"] = o.Timestamp.Get()
+	}
+	if !IsNil(o.Expired) {
+		toSerialize["expired"] = o.Expired
+	}
+	if !IsNil(o.Metrics) {
+		toSerialize["metrics"] = o.Metrics
 	}
 	return toSerialize, nil
 }

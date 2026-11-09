@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.542.0
+API version: 1.543.0
 Contact: support@zernio.com
 */
 
@@ -1347,9 +1347,23 @@ func (a *InstagramAPIService) ListInstagramMediaCollaboratorsExecute(r Instagram
 }
 
 type InstagramAPIListInstagramStoriesRequest struct {
-	ctx        context.Context
-	ApiService *InstagramAPIService
-	accountId  string
+	ctx            context.Context
+	ApiService     *InstagramAPIService
+	accountId      string
+	includeExpired *bool
+	limit          *int32
+}
+
+// Also return archived stories that are no longer live, newest first after the live ones. Every item then carries &#x60;expired&#x60; and &#x60;metrics&#x60;.
+func (r InstagramAPIListInstagramStoriesRequest) IncludeExpired(includeExpired bool) InstagramAPIListInstagramStoriesRequest {
+	r.includeExpired = &includeExpired
+	return r
+}
+
+// Maximum number of archived stories to read when &#x60;includeExpired&#x3D;true&#x60; (live stories are always all returned).
+func (r InstagramAPIListInstagramStoriesRequest) Limit(limit int32) InstagramAPIListInstagramStoriesRequest {
+	r.limit = &limit
+	return r
 }
 
 func (r InstagramAPIListInstagramStoriesRequest) Execute() (*ListInstagramStories200Response, *http.Response, error) {
@@ -1360,7 +1374,12 @@ func (r InstagramAPIListInstagramStoriesRequest) Execute() (*ListInstagramStorie
 ListInstagramStories List active Instagram stories
 
 Returns the IG Business/Creator account's currently-active stories.
-Meta keeps stories live for 24h; expired stories are not returned.
+Meta keeps stories live for 24h. Pass `includeExpired=true` to also get the
+stories Zernio archived before they expired: their media is copied into Zernio
+storage while the story is live, so `mediaUrl` and `thumbnailUrl` keep working
+after Meta deletes the story. Archiving needs the insights permission and covers
+stories posted since the account was connected (hourly readings, a final one at 23h,
+then Meta's end-of-story numbers when its webhook arrives).
 
 Limitations propagated from Meta (these are NOT bugs):
 - 24h window only
@@ -1404,6 +1423,20 @@ func (a *InstagramAPIService) ListInstagramStoriesExecute(r InstagramAPIListInst
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.includeExpired != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeExpired", r.includeExpired, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeExpired", defaultValue, "form", "")
+		r.includeExpired = &defaultValue
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1442,6 +1475,17 @@ func (a *InstagramAPIService) ListInstagramStoriesExecute(r InstagramAPIListInst
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
