@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.531.0
+API version: 1.531.1
 Contact: support@zernio.com
 */
 
@@ -56,6 +56,8 @@ func (r AdCampaignResultsAPIGetCampaignResultsTotalsRequest) Execute() (*GetCamp
 GetCampaignResultsTotals Get your results totals
 
 Each metric you send summed over a date range across every campaign of the ad accounts your key can see, or of the ones you name. Each day counts its newest uploaded value only, plus the events sent to `POST /v1/events` that are tied to a campaign.
+
+An event counts here up to 15 minutes after it arrives.
 
 Formulas are not computed here, since they also read the platform's numbers: apply one to these totals and the account's spend for the same range, or read it per campaign from `GET /v1/ads/tree?results=true`.
 
@@ -463,6 +465,8 @@ func (r AdCampaignResultsAPIListCampaignResultsRequest) Execute() (*ListCampaign
 ListCampaignResults List your results per campaign
 
 Your results summed per campaign over a date range, one entry per campaign with every metric it has, for the ad accounts your key can see. Each day counts its newest uploaded value only, plus the events sent to `POST /v1/events` that are tied to the campaign (`sales`, `revenue`, `leads`, `qualified_leads`).
+
+An event counts here up to 15 minutes after it arrives.
 
 Paginated by campaign: pass `nextCursor` back as `cursor` until it is null.
 
