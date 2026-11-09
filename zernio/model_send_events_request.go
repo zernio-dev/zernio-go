@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.530.0
+API version: 1.531.0
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,9 @@ type SendEventsRequest struct {
 	Destinations []SendEventsRequestDestinationsInner `json:"destinations,omitempty"`
 	Consent      *SendConversionsRequestConsent       `json:"consent,omitempty"`
 	// Forwarded as each platform test code (see POST /v1/ads/conversions). A root-level `test_event_code` is accepted as an alias. Test events are not stored.
-	TestCode             *string `json:"testCode,omitempty"`
+	TestCode *string `json:"testCode,omitempty"`
+	// `sync` sends to every destination before answering (200, per-destination results). `async` stores and queues the sends, then answers 202 at once; each send is retried while the platform fails for now, and its outcome shows on GET /v1/events/{eventId}. Requests with `testCode` always send now.
+	Mode                 *string `json:"mode,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -42,6 +44,8 @@ func NewSendEventsRequest(profileId string, events []ConversionEvent) *SendEvent
 	this := SendEventsRequest{}
 	this.ProfileId = profileId
 	this.Events = events
+	var mode string = "sync"
+	this.Mode = &mode
 	return &this
 }
 
@@ -50,6 +54,8 @@ func NewSendEventsRequest(profileId string, events []ConversionEvent) *SendEvent
 // but it doesn't guarantee that properties required by API are set
 func NewSendEventsRequestWithDefaults() *SendEventsRequest {
 	this := SendEventsRequest{}
+	var mode string = "sync"
+	this.Mode = &mode
 	return &this
 }
 
@@ -197,6 +203,38 @@ func (o *SendEventsRequest) SetTestCode(v string) {
 	o.TestCode = &v
 }
 
+// GetMode returns the Mode field value if set, zero value otherwise.
+func (o *SendEventsRequest) GetMode() string {
+	if o == nil || IsNil(o.Mode) {
+		var ret string
+		return ret
+	}
+	return *o.Mode
+}
+
+// GetModeOk returns a tuple with the Mode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEventsRequest) GetModeOk() (*string, bool) {
+	if o == nil || IsNil(o.Mode) {
+		return nil, false
+	}
+	return o.Mode, true
+}
+
+// HasMode returns a boolean if a field has been set.
+func (o *SendEventsRequest) HasMode() bool {
+	if o != nil && !IsNil(o.Mode) {
+		return true
+	}
+
+	return false
+}
+
+// SetMode gets a reference to the given string and assigns it to the Mode field.
+func (o *SendEventsRequest) SetMode(v string) {
+	o.Mode = &v
+}
+
 func (o SendEventsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -217,6 +255,9 @@ func (o SendEventsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.TestCode) {
 		toSerialize["testCode"] = o.TestCode
+	}
+	if !IsNil(o.Mode) {
+		toSerialize["mode"] = o.Mode
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -267,6 +308,7 @@ func (o *SendEventsRequest) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "destinations")
 		delete(additionalProperties, "consent")
 		delete(additionalProperties, "testCode")
+		delete(additionalProperties, "mode")
 		o.AdditionalProperties = additionalProperties
 	}
 

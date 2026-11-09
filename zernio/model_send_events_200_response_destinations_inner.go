@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.530.0
+API version: 1.531.0
 Contact: support@zernio.com
 */
 
@@ -29,6 +29,8 @@ type SendEvents200ResponseDestinationsInner struct {
 	Failures     []SendEvents200ResponseDestinationsInnerFailuresInner `json:"failures,omitempty"`
 	// Set when the destination could not be reached at all (account disconnected, unsupported platform, platform error).
 	Error *string `json:"error,omitempty"`
+	// The destination failed for now (platform error, timeout, rate limit) and the send is queued for retries; its outcome shows on GET /v1/events/{eventId}.
+	Retrying *bool `json:"retrying,omitempty"`
 }
 
 // NewSendEvents200ResponseDestinationsInner instantiates a new SendEvents200ResponseDestinationsInner object
@@ -272,6 +274,38 @@ func (o *SendEvents200ResponseDestinationsInner) SetError(v string) {
 	o.Error = &v
 }
 
+// GetRetrying returns the Retrying field value if set, zero value otherwise.
+func (o *SendEvents200ResponseDestinationsInner) GetRetrying() bool {
+	if o == nil || IsNil(o.Retrying) {
+		var ret bool
+		return ret
+	}
+	return *o.Retrying
+}
+
+// GetRetryingOk returns a tuple with the Retrying field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEvents200ResponseDestinationsInner) GetRetryingOk() (*bool, bool) {
+	if o == nil || IsNil(o.Retrying) {
+		return nil, false
+	}
+	return o.Retrying, true
+}
+
+// HasRetrying returns a boolean if a field has been set.
+func (o *SendEvents200ResponseDestinationsInner) HasRetrying() bool {
+	if o != nil && !IsNil(o.Retrying) {
+		return true
+	}
+
+	return false
+}
+
+// SetRetrying gets a reference to the given bool and assigns it to the Retrying field.
+func (o *SendEvents200ResponseDestinationsInner) SetRetrying(v bool) {
+	o.Retrying = &v
+}
+
 func (o SendEvents200ResponseDestinationsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -302,6 +336,9 @@ func (o SendEvents200ResponseDestinationsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
+	}
+	if !IsNil(o.Retrying) {
+		toSerialize["retrying"] = o.Retrying
 	}
 	return toSerialize, nil
 }

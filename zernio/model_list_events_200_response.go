@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.530.0
+API version: 1.531.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &ListEvents200Response{}
 
 // ListEvents200Response struct for ListEvents200Response
 type ListEvents200Response struct {
-	Events []ListEvents200ResponseEventsInner `json:"events,omitempty"`
+	Events []StoredEvent `json:"events,omitempty"`
 	// Pass as `cursor` to get the next page; `null` on the last page.
 	NextCursor NullableString `json:"nextCursor,omitempty"`
 }
@@ -43,9 +43,9 @@ func NewListEvents200ResponseWithDefaults() *ListEvents200Response {
 }
 
 // GetEvents returns the Events field value if set, zero value otherwise.
-func (o *ListEvents200Response) GetEvents() []ListEvents200ResponseEventsInner {
+func (o *ListEvents200Response) GetEvents() []StoredEvent {
 	if o == nil || IsNil(o.Events) {
-		var ret []ListEvents200ResponseEventsInner
+		var ret []StoredEvent
 		return ret
 	}
 	return o.Events
@@ -53,7 +53,7 @@ func (o *ListEvents200Response) GetEvents() []ListEvents200ResponseEventsInner {
 
 // GetEventsOk returns a tuple with the Events field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListEvents200Response) GetEventsOk() ([]ListEvents200ResponseEventsInner, bool) {
+func (o *ListEvents200Response) GetEventsOk() ([]StoredEvent, bool) {
 	if o == nil || IsNil(o.Events) {
 		return nil, false
 	}
@@ -69,8 +69,8 @@ func (o *ListEvents200Response) HasEvents() bool {
 	return false
 }
 
-// SetEvents gets a reference to the given []ListEvents200ResponseEventsInner and assigns it to the Events field.
-func (o *ListEvents200Response) SetEvents(v []ListEvents200ResponseEventsInner) {
+// SetEvents gets a reference to the given []StoredEvent and assigns it to the Events field.
+func (o *ListEvents200Response) SetEvents(v []StoredEvent) {
 	o.Events = v
 }
 
