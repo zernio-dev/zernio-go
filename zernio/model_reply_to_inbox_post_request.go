@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.538.0
+API version: 1.541.0
 Contact: support@zernio.com
 */
 
@@ -29,6 +29,8 @@ type ReplyToInboxPostRequest struct {
 	AttachmentUrl *string `json:"attachmentUrl,omitempty"`
 	// Reply to specific comment (optional)
 	CommentId *string `json:"commentId,omitempty"`
+	// (LinkedIn only) When true, the reply starts with an @mention of the author of `commentId` (a member or a page), tagged with their URN and the name LinkedIn returns for them. Requires `commentId`. Returns 400 `platform_not_supported` on other platforms, and 400 `linkedin_mention_name_unavailable` with `details.authorUrn` when LinkedIn does not return the author's name (for example a page the account does not administer); mention them in `message` as @[Name](urn) instead. If LinkedIn rejects any mention in the reply, it is posted once more with every mention as plain text.
+	MentionAuthor *bool `json:"mentionAuthor,omitempty"`
 	// (Bluesky only) Parent content identifier
 	ParentCid *string `json:"parentCid,omitempty"`
 	// (Bluesky only) Root post URI
@@ -170,6 +172,38 @@ func (o *ReplyToInboxPostRequest) SetCommentId(v string) {
 	o.CommentId = &v
 }
 
+// GetMentionAuthor returns the MentionAuthor field value if set, zero value otherwise.
+func (o *ReplyToInboxPostRequest) GetMentionAuthor() bool {
+	if o == nil || IsNil(o.MentionAuthor) {
+		var ret bool
+		return ret
+	}
+	return *o.MentionAuthor
+}
+
+// GetMentionAuthorOk returns a tuple with the MentionAuthor field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ReplyToInboxPostRequest) GetMentionAuthorOk() (*bool, bool) {
+	if o == nil || IsNil(o.MentionAuthor) {
+		return nil, false
+	}
+	return o.MentionAuthor, true
+}
+
+// HasMentionAuthor returns a boolean if a field has been set.
+func (o *ReplyToInboxPostRequest) HasMentionAuthor() bool {
+	if o != nil && !IsNil(o.MentionAuthor) {
+		return true
+	}
+
+	return false
+}
+
+// SetMentionAuthor gets a reference to the given bool and assigns it to the MentionAuthor field.
+func (o *ReplyToInboxPostRequest) SetMentionAuthor(v bool) {
+	o.MentionAuthor = &v
+}
+
 // GetParentCid returns the ParentCid field value if set, zero value otherwise.
 func (o *ReplyToInboxPostRequest) GetParentCid() string {
 	if o == nil || IsNil(o.ParentCid) {
@@ -283,6 +317,9 @@ func (o ReplyToInboxPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CommentId) {
 		toSerialize["commentId"] = o.CommentId
+	}
+	if !IsNil(o.MentionAuthor) {
+		toSerialize["mentionAuthor"] = o.MentionAuthor
 	}
 	if !IsNil(o.ParentCid) {
 		toSerialize["parentCid"] = o.ParentCid

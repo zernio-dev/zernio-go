@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.538.0
+API version: 1.541.0
 Contact: support@zernio.com
 */
 
@@ -2494,12 +2494,18 @@ func (r PostsAPIUpdatePostMetadataRequest) Execute() (*UpdatePostMetadata200Resp
 /*
 UpdatePostMetadata Update post metadata
 
-Updates metadata of a published video on the specified platform without re-uploading. Currently only supported for YouTube. At least one updatable field is required.
+Updates metadata of a published video on the specified platform without re-uploading. Supported on YouTube and Facebook. At least one updatable field is required.
+
+### Platforms
+
+- YouTube: every field below.
+- Facebook: `thumbnailUrl` only, on a feed video or Reel published through Zernio (post-based mode). It replaces the video's cover. Any other field, a Story, a non-video post, or direct `videoId` mode returns 400.
+- Instagram: not supported. Meta does not allow changing a Reel or video cover after publishing, so set `instagramThumbnail` when creating the post.
 
 ### Two modes
 
 1. Post-based (video published through Zernio): pass the Zernio postId in the URL and platform in the body.
-2. Direct video ID (video uploaded outside Zernio, e.g. directly to YouTube): use _ as the postId, and pass videoId + accountId + platform in the body. The accountId is the Zernio account ID for the connected YouTube channel.
+2. Direct video ID (YouTube only, video uploaded outside Zernio): use _ as the postId, and pass videoId + accountId + platform in the body. The accountId is the Zernio account ID for the connected YouTube channel.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId Zernio post ID, or \"_\" when using direct video ID mode
@@ -2645,6 +2651,16 @@ func (a *PostsAPIService) UpdatePostMetadataExecute(r PostsAPIUpdatePostMetadata
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 503 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

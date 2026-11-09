@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.538.0
+API version: 1.541.0
 Contact: support@zernio.com
 */
 
@@ -40,7 +40,7 @@ type InstagramPlatformData struct {
 	MuteAudio *bool `json:"muteAudio,omitempty"`
 	// Millisecond offset from video start for the Reel cover frame. Ignored when instagramThumbnail or reelCover is provided. Defaults to 0.
 	ThumbOffset *int32 `json:"thumbOffset,omitempty"`
-	// Custom cover image URL for Instagram Reels (JPG or PNG, publicly accessible). Overrides thumbOffset when provided. Also accepted as reelCover (alias).
+	// Custom cover image URL for Instagram Reels (JPG or PNG, publicly accessible). Overrides thumbOffset when provided. Also accepted as reelCover (alias). The cover cannot be changed after publishing because Meta only allows comment_enabled to be updated on published Instagram media.
 	InstagramThumbnail *string `json:"instagramThumbnail,omitempty"`
 	// Alias for instagramThumbnail. If both are provided, instagramThumbnail takes priority.
 	ReelCover *string `json:"reelCover,omitempty"`
