@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.532.0
+API version: 1.533.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,9 @@ var _ MappedNullable = &WebhookPayloadLeadLead{}
 type WebhookPayloadLeadLead struct {
 	// Zernio lead ID (AdLead document ID)
 	Id string `json:"id"`
-	// Meta lead ID (the platform's leadgen_id)
+	// The ad network the lead came from.
+	Platform NullableString `json:"platform,omitempty"`
+	// The network's lead id: Meta's leadgen_id, or the Google lead form submission id
 	LeadgenId string `json:"leadgenId"`
 	// Lead Gen form ID the lead was submitted against
 	FormId string `json:"formId"`
@@ -92,6 +94,49 @@ func (o *WebhookPayloadLeadLead) GetIdOk() (*string, bool) {
 // SetId sets field value
 func (o *WebhookPayloadLeadLead) SetId(v string) {
 	o.Id = v
+}
+
+// GetPlatform returns the Platform field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadLeadLead) GetPlatform() string {
+	if o == nil || IsNil(o.Platform.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Platform.Get()
+}
+
+// GetPlatformOk returns a tuple with the Platform field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadLeadLead) GetPlatformOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Platform.Get(), o.Platform.IsSet()
+}
+
+// HasPlatform returns a boolean if a field has been set.
+func (o *WebhookPayloadLeadLead) HasPlatform() bool {
+	if o != nil && o.Platform.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatform gets a reference to the given NullableString and assigns it to the Platform field.
+func (o *WebhookPayloadLeadLead) SetPlatform(v string) {
+	o.Platform.Set(&v)
+}
+
+// SetPlatformNil sets the value for Platform to be an explicit nil
+func (o *WebhookPayloadLeadLead) SetPlatformNil() {
+	o.Platform.Set(nil)
+}
+
+// UnsetPlatform ensures that no value is present for Platform, not even an explicit nil
+func (o *WebhookPayloadLeadLead) UnsetPlatform() {
+	o.Platform.Unset()
 }
 
 // GetLeadgenId returns the LeadgenId field value
@@ -429,6 +474,9 @@ func (o WebhookPayloadLeadLead) MarshalJSON() ([]byte, error) {
 func (o WebhookPayloadLeadLead) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
+	if o.Platform.IsSet() {
+		toSerialize["platform"] = o.Platform.Get()
+	}
 	toSerialize["leadgenId"] = o.LeadgenId
 	toSerialize["formId"] = o.FormId
 	if o.FormName.IsSet() {

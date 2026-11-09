@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.532.0
+API version: 1.533.0
 Contact: support@zernio.com
 */
 
@@ -1392,7 +1392,7 @@ func (r LeadGenAPIListLeadsRequest) CampaignId(campaignId string) LeadGenAPIList
 	return r
 }
 
-// meta skips the LinkedIn live fetch; linkedin requires accountId to be a LinkedIn ads connection (400 otherwise).
+// Only leads of this network. meta and google list stored leads of that network (no LinkedIn live fetch); linkedin requires accountId to be a LinkedIn ads connection (400 otherwise). Without it, every stored network is listed, and an accountId that is a LinkedIn ads connection switches to the live fetch.
 func (r LeadGenAPIListLeadsRequest) Platform(platform string) LeadGenAPIListLeadsRequest {
 	r.platform = &platform
 	return r
@@ -1434,13 +1434,17 @@ func (r LeadGenAPIListLeadsRequest) Execute() (*ListLeads200Response, *http.Resp
 /*
 ListLeads List submitted leads
 
-Lists the leads submitted through your Meta or LinkedIn lead forms, newest first.
+Lists the leads submitted through your Meta, Google or LinkedIn lead forms, newest first.
 
 Returns submitted Lead Gen leads for your team, newest-first, with keyset pagination on `cursor`. Requires the Ads add-on.
 
 ### Meta (default)
 
 Leads are served from the persisted cache, ingested in real time from the `leadgen` webhook.
+
+### Google
+
+Google lead form submissions are stored like Meta leads and listed with them, usually within 15 minutes of the submission. Each lead says its network in `platform` (`meta`, `google`, `linkedin`), and `platform=google` lists only Google leads. On a Google lead `leadgenId` is the submission id and `formId` the lead form asset id; answers are keyed like Meta's (`email`, `phone_number`, `full_name`), custom questions by their text. Statuses work as for Meta leads.
 
 ### LinkedIn
 
