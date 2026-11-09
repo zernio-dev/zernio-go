@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.527.0
+API version: 1.527.1
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &BoostPostRequest{}
 
 // BoostPostRequest struct for BoostPostRequest
 type BoostPostRequest struct {
-	// Meta Advantage+ creative enhancements. Map snake_case feature names to OPT_IN or OPT_OUT; Meta validates supported keys and unspecified features default to OPT_OUT. auto_promotion_tag is an Advantage+ enhancement, not the Ads Manager Promotion setting. The deprecated standard_enhancements bundle (subcode 3858504) is a 400 before any Meta call.
+	// Meta Advantage+ creative enhancements. Map snake_case feature names to OPT_IN or OPT_OUT; Meta validates supported keys. On creation Zernio sends only the keys you name, so Meta's default applies to the rest; on PUT /v1/ads/{adId} omitted keys keep the creative's current value. Send OPT_OUT to switch an enhancement off.  auto_promotion_tag is an Advantage+ enhancement, not the Ads Manager Promotion setting. The deprecated standard_enhancements bundle (subcode 3858504) is a 400 before any Meta call.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// The Zernio post id (24 hex characters) returned when the post was created through Zernio. Send this or platformPostId. A value that is not a Zernio id is boosted as the platform post id, the same as platformPostId; a Zernio id that matches no post is a 404 on postId.
 	PostId *string `json:"postId,omitempty"`
