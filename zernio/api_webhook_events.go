@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.543.0
+API version: 1.544.0
 Contact: support@zernio.com
 */
 
@@ -7581,6 +7581,414 @@ func (a *WebhookEventsAPIService) OnCreatorCampaignClosedExecute(r WebhookEvents
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadCreatorCampaign
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnEmailLinkClickedRequest struct {
+	ctx                            context.Context
+	ApiService                     *WebhookEventsAPIService
+	webhookPayloadEmailLinkClicked *WebhookPayloadEmailLinkClicked
+}
+
+func (r WebhookEventsAPIOnEmailLinkClickedRequest) WebhookPayloadEmailLinkClicked(webhookPayloadEmailLinkClicked WebhookPayloadEmailLinkClicked) WebhookEventsAPIOnEmailLinkClickedRequest {
+	r.webhookPayloadEmailLinkClicked = &webhookPayloadEmailLinkClicked
+	return r
+}
+
+func (r WebhookEventsAPIOnEmailLinkClickedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnEmailLinkClickedExecute(r)
+}
+
+/*
+OnEmailLinkClicked Email link clicked
+
+A recipient followed a link of a message sent with `trackLinks: true`. Every http(s) link in the html was rewritten to a Zernio redirect that records the click and sends the reader on to `click.url`.
+
+Security scanners in corporate mail gateways sometimes follow links on delivery, which reports as a click.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnEmailLinkClickedRequest
+*/
+func (a *WebhookEventsAPIService) OnEmailLinkClicked(ctx context.Context) WebhookEventsAPIOnEmailLinkClickedRequest {
+	return WebhookEventsAPIOnEmailLinkClickedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnEmailLinkClickedExecute(r WebhookEventsAPIOnEmailLinkClickedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnEmailLinkClicked")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/email.link_clicked"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadEmailLinkClicked == nil {
+		return nil, reportError("webhookPayloadEmailLinkClicked is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadEmailLinkClicked
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnEmailOpenedRequest struct {
+	ctx                       context.Context
+	ApiService                *WebhookEventsAPIService
+	webhookPayloadEmailOpened *WebhookPayloadEmailOpened
+}
+
+func (r WebhookEventsAPIOnEmailOpenedRequest) WebhookPayloadEmailOpened(webhookPayloadEmailOpened WebhookPayloadEmailOpened) WebhookEventsAPIOnEmailOpenedRequest {
+	r.webhookPayloadEmailOpened = &webhookPayloadEmailOpened
+	return r
+}
+
+func (r WebhookEventsAPIOnEmailOpenedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnEmailOpenedExecute(r)
+}
+
+/*
+OnEmailOpened Email opened
+
+A mail client loaded the open pixel of a message sent with `trackOpens: true`.
+
+Opens are a signal, not proof of reading:
+
+- Gmail and Apple Mail fetch images through their own proxies, some as soon as the mail arrives.
+- Clients that block images never report an open.
+- The sender viewing the message in their own Sent folder counts too.
+
+Repeat fetches within 10 seconds raise `count` without firing again.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnEmailOpenedRequest
+*/
+func (a *WebhookEventsAPIService) OnEmailOpened(ctx context.Context) WebhookEventsAPIOnEmailOpenedRequest {
+	return WebhookEventsAPIOnEmailOpenedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnEmailOpenedExecute(r WebhookEventsAPIOnEmailOpenedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnEmailOpened")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/email.opened"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadEmailOpened == nil {
+		return nil, reportError("webhookPayloadEmailOpened is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadEmailOpened
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnEmailSendFailedRequest struct {
+	ctx                           context.Context
+	ApiService                    *WebhookEventsAPIService
+	webhookPayloadEmailSendFailed *WebhookPayloadEmailSendFailed
+}
+
+func (r WebhookEventsAPIOnEmailSendFailedRequest) WebhookPayloadEmailSendFailed(webhookPayloadEmailSendFailed WebhookPayloadEmailSendFailed) WebhookEventsAPIOnEmailSendFailedRequest {
+	r.webhookPayloadEmailSendFailed = &webhookPayloadEmailSendFailed
+	return r
+}
+
+func (r WebhookEventsAPIOnEmailSendFailedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnEmailSendFailedExecute(r)
+}
+
+/*
+OnEmailSendFailed Scheduled email failed
+
+A send scheduled with `scheduledFor` could not leave at its time. Nothing reached the recipients. `error` says why, for example the mailbox was disconnected, the daily send cap was reached or the provider refused the mail. The send stays listed with `status: failed`; schedule it again to retry.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnEmailSendFailedRequest
+*/
+func (a *WebhookEventsAPIService) OnEmailSendFailed(ctx context.Context) WebhookEventsAPIOnEmailSendFailedRequest {
+	return WebhookEventsAPIOnEmailSendFailedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnEmailSendFailedExecute(r WebhookEventsAPIOnEmailSendFailedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnEmailSendFailed")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/email.send_failed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadEmailSendFailed == nil {
+		return nil, reportError("webhookPayloadEmailSendFailed is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadEmailSendFailed
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnEmailThreadRepliedRequest struct {
+	ctx                              context.Context
+	ApiService                       *WebhookEventsAPIService
+	webhookPayloadEmailThreadReplied *WebhookPayloadEmailThreadReplied
+}
+
+func (r WebhookEventsAPIOnEmailThreadRepliedRequest) WebhookPayloadEmailThreadReplied(webhookPayloadEmailThreadReplied WebhookPayloadEmailThreadReplied) WebhookEventsAPIOnEmailThreadRepliedRequest {
+	r.webhookPayloadEmailThreadReplied = &webhookPayloadEmailThreadReplied
+	return r
+}
+
+func (r WebhookEventsAPIOnEmailThreadRepliedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnEmailThreadRepliedExecute(r)
+}
+
+/*
+OnEmailThreadReplied Email thread replied
+
+Mail from someone other than the mailbox arrived in the thread of a message sent with `trackReplies: true`. Works on text and html sends. Auto-replies and bounce reports in the thread count as replies.
+
+The reply also arrives as `message.received` with its full content.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnEmailThreadRepliedRequest
+*/
+func (a *WebhookEventsAPIService) OnEmailThreadReplied(ctx context.Context) WebhookEventsAPIOnEmailThreadRepliedRequest {
+	return WebhookEventsAPIOnEmailThreadRepliedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnEmailThreadRepliedExecute(r WebhookEventsAPIOnEmailThreadRepliedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnEmailThreadReplied")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/email.thread_replied"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadEmailThreadReplied == nil {
+		return nil, reportError("webhookPayloadEmailThreadReplied is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadEmailThreadReplied
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

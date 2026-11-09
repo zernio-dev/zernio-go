@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.543.0
+API version: 1.544.0
 Contact: support@zernio.com
 */
 
@@ -38,14 +38,16 @@ type SendEmailRequest struct {
 	// Custom `X-` headers only. `List-Unsubscribe` is dropped on Microsoft and reported in `metadata.droppedHeaders`.
 	Headers  map[string]string `json:"headers,omitempty"`
 	Metadata map[string]string `json:"metadata,omitempty"`
-	// Reserved; currently rejected.
+	// Send later, between 1 minute and 30 days from now. The request answers 202 with the scheduled send; it leaves within a minute of this time through the same caps as an immediate send. List or cancel it under `/v1/email/messages/scheduled`.
 	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
 	// Reserved; currently rejected.
 	HoldAsDraft *bool `json:"holdAsDraft,omitempty"`
-	// Not available; must be false.
+	// Adds an open pixel to the html and fires `email.opened`. Needs `html`.
 	TrackOpens *bool `json:"trackOpens,omitempty"`
-	// Not available; must be false.
+	// Rewrites every http(s) link in the html through a Zernio redirect and fires `email.link_clicked`. Needs `html`.
 	TrackLinks *bool `json:"trackLinks,omitempty"`
+	// Fires `email.thread_replied` when someone else writes in this message's thread. Works with text or html.
+	TrackReplies *bool `json:"trackReplies,omitempty"`
 }
 
 type _SendEmailRequest SendEmailRequest
@@ -558,6 +560,38 @@ func (o *SendEmailRequest) SetTrackLinks(v bool) {
 	o.TrackLinks = &v
 }
 
+// GetTrackReplies returns the TrackReplies field value if set, zero value otherwise.
+func (o *SendEmailRequest) GetTrackReplies() bool {
+	if o == nil || IsNil(o.TrackReplies) {
+		var ret bool
+		return ret
+	}
+	return *o.TrackReplies
+}
+
+// GetTrackRepliesOk returns a tuple with the TrackReplies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEmailRequest) GetTrackRepliesOk() (*bool, bool) {
+	if o == nil || IsNil(o.TrackReplies) {
+		return nil, false
+	}
+	return o.TrackReplies, true
+}
+
+// HasTrackReplies returns a boolean if a field has been set.
+func (o *SendEmailRequest) HasTrackReplies() bool {
+	if o != nil && !IsNil(o.TrackReplies) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrackReplies gets a reference to the given bool and assigns it to the TrackReplies field.
+func (o *SendEmailRequest) SetTrackReplies(v bool) {
+	o.TrackReplies = &v
+}
+
 func (o SendEmailRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -609,6 +643,9 @@ func (o SendEmailRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.TrackLinks) {
 		toSerialize["trackLinks"] = o.TrackLinks
+	}
+	if !IsNil(o.TrackReplies) {
+		toSerialize["trackReplies"] = o.TrackReplies
 	}
 	return toSerialize, nil
 }

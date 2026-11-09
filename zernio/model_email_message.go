@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.543.0
+API version: 1.544.0
 Contact: support@zernio.com
 */
 
@@ -45,6 +45,8 @@ type EmailMessage struct {
 	Unread   *bool             `json:"unread,omitempty"`
 	Starred  *bool             `json:"starred,omitempty"`
 	Metadata map[string]string `json:"metadata,omitempty"`
+	// Set on a send with `trackOpens`, `trackLinks` or `trackReplies`; the email.* webhooks carry it.
+	TrackingId NullableString `json:"trackingId,omitempty"`
 }
 
 // NewEmailMessage instantiates a new EmailMessage object
@@ -769,6 +771,49 @@ func (o *EmailMessage) SetMetadata(v map[string]string) {
 	o.Metadata = v
 }
 
+// GetTrackingId returns the TrackingId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EmailMessage) GetTrackingId() string {
+	if o == nil || IsNil(o.TrackingId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.TrackingId.Get()
+}
+
+// GetTrackingIdOk returns a tuple with the TrackingId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EmailMessage) GetTrackingIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TrackingId.Get(), o.TrackingId.IsSet()
+}
+
+// HasTrackingId returns a boolean if a field has been set.
+func (o *EmailMessage) HasTrackingId() bool {
+	if o != nil && o.TrackingId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTrackingId gets a reference to the given NullableString and assigns it to the TrackingId field.
+func (o *EmailMessage) SetTrackingId(v string) {
+	o.TrackingId.Set(&v)
+}
+
+// SetTrackingIdNil sets the value for TrackingId to be an explicit nil
+func (o *EmailMessage) SetTrackingIdNil() {
+	o.TrackingId.Set(nil)
+}
+
+// UnsetTrackingId ensures that no value is present for TrackingId, not even an explicit nil
+func (o *EmailMessage) UnsetTrackingId() {
+	o.TrackingId.Unset()
+}
+
 func (o EmailMessage) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -841,6 +886,9 @@ func (o EmailMessage) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
+	}
+	if o.TrackingId.IsSet() {
+		toSerialize["trackingId"] = o.TrackingId.Get()
 	}
 	return toSerialize, nil
 }
