@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.533.1
+API version: 1.535.0
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,7 @@ type PlatformAnalytics struct {
 	ErrorMessage NullableString `json:"errorMessage,omitempty"`
 	// Stable machine-readable reason for errorMessage. New values may be added.  - post_not_found: the post was deleted or is no longer visible to the account. - not_post_owner: the post is owned by another Page or user (collab or visitor post); its analytics cannot be read with this Page's token. - permission_missing: the last analytics sync of the Facebook account failed because the Page no longer grants pages_read_engagement (pending entries only). - null: no stable code; read errorMessage.
 	ErrorCode NullableString `json:"errorCode,omitempty"`
-	// Facebook only: true when the connected Page authored the post, false when Facebook reports another author (a collab post), null when unknown or for other platforms.
+	// Facebook: true when the connected Page authored the post, false when Facebook reports another author (a collab post). Pinterest: true when the account created the Pin, false when it saved it from another user. Null when unknown or for other platforms.
 	IsOwner NullableBool `json:"isOwner,omitempty"`
 }
 

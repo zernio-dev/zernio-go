@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.533.1
+API version: 1.535.0
 Contact: support@zernio.com
 */
 
@@ -340,6 +340,7 @@ Not every field applies to every platform. Absent fields are omitted from the re
 - `cid`: the Bluesky content id needed to reply.
 - `subreddit`: Reddit only.
 - `title`, `description`, `link`, `boardId` and `boardOwnerUsername`: Pinterest only (the native Pin values; `message` keeps title and description joined).
+- `isOwner`: Pinterest and Facebook. On Pinterest, true for a Pin the account created and false for a Pin it saved from another user, so keep `isOwner: true` to import only its own Pins. On Facebook, false marks a collab post by another Page.
 
 ### Expired tokens
 

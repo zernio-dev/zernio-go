@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.533.1
+API version: 1.535.0
 Contact: support@zernio.com
 */
 
@@ -44,8 +44,10 @@ type ExternalPostSummary struct {
 	// Instagram reels only: whether the reel is also shared to the main feed. Absent when the platform did not report it.
 	IsSharedToFeed *bool `json:"isSharedToFeed,omitempty"`
 	// Instagram only: audio type of the media (MUSIC or ORIGINAL_SOUND). Absent when the platform did not report it.
-	MediaAudioType *string                       `json:"mediaAudioType,omitempty"`
-	Analytics      *ExternalPostSummaryAnalytics `json:"analytics,omitempty"`
+	MediaAudioType *string `json:"mediaAudioType,omitempty"`
+	// Pinterest: true when the account created the Pin, false when it saved it from another user; keep true to import only its own Pins. Facebook: false for a collab post by another Page. Null when unknown and for other platforms.
+	IsOwner   NullableBool                  `json:"isOwner,omitempty"`
+	Analytics *ExternalPostSummaryAnalytics `json:"analytics,omitempty"`
 }
 
 // NewExternalPostSummary instantiates a new ExternalPostSummary object
@@ -449,6 +451,49 @@ func (o *ExternalPostSummary) SetMediaAudioType(v string) {
 	o.MediaAudioType = &v
 }
 
+// GetIsOwner returns the IsOwner field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ExternalPostSummary) GetIsOwner() bool {
+	if o == nil || IsNil(o.IsOwner.Get()) {
+		var ret bool
+		return ret
+	}
+	return *o.IsOwner.Get()
+}
+
+// GetIsOwnerOk returns a tuple with the IsOwner field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ExternalPostSummary) GetIsOwnerOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.IsOwner.Get(), o.IsOwner.IsSet()
+}
+
+// HasIsOwner returns a boolean if a field has been set.
+func (o *ExternalPostSummary) HasIsOwner() bool {
+	if o != nil && o.IsOwner.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetIsOwner gets a reference to the given NullableBool and assigns it to the IsOwner field.
+func (o *ExternalPostSummary) SetIsOwner(v bool) {
+	o.IsOwner.Set(&v)
+}
+
+// SetIsOwnerNil sets the value for IsOwner to be an explicit nil
+func (o *ExternalPostSummary) SetIsOwnerNil() {
+	o.IsOwner.Set(nil)
+}
+
+// UnsetIsOwner ensures that no value is present for IsOwner, not even an explicit nil
+func (o *ExternalPostSummary) UnsetIsOwner() {
+	o.IsOwner.Unset()
+}
+
 // GetAnalytics returns the Analytics field value if set, zero value otherwise.
 func (o *ExternalPostSummary) GetAnalytics() ExternalPostSummaryAnalytics {
 	if o == nil || IsNil(o.Analytics) {
@@ -526,6 +571,9 @@ func (o ExternalPostSummary) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MediaAudioType) {
 		toSerialize["mediaAudioType"] = o.MediaAudioType
+	}
+	if o.IsOwner.IsSet() {
+		toSerialize["isOwner"] = o.IsOwner.Get()
 	}
 	if !IsNil(o.Analytics) {
 		toSerialize["analytics"] = o.Analytics

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.533.1
+API version: 1.535.0
 Contact: support@zernio.com
 */
 
@@ -51,6 +51,8 @@ type GetAccountPosts200ResponsePostsInner struct {
 	BoardId *string `json:"boardId,omitempty"`
 	// Pinterest only: username of the board owner
 	BoardOwnerUsername *string `json:"boardOwnerUsername,omitempty"`
+	// Pinterest: true when the account created the Pin, false when it saved it from another user. Facebook: false for a collab post by another Page. Absent when the platform does not report it.
+	IsOwner *bool `json:"isOwner,omitempty"`
 }
 
 // NewGetAccountPosts200ResponsePostsInner instantiates a new GetAccountPosts200ResponsePostsInner object
@@ -646,6 +648,38 @@ func (o *GetAccountPosts200ResponsePostsInner) SetBoardOwnerUsername(v string) {
 	o.BoardOwnerUsername = &v
 }
 
+// GetIsOwner returns the IsOwner field value if set, zero value otherwise.
+func (o *GetAccountPosts200ResponsePostsInner) GetIsOwner() bool {
+	if o == nil || IsNil(o.IsOwner) {
+		var ret bool
+		return ret
+	}
+	return *o.IsOwner
+}
+
+// GetIsOwnerOk returns a tuple with the IsOwner field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountPosts200ResponsePostsInner) GetIsOwnerOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsOwner) {
+		return nil, false
+	}
+	return o.IsOwner, true
+}
+
+// HasIsOwner returns a boolean if a field has been set.
+func (o *GetAccountPosts200ResponsePostsInner) HasIsOwner() bool {
+	if o != nil && !IsNil(o.IsOwner) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsOwner gets a reference to the given bool and assigns it to the IsOwner field.
+func (o *GetAccountPosts200ResponsePostsInner) SetIsOwner(v bool) {
+	o.IsOwner = &v
+}
+
 func (o GetAccountPosts200ResponsePostsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -709,6 +743,9 @@ func (o GetAccountPosts200ResponsePostsInner) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.BoardOwnerUsername) {
 		toSerialize["boardOwnerUsername"] = o.BoardOwnerUsername
+	}
+	if !IsNil(o.IsOwner) {
+		toSerialize["isOwner"] = o.IsOwner
 	}
 	return toSerialize, nil
 }
