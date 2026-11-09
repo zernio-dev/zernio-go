@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.535.0
+API version: 1.538.0
 Contact: support@zernio.com
 */
 
@@ -27,8 +27,8 @@ type WebhookPayloadAccountPermissionsChangedAccount struct {
 	Platform    string  `json:"platform"`
 	Username    string  `json:"username"`
 	DisplayName *string `json:"displayName,omitempty"`
-	// The OAuth app the account connected through.
-	OauthAppId string `json:"oauthAppId"`
+	// The OAuth app the account connected through; null on Zernio's app.
+	OauthAppId NullableString `json:"oauthAppId"`
 	// Every area now missing. Enable the permission on your app (or have the user grant it), then reconnect the account.
 	MissingScopeAreas []string `json:"missingScopeAreas"`
 	// The platform error that revealed it.
@@ -41,7 +41,7 @@ type _WebhookPayloadAccountPermissionsChangedAccount WebhookPayloadAccountPermis
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadAccountPermissionsChangedAccount(accountId string, profileId string, platform string, username string, oauthAppId string, missingScopeAreas []string, reason string) *WebhookPayloadAccountPermissionsChangedAccount {
+func NewWebhookPayloadAccountPermissionsChangedAccount(accountId string, profileId string, platform string, username string, oauthAppId NullableString, missingScopeAreas []string, reason string) *WebhookPayloadAccountPermissionsChangedAccount {
 	this := WebhookPayloadAccountPermissionsChangedAccount{}
 	this.AccountId = accountId
 	this.ProfileId = profileId
@@ -190,27 +190,29 @@ func (o *WebhookPayloadAccountPermissionsChangedAccount) SetDisplayName(v string
 }
 
 // GetOauthAppId returns the OauthAppId field value
+// If the value is explicit nil, the zero value for string will be returned
 func (o *WebhookPayloadAccountPermissionsChangedAccount) GetOauthAppId() string {
-	if o == nil {
+	if o == nil || o.OauthAppId.Get() == nil {
 		var ret string
 		return ret
 	}
 
-	return o.OauthAppId
+	return *o.OauthAppId.Get()
 }
 
 // GetOauthAppIdOk returns a tuple with the OauthAppId field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WebhookPayloadAccountPermissionsChangedAccount) GetOauthAppIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.OauthAppId, true
+	return o.OauthAppId.Get(), o.OauthAppId.IsSet()
 }
 
 // SetOauthAppId sets field value
 func (o *WebhookPayloadAccountPermissionsChangedAccount) SetOauthAppId(v string) {
-	o.OauthAppId = v
+	o.OauthAppId.Set(&v)
 }
 
 // GetMissingScopeAreas returns the MissingScopeAreas field value
@@ -278,7 +280,7 @@ func (o WebhookPayloadAccountPermissionsChangedAccount) ToMap() (map[string]inte
 	if !IsNil(o.DisplayName) {
 		toSerialize["displayName"] = o.DisplayName
 	}
-	toSerialize["oauthAppId"] = o.OauthAppId
+	toSerialize["oauthAppId"] = o.OauthAppId.Get()
 	toSerialize["missingScopeAreas"] = o.MissingScopeAreas
 	toSerialize["reason"] = o.Reason
 	return toSerialize, nil

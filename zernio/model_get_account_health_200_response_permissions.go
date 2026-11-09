@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.535.0
+API version: 1.538.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type GetAccountHealth200ResponsePermissions struct {
 	CanPost           *bool    `json:"canPost,omitempty"`
 	CanFetchAnalytics *bool    `json:"canFetchAnalytics,omitempty"`
 	MissingRequired   []string `json:"missingRequired,omitempty"`
+	// Present when the account connected with `scopes` or through your own OAuth app: each permission area the platform splits, as granted, missing or not_requested. An area never requested does not make the account unhealthy.
+	ScopeAreas map[string]string `json:"scopeAreas,omitempty"`
 }
 
 // NewGetAccountHealth200ResponsePermissions instantiates a new GetAccountHealth200ResponsePermissions object
@@ -238,6 +240,38 @@ func (o *GetAccountHealth200ResponsePermissions) SetMissingRequired(v []string) 
 	o.MissingRequired = v
 }
 
+// GetScopeAreas returns the ScopeAreas field value if set, zero value otherwise.
+func (o *GetAccountHealth200ResponsePermissions) GetScopeAreas() map[string]string {
+	if o == nil || IsNil(o.ScopeAreas) {
+		var ret map[string]string
+		return ret
+	}
+	return o.ScopeAreas
+}
+
+// GetScopeAreasOk returns a tuple with the ScopeAreas field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200ResponsePermissions) GetScopeAreasOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.ScopeAreas) {
+		return map[string]string{}, false
+	}
+	return o.ScopeAreas, true
+}
+
+// HasScopeAreas returns a boolean if a field has been set.
+func (o *GetAccountHealth200ResponsePermissions) HasScopeAreas() bool {
+	if o != nil && !IsNil(o.ScopeAreas) {
+		return true
+	}
+
+	return false
+}
+
+// SetScopeAreas gets a reference to the given map[string]string and assigns it to the ScopeAreas field.
+func (o *GetAccountHealth200ResponsePermissions) SetScopeAreas(v map[string]string) {
+	o.ScopeAreas = v
+}
+
 func (o GetAccountHealth200ResponsePermissions) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -265,6 +299,9 @@ func (o GetAccountHealth200ResponsePermissions) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.MissingRequired) {
 		toSerialize["missingRequired"] = o.MissingRequired
+	}
+	if !IsNil(o.ScopeAreas) {
+		toSerialize["scopeAreas"] = o.ScopeAreas
 	}
 	return toSerialize, nil
 }

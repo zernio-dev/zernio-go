@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.535.0
+API version: 1.538.0
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,7 @@ type ListedAccount struct {
 	DisplayName *string                `json:"displayName,omitempty"`
 	// The account's id on its platform, as the platform reports it to Zernio. Stable across reconnects, so use it to match an account against your own records.  - **Instagram Login accounts:** the app-scoped user id (the professional account id is in `metadata.instagramScopedId`). - **Instagram via Facebook Login:** the professional account id (`17841...`). - **TikTok:** the open_id of Zernio's TikTok app, which differs from the open_id any other app sees for the same user.  Either value can be passed back as `expectedPlatformUserId` on GET /v1/connect/{platform}.
 	PlatformUserId *string `json:"platformUserId,omitempty"`
-	// Accounts connected through your own OAuth app: the permission areas the connect requested. Null on accounts connected through Zernio's app.
+	// The permission areas the connect requested: the `scopes` of GET /v1/connect/{platform}, or your OAuth app's areas. Null when the connect requested every area.
 	ScopeAreas []string `json:"scopeAreas,omitempty"`
 	// The id of your own OAuth app this account connected through (see /v1/connect/oauth-apps); null when it uses Zernio's app.
 	OauthAppId *string `json:"oauthAppId,omitempty"`

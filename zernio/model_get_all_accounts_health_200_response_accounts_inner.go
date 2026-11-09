@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.535.0
+API version: 1.538.0
 Contact: support@zernio.com
 */
 
@@ -21,16 +21,18 @@ var _ MappedNullable = &GetAllAccountsHealth200ResponseAccountsInner{}
 
 // GetAllAccountsHealth200ResponseAccountsInner struct for GetAllAccountsHealth200ResponseAccountsInner
 type GetAllAccountsHealth200ResponseAccountsInner struct {
-	AccountId         *string    `json:"accountId,omitempty"`
-	Platform          *string    `json:"platform,omitempty"`
-	Username          *string    `json:"username,omitempty"`
-	DisplayName       *string    `json:"displayName,omitempty"`
-	ProfileId         *string    `json:"profileId,omitempty"`
-	Status            *string    `json:"status,omitempty"`
-	CanPost           *bool      `json:"canPost,omitempty"`
-	CanFetchAnalytics *bool      `json:"canFetchAnalytics,omitempty"`
-	TokenValid        *bool      `json:"tokenValid,omitempty"`
-	TokenExpiresAt    *time.Time `json:"tokenExpiresAt,omitempty"`
+	AccountId         *string `json:"accountId,omitempty"`
+	Platform          *string `json:"platform,omitempty"`
+	Username          *string `json:"username,omitempty"`
+	DisplayName       *string `json:"displayName,omitempty"`
+	ProfileId         *string `json:"profileId,omitempty"`
+	Status            *string `json:"status,omitempty"`
+	CanPost           *bool   `json:"canPost,omitempty"`
+	CanFetchAnalytics *bool   `json:"canFetchAnalytics,omitempty"`
+	// Present when the account connected with `scopes` or through your own OAuth app: each permission area the platform splits, as granted, missing or not_requested. An area never requested does not make the account unhealthy.
+	ScopeAreas     map[string]string `json:"scopeAreas,omitempty"`
+	TokenValid     *bool             `json:"tokenValid,omitempty"`
+	TokenExpiresAt *time.Time        `json:"tokenExpiresAt,omitempty"`
 	// True when the token is expired or revoked, permissions are missing, the account is inactive, or the platform rejected its stored credentials (the same flag the account listing reports as needsReconnection).
 	NeedsReconnect *bool    `json:"needsReconnect,omitempty"`
 	Issues         []string `json:"issues,omitempty"`
@@ -319,6 +321,38 @@ func (o *GetAllAccountsHealth200ResponseAccountsInner) HasCanFetchAnalytics() bo
 // SetCanFetchAnalytics gets a reference to the given bool and assigns it to the CanFetchAnalytics field.
 func (o *GetAllAccountsHealth200ResponseAccountsInner) SetCanFetchAnalytics(v bool) {
 	o.CanFetchAnalytics = &v
+}
+
+// GetScopeAreas returns the ScopeAreas field value if set, zero value otherwise.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetScopeAreas() map[string]string {
+	if o == nil || IsNil(o.ScopeAreas) {
+		var ret map[string]string
+		return ret
+	}
+	return o.ScopeAreas
+}
+
+// GetScopeAreasOk returns a tuple with the ScopeAreas field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetScopeAreasOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.ScopeAreas) {
+		return map[string]string{}, false
+	}
+	return o.ScopeAreas, true
+}
+
+// HasScopeAreas returns a boolean if a field has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) HasScopeAreas() bool {
+	if o != nil && !IsNil(o.ScopeAreas) {
+		return true
+	}
+
+	return false
+}
+
+// SetScopeAreas gets a reference to the given map[string]string and assigns it to the ScopeAreas field.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) SetScopeAreas(v map[string]string) {
+	o.ScopeAreas = v
 }
 
 // GetTokenValid returns the TokenValid field value if set, zero value otherwise.
@@ -750,6 +784,9 @@ func (o GetAllAccountsHealth200ResponseAccountsInner) ToMap() (map[string]interf
 	}
 	if !IsNil(o.CanFetchAnalytics) {
 		toSerialize["canFetchAnalytics"] = o.CanFetchAnalytics
+	}
+	if !IsNil(o.ScopeAreas) {
+		toSerialize["scopeAreas"] = o.ScopeAreas
 	}
 	if !IsNil(o.TokenValid) {
 		toSerialize["tokenValid"] = o.TokenValid

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.535.0
+API version: 1.538.0
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,9 @@ type YouTubeDailyViewsResponse struct {
 	// Present only when the range reaches into YouTube's ~3-day processing window: the first date whose numbers are provisional and may still be revised by YouTube.
 	ProvisionalSince *string `json:"provisionalSince,omitempty"`
 	// Sum of views across all days in the range
-	TotalViews *int32                                     `json:"totalViews,omitempty"`
+	TotalViews *int32 `json:"totalViews,omitempty"`
+	// Present and true when YouTube refused the refresh (the Analytics quota or its rate limit) and the response serves the days Zernio already stored, so some days may be missing; lastSyncedAt says how old they are. Retry later for a full refresh.
+	Stale      *bool                                      `json:"stale,omitempty"`
 	DailyViews []YouTubeDailyViewsResponseDailyViewsInner `json:"dailyViews,omitempty"`
 	// When the data was last synced from YouTube
 	LastSyncedAt NullableTime                          `json:"lastSyncedAt,omitempty"`
@@ -257,6 +259,38 @@ func (o *YouTubeDailyViewsResponse) SetTotalViews(v int32) {
 	o.TotalViews = &v
 }
 
+// GetStale returns the Stale field value if set, zero value otherwise.
+func (o *YouTubeDailyViewsResponse) GetStale() bool {
+	if o == nil || IsNil(o.Stale) {
+		var ret bool
+		return ret
+	}
+	return *o.Stale
+}
+
+// GetStaleOk returns a tuple with the Stale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *YouTubeDailyViewsResponse) GetStaleOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stale) {
+		return nil, false
+	}
+	return o.Stale, true
+}
+
+// HasStale returns a boolean if a field has been set.
+func (o *YouTubeDailyViewsResponse) HasStale() bool {
+	if o != nil && !IsNil(o.Stale) {
+		return true
+	}
+
+	return false
+}
+
+// SetStale gets a reference to the given bool and assigns it to the Stale field.
+func (o *YouTubeDailyViewsResponse) SetStale(v bool) {
+	o.Stale = &v
+}
+
 // GetDailyViews returns the DailyViews field value if set, zero value otherwise.
 func (o *YouTubeDailyViewsResponse) GetDailyViews() []YouTubeDailyViewsResponseDailyViewsInner {
 	if o == nil || IsNil(o.DailyViews) {
@@ -391,6 +425,9 @@ func (o YouTubeDailyViewsResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.TotalViews) {
 		toSerialize["totalViews"] = o.TotalViews
+	}
+	if !IsNil(o.Stale) {
+		toSerialize["stale"] = o.Stale
 	}
 	if !IsNil(o.DailyViews) {
 		toSerialize["dailyViews"] = o.DailyViews

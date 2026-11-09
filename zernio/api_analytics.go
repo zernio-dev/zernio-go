@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.535.0
+API version: 1.538.0
 Contact: support@zernio.com
 */
 
@@ -4888,6 +4888,200 @@ func (a *AnalyticsAPIService) GetLinkedInPostReactionsExecute(r AnalyticsAPIGetL
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AnalyticsAPIGetPinterestAccountInsightsRequest struct {
+	ctx        context.Context
+	ApiService *AnalyticsAPIService
+	accountId  *string
+	metrics    *string
+	fromDate   *string
+	toDate     *string
+	since      *string
+	until      *string
+	metricType *string
+}
+
+// The Zernio SocialAccount ID for the Pinterest account.
+func (r AnalyticsAPIGetPinterestAccountInsightsRequest) AccountId(accountId string) AnalyticsAPIGetPinterestAccountInsightsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Comma-separated list. Defaults to \&quot;impressions,engagements,follower_count\&quot;.  Live from Pinterest, one value per day:   - impressions   - engagements   - saves   - pin_clicks   - outbound_clicks  From Zernio daily snapshots:   - follower_count    (follower count per day; total is the latest)   - followers_gained  (sum of positive daily follower deltas)   - followers_lost    (sum of absolute negative daily deltas)
+func (r AnalyticsAPIGetPinterestAccountInsightsRequest) Metrics(metrics string) AnalyticsAPIGetPinterestAccountInsightsRequest {
+	r.metrics = &metrics
+	return r
+}
+
+// Start date (YYYY-MM-DD). Defaults to 30 days ago. At most 89 days before today.
+func (r AnalyticsAPIGetPinterestAccountInsightsRequest) FromDate(fromDate string) AnalyticsAPIGetPinterestAccountInsightsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD). Defaults to today.
+func (r AnalyticsAPIGetPinterestAccountInsightsRequest) ToDate(toDate string) AnalyticsAPIGetPinterestAccountInsightsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
+func (r AnalyticsAPIGetPinterestAccountInsightsRequest) Since(since string) AnalyticsAPIGetPinterestAccountInsightsRequest {
+	r.since = &since
+	return r
+}
+
+// Alias of toDate, kept for existing callers
+// Deprecated
+func (r AnalyticsAPIGetPinterestAccountInsightsRequest) Until(until string) AnalyticsAPIGetPinterestAccountInsightsRequest {
+	r.until = &until
+	return r
+}
+
+// \&quot;total_value\&quot; returns one total per metric. \&quot;time_series\&quot; also returns the daily values.
+func (r AnalyticsAPIGetPinterestAccountInsightsRequest) MetricType(metricType string) AnalyticsAPIGetPinterestAccountInsightsRequest {
+	r.metricType = &metricType
+	return r
+}
+
+func (r AnalyticsAPIGetPinterestAccountInsightsRequest) Execute() (*InstagramAccountInsightsResponse, *http.Response, error) {
+	return r.ApiService.GetPinterestAccountInsightsExecute(r)
+}
+
+/*
+GetPinterestAccountInsights Get Pinterest account-level insights
+
+Returns account-level daily Pinterest metrics, read live from Pinterest's account analytics, plus the follower history from Zernio's daily snapshots.
+
+These are account totals. They include every pin on the account, also pins published long before the account was connected to Zernio, which per-post analytics cannot cover.
+
+- Response shape matches /v1/analytics/instagram/account-insights.
+- Defaults to the last 30 days. Pinterest serves at most the last 89 days, so a fromDate older than that returns 400.
+- Pinterest reports the latest 1-2 days as still processing. Those days are left out of values and totals until Pinterest settles them.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AnalyticsAPIGetPinterestAccountInsightsRequest
+*/
+func (a *AnalyticsAPIService) GetPinterestAccountInsights(ctx context.Context) AnalyticsAPIGetPinterestAccountInsightsRequest {
+	return AnalyticsAPIGetPinterestAccountInsightsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return InstagramAccountInsightsResponse
+func (a *AnalyticsAPIService) GetPinterestAccountInsightsExecute(r AnalyticsAPIGetPinterestAccountInsightsRequest) (*InstagramAccountInsightsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *InstagramAccountInsightsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AnalyticsAPIService.GetPinterestAccountInsights")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/analytics/pinterest/account-insights"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.metrics != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
+	if r.since != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
+	}
+	if r.until != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "until", r.until, "form", "")
+	}
+	if r.metricType != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "metricType", r.metricType, "form", "")
+	} else {
+		var defaultValue string = "total_value"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "metricType", defaultValue, "form", "")
+		r.metricType = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AnalyticsAPIGetPostAuthenticityRequest struct {
 	ctx        context.Context
 	ApiService *AnalyticsAPIService
@@ -5653,7 +5847,7 @@ func (r AnalyticsAPIGetTikTokAccountInsightsRequest) AccountId(accountId string)
 	return r
 }
 
-// Comma-separated list. Defaults to \&quot;follower_count,likes_count,video_count,followers_gained,followers_lost\&quot;.  Live from /v2/user/info/ (requires user.info.stats scope):   - follower_count  (cumulative; time series joined from AccountStats)   - following_count (cumulative; time series joined from AccountStats.metadata)   - likes_count     (cumulative; time series joined from AccountStats.metadata)   - video_count     (cumulative; time series joined from AccountStats.metadata)  Zernio-synthesized:   - followers_gained  (sum of positive daily follower deltas)   - followers_lost    (sum of absolute negative daily deltas)
+// Comma-separated list. Defaults to \&quot;follower_count,likes_count,video_count,followers_gained,followers_lost\&quot;.  Live profile counters (requires user.info.stats scope):   - follower_count  (cumulative; time series joined from AccountStats)   - following_count (cumulative; time series joined from AccountStats.metadata)   - likes_count     (cumulative; time series joined from AccountStats.metadata)   - video_count     (cumulative; time series joined from AccountStats.metadata)  Daily account figures from TikTok (requires user.insights scope and an account on Zernio&#39;s TikTok connection):   - video_views     (views of all the account&#39;s videos that day)   - likes           (likes received that day)   - comments        (comments received that day)   - shares          (shares that day)   - profile_views   (profile views that day)  Zernio-synthesized:   - followers_gained  (sum of positive daily follower deltas)   - followers_lost    (sum of absolute negative daily deltas)
 func (r AnalyticsAPIGetTikTokAccountInsightsRequest) Metrics(metrics string) AnalyticsAPIGetTikTokAccountInsightsRequest {
 	r.metrics = &metrics
 	return r
@@ -5685,7 +5879,7 @@ func (r AnalyticsAPIGetTikTokAccountInsightsRequest) Until(until string) Analyti
 	return r
 }
 
-// \&quot;total_value\&quot; returns the latest cumulative counter value. \&quot;time_series\&quot; returns daily values joined from AccountStats snapshots.
+// \&quot;total_value\&quot; returns the latest value of a cumulative counter, and the sum over the range for a daily account metric. \&quot;time_series\&quot; returns daily values: joined from AccountStats snapshots for the counters, TikTok&#39;s own daily figures for the daily account metrics.
 func (r AnalyticsAPIGetTikTokAccountInsightsRequest) MetricType(metricType string) AnalyticsAPIGetTikTokAccountInsightsRequest {
 	r.metricType = &metricType
 	return r
@@ -5698,15 +5892,25 @@ func (r AnalyticsAPIGetTikTokAccountInsightsRequest) Execute() (*InstagramAccoun
 /*
 GetTikTokAccountInsights Get TikTok account-level insights
 
-Returns account-level TikTok insights from /v2/user/info/ (live) plus historical time series joined from Zernio's daily snapshotter (AccountStats).
+Returns account-level TikTok insights: the lifetime profile counters (live, with historical time series joined from Zernio's daily snapshotter) and TikTok's own daily account figures (video views, likes, comments, shares, profile views).
 
 - Response shape matches /v1/analytics/instagram/account-insights.
 - Max 89 days, defaults to last 30 days.
 - Requires the user.info.stats scope on the account (412 if missing).
 
-### Why the scope is narrow
+### Daily account metrics
 
-This ACCOUNT-level endpoint intentionally exposes only the four counter metrics below. It does not return:
+`video_views`, `likes`, `comments`, `shares` and `profile_views` are TikTok's daily figures for the whole account, read from the TikTok Business Accounts API. They count every video of the account, not only recent ones, so they differ from GET /v1/analytics/daily-metrics, which sums per-post analytics.
+
+- With `metricType=time_series` each day is one entry in `values`. With `total_value` the total is the sum over the range.
+- The latest day available is yesterday, and TikTok can take 24-48 hours to settle a day. Days after the latest available one are left out of `values`.
+- They work for Business and personal TikTok accounts connected through Zernio's TikTok connection, with the user.insights scope.
+- Accounts on the original TikTok integration (or on your own TikTok app) cannot read them: each one is listed in `unavailableMetrics` with reason `unsupported_metric`, and reconnecting through Zernio's TikTok connection enables them. A grant without user.insights lists them with reason `permission_missing`. Either way the other requested metrics are still returned.
+- They are not in the default metric set: ask for them in `metrics`.
+
+### What is not exposed
+
+This ACCOUNT-level endpoint does not return:
 
 - account-level impressions / reach
 - follower inflow / outflow breakdown

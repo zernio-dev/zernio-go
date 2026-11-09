@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.535.0
+API version: 1.538.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,8 @@ type SelectInstagramAccountRequest struct {
 	TempToken *string `json:"tempToken,omitempty"`
 	// Set by the Zernio-hosted picker, whose user token stays in an httpOnly cookie. Integrators send tempToken instead.
 	ConnectFlow *string `json:"connectFlow,omitempty" validate:"regexp=^[a-f0-9]{32}$"`
+	// The `scopes` the callback redirect carried, passed back unchanged so the account records the areas it requested. Omit it when the redirect had none.
+	Scopes *string `json:"scopes,omitempty"`
 	// Optional custom redirect URL to return to after selection
 	RedirectUrl *string `json:"redirect_url,omitempty"`
 }
@@ -208,6 +210,38 @@ func (o *SelectInstagramAccountRequest) SetConnectFlow(v string) {
 	o.ConnectFlow = &v
 }
 
+// GetScopes returns the Scopes field value if set, zero value otherwise.
+func (o *SelectInstagramAccountRequest) GetScopes() string {
+	if o == nil || IsNil(o.Scopes) {
+		var ret string
+		return ret
+	}
+	return *o.Scopes
+}
+
+// GetScopesOk returns a tuple with the Scopes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectInstagramAccountRequest) GetScopesOk() (*string, bool) {
+	if o == nil || IsNil(o.Scopes) {
+		return nil, false
+	}
+	return o.Scopes, true
+}
+
+// HasScopes returns a boolean if a field has been set.
+func (o *SelectInstagramAccountRequest) HasScopes() bool {
+	if o != nil && !IsNil(o.Scopes) {
+		return true
+	}
+
+	return false
+}
+
+// SetScopes gets a reference to the given string and assigns it to the Scopes field.
+func (o *SelectInstagramAccountRequest) SetScopes(v string) {
+	o.Scopes = &v
+}
+
 // GetRedirectUrl returns the RedirectUrl field value if set, zero value otherwise.
 func (o *SelectInstagramAccountRequest) GetRedirectUrl() string {
 	if o == nil || IsNil(o.RedirectUrl) {
@@ -262,6 +296,9 @@ func (o SelectInstagramAccountRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ConnectFlow) {
 		toSerialize["connectFlow"] = o.ConnectFlow
+	}
+	if !IsNil(o.Scopes) {
+		toSerialize["scopes"] = o.Scopes
 	}
 	if !IsNil(o.RedirectUrl) {
 		toSerialize["redirect_url"] = o.RedirectUrl
