@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.541.1
+API version: 1.541.2
 Contact: support@zernio.com
 */
 
@@ -29,7 +29,7 @@ type ReplyToInboxPostRequest struct {
 	AttachmentUrl *string `json:"attachmentUrl,omitempty"`
 	// Reply to specific comment (optional)
 	CommentId *string `json:"commentId,omitempty"`
-	// (LinkedIn only) When true, the reply starts with an @mention of the author of `commentId` (a member or a page), tagged with their URN and the name LinkedIn returns for them. Requires `commentId`. Returns 400 `platform_not_supported` on other platforms, and 400 `linkedin_mention_name_unavailable` with `details.authorUrn` when LinkedIn does not return the author's name (for example a page the account does not administer); mention them in `message` as @[Name](urn) instead. If LinkedIn rejects any mention in the reply, it is posted once more with every mention as plain text.
+	// (LinkedIn only) When true, the reply starts with an @mention of the author of `commentId` (a member or a page), tagged with their URN and the name LinkedIn returns for them. Requires `commentId`.  - Returns 400 `platform_not_supported` on other platforms. - Returns 400 `linkedin_mention_name_unavailable` with `details.authorUrn` when LinkedIn does not return the author's name (for example a page the account does not administer); mention them in `message` as @[Name](urn) instead. - If LinkedIn rejects any mention in the reply, it is posted once more with every mention as plain text.
 	MentionAuthor *bool `json:"mentionAuthor,omitempty"`
 	// (Bluesky only) Parent content identifier
 	ParentCid *string `json:"parentCid,omitempty"`
