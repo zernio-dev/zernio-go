@@ -6760,6 +6760,7 @@ type AdAccountsAPIListAdAccountsRequest struct {
 	adAccountId *string
 	limit       *int32
 	inScopeOnly *bool
+	live        *bool
 }
 
 // Account ID
@@ -6780,9 +6781,15 @@ func (r AdAccountsAPIListAdAccountsRequest) Limit(limit int32) AdAccountsAPIList
 	return r
 }
 
-// &#x60;true&#x60; returns only the ad accounts this connection accepts as &#x60;adAccountId&#x60; on the other /v1/ads endpoints, i.e. those inside its ad-account selection (every item then has &#x60;selected: true&#x60;). Without it, every ad account the login can reach is listed and &#x60;selected&#x60; flags selection membership.  - Meta, LinkedIn, X and Reddit: drops the ad accounts with &#x60;selected: false&#x60;; a connection without a selection keeps them all. - Google Ads: also drops customers the login reaches that are not on this connection (for example ones selected on another connection of the same login), which those endpoints answer with a 400. - TikTok and Pinterest: no selection, so the list is unchanged.
+// &#x60;true&#x60; returns only the ad accounts this connection accepts as &#x60;adAccountId&#x60; on the other /v1/ads endpoints, i.e. those inside its ad-account selection (every item then has &#x60;selected: true&#x60;).  Without it, every ad account the login can reach is listed and &#x60;selected&#x60; flags selection membership. Exception: a Meta connection with a selection lists unselected ad accounts only with &#x60;live&#x3D;true&#x60;.  - Meta, LinkedIn, X and Reddit: drops the ad accounts with &#x60;selected: false&#x60;; a connection without a selection keeps them all. - Google Ads: also drops customers the login reaches that are not on this connection (for example ones selected on another connection of the same login), which those endpoints answer with a 400. - TikTok and Pinterest: no selection, so the list is unchanged.
 func (r AdAccountsAPIListAdAccountsRequest) InScopeOnly(inScopeOnly bool) AdAccountsAPIListAdAccountsRequest {
 	r.inScopeOnly = &inScopeOnly
+	return r
+}
+
+// &#x60;true&#x60; lists the ad accounts the login reaches live from the platform instead of the stored catalog.  A Meta connection with an ad-account selection stores only its selected ad accounts, so without &#x60;live&#x3D;true&#x60; it lists only those (a stale catalog falls back to a live listing). With it, every reachable ad account is listed, the others with &#x60;selected: false&#x60;.
+func (r AdAccountsAPIListAdAccountsRequest) Live(live bool) AdAccountsAPIListAdAccountsRequest {
+	r.live = &live
 	return r
 }
 
@@ -6824,7 +6831,7 @@ Every listed ad account carries `selected`: whether it is in the connection's ad
 
 Writes through /v1/ads endpoints to an ad account with `selected: false` answer `403 ad_account_not_selected`. Add it to the selection first (dashboard picker, or `GET /v1/connect/{platform}/ads` with `adAccountIds`).
 
-The list includes unselected ad accounts by default. Pass `inScopeOnly=true` to get only the ones this connection can use.
+The list includes unselected ad accounts by default, except on a Meta connection with a selection, which lists them only with `live=true`. Pass `inScopeOnly=true` to get only the ones this connection can use.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIListAdAccountsRequest
@@ -6874,6 +6881,13 @@ func (a *AdAccountsAPIService) ListAdAccountsExecute(r AdAccountsAPIListAdAccoun
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "inScopeOnly", defaultValue, "form", "")
 		r.inScopeOnly = &defaultValue
+	}
+	if r.live != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "live", r.live, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "live", defaultValue, "form", "")
+		r.live = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
