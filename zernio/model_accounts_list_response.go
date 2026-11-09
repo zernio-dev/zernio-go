@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.531.1
+API version: 1.532.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type AccountsListResponse struct {
 	// Whether user has analytics add-on access
 	HasAnalyticsAccess bool                            `json:"hasAnalyticsAccess"`
 	Pagination         *AccountsListResponsePagination `json:"pagination,omitempty"`
+	// Only when an unpaged API request was cut at 500 accounts: how to list the rest with cursor paging.
+	Warning *string `json:"warning,omitempty"`
 	// Only with profileIds and perProfile. Accounts matching the filters per profile ID; a profile with none is absent.
 	ProfileTotals map[string]int32                  `json:"profileTotals,omitempty"`
 	StatusCounts  *AccountsListResponseStatusCounts `json:"statusCounts,omitempty"`
@@ -132,6 +134,38 @@ func (o *AccountsListResponse) SetPagination(v AccountsListResponsePagination) {
 	o.Pagination = &v
 }
 
+// GetWarning returns the Warning field value if set, zero value otherwise.
+func (o *AccountsListResponse) GetWarning() string {
+	if o == nil || IsNil(o.Warning) {
+		var ret string
+		return ret
+	}
+	return *o.Warning
+}
+
+// GetWarningOk returns a tuple with the Warning field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AccountsListResponse) GetWarningOk() (*string, bool) {
+	if o == nil || IsNil(o.Warning) {
+		return nil, false
+	}
+	return o.Warning, true
+}
+
+// HasWarning returns a boolean if a field has been set.
+func (o *AccountsListResponse) HasWarning() bool {
+	if o != nil && !IsNil(o.Warning) {
+		return true
+	}
+
+	return false
+}
+
+// SetWarning gets a reference to the given string and assigns it to the Warning field.
+func (o *AccountsListResponse) SetWarning(v string) {
+	o.Warning = &v
+}
+
 // GetProfileTotals returns the ProfileTotals field value if set, zero value otherwise.
 func (o *AccountsListResponse) GetProfileTotals() map[string]int32 {
 	if o == nil || IsNil(o.ProfileTotals) {
@@ -210,6 +244,9 @@ func (o AccountsListResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize["hasAnalyticsAccess"] = o.HasAnalyticsAccess
 	if !IsNil(o.Pagination) {
 		toSerialize["pagination"] = o.Pagination
+	}
+	if !IsNil(o.Warning) {
+		toSerialize["warning"] = o.Warning
 	}
 	if !IsNil(o.ProfileTotals) {
 		toSerialize["profileTotals"] = o.ProfileTotals

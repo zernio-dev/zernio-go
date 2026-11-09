@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.531.1
+API version: 1.532.0
 Contact: support@zernio.com
 */
 
@@ -24,8 +24,10 @@ type FollowerStatsResponse struct {
 	Stats       map[string][]FollowerStatsResponseStatsValueInner `json:"stats,omitempty"`
 	DateRange   *FollowerStatsResponseDateRange                   `json:"dateRange,omitempty"`
 	Granularity *string                                           `json:"granularity,omitempty"`
-	// Only present when limit or cursor is sent.
+	// Present when limit or cursor is sent, and on the default page of 25 that an API request without accountIds gets.
 	Pagination *AccountCursorPagination `json:"pagination,omitempty"`
+	// Only when the default page of 25 cut the list. Page through the rest with cursor.
+	Warning *string `json:"warning,omitempty"`
 }
 
 // NewFollowerStatsResponse instantiates a new FollowerStatsResponse object
@@ -205,6 +207,38 @@ func (o *FollowerStatsResponse) SetPagination(v AccountCursorPagination) {
 	o.Pagination = &v
 }
 
+// GetWarning returns the Warning field value if set, zero value otherwise.
+func (o *FollowerStatsResponse) GetWarning() string {
+	if o == nil || IsNil(o.Warning) {
+		var ret string
+		return ret
+	}
+	return *o.Warning
+}
+
+// GetWarningOk returns a tuple with the Warning field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FollowerStatsResponse) GetWarningOk() (*string, bool) {
+	if o == nil || IsNil(o.Warning) {
+		return nil, false
+	}
+	return o.Warning, true
+}
+
+// HasWarning returns a boolean if a field has been set.
+func (o *FollowerStatsResponse) HasWarning() bool {
+	if o != nil && !IsNil(o.Warning) {
+		return true
+	}
+
+	return false
+}
+
+// SetWarning gets a reference to the given string and assigns it to the Warning field.
+func (o *FollowerStatsResponse) SetWarning(v string) {
+	o.Warning = &v
+}
+
 func (o FollowerStatsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -229,6 +263,9 @@ func (o FollowerStatsResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Pagination) {
 		toSerialize["pagination"] = o.Pagination
+	}
+	if !IsNil(o.Warning) {
+		toSerialize["warning"] = o.Warning
 	}
 	return toSerialize, nil
 }

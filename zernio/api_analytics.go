@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.531.1
+API version: 1.532.0
 Contact: support@zernio.com
 */
 
@@ -2295,7 +2295,7 @@ type AnalyticsAPIGetFollowerStatsRequest struct {
 	cursor      *string
 }
 
-// Comma-separated list of account IDs (optional, defaults to all user&#39;s accounts)
+// Comma-separated list of up to 25 account IDs. Optional: without it, the response pages through all your accounts.
 func (r AnalyticsAPIGetFollowerStatsRequest) AccountIds(accountIds string) AnalyticsAPIGetFollowerStatsRequest {
 	r.accountIds = &accountIds
 	return r
@@ -2307,7 +2307,7 @@ func (r AnalyticsAPIGetFollowerStatsRequest) ProfileId(profileId string) Analyti
 	return r
 }
 
-// Start date in YYYY-MM-DD format (defaults to 30 days ago)
+// Start date in YYYY-MM-DD format (defaults to one year before toDate). At most one year before toDate.
 func (r AnalyticsAPIGetFollowerStatsRequest) FromDate(fromDate string) AnalyticsAPIGetFollowerStatsRequest {
 	r.fromDate = &fromDate
 	return r
@@ -2325,7 +2325,7 @@ func (r AnalyticsAPIGetFollowerStatsRequest) Granularity(granularity string) Ana
 	return r
 }
 
-// Accounts per page, ordered by account id. Send it to page through accounts; the response then carries &#x60;pagination.nextCursor&#x60;. Without limit or cursor every matching account is returned.
+// Accounts per page, ordered by account id; the response carries &#x60;pagination.nextCursor&#x60;. Without limit or cursor, a request without accountIds still gets a first page of 25.
 func (r AnalyticsAPIGetFollowerStatsRequest) Limit(limit int32) AnalyticsAPIGetFollowerStatsRequest {
 	r.limit = &limit
 	return r
@@ -2346,6 +2346,13 @@ GetFollowerStats Get follower stats
 
 Returns follower count history and growth metrics for connected accounts.
 Requires analytics add-on subscription. Follower counts are refreshed once per day.
+
+### Limits
+
+- At most 25 accounts per request: up to 25 `accountIds`, or a page of accounts. More than 25 `accountIds` returns 400.
+- Without `accountIds`, the response is the first page of 25 accounts even when `limit` and `cursor` are omitted. Pass `pagination.nextCursor` back as `cursor` for the next one.
+- When that default page cuts the list, the response also carries a `warning` and the headers `X-Result-Truncated: true` and `X-Result-Limit: 25`.
+- At most 1 year between `fromDate` and `toDate`. A longer range returns 400.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetFollowerStatsRequest

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.531.1
+API version: 1.532.0
 Contact: support@zernio.com
 */
 
@@ -766,7 +766,7 @@ type AccountsAPIGetFollowerStatsRequest struct {
 	cursor      *string
 }
 
-// Comma-separated list of account IDs (optional, defaults to all user&#39;s accounts)
+// Comma-separated list of up to 25 account IDs. Optional: without it, the response pages through all your accounts.
 func (r AccountsAPIGetFollowerStatsRequest) AccountIds(accountIds string) AccountsAPIGetFollowerStatsRequest {
 	r.accountIds = &accountIds
 	return r
@@ -778,7 +778,7 @@ func (r AccountsAPIGetFollowerStatsRequest) ProfileId(profileId string) Accounts
 	return r
 }
 
-// Start date in YYYY-MM-DD format (defaults to 30 days ago)
+// Start date in YYYY-MM-DD format (defaults to one year before toDate). At most one year before toDate.
 func (r AccountsAPIGetFollowerStatsRequest) FromDate(fromDate string) AccountsAPIGetFollowerStatsRequest {
 	r.fromDate = &fromDate
 	return r
@@ -796,7 +796,7 @@ func (r AccountsAPIGetFollowerStatsRequest) Granularity(granularity string) Acco
 	return r
 }
 
-// Accounts per page, ordered by account id. Send it to page through accounts; the response then carries &#x60;pagination.nextCursor&#x60;. Without limit or cursor every matching account is returned.
+// Accounts per page, ordered by account id; the response carries &#x60;pagination.nextCursor&#x60;. Without limit or cursor, a request without accountIds still gets a first page of 25.
 func (r AccountsAPIGetFollowerStatsRequest) Limit(limit int32) AccountsAPIGetFollowerStatsRequest {
 	r.limit = &limit
 	return r
@@ -817,6 +817,13 @@ GetFollowerStats Get follower stats
 
 Returns follower count history and growth metrics for connected accounts.
 Requires analytics add-on subscription. Follower counts are refreshed once per day.
+
+### Limits
+
+- At most 25 accounts per request: up to 25 `accountIds`, or a page of accounts. More than 25 `accountIds` returns 400.
+- Without `accountIds`, the response is the first page of 25 accounts even when `limit` and `cursor` are omitted. Pass `pagination.nextCursor` back as `cursor` for the next one.
+- When that default page cuts the list, the response also carries a `warning` and the headers `X-Result-Truncated: true` and `X-Result-Limit: 25`.
+- At most 1 year between `fromDate` and `toDate`. A longer range returns 400.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AccountsAPIGetFollowerStatsRequest
@@ -1815,7 +1822,7 @@ func (r AccountsAPIListAccountsRequest) IncludeStatusCounts(includeStatusCounts 
 	return r
 }
 
-// Page number (1-based) for offset paging. Requires limit; omit page, limit and cursor for all accounts.
+// Page number (1-based) for offset paging. Requires limit; omit page, limit and cursor for an unpaged listing (at most 500 accounts for an API key or OAuth app).
 func (r AccountsAPIListAccountsRequest) Page(page int32) AccountsAPIListAccountsRequest {
 	r.page = &page
 	return r
@@ -1856,7 +1863,9 @@ Returns connected accounts. Only includes accounts within the plan limit by defa
 
 ### Pagination
 
-Server-side pagination is optional. When omitted, returns all accounts (backward-compatible).
+Server-side pagination is optional. When omitted, the dashboard gets every account, while an API key or OAuth app gets at most 500: the first cursor page, ordered by account id.
+
+When that cap cuts the list, the response carries `warning` and `pagination.nextCursor`, plus the `X-Result-Truncated: true` and `X-Result-Limit: 500` headers. Pass `nextCursor` back as `cursor` (with `limit`) to list the rest.
 
 - Cursor paging: send `limit` alone for the first page, then pass `pagination.nextCursor` back as `cursor` until it is null. Pages are ordered by account id, so accounts added or removed between calls never shift a page. Cannot be combined with `page`, `sort` or `perProfile`.
 - Offset paging: send `page` and `limit` together. Out-of-range page/limit values are rejected with 400 rather than silently clamped.
