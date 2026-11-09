@@ -1323,7 +1323,7 @@ func main() {
 | `client.TreasuryAPI.ListTopups(ctx)` | List top-ups |
 | `client.TreasuryAPI.ListTransfers(ctx)` | List transfers |
 | `client.TreasuryAPI.CreatePayeeOnboardingLink(ctx)` | Create a payee onboarding link |
-| `client.TreasuryAPI.CreateTopup(ctx)` | Create a top-up |
+| `client.TreasuryAPI.CreateTopup(ctx)` | Add funds |
 | `client.TreasuryAPI.CreateTransfer(ctx)` | Create a transfer (removed) |
 | `client.TreasuryAPI.GetAutoRecharge(ctx)` | Get auto top-up settings |
 | `client.TreasuryAPI.GetBalance(ctx)` | Get balance |

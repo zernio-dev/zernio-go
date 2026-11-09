@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.529.0
+API version: 1.529.1
 Contact: support@zernio.com
 */
 
@@ -1115,7 +1115,7 @@ One left unfinished is cancelled after 30 minutes and every amount is payable ag
 
 - 402 `payment_required`: no saved card. Nothing is held.
 - 402 `card_declined`: the bank's reason; every amount is payable again.
-- 402: card payouts are limited to $10,000.00 gross per rolling 30 days by default. Over it the call answers "Over your instant payout limit. Top up your balance to pay more this month, or contact support to raise the limit."
+- 402: card payouts are limited to $10,000.00 gross per rolling 30 days by default. Over it the call answers "Over your instant payout limit for the last 30 days. Contact support to raise it."
 - 402: your balance is negative after a dispute or refund.
 - 400: nothing payable ("Nothing is payable.").
 - 400 `invalid_billing_address`: Stripe cannot place your billing address, so it cannot tax the fee. Nothing is held.

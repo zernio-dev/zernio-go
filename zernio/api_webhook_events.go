@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.529.0
+API version: 1.529.1
 Contact: support@zernio.com
 */
 
@@ -3045,11 +3045,11 @@ func (r WebhookEventsAPIOnBalanceChargedRequest) Execute() (*http.Response, erro
 /*
 OnBalanceCharged Balance charged event
 
-Balance billing only. A card top-up of the balance succeeded: one someone made (`trigger: manual`) or one the auto top-up rule made (`trigger: auto_top_up`).
+Balance billing only. Funds were added to the balance by card: by someone (`trigger: manual`) or by the auto top-up rule (`trigger: auto_top_up`).
 
 ### When it fires
 
-Once per top-up, when the payment is credited to the balance. Stripe emails the billing owner its receipt for the charge.
+Once per card payment into the balance, when it is credited. Stripe emails the billing owner its receipt for the charge.
 
 ### Payload notes
 
@@ -3279,7 +3279,7 @@ It belongs to the billing owner, not to a profile or account: endpoints scoped w
 
 ### How to act
 
-Send the user to `fundingUrl` (Billing with the top-up drawer open), or top up through the API.
+Send the user to `fundingUrl` (Billing with the Add funds drawer open), or add funds through the API.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnBalanceLowRequest

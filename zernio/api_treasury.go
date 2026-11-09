@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.529.0
+API version: 1.529.1
 Contact: support@zernio.com
 */
 
@@ -816,7 +816,7 @@ func (r TreasuryAPICreateTopupRequest) Execute() (*CreateTopup201Response, *http
 }
 
 /*
-CreateTopup Create a top-up
+CreateTopup Add funds
 
 Charges the billing owner's saved card (the default one, or `paymentMethodId`) `amountCents` plus tax, while the payer is present, and credits your balance `amountCents`. There is no card fee.
 
@@ -1256,10 +1256,10 @@ GetBalance Get balance
 Returns your team's balance:
 
 - the balance pay-per-use draws on
-- top-ups still waiting for payment
-- your latest top-ups and payout batch payments
+- funds added but still waiting for payment
+- your latest payments into the balance and payout batch payments
 
-A card top-up is in `availableCents` as soon as it is paid. The balance never pays creators: payouts are charged to your card per payout batch.
+Funds added by card are in `availableCents` as soon as they are paid. The balance never pays creators: payouts are charged to your card per payout batch.
 
 A card dispute or refund is debited from the available balance and can make it negative. New payout batches are refused until it is positive again.
 
@@ -1521,7 +1521,7 @@ func (r TreasuryAPIGetTopupInvoiceRequest) Execute() (*GetTopupInvoice200Respons
 /*
 GetTopupInvoice Get a top-up invoice
 
-The invoice for a paid balance top-up: the PDF of the Stripe invoice it was paid through.
+The invoice for funds added to the balance, once paid: the PDF of the Stripe invoice it was paid through.
 
 It shows the amount added to your balance and the tax charged on top: VAT where it applies, or a reverse charge note for an EU business with a valid VAT id. Usage paid from the balance carries no further VAT.
 
@@ -1836,7 +1836,7 @@ GetTopupStatement Get a top-up invoice (alias)
 
 Alias of getTopupInvoice, kept for clients written against its first name.
 
-The invoice for a paid balance top-up: the PDF of the Stripe invoice it was paid through.
+The invoice for funds added to the balance, once paid: the PDF of the Stripe invoice it was paid through.
 
 It shows the amount added to your balance and the tax charged on top: VAT where it applies, or a reverse charge note for an EU business with a valid VAT id. Usage paid from the balance carries no further VAT.
 
@@ -2726,9 +2726,9 @@ UpdateAutoRecharge Update auto top-up settings
 
 Changes the auto top-up rule. Omitted fields keep their value.
 
-A declined auto top-up is retried 1 hour, 1 day and 3 days later, with an email each time. After the last retry fails, auto top-up switches off (`disabledReason: payment_failed`) until the card is updated. A top-up you make yourself resets the retries.
+A declined auto top-up is retried 1 hour, 1 day and 3 days later, with an email each time. After the last retry fails, auto top-up switches off (`disabledReason: payment_failed`) until the card is updated. Adding funds yourself resets the retries.
 
-A bank asking for 3D Secure counts as a decline: the charge happens while you are away, so the email asks you to top up in Billing.
+A bank asking for 3D Secure counts as a decline: the charge happens while you are away, so the email asks you to add funds in Billing.
 
 A pay-per-use request that finds the balance at $0 runs the auto top-up first (with the rule on, a saved card and no retry pending) and goes through when the charge lands, so a new balance at $0 is charged on first use.
 
