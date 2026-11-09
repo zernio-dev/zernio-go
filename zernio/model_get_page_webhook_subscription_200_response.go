@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.529.3
+API version: 1.530.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,12 @@ type GetPageWebhookSubscription200Response struct {
 	SubscribedFields []string `json:"subscribedFields,omitempty"`
 	// Present only when leadgen is missing.
 	Warning NullableString `json:"warning,omitempty"`
+	// Instagram accounts only.
+	InstagramUserId *string `json:"instagramUserId,omitempty"`
+	// Instagram accounts only. Id of the subscription record on Meta; null when there is none.
+	SubscriptionId NullableString `json:"subscriptionId,omitempty"`
+	// Instagram accounts only. Webhook fields Zernio expects that Meta did not subscribe.
+	MissingFields []string `json:"missingFields,omitempty"`
 }
 
 // NewGetPageWebhookSubscription200Response instantiates a new GetPageWebhookSubscription200Response object
@@ -218,6 +224,113 @@ func (o *GetPageWebhookSubscription200Response) UnsetWarning() {
 	o.Warning.Unset()
 }
 
+// GetInstagramUserId returns the InstagramUserId field value if set, zero value otherwise.
+func (o *GetPageWebhookSubscription200Response) GetInstagramUserId() string {
+	if o == nil || IsNil(o.InstagramUserId) {
+		var ret string
+		return ret
+	}
+	return *o.InstagramUserId
+}
+
+// GetInstagramUserIdOk returns a tuple with the InstagramUserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetPageWebhookSubscription200Response) GetInstagramUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.InstagramUserId) {
+		return nil, false
+	}
+	return o.InstagramUserId, true
+}
+
+// HasInstagramUserId returns a boolean if a field has been set.
+func (o *GetPageWebhookSubscription200Response) HasInstagramUserId() bool {
+	if o != nil && !IsNil(o.InstagramUserId) {
+		return true
+	}
+
+	return false
+}
+
+// SetInstagramUserId gets a reference to the given string and assigns it to the InstagramUserId field.
+func (o *GetPageWebhookSubscription200Response) SetInstagramUserId(v string) {
+	o.InstagramUserId = &v
+}
+
+// GetSubscriptionId returns the SubscriptionId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetPageWebhookSubscription200Response) GetSubscriptionId() string {
+	if o == nil || IsNil(o.SubscriptionId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SubscriptionId.Get()
+}
+
+// GetSubscriptionIdOk returns a tuple with the SubscriptionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetPageWebhookSubscription200Response) GetSubscriptionIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SubscriptionId.Get(), o.SubscriptionId.IsSet()
+}
+
+// HasSubscriptionId returns a boolean if a field has been set.
+func (o *GetPageWebhookSubscription200Response) HasSubscriptionId() bool {
+	if o != nil && o.SubscriptionId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSubscriptionId gets a reference to the given NullableString and assigns it to the SubscriptionId field.
+func (o *GetPageWebhookSubscription200Response) SetSubscriptionId(v string) {
+	o.SubscriptionId.Set(&v)
+}
+
+// SetSubscriptionIdNil sets the value for SubscriptionId to be an explicit nil
+func (o *GetPageWebhookSubscription200Response) SetSubscriptionIdNil() {
+	o.SubscriptionId.Set(nil)
+}
+
+// UnsetSubscriptionId ensures that no value is present for SubscriptionId, not even an explicit nil
+func (o *GetPageWebhookSubscription200Response) UnsetSubscriptionId() {
+	o.SubscriptionId.Unset()
+}
+
+// GetMissingFields returns the MissingFields field value if set, zero value otherwise.
+func (o *GetPageWebhookSubscription200Response) GetMissingFields() []string {
+	if o == nil || IsNil(o.MissingFields) {
+		var ret []string
+		return ret
+	}
+	return o.MissingFields
+}
+
+// GetMissingFieldsOk returns a tuple with the MissingFields field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetPageWebhookSubscription200Response) GetMissingFieldsOk() ([]string, bool) {
+	if o == nil || IsNil(o.MissingFields) {
+		return nil, false
+	}
+	return o.MissingFields, true
+}
+
+// HasMissingFields returns a boolean if a field has been set.
+func (o *GetPageWebhookSubscription200Response) HasMissingFields() bool {
+	if o != nil && !IsNil(o.MissingFields) {
+		return true
+	}
+
+	return false
+}
+
+// SetMissingFields gets a reference to the given []string and assigns it to the MissingFields field.
+func (o *GetPageWebhookSubscription200Response) SetMissingFields(v []string) {
+	o.MissingFields = v
+}
+
 func (o GetPageWebhookSubscription200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -242,6 +355,15 @@ func (o GetPageWebhookSubscription200Response) ToMap() (map[string]interface{}, 
 	}
 	if o.Warning.IsSet() {
 		toSerialize["warning"] = o.Warning.Get()
+	}
+	if !IsNil(o.InstagramUserId) {
+		toSerialize["instagramUserId"] = o.InstagramUserId
+	}
+	if o.SubscriptionId.IsSet() {
+		toSerialize["subscriptionId"] = o.SubscriptionId.Get()
+	}
+	if !IsNil(o.MissingFields) {
+		toSerialize["missingFields"] = o.MissingFields
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.529.3
+API version: 1.530.0
 Contact: support@zernio.com
 */
 
@@ -4899,11 +4899,15 @@ func (r ConnectAPIGetPageWebhookSubscriptionRequest) Execute() (*GetPageWebhookS
 }
 
 /*
-GetPageWebhookSubscription Read a Facebook Page's webhook subscription
+GetPageWebhookSubscription Read an account's webhook subscription
 
 Returns the webhook fields Zernio's app is subscribed to on the connected Page, read live from Meta.
 Use it to confirm `leadgen` is present: a Page missing it keeps delivering every other event while
 lead ads stop arriving, with nothing to indicate it.
+
+For an Instagram account connected through Instagram Login it returns the subscription record
+(`subscriptionId`) and the webhook fields Meta did not subscribe (`missingFields`). An Instagram account
+connected through Facebook Login returns 409: its webhooks ride the Facebook Page subscription.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -8774,12 +8778,19 @@ func (r ConnectAPIResyncPageWebhookSubscriptionRequest) Execute() (*ResyncPageWe
 }
 
 /*
-ResyncPageWebhookSubscription Re-subscribe a Facebook Page to Zernio's webhooks
+ResyncPageWebhookSubscription Re-subscribe an account to Zernio's webhooks
 
 Re-sends the full field set to Meta and returns the subscription read back afterwards.
 Meta only honours the field set sent at subscribe time, so a Page connected before a field
 existed stays without it until this runs. The response reflects what Meta actually granted,
 not what was requested.
+
+For an Instagram account connected through Instagram Login, Meta can keep listing a subscription
+while delivering nothing, and re-sending the fields over it changes nothing. So this call deletes
+the subscription and creates it again, and `recreated` is true when the record id moved.
+
+Events can be missed during the short window in between, so use it when delivery has stopped,
+not periodically. An Instagram account connected through Facebook Login returns 409.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId

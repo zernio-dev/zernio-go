@@ -240,7 +240,7 @@ func main() {
 | `client.ConnectAPI.GetHubSpotConnectUrl(ctx)` | Get HubSpot OAuth connect URL |
 | `client.ConnectAPI.GetLinkedInOrganizations(ctx)` | List LinkedIn orgs |
 | `client.ConnectAPI.GetOAuthApp(ctx)` | Get an OAuth app |
-| `client.ConnectAPI.GetPageWebhookSubscription(ctx)` | Read a Facebook Page's webhook subscription |
+| `client.ConnectAPI.GetPageWebhookSubscription(ctx)` | Read an account's webhook subscription |
 | `client.ConnectAPI.GetPendingOAuthData(ctx)` | Get pending OAuth data |
 | `client.ConnectAPI.GetPinterestBoards(ctx)` | List Pinterest boards |
 | `client.ConnectAPI.GetRedditFlairs(ctx)` | List subreddit flairs |
@@ -281,7 +281,7 @@ func main() {
 | `client.ConnectAPI.ConnectWordPressWithApplicationPassword(ctx)` | Connect self-hosted WordPress with an application password |
 | `client.ConnectAPI.HandleOAuthCallback(ctx)` | Complete OAuth callback |
 | `client.ConnectAPI.InitiateTelegramConnect(ctx)` | Connect Telegram directly |
-| `client.ConnectAPI.ResyncPageWebhookSubscription(ctx)` | Re-subscribe a Facebook Page to Zernio's webhooks |
+| `client.ConnectAPI.ResyncPageWebhookSubscription(ctx)` | Re-subscribe an account to Zernio's webhooks |
 | `client.ConnectAPI.SelectFacebookPage(ctx)` | Select Facebook page |
 | `client.ConnectAPI.SelectGoogleAnalyticsProperty(ctx)` | Connect the chosen Google Analytics property |
 | `client.ConnectAPI.SelectGoogleBusinessLocation(ctx)` | Select Google Business Profile location |

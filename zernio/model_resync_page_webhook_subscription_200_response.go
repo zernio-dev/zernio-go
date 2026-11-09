@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.529.3
+API version: 1.530.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,16 @@ type ResyncPageWebhookSubscription200Response struct {
 	Leadgen          *bool          `json:"leadgen,omitempty"`
 	SubscribedFields []string       `json:"subscribedFields,omitempty"`
 	Warning          NullableString `json:"warning,omitempty"`
+	// Instagram accounts only.
+	InstagramUserId *string `json:"instagramUserId,omitempty"`
+	// Instagram accounts only. Id of the subscription record after the repair.
+	SubscriptionId NullableString `json:"subscriptionId,omitempty"`
+	// Instagram accounts only. Id of the record before the repair; null when there was none.
+	PreviousSubscriptionId NullableString `json:"previousSubscriptionId,omitempty"`
+	// Instagram accounts only. True when the subscription record id changed.
+	Recreated *bool `json:"recreated,omitempty"`
+	// Instagram accounts only. Webhook fields Zernio expects that Meta did not subscribe.
+	MissingFields []string `json:"missingFields,omitempty"`
 }
 
 // NewResyncPageWebhookSubscription200Response instantiates a new ResyncPageWebhookSubscription200Response object
@@ -248,6 +258,188 @@ func (o *ResyncPageWebhookSubscription200Response) UnsetWarning() {
 	o.Warning.Unset()
 }
 
+// GetInstagramUserId returns the InstagramUserId field value if set, zero value otherwise.
+func (o *ResyncPageWebhookSubscription200Response) GetInstagramUserId() string {
+	if o == nil || IsNil(o.InstagramUserId) {
+		var ret string
+		return ret
+	}
+	return *o.InstagramUserId
+}
+
+// GetInstagramUserIdOk returns a tuple with the InstagramUserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ResyncPageWebhookSubscription200Response) GetInstagramUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.InstagramUserId) {
+		return nil, false
+	}
+	return o.InstagramUserId, true
+}
+
+// HasInstagramUserId returns a boolean if a field has been set.
+func (o *ResyncPageWebhookSubscription200Response) HasInstagramUserId() bool {
+	if o != nil && !IsNil(o.InstagramUserId) {
+		return true
+	}
+
+	return false
+}
+
+// SetInstagramUserId gets a reference to the given string and assigns it to the InstagramUserId field.
+func (o *ResyncPageWebhookSubscription200Response) SetInstagramUserId(v string) {
+	o.InstagramUserId = &v
+}
+
+// GetSubscriptionId returns the SubscriptionId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ResyncPageWebhookSubscription200Response) GetSubscriptionId() string {
+	if o == nil || IsNil(o.SubscriptionId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SubscriptionId.Get()
+}
+
+// GetSubscriptionIdOk returns a tuple with the SubscriptionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ResyncPageWebhookSubscription200Response) GetSubscriptionIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SubscriptionId.Get(), o.SubscriptionId.IsSet()
+}
+
+// HasSubscriptionId returns a boolean if a field has been set.
+func (o *ResyncPageWebhookSubscription200Response) HasSubscriptionId() bool {
+	if o != nil && o.SubscriptionId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSubscriptionId gets a reference to the given NullableString and assigns it to the SubscriptionId field.
+func (o *ResyncPageWebhookSubscription200Response) SetSubscriptionId(v string) {
+	o.SubscriptionId.Set(&v)
+}
+
+// SetSubscriptionIdNil sets the value for SubscriptionId to be an explicit nil
+func (o *ResyncPageWebhookSubscription200Response) SetSubscriptionIdNil() {
+	o.SubscriptionId.Set(nil)
+}
+
+// UnsetSubscriptionId ensures that no value is present for SubscriptionId, not even an explicit nil
+func (o *ResyncPageWebhookSubscription200Response) UnsetSubscriptionId() {
+	o.SubscriptionId.Unset()
+}
+
+// GetPreviousSubscriptionId returns the PreviousSubscriptionId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ResyncPageWebhookSubscription200Response) GetPreviousSubscriptionId() string {
+	if o == nil || IsNil(o.PreviousSubscriptionId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PreviousSubscriptionId.Get()
+}
+
+// GetPreviousSubscriptionIdOk returns a tuple with the PreviousSubscriptionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ResyncPageWebhookSubscription200Response) GetPreviousSubscriptionIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PreviousSubscriptionId.Get(), o.PreviousSubscriptionId.IsSet()
+}
+
+// HasPreviousSubscriptionId returns a boolean if a field has been set.
+func (o *ResyncPageWebhookSubscription200Response) HasPreviousSubscriptionId() bool {
+	if o != nil && o.PreviousSubscriptionId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPreviousSubscriptionId gets a reference to the given NullableString and assigns it to the PreviousSubscriptionId field.
+func (o *ResyncPageWebhookSubscription200Response) SetPreviousSubscriptionId(v string) {
+	o.PreviousSubscriptionId.Set(&v)
+}
+
+// SetPreviousSubscriptionIdNil sets the value for PreviousSubscriptionId to be an explicit nil
+func (o *ResyncPageWebhookSubscription200Response) SetPreviousSubscriptionIdNil() {
+	o.PreviousSubscriptionId.Set(nil)
+}
+
+// UnsetPreviousSubscriptionId ensures that no value is present for PreviousSubscriptionId, not even an explicit nil
+func (o *ResyncPageWebhookSubscription200Response) UnsetPreviousSubscriptionId() {
+	o.PreviousSubscriptionId.Unset()
+}
+
+// GetRecreated returns the Recreated field value if set, zero value otherwise.
+func (o *ResyncPageWebhookSubscription200Response) GetRecreated() bool {
+	if o == nil || IsNil(o.Recreated) {
+		var ret bool
+		return ret
+	}
+	return *o.Recreated
+}
+
+// GetRecreatedOk returns a tuple with the Recreated field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ResyncPageWebhookSubscription200Response) GetRecreatedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Recreated) {
+		return nil, false
+	}
+	return o.Recreated, true
+}
+
+// HasRecreated returns a boolean if a field has been set.
+func (o *ResyncPageWebhookSubscription200Response) HasRecreated() bool {
+	if o != nil && !IsNil(o.Recreated) {
+		return true
+	}
+
+	return false
+}
+
+// SetRecreated gets a reference to the given bool and assigns it to the Recreated field.
+func (o *ResyncPageWebhookSubscription200Response) SetRecreated(v bool) {
+	o.Recreated = &v
+}
+
+// GetMissingFields returns the MissingFields field value if set, zero value otherwise.
+func (o *ResyncPageWebhookSubscription200Response) GetMissingFields() []string {
+	if o == nil || IsNil(o.MissingFields) {
+		var ret []string
+		return ret
+	}
+	return o.MissingFields
+}
+
+// GetMissingFieldsOk returns a tuple with the MissingFields field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ResyncPageWebhookSubscription200Response) GetMissingFieldsOk() ([]string, bool) {
+	if o == nil || IsNil(o.MissingFields) {
+		return nil, false
+	}
+	return o.MissingFields, true
+}
+
+// HasMissingFields returns a boolean if a field has been set.
+func (o *ResyncPageWebhookSubscription200Response) HasMissingFields() bool {
+	if o != nil && !IsNil(o.MissingFields) {
+		return true
+	}
+
+	return false
+}
+
+// SetMissingFields gets a reference to the given []string and assigns it to the MissingFields field.
+func (o *ResyncPageWebhookSubscription200Response) SetMissingFields(v []string) {
+	o.MissingFields = v
+}
+
 func (o ResyncPageWebhookSubscription200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -275,6 +467,21 @@ func (o ResyncPageWebhookSubscription200Response) ToMap() (map[string]interface{
 	}
 	if o.Warning.IsSet() {
 		toSerialize["warning"] = o.Warning.Get()
+	}
+	if !IsNil(o.InstagramUserId) {
+		toSerialize["instagramUserId"] = o.InstagramUserId
+	}
+	if o.SubscriptionId.IsSet() {
+		toSerialize["subscriptionId"] = o.SubscriptionId.Get()
+	}
+	if o.PreviousSubscriptionId.IsSet() {
+		toSerialize["previousSubscriptionId"] = o.PreviousSubscriptionId.Get()
+	}
+	if !IsNil(o.Recreated) {
+		toSerialize["recreated"] = o.Recreated
+	}
+	if !IsNil(o.MissingFields) {
+		toSerialize["missingFields"] = o.MissingFields
 	}
 	return toSerialize, nil
 }
