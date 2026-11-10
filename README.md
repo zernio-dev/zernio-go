@@ -985,14 +985,17 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.EmailAPI.ListEmailFolders(ctx)` | List mailbox folders |
+| `client.EmailAPI.ListEmailLabels(ctx)` | List labels |
 | `client.EmailAPI.ListEmailMessages(ctx)` | List email messages |
 | `client.EmailAPI.ListEmailThreads(ctx)` | List email threads |
 | `client.EmailAPI.ListScheduledEmails(ctx)` | List scheduled emails |
+| `client.EmailAPI.CreateEmailLabel(ctx)` | Create a label |
 | `client.EmailAPI.GetEmailMessage(ctx)` | Get an email message |
 | `client.EmailAPI.GetEmailThread(ctx)` | Get an email thread with its messages |
 | `client.EmailAPI.GetScheduledEmail(ctx)` | Get a scheduled email |
-| `client.EmailAPI.UpdateEmailMessage(ctx)` | Mark read or starred, or move a message |
+| `client.EmailAPI.UpdateEmailMessage(ctx)` | Mark read or starred, label, or move a message |
 | `client.EmailAPI.UpdateEmailThread(ctx)` | Update every message in a thread |
+| `client.EmailAPI.DeleteEmailLabel(ctx)` | Delete a label |
 | `client.EmailAPI.CancelScheduledEmail(ctx)` | Cancel a scheduled email |
 | `client.EmailAPI.DownloadEmailAttachment(ctx)` | Download an attachment |
 | `client.EmailAPI.ReplyEmailMessage(ctx)` | Reply to a message |

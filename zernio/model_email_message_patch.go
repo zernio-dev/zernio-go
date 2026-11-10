@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.547.1
+API version: 1.547.3
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,10 @@ type EmailMessagePatch struct {
 	Starred   *bool  `json:"starred,omitempty"`
 	// Well-known folder name or folder id to move into.
 	Folder *string `json:"folder,omitempty"`
+	// Labels to add, by id or name (case-insensitive). The message stays where it is. On Outlook these are category names; a name not yet in the mailbox is created on the message.
+	AddLabels []string `json:"addLabels,omitempty"`
+	// Labels to remove, by id or name. A label cannot be both added and removed in one request.
+	RemoveLabels []string `json:"removeLabels,omitempty"`
 }
 
 type _EmailMessagePatch EmailMessagePatch
@@ -169,6 +173,70 @@ func (o *EmailMessagePatch) SetFolder(v string) {
 	o.Folder = &v
 }
 
+// GetAddLabels returns the AddLabels field value if set, zero value otherwise.
+func (o *EmailMessagePatch) GetAddLabels() []string {
+	if o == nil || IsNil(o.AddLabels) {
+		var ret []string
+		return ret
+	}
+	return o.AddLabels
+}
+
+// GetAddLabelsOk returns a tuple with the AddLabels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailMessagePatch) GetAddLabelsOk() ([]string, bool) {
+	if o == nil || IsNil(o.AddLabels) {
+		return nil, false
+	}
+	return o.AddLabels, true
+}
+
+// HasAddLabels returns a boolean if a field has been set.
+func (o *EmailMessagePatch) HasAddLabels() bool {
+	if o != nil && !IsNil(o.AddLabels) {
+		return true
+	}
+
+	return false
+}
+
+// SetAddLabels gets a reference to the given []string and assigns it to the AddLabels field.
+func (o *EmailMessagePatch) SetAddLabels(v []string) {
+	o.AddLabels = v
+}
+
+// GetRemoveLabels returns the RemoveLabels field value if set, zero value otherwise.
+func (o *EmailMessagePatch) GetRemoveLabels() []string {
+	if o == nil || IsNil(o.RemoveLabels) {
+		var ret []string
+		return ret
+	}
+	return o.RemoveLabels
+}
+
+// GetRemoveLabelsOk returns a tuple with the RemoveLabels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailMessagePatch) GetRemoveLabelsOk() ([]string, bool) {
+	if o == nil || IsNil(o.RemoveLabels) {
+		return nil, false
+	}
+	return o.RemoveLabels, true
+}
+
+// HasRemoveLabels returns a boolean if a field has been set.
+func (o *EmailMessagePatch) HasRemoveLabels() bool {
+	if o != nil && !IsNil(o.RemoveLabels) {
+		return true
+	}
+
+	return false
+}
+
+// SetRemoveLabels gets a reference to the given []string and assigns it to the RemoveLabels field.
+func (o *EmailMessagePatch) SetRemoveLabels(v []string) {
+	o.RemoveLabels = v
+}
+
 func (o EmailMessagePatch) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -188,6 +256,12 @@ func (o EmailMessagePatch) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Folder) {
 		toSerialize["folder"] = o.Folder
+	}
+	if !IsNil(o.AddLabels) {
+		toSerialize["addLabels"] = o.AddLabels
+	}
+	if !IsNil(o.RemoveLabels) {
+		toSerialize["removeLabels"] = o.RemoveLabels
 	}
 	return toSerialize, nil
 }

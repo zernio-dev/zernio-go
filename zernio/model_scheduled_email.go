@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.547.1
+API version: 1.547.3
 Contact: support@zernio.com
 */
 
@@ -22,11 +22,15 @@ var _ MappedNullable = &ScheduledEmail{}
 // ScheduledEmail An email sent with `scheduledFor`. `status` moves scheduled, sending, then sent or failed; a cancelled one never leaves.
 type ScheduledEmail struct {
 	// The `scheduleId`.
-	Id           *string        `json:"id,omitempty"`
-	AccountId    *string        `json:"accountId,omitempty"`
-	Status       *string        `json:"status,omitempty"`
-	ScheduledFor *time.Time     `json:"scheduledFor,omitempty"`
-	To           []EmailAddress `json:"to,omitempty"`
+	Id           *string    `json:"id,omitempty"`
+	AccountId    *string    `json:"accountId,omitempty"`
+	Status       *string    `json:"status,omitempty"`
+	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
+	// True when the email waits as a draft in the mailbox and is sent as that draft stands at `scheduledFor`.
+	HoldAsDraft *bool `json:"holdAsDraft,omitempty"`
+	// The mailbox draft of a `holdAsDraft` send: the Gmail draft id, or the Outlook message id. `null` otherwise.
+	DraftId NullableString `json:"draftId,omitempty"`
+	To      []EmailAddress `json:"to,omitempty"`
 	// Empty on a reply that keeps the thread subject. `null` once the send finishes under zero content retention.
 	Subject NullableString `json:"subject,omitempty"`
 	// Present and `true` when the email content was dropped under [zero content retention](/security/zero-content-retention).
@@ -186,6 +190,81 @@ func (o *ScheduledEmail) HasScheduledFor() bool {
 // SetScheduledFor gets a reference to the given time.Time and assigns it to the ScheduledFor field.
 func (o *ScheduledEmail) SetScheduledFor(v time.Time) {
 	o.ScheduledFor = &v
+}
+
+// GetHoldAsDraft returns the HoldAsDraft field value if set, zero value otherwise.
+func (o *ScheduledEmail) GetHoldAsDraft() bool {
+	if o == nil || IsNil(o.HoldAsDraft) {
+		var ret bool
+		return ret
+	}
+	return *o.HoldAsDraft
+}
+
+// GetHoldAsDraftOk returns a tuple with the HoldAsDraft field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ScheduledEmail) GetHoldAsDraftOk() (*bool, bool) {
+	if o == nil || IsNil(o.HoldAsDraft) {
+		return nil, false
+	}
+	return o.HoldAsDraft, true
+}
+
+// HasHoldAsDraft returns a boolean if a field has been set.
+func (o *ScheduledEmail) HasHoldAsDraft() bool {
+	if o != nil && !IsNil(o.HoldAsDraft) {
+		return true
+	}
+
+	return false
+}
+
+// SetHoldAsDraft gets a reference to the given bool and assigns it to the HoldAsDraft field.
+func (o *ScheduledEmail) SetHoldAsDraft(v bool) {
+	o.HoldAsDraft = &v
+}
+
+// GetDraftId returns the DraftId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ScheduledEmail) GetDraftId() string {
+	if o == nil || IsNil(o.DraftId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.DraftId.Get()
+}
+
+// GetDraftIdOk returns a tuple with the DraftId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ScheduledEmail) GetDraftIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DraftId.Get(), o.DraftId.IsSet()
+}
+
+// HasDraftId returns a boolean if a field has been set.
+func (o *ScheduledEmail) HasDraftId() bool {
+	if o != nil && o.DraftId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDraftId gets a reference to the given NullableString and assigns it to the DraftId field.
+func (o *ScheduledEmail) SetDraftId(v string) {
+	o.DraftId.Set(&v)
+}
+
+// SetDraftIdNil sets the value for DraftId to be an explicit nil
+func (o *ScheduledEmail) SetDraftIdNil() {
+	o.DraftId.Set(nil)
+}
+
+// UnsetDraftId ensures that no value is present for DraftId, not even an explicit nil
+func (o *ScheduledEmail) UnsetDraftId() {
+	o.DraftId.Unset()
 }
 
 // GetTo returns the To field value if set, zero value otherwise.
@@ -595,6 +674,12 @@ func (o ScheduledEmail) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ScheduledFor) {
 		toSerialize["scheduledFor"] = o.ScheduledFor
+	}
+	if !IsNil(o.HoldAsDraft) {
+		toSerialize["holdAsDraft"] = o.HoldAsDraft
+	}
+	if o.DraftId.IsSet() {
+		toSerialize["draftId"] = o.DraftId.Get()
 	}
 	if !IsNil(o.To) {
 		toSerialize["to"] = o.To

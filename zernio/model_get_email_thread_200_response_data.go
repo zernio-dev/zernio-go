@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.547.1
+API version: 1.547.3
 Contact: support@zernio.com
 */
 
@@ -21,15 +21,17 @@ var _ MappedNullable = &GetEmailThread200ResponseData{}
 
 // GetEmailThread200ResponseData struct for GetEmailThread200ResponseData
 type GetEmailThread200ResponseData struct {
-	Id                      *string        `json:"id,omitempty"`
-	AccountId               *string        `json:"accountId,omitempty"`
-	Provider                *string        `json:"provider,omitempty"`
-	Subject                 *string        `json:"subject,omitempty"`
-	Snippet                 *string        `json:"snippet,omitempty"`
-	Participants            []EmailAddress `json:"participants,omitempty"`
-	MessageIds              []string       `json:"messageIds,omitempty"`
-	DraftIds                []string       `json:"draftIds,omitempty"`
-	Folders                 []string       `json:"folders,omitempty"`
+	Id           *string        `json:"id,omitempty"`
+	AccountId    *string        `json:"accountId,omitempty"`
+	Provider     *string        `json:"provider,omitempty"`
+	Subject      *string        `json:"subject,omitempty"`
+	Snippet      *string        `json:"snippet,omitempty"`
+	Participants []EmailAddress `json:"participants,omitempty"`
+	MessageIds   []string       `json:"messageIds,omitempty"`
+	DraftIds     []string       `json:"draftIds,omitempty"`
+	Folders      []string       `json:"folders,omitempty"`
+	// Every label (Gmail) or category (Outlook) on any message of the thread.
+	Labels                  []string       `json:"labels,omitempty"`
 	HasAttachments          *bool          `json:"hasAttachments,omitempty"`
 	HasDrafts               *bool          `json:"hasDrafts,omitempty"`
 	Unread                  *bool          `json:"unread,omitempty"`
@@ -345,6 +347,38 @@ func (o *GetEmailThread200ResponseData) SetFolders(v []string) {
 	o.Folders = v
 }
 
+// GetLabels returns the Labels field value if set, zero value otherwise.
+func (o *GetEmailThread200ResponseData) GetLabels() []string {
+	if o == nil || IsNil(o.Labels) {
+		var ret []string
+		return ret
+	}
+	return o.Labels
+}
+
+// GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEmailThread200ResponseData) GetLabelsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Labels) {
+		return nil, false
+	}
+	return o.Labels, true
+}
+
+// HasLabels returns a boolean if a field has been set.
+func (o *GetEmailThread200ResponseData) HasLabels() bool {
+	if o != nil && !IsNil(o.Labels) {
+		return true
+	}
+
+	return false
+}
+
+// SetLabels gets a reference to the given []string and assigns it to the Labels field.
+func (o *GetEmailThread200ResponseData) SetLabels(v []string) {
+	o.Labels = v
+}
+
 // GetHasAttachments returns the HasAttachments field value if set, zero value otherwise.
 func (o *GetEmailThread200ResponseData) GetHasAttachments() bool {
 	if o == nil || IsNil(o.HasAttachments) {
@@ -637,6 +671,9 @@ func (o GetEmailThread200ResponseData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Folders) {
 		toSerialize["folders"] = o.Folders
+	}
+	if !IsNil(o.Labels) {
+		toSerialize["labels"] = o.Labels
 	}
 	if !IsNil(o.HasAttachments) {
 		toSerialize["hasAttachments"] = o.HasAttachments

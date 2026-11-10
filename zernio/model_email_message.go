@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.547.1
+API version: 1.547.3
 Contact: support@zernio.com
 */
 
@@ -40,10 +40,12 @@ type EmailMessage struct {
 	// Only with `includeHeaders=true`.
 	Headers map[string]string `json:"headers,omitempty"`
 	// MIME source, only with `raw=true`.
-	Raw      *string           `json:"raw,omitempty"`
-	Date     *time.Time        `json:"date,omitempty"`
-	Unread   *bool             `json:"unread,omitempty"`
-	Starred  *bool             `json:"starred,omitempty"`
+	Raw     *string    `json:"raw,omitempty"`
+	Date    *time.Time `json:"date,omitempty"`
+	Unread  *bool      `json:"unread,omitempty"`
+	Starred *bool      `json:"starred,omitempty"`
+	// Gmail: the ids of the user labels on the message (names come from `GET /v1/email/labels`). Outlook: its category names.
+	Labels   []string          `json:"labels,omitempty"`
 	Metadata map[string]string `json:"metadata,omitempty"`
 	// Set on a send with `trackOpens`, `trackLinks` or `trackReplies`; the email.* webhooks carry it.
 	TrackingId NullableString `json:"trackingId,omitempty"`
@@ -739,6 +741,38 @@ func (o *EmailMessage) SetStarred(v bool) {
 	o.Starred = &v
 }
 
+// GetLabels returns the Labels field value if set, zero value otherwise.
+func (o *EmailMessage) GetLabels() []string {
+	if o == nil || IsNil(o.Labels) {
+		var ret []string
+		return ret
+	}
+	return o.Labels
+}
+
+// GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailMessage) GetLabelsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Labels) {
+		return nil, false
+	}
+	return o.Labels, true
+}
+
+// HasLabels returns a boolean if a field has been set.
+func (o *EmailMessage) HasLabels() bool {
+	if o != nil && !IsNil(o.Labels) {
+		return true
+	}
+
+	return false
+}
+
+// SetLabels gets a reference to the given []string and assigns it to the Labels field.
+func (o *EmailMessage) SetLabels(v []string) {
+	o.Labels = v
+}
+
 // GetMetadata returns the Metadata field value if set, zero value otherwise.
 func (o *EmailMessage) GetMetadata() map[string]string {
 	if o == nil || IsNil(o.Metadata) {
@@ -883,6 +917,9 @@ func (o EmailMessage) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Starred) {
 		toSerialize["starred"] = o.Starred
+	}
+	if !IsNil(o.Labels) {
+		toSerialize["labels"] = o.Labels
 	}
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
