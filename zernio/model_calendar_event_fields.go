@@ -29,7 +29,7 @@ type CalendarEventFields struct {
 	// Exclusive for all-day events.
 	End    *string `json:"end,omitempty"`
 	AllDay *bool   `json:"allDay,omitempty"`
-	// IANA zone the event is scheduled in. Default UTC.
+	// IANA zone the event is scheduled in. Defaults to the calendar's zone on Google and the mailbox's working-hours zone on Microsoft (UTC when Outlook has none, as on personal accounts). A PATCH that moves an event without a zone keeps the zone the event already has.
 	Timezone     *string        `json:"timezone,omitempty"`
 	Participants []EmailAddress `json:"participants,omitempty"`
 	// RRULE lines, e.g. `RRULE:FREQ=WEEKLY;BYDAY=MO,WE;COUNT=10`.
@@ -38,7 +38,10 @@ type CalendarEventFields struct {
 	Conferencing *string                       `json:"conferencing,omitempty"`
 	Busy         *bool                         `json:"busy,omitempty"`
 	Visibility   *string                       `json:"visibility,omitempty"`
-	Metadata     map[string]string             `json:"metadata,omitempty"`
+	// String pairs stored on the event and returned on reads, on Google and Microsoft.
+	Metadata map[string]string `json:"metadata,omitempty"`
+	// Who gets an invitation or update email for this write: everyone, only guests outside the organizer's domain, or nobody. Google only; Outlook always notifies, so `external` and `none` answer 400 `unsupported_for_provider` on a Microsoft account.
+	NotifyParticipants *string `json:"notifyParticipants,omitempty"`
 }
 
 // NewCalendarEventFields instantiates a new CalendarEventFields object
@@ -47,6 +50,8 @@ type CalendarEventFields struct {
 // will change when the set of required properties is changed
 func NewCalendarEventFields() *CalendarEventFields {
 	this := CalendarEventFields{}
+	var notifyParticipants string = "all"
+	this.NotifyParticipants = &notifyParticipants
 	return &this
 }
 
@@ -55,6 +60,8 @@ func NewCalendarEventFields() *CalendarEventFields {
 // but it doesn't guarantee that properties required by API are set
 func NewCalendarEventFieldsWithDefaults() *CalendarEventFields {
 	this := CalendarEventFields{}
+	var notifyParticipants string = "all"
+	this.NotifyParticipants = &notifyParticipants
 	return &this
 }
 
@@ -506,6 +513,38 @@ func (o *CalendarEventFields) SetMetadata(v map[string]string) {
 	o.Metadata = v
 }
 
+// GetNotifyParticipants returns the NotifyParticipants field value if set, zero value otherwise.
+func (o *CalendarEventFields) GetNotifyParticipants() string {
+	if o == nil || IsNil(o.NotifyParticipants) {
+		var ret string
+		return ret
+	}
+	return *o.NotifyParticipants
+}
+
+// GetNotifyParticipantsOk returns a tuple with the NotifyParticipants field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CalendarEventFields) GetNotifyParticipantsOk() (*string, bool) {
+	if o == nil || IsNil(o.NotifyParticipants) {
+		return nil, false
+	}
+	return o.NotifyParticipants, true
+}
+
+// HasNotifyParticipants returns a boolean if a field has been set.
+func (o *CalendarEventFields) HasNotifyParticipants() bool {
+	if o != nil && !IsNil(o.NotifyParticipants) {
+		return true
+	}
+
+	return false
+}
+
+// SetNotifyParticipants gets a reference to the given string and assigns it to the NotifyParticipants field.
+func (o *CalendarEventFields) SetNotifyParticipants(v string) {
+	o.NotifyParticipants = &v
+}
+
 func (o CalendarEventFields) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -557,6 +596,9 @@ func (o CalendarEventFields) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
+	}
+	if !IsNil(o.NotifyParticipants) {
+		toSerialize["notifyParticipants"] = o.NotifyParticipants
 	}
 	return toSerialize, nil
 }

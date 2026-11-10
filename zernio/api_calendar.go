@@ -467,11 +467,12 @@ func (a *CalendarAPIService) CreateCalendarEventExecute(r CalendarAPICreateCalen
 }
 
 type CalendarAPIDeleteCalendarEventRequest struct {
-	ctx        context.Context
-	ApiService *CalendarAPIService
-	eventId    string
-	accountId  *string
-	calendarId *string
+	ctx                context.Context
+	ApiService         *CalendarAPIService
+	eventId            string
+	accountId          *string
+	calendarId         *string
+	notifyParticipants *string
 }
 
 // The connected Google, Microsoft or IMAP account.
@@ -483,6 +484,12 @@ func (r CalendarAPIDeleteCalendarEventRequest) AccountId(accountId string) Calen
 // The calendar holding the event (an id from GET /v1/calendar/calendars). Defaults to the primary calendar.
 func (r CalendarAPIDeleteCalendarEventRequest) CalendarId(calendarId string) CalendarAPIDeleteCalendarEventRequest {
 	r.calendarId = &calendarId
+	return r
+}
+
+// Who gets the cancellation email. Google only; &#x60;external&#x60; and &#x60;none&#x60; answer 400 on a Microsoft account.
+func (r CalendarAPIDeleteCalendarEventRequest) NotifyParticipants(notifyParticipants string) CalendarAPIDeleteCalendarEventRequest {
+	r.notifyParticipants = &notifyParticipants
 	return r
 }
 
@@ -534,6 +541,13 @@ func (a *CalendarAPIService) DeleteCalendarEventExecute(r CalendarAPIDeleteCalen
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.calendarId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "calendarId", r.calendarId, "form", "")
+	}
+	if r.notifyParticipants != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "notifyParticipants", r.notifyParticipants, "form", "")
+	} else {
+		var defaultValue string = "all"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "notifyParticipants", defaultValue, "form", "")
+		r.notifyParticipants = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -872,6 +886,7 @@ func (r CalendarAPIListCalendarEventsRequest) IcalUid(icalUid string) CalendarAP
 	return r
 }
 
+// Order by start time across the whole window. On Google, &#x60;desc&#x60; reads the window in full, so a window over 2,500 events answers 400; narrow &#x60;from&#x60; and &#x60;to&#x60;.
 func (r CalendarAPIListCalendarEventsRequest) SortOrder(sortOrder string) CalendarAPIListCalendarEventsRequest {
 	r.sortOrder = &sortOrder
 	return r
@@ -900,7 +915,7 @@ func (r CalendarAPIListCalendarEventsRequest) Execute() (*ListCalendarEvents200R
 /*
 ListCalendarEvents List events in a window
 
-Recurring series are expanded into their occurrences inside the window by default (`expandRecurring=false` lists the masters instead). `title` and `location` are substring matches applied to the fetched page.
+Recurring series are expanded into their occurrences inside the window by default (`expandRecurring=false` lists the masters instead, including series that started before `from` and still recur in the window). Events that overlap the window edges are included. `title` and `location` are substring matches applied to the fetched page.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CalendarAPIListCalendarEventsRequest
@@ -1251,7 +1266,7 @@ func (r CalendarAPIRsvpCalendarEventRequest) Execute() (*CreateCalendarEvent201R
 /*
 RsvpCalendarEvent Respond to an invitation
 
-Accepts, declines or tentatively accepts on behalf of the mailbox and notifies the organizer.
+Accepts, declines or tentatively accepts on behalf of the mailbox and notifies the organizer, unless `sendResponse` is false.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param eventId

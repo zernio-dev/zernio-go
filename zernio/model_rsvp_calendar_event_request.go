@@ -27,6 +27,8 @@ type RsvpCalendarEventRequest struct {
 	CalendarId *string `json:"calendarId,omitempty"`
 	Status     string  `json:"status"`
 	Comment    *string `json:"comment,omitempty"`
+	// false records the response without emailing the organizer.
+	SendResponse *bool `json:"sendResponse,omitempty"`
 }
 
 type _RsvpCalendarEventRequest RsvpCalendarEventRequest
@@ -39,6 +41,8 @@ func NewRsvpCalendarEventRequest(accountId string, status string) *RsvpCalendarE
 	this := RsvpCalendarEventRequest{}
 	this.AccountId = accountId
 	this.Status = status
+	var sendResponse bool = true
+	this.SendResponse = &sendResponse
 	return &this
 }
 
@@ -47,6 +51,8 @@ func NewRsvpCalendarEventRequest(accountId string, status string) *RsvpCalendarE
 // but it doesn't guarantee that properties required by API are set
 func NewRsvpCalendarEventRequestWithDefaults() *RsvpCalendarEventRequest {
 	this := RsvpCalendarEventRequest{}
+	var sendResponse bool = true
+	this.SendResponse = &sendResponse
 	return &this
 }
 
@@ -162,6 +168,38 @@ func (o *RsvpCalendarEventRequest) SetComment(v string) {
 	o.Comment = &v
 }
 
+// GetSendResponse returns the SendResponse field value if set, zero value otherwise.
+func (o *RsvpCalendarEventRequest) GetSendResponse() bool {
+	if o == nil || IsNil(o.SendResponse) {
+		var ret bool
+		return ret
+	}
+	return *o.SendResponse
+}
+
+// GetSendResponseOk returns a tuple with the SendResponse field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RsvpCalendarEventRequest) GetSendResponseOk() (*bool, bool) {
+	if o == nil || IsNil(o.SendResponse) {
+		return nil, false
+	}
+	return o.SendResponse, true
+}
+
+// HasSendResponse returns a boolean if a field has been set.
+func (o *RsvpCalendarEventRequest) HasSendResponse() bool {
+	if o != nil && !IsNil(o.SendResponse) {
+		return true
+	}
+
+	return false
+}
+
+// SetSendResponse gets a reference to the given bool and assigns it to the SendResponse field.
+func (o *RsvpCalendarEventRequest) SetSendResponse(v bool) {
+	o.SendResponse = &v
+}
+
 func (o RsvpCalendarEventRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -179,6 +217,9 @@ func (o RsvpCalendarEventRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["status"] = o.Status
 	if !IsNil(o.Comment) {
 		toSerialize["comment"] = o.Comment
+	}
+	if !IsNil(o.SendResponse) {
+		toSerialize["sendResponse"] = o.SendResponse
 	}
 	return toSerialize, nil
 }

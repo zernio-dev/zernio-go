@@ -31,7 +31,7 @@ type UpdateCalendarEventRequest struct {
 	// Exclusive for all-day events.
 	End    *string `json:"end,omitempty"`
 	AllDay *bool   `json:"allDay,omitempty"`
-	// IANA zone the event is scheduled in. Default UTC.
+	// IANA zone the event is scheduled in. Defaults to the calendar's zone on Google and the mailbox's working-hours zone on Microsoft (UTC when Outlook has none, as on personal accounts). A PATCH that moves an event without a zone keeps the zone the event already has.
 	Timezone     *string        `json:"timezone,omitempty"`
 	Participants []EmailAddress `json:"participants,omitempty"`
 	// RRULE lines, e.g. `RRULE:FREQ=WEEKLY;BYDAY=MO,WE;COUNT=10`.
@@ -40,8 +40,11 @@ type UpdateCalendarEventRequest struct {
 	Conferencing *string                       `json:"conferencing,omitempty"`
 	Busy         *bool                         `json:"busy,omitempty"`
 	Visibility   *string                       `json:"visibility,omitempty"`
-	Metadata     map[string]string             `json:"metadata,omitempty"`
-	AccountId    string                        `json:"accountId"`
+	// String pairs stored on the event and returned on reads, on Google and Microsoft.
+	Metadata map[string]string `json:"metadata,omitempty"`
+	// Who gets an invitation or update email for this write: everyone, only guests outside the organizer's domain, or nobody. Google only; Outlook always notifies, so `external` and `none` answer 400 `unsupported_for_provider` on a Microsoft account.
+	NotifyParticipants *string `json:"notifyParticipants,omitempty"`
+	AccountId          string  `json:"accountId"`
 	// The calendar holding the event (an id from GET /v1/calendar/calendars). Defaults to the primary calendar.
 	CalendarId *string `json:"calendarId,omitempty"`
 }
@@ -54,6 +57,8 @@ type _UpdateCalendarEventRequest UpdateCalendarEventRequest
 // will change when the set of required properties is changed
 func NewUpdateCalendarEventRequest(accountId string) *UpdateCalendarEventRequest {
 	this := UpdateCalendarEventRequest{}
+	var notifyParticipants string = "all"
+	this.NotifyParticipants = &notifyParticipants
 	this.AccountId = accountId
 	return &this
 }
@@ -63,6 +68,8 @@ func NewUpdateCalendarEventRequest(accountId string) *UpdateCalendarEventRequest
 // but it doesn't guarantee that properties required by API are set
 func NewUpdateCalendarEventRequestWithDefaults() *UpdateCalendarEventRequest {
 	this := UpdateCalendarEventRequest{}
+	var notifyParticipants string = "all"
+	this.NotifyParticipants = &notifyParticipants
 	return &this
 }
 
@@ -514,6 +521,38 @@ func (o *UpdateCalendarEventRequest) SetMetadata(v map[string]string) {
 	o.Metadata = v
 }
 
+// GetNotifyParticipants returns the NotifyParticipants field value if set, zero value otherwise.
+func (o *UpdateCalendarEventRequest) GetNotifyParticipants() string {
+	if o == nil || IsNil(o.NotifyParticipants) {
+		var ret string
+		return ret
+	}
+	return *o.NotifyParticipants
+}
+
+// GetNotifyParticipantsOk returns a tuple with the NotifyParticipants field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCalendarEventRequest) GetNotifyParticipantsOk() (*string, bool) {
+	if o == nil || IsNil(o.NotifyParticipants) {
+		return nil, false
+	}
+	return o.NotifyParticipants, true
+}
+
+// HasNotifyParticipants returns a boolean if a field has been set.
+func (o *UpdateCalendarEventRequest) HasNotifyParticipants() bool {
+	if o != nil && !IsNil(o.NotifyParticipants) {
+		return true
+	}
+
+	return false
+}
+
+// SetNotifyParticipants gets a reference to the given string and assigns it to the NotifyParticipants field.
+func (o *UpdateCalendarEventRequest) SetNotifyParticipants(v string) {
+	o.NotifyParticipants = &v
+}
+
 // GetAccountId returns the AccountId field value
 func (o *UpdateCalendarEventRequest) GetAccountId() string {
 	if o == nil {
@@ -621,6 +660,9 @@ func (o UpdateCalendarEventRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
+	}
+	if !IsNil(o.NotifyParticipants) {
+		toSerialize["notifyParticipants"] = o.NotifyParticipants
 	}
 	toSerialize["accountId"] = o.AccountId
 	if !IsNil(o.CalendarId) {
