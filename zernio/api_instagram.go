@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.544.2
+API version: 1.545.0
 Contact: support@zernio.com
 */
 
@@ -873,15 +873,16 @@ func (r InstagramAPIGetInstagramStoryInsightsRequest) Execute() (*GetInstagramSt
 /*
 GetInstagramStoryInsights Get Instagram story insights
 
-Returns metrics for a single story. The `source` field discriminates between three states:
+Returns metrics for a single story. The `source` field discriminates between four states:
 
 - `live`: fetched from Meta in real time (story is still active)
-- `cached`: fetched from a persisted `story_insights` webhook payload (story has expired but we received its final-state metrics from Meta)
-- `unavailable`: story has expired and Meta sent no `story_insights` webhook for it
+- `archived`: the story has expired and Zernio archived it while it was live. Metrics are the last archived reading, raised to Meta's final numbers when its `story_insights` webhook arrived (which also adds the tap breakdown).
+- `cached`: fetched from a persisted `story_insights` webhook payload (story has expired and was not archived)
+- `unavailable`: story has expired, was not archived, and Meta sent no `story_insights` webhook for it
 
 Meta sends that webhook most reliably for accounts connected with Facebook Login or with their linked Facebook Page connected. So read insights while the story is live if you need final numbers.
 
-Meta can report an expired story as an empty successful result rather than an error. So an expired story resolves to `cached` or `unavailable` even though the upstream request itself succeeded.
+Meta can report an expired story as an empty successful result rather than an error. So an expired story resolves to `archived`, `cached` or `unavailable` even though the upstream request itself succeeded.
 
 ### Field semantics
 
