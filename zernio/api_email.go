@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.553.1
+API version: 1.554.0
 Contact: support@zernio.com
 */
 
@@ -32,7 +32,7 @@ type EmailAPICancelScheduledEmailRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPICancelScheduledEmailRequest) AccountId(accountId string) EmailAPICancelScheduledEmailRequest {
 	r.accountId = &accountId
 	return r
@@ -198,7 +198,7 @@ func (r EmailAPICreateEmailDraftRequest) Execute() (*CreateEmailDraft201Response
 /*
 CreateEmailDraft Create a draft
 
-Saves a draft in the user's mailbox, where they see it in Gmail or Outlook. Recipients and subject can come later. `inReplyTo` makes a reply draft in that thread and `forwardOf` a forward draft with the original's attachments; the `kind` is fixed for the life of the draft.
+Saves a draft in the user's mailbox, where they see it in their mail app. Recipients and subject can come later. `inReplyTo` makes a reply draft in that thread and `forwardOf` a forward draft with the original's attachments; the `kind` is fixed for the life of the draft.
 
 Send it with `POST /v1/email/drafts/{draftId}/send`. Edits the user makes in their mail client are what goes out. Store the draft `id`, and pass its `version` as `If-Match` so an update or send applies only to the version you saw.
 
@@ -920,7 +920,7 @@ type EmailAPIDeleteEmailDraftRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIDeleteEmailDraftRequest) AccountId(accountId string) EmailAPIDeleteEmailDraftRequest {
 	r.accountId = &accountId
 	return r
@@ -1076,7 +1076,7 @@ type EmailAPIDeleteEmailLabelRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIDeleteEmailLabelRequest) AccountId(accountId string) EmailAPIDeleteEmailLabelRequest {
 	r.accountId = &accountId
 	return r
@@ -1234,7 +1234,7 @@ type EmailAPIDeleteEmailSendAsRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIDeleteEmailSendAsRequest) AccountId(accountId string) EmailAPIDeleteEmailSendAsRequest {
 	r.accountId = &accountId
 	return r
@@ -1648,7 +1648,7 @@ type EmailAPIDownloadEmailAttachmentRequest struct {
 	messageId    *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIDownloadEmailAttachmentRequest) AccountId(accountId string) EmailAPIDownloadEmailAttachmentRequest {
 	r.accountId = &accountId
 	return r
@@ -2020,7 +2020,7 @@ type EmailAPIGetEmailDraftRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIGetEmailDraftRequest) AccountId(accountId string) EmailAPIGetEmailDraftRequest {
 	r.accountId = &accountId
 	return r
@@ -2181,7 +2181,7 @@ type EmailAPIGetEmailMessageRequest struct {
 	clean          *bool
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIGetEmailMessageRequest) AccountId(accountId string) EmailAPIGetEmailMessageRequest {
 	r.accountId = &accountId
 	return r
@@ -2199,7 +2199,7 @@ func (r EmailAPIGetEmailMessageRequest) Raw(raw bool) EmailAPIGetEmailMessageReq
 	return r
 }
 
-// Add &#x60;cleanText&#x60;: the new text only, without quoted replies, forwarded history, signature or tracking pixels. Ready to hand to an LLM.
+// Add a &#x60;clean&#x60; object: the new text without quoted replies, footers or tracking pixels, the &#x60;signature&#x60; on its own (it also stays in &#x60;text&#x60;), and a parsed &#x60;forwarded&#x60; header. Ready to hand to an LLM.
 func (r EmailAPIGetEmailMessageRequest) Clean(clean bool) EmailAPIGetEmailMessageRequest {
 	r.clean = &clean
 	return r
@@ -2500,13 +2500,13 @@ type EmailAPIGetEmailThreadRequest struct {
 	clean      *bool
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIGetEmailThreadRequest) AccountId(accountId string) EmailAPIGetEmailThreadRequest {
 	r.accountId = &accountId
 	return r
 }
 
-// Add &#x60;cleanText&#x60; to every message: what each one added to the conversation, without the quoted history.
+// Add a &#x60;clean&#x60; object to every message: the text each one added, without quoted replies, footers or tracking pixels, plus its &#x60;signature&#x60; and a parsed &#x60;forwarded&#x60; header.
 func (r EmailAPIGetEmailThreadRequest) Clean(clean bool) EmailAPIGetEmailThreadRequest {
 	r.clean = &clean
 	return r
@@ -2669,7 +2669,7 @@ type EmailAPIGetScheduledEmailRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIGetScheduledEmailRequest) AccountId(accountId string) EmailAPIGetScheduledEmailRequest {
 	r.accountId = &accountId
 	return r
@@ -2813,7 +2813,7 @@ type EmailAPIImportEmailSignaturesRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIImportEmailSignaturesRequest) AccountId(accountId string) EmailAPIImportEmailSignaturesRequest {
 	r.accountId = &accountId
 	return r
@@ -2958,7 +2958,7 @@ type EmailAPIListEmailDraftsRequest struct {
 	cursor     *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIListEmailDraftsRequest) AccountId(accountId string) EmailAPIListEmailDraftsRequest {
 	r.accountId = &accountId
 	return r
@@ -2981,7 +2981,7 @@ func (r EmailAPIListEmailDraftsRequest) Execute() (*ListEmailDrafts200Response, 
 /*
 ListEmailDrafts List drafts
 
-The mailbox's drafts, newest first, including drafts the user wrote in Gmail or Outlook. Drafts in the trash are left out. Rows carry no bodies on Google; get a draft to read them.
+The mailbox's drafts, newest first, including drafts the user wrote in their mail app. Drafts in the trash are left out. Rows carry no bodies on Google; get a draft to read them.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return EmailAPIListEmailDraftsRequest
@@ -3132,7 +3132,7 @@ type EmailAPIListEmailFoldersRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIListEmailFoldersRequest) AccountId(accountId string) EmailAPIListEmailFoldersRequest {
 	r.accountId = &accountId
 	return r
@@ -3275,7 +3275,7 @@ type EmailAPIListEmailLabelsRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIListEmailLabelsRequest) AccountId(accountId string) EmailAPIListEmailLabelsRequest {
 	r.accountId = &accountId
 	return r
@@ -3434,7 +3434,7 @@ type EmailAPIListEmailMessagesRequest struct {
 	limit             *int32
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIListEmailMessagesRequest) AccountId(accountId string) EmailAPIListEmailMessagesRequest {
 	r.accountId = &accountId
 	return r
@@ -3730,7 +3730,7 @@ type EmailAPIListEmailSendAsRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIListEmailSendAsRequest) AccountId(accountId string) EmailAPIListEmailSendAsRequest {
 	r.accountId = &accountId
 	return r
@@ -4019,7 +4019,7 @@ type EmailAPIListEmailThreadsRequest struct {
 	limit             *int32
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIListEmailThreadsRequest) AccountId(accountId string) EmailAPIListEmailThreadsRequest {
 	r.accountId = &accountId
 	return r
@@ -4119,7 +4119,7 @@ func (r EmailAPIListEmailThreadsRequest) Execute() (*ListEmailThreads200Response
 /*
 ListEmailThreads List email threads
 
-Threads of a connected Google or Microsoft mailbox, newest first. Every filter that the provider cannot apply server-side is applied to the fetched page instead and named in `meta.filteredClientSide`, so a filtered page can hold fewer than `limit` items while `pagination.hasMore` stays true.
+Threads of a connected Google, Microsoft or IMAP mailbox, newest first. Every filter that the provider cannot apply server-side is applied to the fetched page instead and named in `meta.filteredClientSide`, so a filtered page can hold fewer than `limit` items while `pagination.hasMore` stays true.
 
 On Google, folders are Gmail labels: `folder` takes a well-known name or a label id, `archive` means mail carrying none of the inbox, trash or spam labels, and `sortOrder=asc` reverses the fetched page (Gmail lists newest first only).
 
@@ -4323,7 +4323,7 @@ type EmailAPIListScheduledEmailsRequest struct {
 	limit      *int32
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPIListScheduledEmailsRequest) AccountId(accountId string) EmailAPIListScheduledEmailsRequest {
 	r.accountId = &accountId
 	return r
@@ -4714,7 +4714,7 @@ func (r EmailAPISendEmailDraftRequest) Execute() (*SendEmailMessage201Response, 
 /*
 SendEmailDraft Send a draft
 
-Sends the draft as it stands in the mailbox now, edits made in Gmail or Outlook included, and returns the sent message with `draftId`. The draft needs at least one recipient. A draft the user deleted or already sent answers 404 `draft_not_found`.
+Sends the draft as it stands in the mailbox now, edits made in their mail app included, and returns the sent message with `draftId`. The draft needs at least one recipient. A draft the user deleted or already sent answers 404 `draft_not_found`.
 
 With `If-Match` it goes out only if it is still the version the approver saw (412 `draft_conflict` otherwise). If the user removed the open pixel or rewrote links, tracking is put back before it is sent. Fires `email.sent` with `source: draft`.
 
@@ -5115,7 +5115,7 @@ type EmailAPITrashEmailMessageRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r EmailAPITrashEmailMessageRequest) AccountId(accountId string) EmailAPITrashEmailMessageRequest {
 	r.accountId = &accountId
 	return r

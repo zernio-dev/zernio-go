@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.553.1
+API version: 1.554.0
 Contact: support@zernio.com
 */
 
@@ -47,7 +47,7 @@ type ReplyEmailMessageRequest struct {
 	Metadata map[string]string `json:"metadata,omitempty"`
 	// Send later, between 1 minute and 30 days from now. The request answers 202 with the scheduled send; it leaves within a minute of this time through the same caps as an immediate send. List or cancel it under `/v1/email/messages/scheduled`.
 	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
-	// Needs `scheduledFor`. Saves the email as a draft in the mailbox now and sends that draft at `scheduledFor`, with any edits the user made in Gmail or Outlook. A draft deleted or sent from the mailbox first fails the send (`email.send_failed`). Cancelling deletes the draft.
+	// Needs `scheduledFor`. Saves the email as a draft in the mailbox now and sends that draft at `scheduledFor`, with any edits the user made in their mail app. A draft deleted or sent from the mailbox first fails the send (`email.send_failed`). Cancelling deletes the draft.
 	HoldAsDraft *bool `json:"holdAsDraft,omitempty"`
 	// Adds an open pixel to the html and fires `email.opened`. Needs `html`.
 	TrackOpens *bool `json:"trackOpens,omitempty"`

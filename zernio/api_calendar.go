@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.553.1
+API version: 1.554.0
 Contact: support@zernio.com
 */
 
@@ -474,7 +474,7 @@ type CalendarAPIDeleteCalendarEventRequest struct {
 	calendarId *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r CalendarAPIDeleteCalendarEventRequest) AccountId(accountId string) CalendarAPIDeleteCalendarEventRequest {
 	r.accountId = &accountId
 	return r
@@ -641,7 +641,7 @@ type CalendarAPIGetCalendarEventRequest struct {
 	timezone   *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r CalendarAPIGetCalendarEventRequest) AccountId(accountId string) CalendarAPIGetCalendarEventRequest {
 	r.accountId = &accountId
 	return r
@@ -825,7 +825,7 @@ type CalendarAPIListCalendarEventsRequest struct {
 	timezone        *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r CalendarAPIListCalendarEventsRequest) AccountId(accountId string) CalendarAPIListCalendarEventsRequest {
 	r.accountId = &accountId
 	return r
@@ -1095,7 +1095,7 @@ type CalendarAPIListCalendarsRequest struct {
 	accountId  *string
 }
 
-// The connected Google or Microsoft account.
+// The connected Google, Microsoft or IMAP account.
 func (r CalendarAPIListCalendarsRequest) AccountId(accountId string) CalendarAPIListCalendarsRequest {
 	r.accountId = &accountId
 	return r
