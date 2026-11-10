@@ -852,6 +852,7 @@ func main() {
 ### Contacts
 | Method | Description |
 |--------|-------------|
+| `client.ContactsAPI.ListContactGroups(ctx)` | List contact groups |
 | `client.ContactsAPI.ListContacts(ctx)` | List contacts |
 | `client.ContactsAPI.BulkCreateContacts(ctx)` | Bulk create contacts |
 | `client.ContactsAPI.CreateContact(ctx)` | Create contact |
