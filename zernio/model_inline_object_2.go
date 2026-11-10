@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.564.1
+API version: 1.565.0
 Contact: support@zernio.com
 */
 
@@ -20,8 +20,10 @@ var _ MappedNullable = &InlineObject2{}
 
 // InlineObject2 struct for InlineObject2
 type InlineObject2 struct {
-	Error   *string               `json:"error,omitempty"`
-	Details *InlineObject2Details `json:"details,omitempty"`
+	Error *string `json:"error,omitempty"`
+	Code  *string `json:"code,omitempty"`
+	// The resource group the key needs for this operation. Absent on admin-plane and unclassified-path denials.
+	RequiredGroup *string `json:"required_group,omitempty"`
 }
 
 // NewInlineObject2 instantiates a new InlineObject2 object
@@ -73,36 +75,68 @@ func (o *InlineObject2) SetError(v string) {
 	o.Error = &v
 }
 
-// GetDetails returns the Details field value if set, zero value otherwise.
-func (o *InlineObject2) GetDetails() InlineObject2Details {
-	if o == nil || IsNil(o.Details) {
-		var ret InlineObject2Details
+// GetCode returns the Code field value if set, zero value otherwise.
+func (o *InlineObject2) GetCode() string {
+	if o == nil || IsNil(o.Code) {
+		var ret string
 		return ret
 	}
-	return *o.Details
+	return *o.Code
 }
 
-// GetDetailsOk returns a tuple with the Details field value if set, nil otherwise
+// GetCodeOk returns a tuple with the Code field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InlineObject2) GetDetailsOk() (*InlineObject2Details, bool) {
-	if o == nil || IsNil(o.Details) {
+func (o *InlineObject2) GetCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.Code) {
 		return nil, false
 	}
-	return o.Details, true
+	return o.Code, true
 }
 
-// HasDetails returns a boolean if a field has been set.
-func (o *InlineObject2) HasDetails() bool {
-	if o != nil && !IsNil(o.Details) {
+// HasCode returns a boolean if a field has been set.
+func (o *InlineObject2) HasCode() bool {
+	if o != nil && !IsNil(o.Code) {
 		return true
 	}
 
 	return false
 }
 
-// SetDetails gets a reference to the given InlineObject2Details and assigns it to the Details field.
-func (o *InlineObject2) SetDetails(v InlineObject2Details) {
-	o.Details = &v
+// SetCode gets a reference to the given string and assigns it to the Code field.
+func (o *InlineObject2) SetCode(v string) {
+	o.Code = &v
+}
+
+// GetRequiredGroup returns the RequiredGroup field value if set, zero value otherwise.
+func (o *InlineObject2) GetRequiredGroup() string {
+	if o == nil || IsNil(o.RequiredGroup) {
+		var ret string
+		return ret
+	}
+	return *o.RequiredGroup
+}
+
+// GetRequiredGroupOk returns a tuple with the RequiredGroup field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject2) GetRequiredGroupOk() (*string, bool) {
+	if o == nil || IsNil(o.RequiredGroup) {
+		return nil, false
+	}
+	return o.RequiredGroup, true
+}
+
+// HasRequiredGroup returns a boolean if a field has been set.
+func (o *InlineObject2) HasRequiredGroup() bool {
+	if o != nil && !IsNil(o.RequiredGroup) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequiredGroup gets a reference to the given string and assigns it to the RequiredGroup field.
+func (o *InlineObject2) SetRequiredGroup(v string) {
+	o.RequiredGroup = &v
 }
 
 func (o InlineObject2) MarshalJSON() ([]byte, error) {
@@ -118,8 +152,11 @@ func (o InlineObject2) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
 	}
-	if !IsNil(o.Details) {
-		toSerialize["details"] = o.Details
+	if !IsNil(o.Code) {
+		toSerialize["code"] = o.Code
+	}
+	if !IsNil(o.RequiredGroup) {
+		toSerialize["required_group"] = o.RequiredGroup
 	}
 	return toSerialize, nil
 }

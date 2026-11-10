@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.564.1
+API version: 1.565.0
 Contact: support@zernio.com
 */
 
@@ -283,7 +283,7 @@ func (a *TreasuryAPIService) CancelTopupExecute(r TreasuryAPICancelTopupRequest)
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -600,7 +600,7 @@ func (a *TreasuryAPIService) ConfirmTopupExecute(r TreasuryAPIConfirmTopupReques
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -747,7 +747,7 @@ func (a *TreasuryAPIService) CreatePayeeOnboardingLinkExecute(r TreasuryAPICreat
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -758,7 +758,7 @@ func (a *TreasuryAPIService) CreatePayeeOnboardingLinkExecute(r TreasuryAPICreat
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1217,7 +1217,7 @@ func (a *TreasuryAPIService) GetAutoRechargeExecute(r TreasuryAPIGetAutoRecharge
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1338,7 +1338,7 @@ func (a *TreasuryAPIService) GetBalanceExecute(r TreasuryAPIGetBalanceRequest) (
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1349,7 +1349,7 @@ func (a *TreasuryAPIService) GetBalanceExecute(r TreasuryAPIGetBalanceRequest) (
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1617,7 +1617,7 @@ func (a *TreasuryAPIService) GetTopupInvoiceExecute(r TreasuryAPIGetTopupInvoice
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1628,7 +1628,7 @@ func (a *TreasuryAPIService) GetTopupInvoiceExecute(r TreasuryAPIGetTopupInvoice
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1776,7 +1776,7 @@ func (a *TreasuryAPIService) GetTopupReceiptExecute(r TreasuryAPIGetTopupReceipt
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1787,7 +1787,7 @@ func (a *TreasuryAPIService) GetTopupReceiptExecute(r TreasuryAPIGetTopupReceipt
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1936,7 +1936,7 @@ func (a *TreasuryAPIService) GetTopupStatementExecute(r TreasuryAPIGetTopupState
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1947,7 +1947,7 @@ func (a *TreasuryAPIService) GetTopupStatementExecute(r TreasuryAPIGetTopupState
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2081,7 +2081,7 @@ func (a *TreasuryAPIService) GetTransferExecute(r TreasuryAPIGetTransferRequest)
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2092,7 +2092,7 @@ func (a *TreasuryAPIService) GetTransferExecute(r TreasuryAPIGetTransferRequest)
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2213,7 +2213,7 @@ func (a *TreasuryAPIService) ListPayeesExecute(r TreasuryAPIListPayeesRequest) (
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2224,7 +2224,7 @@ func (a *TreasuryAPIService) ListPayeesExecute(r TreasuryAPIListPayeesRequest) (
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2369,7 +2369,7 @@ func (a *TreasuryAPIService) ListTopupsExecute(r TreasuryAPIListTopupsRequest) (
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2380,7 +2380,7 @@ func (a *TreasuryAPIService) ListTopupsExecute(r TreasuryAPIListTopupsRequest) (
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2525,7 +2525,7 @@ func (a *TreasuryAPIService) ListTransfersExecute(r TreasuryAPIListTransfersRequ
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2536,7 +2536,7 @@ func (a *TreasuryAPIService) ListTransfersExecute(r TreasuryAPIListTransfersRequ
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2672,7 +2672,7 @@ func (a *TreasuryAPIService) PreviewTopupExecute(r TreasuryAPIPreviewTopupReques
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2683,7 +2683,7 @@ func (a *TreasuryAPIService) PreviewTopupExecute(r TreasuryAPIPreviewTopupReques
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2828,7 +2828,7 @@ func (a *TreasuryAPIService) UpdateAutoRechargeExecute(r TreasuryAPIUpdateAutoRe
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

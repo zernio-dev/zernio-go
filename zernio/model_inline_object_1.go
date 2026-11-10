@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.564.1
+API version: 1.565.0
 Contact: support@zernio.com
 */
 
@@ -20,10 +20,7 @@ var _ MappedNullable = &InlineObject1{}
 
 // InlineObject1 struct for InlineObject1
 type InlineObject1 struct {
-	Error *string `json:"error,omitempty"`
-	Code  *string `json:"code,omitempty"`
-	// The resource group the key needs for this operation. Absent on admin-plane and unclassified-path denials.
-	RequiredGroup *string `json:"required_group,omitempty"`
+	Data *InlineObject1Data `json:"data,omitempty"`
 }
 
 // NewInlineObject1 instantiates a new InlineObject1 object
@@ -43,100 +40,36 @@ func NewInlineObject1WithDefaults() *InlineObject1 {
 	return &this
 }
 
-// GetError returns the Error field value if set, zero value otherwise.
-func (o *InlineObject1) GetError() string {
-	if o == nil || IsNil(o.Error) {
-		var ret string
+// GetData returns the Data field value if set, zero value otherwise.
+func (o *InlineObject1) GetData() InlineObject1Data {
+	if o == nil || IsNil(o.Data) {
+		var ret InlineObject1Data
 		return ret
 	}
-	return *o.Error
+	return *o.Data
 }
 
-// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
+// GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InlineObject1) GetErrorOk() (*string, bool) {
-	if o == nil || IsNil(o.Error) {
+func (o *InlineObject1) GetDataOk() (*InlineObject1Data, bool) {
+	if o == nil || IsNil(o.Data) {
 		return nil, false
 	}
-	return o.Error, true
+	return o.Data, true
 }
 
-// HasError returns a boolean if a field has been set.
-func (o *InlineObject1) HasError() bool {
-	if o != nil && !IsNil(o.Error) {
+// HasData returns a boolean if a field has been set.
+func (o *InlineObject1) HasData() bool {
+	if o != nil && !IsNil(o.Data) {
 		return true
 	}
 
 	return false
 }
 
-// SetError gets a reference to the given string and assigns it to the Error field.
-func (o *InlineObject1) SetError(v string) {
-	o.Error = &v
-}
-
-// GetCode returns the Code field value if set, zero value otherwise.
-func (o *InlineObject1) GetCode() string {
-	if o == nil || IsNil(o.Code) {
-		var ret string
-		return ret
-	}
-	return *o.Code
-}
-
-// GetCodeOk returns a tuple with the Code field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *InlineObject1) GetCodeOk() (*string, bool) {
-	if o == nil || IsNil(o.Code) {
-		return nil, false
-	}
-	return o.Code, true
-}
-
-// HasCode returns a boolean if a field has been set.
-func (o *InlineObject1) HasCode() bool {
-	if o != nil && !IsNil(o.Code) {
-		return true
-	}
-
-	return false
-}
-
-// SetCode gets a reference to the given string and assigns it to the Code field.
-func (o *InlineObject1) SetCode(v string) {
-	o.Code = &v
-}
-
-// GetRequiredGroup returns the RequiredGroup field value if set, zero value otherwise.
-func (o *InlineObject1) GetRequiredGroup() string {
-	if o == nil || IsNil(o.RequiredGroup) {
-		var ret string
-		return ret
-	}
-	return *o.RequiredGroup
-}
-
-// GetRequiredGroupOk returns a tuple with the RequiredGroup field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *InlineObject1) GetRequiredGroupOk() (*string, bool) {
-	if o == nil || IsNil(o.RequiredGroup) {
-		return nil, false
-	}
-	return o.RequiredGroup, true
-}
-
-// HasRequiredGroup returns a boolean if a field has been set.
-func (o *InlineObject1) HasRequiredGroup() bool {
-	if o != nil && !IsNil(o.RequiredGroup) {
-		return true
-	}
-
-	return false
-}
-
-// SetRequiredGroup gets a reference to the given string and assigns it to the RequiredGroup field.
-func (o *InlineObject1) SetRequiredGroup(v string) {
-	o.RequiredGroup = &v
+// SetData gets a reference to the given InlineObject1Data and assigns it to the Data field.
+func (o *InlineObject1) SetData(v InlineObject1Data) {
+	o.Data = &v
 }
 
 func (o InlineObject1) MarshalJSON() ([]byte, error) {
@@ -149,14 +82,8 @@ func (o InlineObject1) MarshalJSON() ([]byte, error) {
 
 func (o InlineObject1) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Error) {
-		toSerialize["error"] = o.Error
-	}
-	if !IsNil(o.Code) {
-		toSerialize["code"] = o.Code
-	}
-	if !IsNil(o.RequiredGroup) {
-		toSerialize["required_group"] = o.RequiredGroup
+	if !IsNil(o.Data) {
+		toSerialize["data"] = o.Data
 	}
 	return toSerialize, nil
 }

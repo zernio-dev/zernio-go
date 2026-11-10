@@ -224,10 +224,14 @@ func main() {
 | `client.ConnectAPI.ListInstagramPages(ctx)` | List Pages with a linked Instagram account |
 | `client.ConnectAPI.ListLinkedInOrganizations(ctx)` | List LinkedIn orgs |
 | `client.ConnectAPI.ListOAuthApps(ctx)` | List your OAuth apps |
+| `client.ConnectAPI.ListOrgConnectionUsers(ctx)` | List an organization's users |
+| `client.ConnectAPI.ListOrgConnections(ctx)` | List organization connections |
 | `client.ConnectAPI.ListPinterestBoardsForSelection(ctx)` | List Pinterest boards |
 | `client.ConnectAPI.ListSlackChannels(ctx)` | List Slack channels for the channel picker |
 | `client.ConnectAPI.ListSnapchatProfiles(ctx)` | List Snapchat profiles |
 | `client.ConnectAPI.ListWhatsAppPhoneNumbers(ctx)` | List numbers for selection |
+| `client.ConnectAPI.CreateGoogleOrgConnection(ctx)` | Start a Google Workspace organization connection |
+| `client.ConnectAPI.CreateMicrosoftOrgConnection(ctx)` | Start a Microsoft 365 organization connection |
 | `client.ConnectAPI.CreateOAuthApp(ctx)` | Add an OAuth app |
 | `client.ConnectAPI.CreatePinterestBoard(ctx)` | Create Pinterest board |
 | `client.ConnectAPI.CreatePlatformInvite(ctx)` | Create a connect link |
@@ -242,6 +246,7 @@ func main() {
 | `client.ConnectAPI.GetHubSpotConnectUrl(ctx)` | Get HubSpot OAuth connect URL |
 | `client.ConnectAPI.GetLinkedInOrganizations(ctx)` | List LinkedIn orgs |
 | `client.ConnectAPI.GetOAuthApp(ctx)` | Get an OAuth app |
+| `client.ConnectAPI.GetOrgConnection(ctx)` | Get an organization connection |
 | `client.ConnectAPI.GetPageWebhookSubscription(ctx)` | Read an account's webhook subscription |
 | `client.ConnectAPI.GetPendingOAuthData(ctx)` | Get pending OAuth data |
 | `client.ConnectAPI.GetPinterestBoards(ctx)` | List Pinterest boards |
@@ -261,10 +266,13 @@ func main() {
 | `client.ConnectAPI.UpdateGmbLocation(ctx)` | Update Google Business Profile location |
 | `client.ConnectAPI.UpdateLinkedInOrganization(ctx)` | Switch LinkedIn account type |
 | `client.ConnectAPI.UpdateOAuthApp(ctx)` | Update an OAuth app |
+| `client.ConnectAPI.UpdateOrgConnection(ctx)` | Update an organization connection |
 | `client.ConnectAPI.UpdatePinterestBoards(ctx)` | Set default Pinterest board |
 | `client.ConnectAPI.UpdateRedditSubreddits(ctx)` | Set default subreddit |
 | `client.ConnectAPI.UpdateYoutubeDefaultPlaylist(ctx)` | Set default YouTube playlist |
 | `client.ConnectAPI.DeleteOAuthApp(ctx)` | Remove an OAuth app |
+| `client.ConnectAPI.DeleteOrgConnection(ctx)` | Delete an organization connection |
+| `client.ConnectAPI.AddOrgConnectionMailbox(ctx)` | Add a mailbox from an organization connection |
 | `client.ConnectAPI.AssignGoogleBusinessLocation(ctx)` | Assign Google Business Profile location to another profile |
 | `client.ConnectAPI.CompleteMetaAdsBusinessLogin(ctx)` | Complete Meta business login |
 | `client.ConnectAPI.CompleteTelegramConnect(ctx)` | Check Telegram status |
@@ -294,6 +302,7 @@ func main() {
 | `client.ConnectAPI.SetRedditPostFlair(ctx)` | Set Reddit post flair |
 | `client.ConnectAPI.StartMicrosoftAdminConsent(ctx)` | Admin-consent link for a Microsoft tenant |
 | `client.ConnectAPI.TestOAuthApp(ctx)` | Check an OAuth app's keys |
+| `client.ConnectAPI.VerifyOrgConnection(ctx)` | Verify an organization connection |
 | `client.ConnectAPI.VoteRedditThing(ctx)` | Vote on a Reddit post or comment |
 
 ### Reddit

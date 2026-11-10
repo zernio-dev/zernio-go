@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.564.1
+API version: 1.565.0
 Contact: support@zernio.com
 */
 
@@ -12,9 +12,7 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the InlineObject3 type satisfies the MappedNullable interface at compile time
@@ -22,30 +20,16 @@ var _ MappedNullable = &InlineObject3{}
 
 // InlineObject3 struct for InlineObject3
 type InlineObject3 struct {
-	// Human-readable error message suitable for end-user display.
-	Error string `json:"error"`
-	// Machine-readable error code. Stable across versions.
-	Code string `json:"code"`
-	// Discriminator for which gate fired.
-	Reason string `json:"reason"`
-	// Link to the relevant documentation page.
-	DocumentationUrl *string `json:"documentation_url,omitempty"`
-	// Deep-link to send the end-user to. For `free_tier_exceeded` and `twitter_passthrough` this opens the add-payment-method drawer on the Zernio billing page. For `enterprise_required` this is the Zernio enterprise contact page.
-	DashboardUrl *string               `json:"dashboard_url,omitempty"`
-	Details      *InlineObject3Details `json:"details,omitempty"`
+	Error   *string               `json:"error,omitempty"`
+	Details *InlineObject3Details `json:"details,omitempty"`
 }
-
-type _InlineObject3 InlineObject3
 
 // NewInlineObject3 instantiates a new InlineObject3 object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInlineObject3(error_ string, code string, reason string) *InlineObject3 {
+func NewInlineObject3() *InlineObject3 {
 	this := InlineObject3{}
-	this.Error = error_
-	this.Code = code
-	this.Reason = reason
 	return &this
 }
 
@@ -57,140 +41,36 @@ func NewInlineObject3WithDefaults() *InlineObject3 {
 	return &this
 }
 
-// GetError returns the Error field value
+// GetError returns the Error field value if set, zero value otherwise.
 func (o *InlineObject3) GetError() string {
-	if o == nil {
+	if o == nil || IsNil(o.Error) {
 		var ret string
 		return ret
 	}
-
-	return o.Error
+	return *o.Error
 }
 
-// GetErrorOk returns a tuple with the Error field value
+// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *InlineObject3) GetErrorOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Error) {
 		return nil, false
 	}
-	return &o.Error, true
+	return o.Error, true
 }
 
-// SetError sets field value
+// HasError returns a boolean if a field has been set.
+func (o *InlineObject3) HasError() bool {
+	if o != nil && !IsNil(o.Error) {
+		return true
+	}
+
+	return false
+}
+
+// SetError gets a reference to the given string and assigns it to the Error field.
 func (o *InlineObject3) SetError(v string) {
-	o.Error = v
-}
-
-// GetCode returns the Code field value
-func (o *InlineObject3) GetCode() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Code
-}
-
-// GetCodeOk returns a tuple with the Code field value
-// and a boolean to check if the value has been set.
-func (o *InlineObject3) GetCodeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Code, true
-}
-
-// SetCode sets field value
-func (o *InlineObject3) SetCode(v string) {
-	o.Code = v
-}
-
-// GetReason returns the Reason field value
-func (o *InlineObject3) GetReason() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Reason
-}
-
-// GetReasonOk returns a tuple with the Reason field value
-// and a boolean to check if the value has been set.
-func (o *InlineObject3) GetReasonOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Reason, true
-}
-
-// SetReason sets field value
-func (o *InlineObject3) SetReason(v string) {
-	o.Reason = v
-}
-
-// GetDocumentationUrl returns the DocumentationUrl field value if set, zero value otherwise.
-func (o *InlineObject3) GetDocumentationUrl() string {
-	if o == nil || IsNil(o.DocumentationUrl) {
-		var ret string
-		return ret
-	}
-	return *o.DocumentationUrl
-}
-
-// GetDocumentationUrlOk returns a tuple with the DocumentationUrl field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *InlineObject3) GetDocumentationUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.DocumentationUrl) {
-		return nil, false
-	}
-	return o.DocumentationUrl, true
-}
-
-// HasDocumentationUrl returns a boolean if a field has been set.
-func (o *InlineObject3) HasDocumentationUrl() bool {
-	if o != nil && !IsNil(o.DocumentationUrl) {
-		return true
-	}
-
-	return false
-}
-
-// SetDocumentationUrl gets a reference to the given string and assigns it to the DocumentationUrl field.
-func (o *InlineObject3) SetDocumentationUrl(v string) {
-	o.DocumentationUrl = &v
-}
-
-// GetDashboardUrl returns the DashboardUrl field value if set, zero value otherwise.
-func (o *InlineObject3) GetDashboardUrl() string {
-	if o == nil || IsNil(o.DashboardUrl) {
-		var ret string
-		return ret
-	}
-	return *o.DashboardUrl
-}
-
-// GetDashboardUrlOk returns a tuple with the DashboardUrl field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *InlineObject3) GetDashboardUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.DashboardUrl) {
-		return nil, false
-	}
-	return o.DashboardUrl, true
-}
-
-// HasDashboardUrl returns a boolean if a field has been set.
-func (o *InlineObject3) HasDashboardUrl() bool {
-	if o != nil && !IsNil(o.DashboardUrl) {
-		return true
-	}
-
-	return false
-}
-
-// SetDashboardUrl gets a reference to the given string and assigns it to the DashboardUrl field.
-func (o *InlineObject3) SetDashboardUrl(v string) {
-	o.DashboardUrl = &v
+	o.Error = &v
 }
 
 // GetDetails returns the Details field value if set, zero value otherwise.
@@ -235,58 +115,13 @@ func (o InlineObject3) MarshalJSON() ([]byte, error) {
 
 func (o InlineObject3) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["error"] = o.Error
-	toSerialize["code"] = o.Code
-	toSerialize["reason"] = o.Reason
-	if !IsNil(o.DocumentationUrl) {
-		toSerialize["documentation_url"] = o.DocumentationUrl
-	}
-	if !IsNil(o.DashboardUrl) {
-		toSerialize["dashboard_url"] = o.DashboardUrl
+	if !IsNil(o.Error) {
+		toSerialize["error"] = o.Error
 	}
 	if !IsNil(o.Details) {
 		toSerialize["details"] = o.Details
 	}
 	return toSerialize, nil
-}
-
-func (o *InlineObject3) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"error",
-		"code",
-		"reason",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varInlineObject3 := _InlineObject3{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varInlineObject3)
-
-	if err != nil {
-		return err
-	}
-
-	*o = InlineObject3(varInlineObject3)
-
-	return err
 }
 
 type NullableInlineObject3 struct {
