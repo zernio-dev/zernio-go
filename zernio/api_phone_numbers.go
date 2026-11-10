@@ -2850,7 +2850,7 @@ Requires text or at least one attachment. Attachments are stored by us and their
 
 ### What happens next
 
-- A reply to a comment-style ask moves the number back to "in review".
+- A text reply to a comment-style ask moves the number back to "in review". A reply with only files keeps the ask open, so send the fix through the structured form or add a written answer.
 - A reply on a formal decline is supplementary, and you must still resubmit the fix.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
