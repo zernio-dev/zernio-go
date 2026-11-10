@@ -2735,7 +2735,7 @@ A pay-per-use request that finds the balance at $0 runs the auto top-up first (w
 
 When this month's auto top-ups plus the next one would pass `monthlyLimitCents`, the card is not charged and you get one email that month. At $0, pay-per-use then answers 402 `usage_limit_reached`.
 
-- 400: a field is out of range, or `toCents` is not more than $5 above `belowCents`.
+- 400: a field is out of range, `toCents` is not more than $5 above `belowCents`, or, while auto top-up is on, `monthlyLimitCents` is lower than `toCents` (one top-up from $0 would pass it, so it could never charge). Omitted fields are checked with their stored values.
 - 409 `balance_billing_required`: the account is not on the prepaid balance.
 
 Needs an owner, admin or billing admin, signed in or through a full-access key they created.

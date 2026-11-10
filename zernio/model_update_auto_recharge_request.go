@@ -26,7 +26,7 @@ type UpdateAutoRechargeRequest struct {
 	BelowCents *int32 `json:"belowCents,omitempty"`
 	// Top back up to this, in cents. More than $5 above belowCents.
 	ToCents *int32 `json:"toCents,omitempty"`
-	// Most auto top-up may add per calendar month (UTC), before tax. Null for no limit.
+	// Most auto top-up may add per calendar month (UTC), before tax. At least toCents while auto top-up is on. Null for no limit.
 	MonthlyLimitCents NullableInt32 `json:"monthlyLimitCents,omitempty"`
 	// Email the billing owner once each time the balance drops below this. Null for no email.
 	AlertBelowCents      NullableInt32 `json:"alertBelowCents,omitempty"`
