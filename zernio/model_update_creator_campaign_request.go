@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.552.0
+API version: 1.553.0
 Contact: support@zernio.com
 */
 
@@ -35,6 +35,20 @@ type UpdateCreatorCampaignRequest struct {
 	Economics         *CreatorCampaignEconomics       `json:"economics,omitempty"`
 	Caps              *CreatorCampaignCaps            `json:"caps,omitempty"`
 	Branding          NullableCreatorCampaignBranding `json:"branding,omitempty"`
+	// The page creator tracking links open. Required unless `attribution` is `code`.
+	LandingUrl NullableString `json:"landingUrl,omitempty"`
+	// What each creator's discount code takes off an order. Required unless `attribution` is `link`.
+	CodeDiscountPercent NullableInt32 `json:"codeDiscountPercent,omitempty"`
+	// manual holds creators who join through the open link as `pending` until you approve them. Personal invites are never held.
+	JoinApproval *string `json:"joinApproval,omitempty"`
+	// Creators upload a draft for review before publishing, and each submitted post must name an approved draft.
+	RequireDraftApproval *bool `json:"requireDraftApproval,omitempty"`
+	// A connected Shopify or WooCommerce store account. On `commission` and smart `retainer` economics its orders pay commission: required there, and fixed once such a campaign leaves draft.  On any campaign creators can ask for free samples of its products (`sampleProductIds`). Changing it without `sampleProductIds` clears the sample products; null removes the store and the products.
+	StoreAccountId NullableString `json:"storeAccountId,omitempty"`
+	// Product ids in the store that creators can ask a free sample of. Each is read from the store and saved as `sampleProducts`; an unknown product answers 404 `product_not_found`. Needs a store, otherwise 400 `missing_required_field` (`param: storeAccountId`).
+	SampleProductIds []string `json:"sampleProductIds,omitempty"`
+	// Days after a sample is approved before a creator with no post since shows as owing content.
+	SampleContentDueDays *int32 `json:"sampleContentDueDays,omitempty"`
 }
 
 // NewUpdateCreatorCampaignRequest instantiates a new UpdateCreatorCampaignRequest object
@@ -525,6 +539,263 @@ func (o *UpdateCreatorCampaignRequest) UnsetBranding() {
 	o.Branding.Unset()
 }
 
+// GetLandingUrl returns the LandingUrl field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateCreatorCampaignRequest) GetLandingUrl() string {
+	if o == nil || IsNil(o.LandingUrl.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.LandingUrl.Get()
+}
+
+// GetLandingUrlOk returns a tuple with the LandingUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateCreatorCampaignRequest) GetLandingUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LandingUrl.Get(), o.LandingUrl.IsSet()
+}
+
+// HasLandingUrl returns a boolean if a field has been set.
+func (o *UpdateCreatorCampaignRequest) HasLandingUrl() bool {
+	if o != nil && o.LandingUrl.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLandingUrl gets a reference to the given NullableString and assigns it to the LandingUrl field.
+func (o *UpdateCreatorCampaignRequest) SetLandingUrl(v string) {
+	o.LandingUrl.Set(&v)
+}
+
+// SetLandingUrlNil sets the value for LandingUrl to be an explicit nil
+func (o *UpdateCreatorCampaignRequest) SetLandingUrlNil() {
+	o.LandingUrl.Set(nil)
+}
+
+// UnsetLandingUrl ensures that no value is present for LandingUrl, not even an explicit nil
+func (o *UpdateCreatorCampaignRequest) UnsetLandingUrl() {
+	o.LandingUrl.Unset()
+}
+
+// GetCodeDiscountPercent returns the CodeDiscountPercent field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateCreatorCampaignRequest) GetCodeDiscountPercent() int32 {
+	if o == nil || IsNil(o.CodeDiscountPercent.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.CodeDiscountPercent.Get()
+}
+
+// GetCodeDiscountPercentOk returns a tuple with the CodeDiscountPercent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateCreatorCampaignRequest) GetCodeDiscountPercentOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CodeDiscountPercent.Get(), o.CodeDiscountPercent.IsSet()
+}
+
+// HasCodeDiscountPercent returns a boolean if a field has been set.
+func (o *UpdateCreatorCampaignRequest) HasCodeDiscountPercent() bool {
+	if o != nil && o.CodeDiscountPercent.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCodeDiscountPercent gets a reference to the given NullableInt32 and assigns it to the CodeDiscountPercent field.
+func (o *UpdateCreatorCampaignRequest) SetCodeDiscountPercent(v int32) {
+	o.CodeDiscountPercent.Set(&v)
+}
+
+// SetCodeDiscountPercentNil sets the value for CodeDiscountPercent to be an explicit nil
+func (o *UpdateCreatorCampaignRequest) SetCodeDiscountPercentNil() {
+	o.CodeDiscountPercent.Set(nil)
+}
+
+// UnsetCodeDiscountPercent ensures that no value is present for CodeDiscountPercent, not even an explicit nil
+func (o *UpdateCreatorCampaignRequest) UnsetCodeDiscountPercent() {
+	o.CodeDiscountPercent.Unset()
+}
+
+// GetJoinApproval returns the JoinApproval field value if set, zero value otherwise.
+func (o *UpdateCreatorCampaignRequest) GetJoinApproval() string {
+	if o == nil || IsNil(o.JoinApproval) {
+		var ret string
+		return ret
+	}
+	return *o.JoinApproval
+}
+
+// GetJoinApprovalOk returns a tuple with the JoinApproval field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCreatorCampaignRequest) GetJoinApprovalOk() (*string, bool) {
+	if o == nil || IsNil(o.JoinApproval) {
+		return nil, false
+	}
+	return o.JoinApproval, true
+}
+
+// HasJoinApproval returns a boolean if a field has been set.
+func (o *UpdateCreatorCampaignRequest) HasJoinApproval() bool {
+	if o != nil && !IsNil(o.JoinApproval) {
+		return true
+	}
+
+	return false
+}
+
+// SetJoinApproval gets a reference to the given string and assigns it to the JoinApproval field.
+func (o *UpdateCreatorCampaignRequest) SetJoinApproval(v string) {
+	o.JoinApproval = &v
+}
+
+// GetRequireDraftApproval returns the RequireDraftApproval field value if set, zero value otherwise.
+func (o *UpdateCreatorCampaignRequest) GetRequireDraftApproval() bool {
+	if o == nil || IsNil(o.RequireDraftApproval) {
+		var ret bool
+		return ret
+	}
+	return *o.RequireDraftApproval
+}
+
+// GetRequireDraftApprovalOk returns a tuple with the RequireDraftApproval field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCreatorCampaignRequest) GetRequireDraftApprovalOk() (*bool, bool) {
+	if o == nil || IsNil(o.RequireDraftApproval) {
+		return nil, false
+	}
+	return o.RequireDraftApproval, true
+}
+
+// HasRequireDraftApproval returns a boolean if a field has been set.
+func (o *UpdateCreatorCampaignRequest) HasRequireDraftApproval() bool {
+	if o != nil && !IsNil(o.RequireDraftApproval) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequireDraftApproval gets a reference to the given bool and assigns it to the RequireDraftApproval field.
+func (o *UpdateCreatorCampaignRequest) SetRequireDraftApproval(v bool) {
+	o.RequireDraftApproval = &v
+}
+
+// GetStoreAccountId returns the StoreAccountId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateCreatorCampaignRequest) GetStoreAccountId() string {
+	if o == nil || IsNil(o.StoreAccountId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.StoreAccountId.Get()
+}
+
+// GetStoreAccountIdOk returns a tuple with the StoreAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateCreatorCampaignRequest) GetStoreAccountIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.StoreAccountId.Get(), o.StoreAccountId.IsSet()
+}
+
+// HasStoreAccountId returns a boolean if a field has been set.
+func (o *UpdateCreatorCampaignRequest) HasStoreAccountId() bool {
+	if o != nil && o.StoreAccountId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetStoreAccountId gets a reference to the given NullableString and assigns it to the StoreAccountId field.
+func (o *UpdateCreatorCampaignRequest) SetStoreAccountId(v string) {
+	o.StoreAccountId.Set(&v)
+}
+
+// SetStoreAccountIdNil sets the value for StoreAccountId to be an explicit nil
+func (o *UpdateCreatorCampaignRequest) SetStoreAccountIdNil() {
+	o.StoreAccountId.Set(nil)
+}
+
+// UnsetStoreAccountId ensures that no value is present for StoreAccountId, not even an explicit nil
+func (o *UpdateCreatorCampaignRequest) UnsetStoreAccountId() {
+	o.StoreAccountId.Unset()
+}
+
+// GetSampleProductIds returns the SampleProductIds field value if set, zero value otherwise.
+func (o *UpdateCreatorCampaignRequest) GetSampleProductIds() []string {
+	if o == nil || IsNil(o.SampleProductIds) {
+		var ret []string
+		return ret
+	}
+	return o.SampleProductIds
+}
+
+// GetSampleProductIdsOk returns a tuple with the SampleProductIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCreatorCampaignRequest) GetSampleProductIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.SampleProductIds) {
+		return nil, false
+	}
+	return o.SampleProductIds, true
+}
+
+// HasSampleProductIds returns a boolean if a field has been set.
+func (o *UpdateCreatorCampaignRequest) HasSampleProductIds() bool {
+	if o != nil && !IsNil(o.SampleProductIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetSampleProductIds gets a reference to the given []string and assigns it to the SampleProductIds field.
+func (o *UpdateCreatorCampaignRequest) SetSampleProductIds(v []string) {
+	o.SampleProductIds = v
+}
+
+// GetSampleContentDueDays returns the SampleContentDueDays field value if set, zero value otherwise.
+func (o *UpdateCreatorCampaignRequest) GetSampleContentDueDays() int32 {
+	if o == nil || IsNil(o.SampleContentDueDays) {
+		var ret int32
+		return ret
+	}
+	return *o.SampleContentDueDays
+}
+
+// GetSampleContentDueDaysOk returns a tuple with the SampleContentDueDays field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCreatorCampaignRequest) GetSampleContentDueDaysOk() (*int32, bool) {
+	if o == nil || IsNil(o.SampleContentDueDays) {
+		return nil, false
+	}
+	return o.SampleContentDueDays, true
+}
+
+// HasSampleContentDueDays returns a boolean if a field has been set.
+func (o *UpdateCreatorCampaignRequest) HasSampleContentDueDays() bool {
+	if o != nil && !IsNil(o.SampleContentDueDays) {
+		return true
+	}
+
+	return false
+}
+
+// SetSampleContentDueDays gets a reference to the given int32 and assigns it to the SampleContentDueDays field.
+func (o *UpdateCreatorCampaignRequest) SetSampleContentDueDays(v int32) {
+	o.SampleContentDueDays = &v
+}
+
 func (o UpdateCreatorCampaignRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -573,6 +844,27 @@ func (o UpdateCreatorCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Branding.IsSet() {
 		toSerialize["branding"] = o.Branding.Get()
+	}
+	if o.LandingUrl.IsSet() {
+		toSerialize["landingUrl"] = o.LandingUrl.Get()
+	}
+	if o.CodeDiscountPercent.IsSet() {
+		toSerialize["codeDiscountPercent"] = o.CodeDiscountPercent.Get()
+	}
+	if !IsNil(o.JoinApproval) {
+		toSerialize["joinApproval"] = o.JoinApproval
+	}
+	if !IsNil(o.RequireDraftApproval) {
+		toSerialize["requireDraftApproval"] = o.RequireDraftApproval
+	}
+	if o.StoreAccountId.IsSet() {
+		toSerialize["storeAccountId"] = o.StoreAccountId.Get()
+	}
+	if !IsNil(o.SampleProductIds) {
+		toSerialize["sampleProductIds"] = o.SampleProductIds
+	}
+	if !IsNil(o.SampleContentDueDays) {
+		toSerialize["sampleContentDueDays"] = o.SampleContentDueDays
 	}
 	return toSerialize, nil
 }

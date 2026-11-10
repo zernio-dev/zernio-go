@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.552.0
+API version: 1.553.0
 Contact: support@zernio.com
 */
 
@@ -19,15 +19,24 @@ import (
 
 // CreatorPortalEconomics - How the campaign pays, without its budget. Amounts in cents. A pool campaign shows the pool size as `poolCents`.
 type CreatorPortalEconomics struct {
-	CPM     *CPM
-	PerPost *PerPost
-	Pool    *Pool
+	CPM                         *CPM
+	CreatorPortalEconomicsOneOf *CreatorPortalEconomicsOneOf
+	PerPost                     *PerPost
+	Pool                        *Pool
+	Retainer                    *Retainer
 }
 
 // CPMAsCreatorPortalEconomics is a convenience function that returns CPM wrapped in CreatorPortalEconomics
 func CPMAsCreatorPortalEconomics(v *CPM) CreatorPortalEconomics {
 	return CreatorPortalEconomics{
 		CPM: v,
+	}
+}
+
+// CreatorPortalEconomicsOneOfAsCreatorPortalEconomics is a convenience function that returns CreatorPortalEconomicsOneOf wrapped in CreatorPortalEconomics
+func CreatorPortalEconomicsOneOfAsCreatorPortalEconomics(v *CreatorPortalEconomicsOneOf) CreatorPortalEconomics {
+	return CreatorPortalEconomics{
+		CreatorPortalEconomicsOneOf: v,
 	}
 }
 
@@ -42,6 +51,13 @@ func PerPostAsCreatorPortalEconomics(v *PerPost) CreatorPortalEconomics {
 func PoolAsCreatorPortalEconomics(v *Pool) CreatorPortalEconomics {
 	return CreatorPortalEconomics{
 		Pool: v,
+	}
+}
+
+// RetainerAsCreatorPortalEconomics is a convenience function that returns Retainer wrapped in CreatorPortalEconomics
+func RetainerAsCreatorPortalEconomics(v *Retainer) CreatorPortalEconomics {
+	return CreatorPortalEconomics{
+		Retainer: v,
 	}
 }
 
@@ -64,6 +80,23 @@ func (dst *CreatorPortalEconomics) UnmarshalJSON(data []byte) error {
 		}
 	} else {
 		dst.CPM = nil
+	}
+
+	// try to unmarshal data into CreatorPortalEconomicsOneOf
+	err = newStrictDecoder(data).Decode(&dst.CreatorPortalEconomicsOneOf)
+	if err == nil {
+		jsonCreatorPortalEconomicsOneOf, _ := json.Marshal(dst.CreatorPortalEconomicsOneOf)
+		if string(jsonCreatorPortalEconomicsOneOf) == "{}" { // empty struct
+			dst.CreatorPortalEconomicsOneOf = nil
+		} else {
+			if err = validator.Validate(dst.CreatorPortalEconomicsOneOf); err != nil {
+				dst.CreatorPortalEconomicsOneOf = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.CreatorPortalEconomicsOneOf = nil
 	}
 
 	// try to unmarshal data into PerPost
@@ -100,11 +133,30 @@ func (dst *CreatorPortalEconomics) UnmarshalJSON(data []byte) error {
 		dst.Pool = nil
 	}
 
+	// try to unmarshal data into Retainer
+	err = newStrictDecoder(data).Decode(&dst.Retainer)
+	if err == nil {
+		jsonRetainer, _ := json.Marshal(dst.Retainer)
+		if string(jsonRetainer) == "{}" { // empty struct
+			dst.Retainer = nil
+		} else {
+			if err = validator.Validate(dst.Retainer); err != nil {
+				dst.Retainer = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.Retainer = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.CPM = nil
+		dst.CreatorPortalEconomicsOneOf = nil
 		dst.PerPost = nil
 		dst.Pool = nil
+		dst.Retainer = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(CreatorPortalEconomics)")
 	} else if match == 1 {
@@ -120,12 +172,20 @@ func (src CreatorPortalEconomics) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.CPM)
 	}
 
+	if src.CreatorPortalEconomicsOneOf != nil {
+		return json.Marshal(&src.CreatorPortalEconomicsOneOf)
+	}
+
 	if src.PerPost != nil {
 		return json.Marshal(&src.PerPost)
 	}
 
 	if src.Pool != nil {
 		return json.Marshal(&src.Pool)
+	}
+
+	if src.Retainer != nil {
+		return json.Marshal(&src.Retainer)
 	}
 
 	return nil, nil // no data in oneOf schemas
@@ -140,12 +200,20 @@ func (obj *CreatorPortalEconomics) GetActualInstance() interface{} {
 		return obj.CPM
 	}
 
+	if obj.CreatorPortalEconomicsOneOf != nil {
+		return obj.CreatorPortalEconomicsOneOf
+	}
+
 	if obj.PerPost != nil {
 		return obj.PerPost
 	}
 
 	if obj.Pool != nil {
 		return obj.Pool
+	}
+
+	if obj.Retainer != nil {
+		return obj.Retainer
 	}
 
 	// all schemas are nil
@@ -158,12 +226,20 @@ func (obj CreatorPortalEconomics) GetActualInstanceValue() interface{} {
 		return *obj.CPM
 	}
 
+	if obj.CreatorPortalEconomicsOneOf != nil {
+		return *obj.CreatorPortalEconomicsOneOf
+	}
+
 	if obj.PerPost != nil {
 		return *obj.PerPost
 	}
 
 	if obj.Pool != nil {
 		return *obj.Pool
+	}
+
+	if obj.Retainer != nil {
+		return *obj.Retainer
 	}
 
 	// all schemas are nil

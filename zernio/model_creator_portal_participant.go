@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.552.0
+API version: 1.553.0
 Contact: support@zernio.com
 */
 
@@ -28,9 +28,16 @@ type CreatorPortalParticipant struct {
 	// Verified accounts on the campaign's platforms.
 	Accounts []CreatorPortalParticipantAccountsInner `json:"accounts"`
 	// The latest 100 submissions.
-	Submissions []CreatorPortalSubmission        `json:"submissions"`
-	Earnings    CreatorPortalParticipantEarnings `json:"earnings"`
-	Payouts     CreatorPortalPayoutSetup         `json:"payouts"`
+	Submissions []CreatorPortalSubmission `json:"submissions"`
+	// The latest 100 draft versions, newest first. Empty on a campaign that does not review drafts.
+	Drafts []CreatorPortalDraft `json:"drafts"`
+	// Every sample request of the creator, newest first.
+	Samples  []CreatorPortalSample            `json:"samples"`
+	Earnings CreatorPortalParticipantEarnings `json:"earnings"`
+	Payouts  CreatorPortalPayoutSetup         `json:"payouts"`
+	// On a campaign that pays commission on a linked store: the creator's discount code, tracking link and the orders credited to them. Null otherwise, and for a creator who is not active.
+	Referral NullableCreatorPortalReferral            `json:"referral,omitempty"`
+	Retainer NullableCreatorPortalParticipantRetainer `json:"retainer,omitempty"`
 }
 
 type _CreatorPortalParticipant CreatorPortalParticipant
@@ -39,13 +46,15 @@ type _CreatorPortalParticipant CreatorPortalParticipant
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatorPortalParticipant(kind string, campaign CreatorPortalCampaign, participant CreatorPortalParticipantParticipant, accounts []CreatorPortalParticipantAccountsInner, submissions []CreatorPortalSubmission, earnings CreatorPortalParticipantEarnings, payouts CreatorPortalPayoutSetup) *CreatorPortalParticipant {
+func NewCreatorPortalParticipant(kind string, campaign CreatorPortalCampaign, participant CreatorPortalParticipantParticipant, accounts []CreatorPortalParticipantAccountsInner, submissions []CreatorPortalSubmission, drafts []CreatorPortalDraft, samples []CreatorPortalSample, earnings CreatorPortalParticipantEarnings, payouts CreatorPortalPayoutSetup) *CreatorPortalParticipant {
 	this := CreatorPortalParticipant{}
 	this.Kind = kind
 	this.Campaign = campaign
 	this.Participant = participant
 	this.Accounts = accounts
 	this.Submissions = submissions
+	this.Drafts = drafts
+	this.Samples = samples
 	this.Earnings = earnings
 	this.Payouts = payouts
 	return &this
@@ -179,6 +188,54 @@ func (o *CreatorPortalParticipant) SetSubmissions(v []CreatorPortalSubmission) {
 	o.Submissions = v
 }
 
+// GetDrafts returns the Drafts field value
+func (o *CreatorPortalParticipant) GetDrafts() []CreatorPortalDraft {
+	if o == nil {
+		var ret []CreatorPortalDraft
+		return ret
+	}
+
+	return o.Drafts
+}
+
+// GetDraftsOk returns a tuple with the Drafts field value
+// and a boolean to check if the value has been set.
+func (o *CreatorPortalParticipant) GetDraftsOk() ([]CreatorPortalDraft, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Drafts, true
+}
+
+// SetDrafts sets field value
+func (o *CreatorPortalParticipant) SetDrafts(v []CreatorPortalDraft) {
+	o.Drafts = v
+}
+
+// GetSamples returns the Samples field value
+func (o *CreatorPortalParticipant) GetSamples() []CreatorPortalSample {
+	if o == nil {
+		var ret []CreatorPortalSample
+		return ret
+	}
+
+	return o.Samples
+}
+
+// GetSamplesOk returns a tuple with the Samples field value
+// and a boolean to check if the value has been set.
+func (o *CreatorPortalParticipant) GetSamplesOk() ([]CreatorPortalSample, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Samples, true
+}
+
+// SetSamples sets field value
+func (o *CreatorPortalParticipant) SetSamples(v []CreatorPortalSample) {
+	o.Samples = v
+}
+
 // GetEarnings returns the Earnings field value
 func (o *CreatorPortalParticipant) GetEarnings() CreatorPortalParticipantEarnings {
 	if o == nil {
@@ -227,6 +284,92 @@ func (o *CreatorPortalParticipant) SetPayouts(v CreatorPortalPayoutSetup) {
 	o.Payouts = v
 }
 
+// GetReferral returns the Referral field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreatorPortalParticipant) GetReferral() CreatorPortalReferral {
+	if o == nil || IsNil(o.Referral.Get()) {
+		var ret CreatorPortalReferral
+		return ret
+	}
+	return *o.Referral.Get()
+}
+
+// GetReferralOk returns a tuple with the Referral field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatorPortalParticipant) GetReferralOk() (*CreatorPortalReferral, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Referral.Get(), o.Referral.IsSet()
+}
+
+// HasReferral returns a boolean if a field has been set.
+func (o *CreatorPortalParticipant) HasReferral() bool {
+	if o != nil && o.Referral.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetReferral gets a reference to the given NullableCreatorPortalReferral and assigns it to the Referral field.
+func (o *CreatorPortalParticipant) SetReferral(v CreatorPortalReferral) {
+	o.Referral.Set(&v)
+}
+
+// SetReferralNil sets the value for Referral to be an explicit nil
+func (o *CreatorPortalParticipant) SetReferralNil() {
+	o.Referral.Set(nil)
+}
+
+// UnsetReferral ensures that no value is present for Referral, not even an explicit nil
+func (o *CreatorPortalParticipant) UnsetReferral() {
+	o.Referral.Unset()
+}
+
+// GetRetainer returns the Retainer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreatorPortalParticipant) GetRetainer() CreatorPortalParticipantRetainer {
+	if o == nil || IsNil(o.Retainer.Get()) {
+		var ret CreatorPortalParticipantRetainer
+		return ret
+	}
+	return *o.Retainer.Get()
+}
+
+// GetRetainerOk returns a tuple with the Retainer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatorPortalParticipant) GetRetainerOk() (*CreatorPortalParticipantRetainer, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Retainer.Get(), o.Retainer.IsSet()
+}
+
+// HasRetainer returns a boolean if a field has been set.
+func (o *CreatorPortalParticipant) HasRetainer() bool {
+	if o != nil && o.Retainer.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRetainer gets a reference to the given NullableCreatorPortalParticipantRetainer and assigns it to the Retainer field.
+func (o *CreatorPortalParticipant) SetRetainer(v CreatorPortalParticipantRetainer) {
+	o.Retainer.Set(&v)
+}
+
+// SetRetainerNil sets the value for Retainer to be an explicit nil
+func (o *CreatorPortalParticipant) SetRetainerNil() {
+	o.Retainer.Set(nil)
+}
+
+// UnsetRetainer ensures that no value is present for Retainer, not even an explicit nil
+func (o *CreatorPortalParticipant) UnsetRetainer() {
+	o.Retainer.Unset()
+}
+
 func (o CreatorPortalParticipant) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -242,8 +385,16 @@ func (o CreatorPortalParticipant) ToMap() (map[string]interface{}, error) {
 	toSerialize["participant"] = o.Participant
 	toSerialize["accounts"] = o.Accounts
 	toSerialize["submissions"] = o.Submissions
+	toSerialize["drafts"] = o.Drafts
+	toSerialize["samples"] = o.Samples
 	toSerialize["earnings"] = o.Earnings
 	toSerialize["payouts"] = o.Payouts
+	if o.Referral.IsSet() {
+		toSerialize["referral"] = o.Referral.Get()
+	}
+	if o.Retainer.IsSet() {
+		toSerialize["retainer"] = o.Retainer.Get()
+	}
 	return toSerialize, nil
 }
 
@@ -257,6 +408,8 @@ func (o *CreatorPortalParticipant) UnmarshalJSON(data []byte) (err error) {
 		"participant",
 		"accounts",
 		"submissions",
+		"drafts",
+		"samples",
 		"earnings",
 		"payouts",
 	}

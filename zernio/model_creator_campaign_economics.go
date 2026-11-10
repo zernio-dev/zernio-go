@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.552.0
+API version: 1.553.0
 Contact: support@zernio.com
 */
 
@@ -17,11 +17,28 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// CreatorCampaignEconomics - How the campaign pays, picked by `type`. Amounts are USD cents.  Every type carries `budgetCents`, the most the campaign can pay out in total. Once earnings reach it, the campaign stops accruing and `creator_campaign.budget_exhausted` fires.  - `cpm`: `ratePer1kCents` per 1,000 of the counted `metric` (views by default), earned once a post reaches `minViewsToEarn` of it, capped per post by `maxPayoutPerClipCents`. - `per_post`: `perApprovedPostCents` for each approved post, at most `maxPostsPerParticipant` per participant. - `pool`: `budgetCents` is split at close among approved posts by eligible views; a post needs `minViewsToQualify` views to share.
+// CreatorCampaignEconomics - How the campaign pays, picked by `type`. Amounts are USD cents.  Every type carries `budgetCents`, the most the campaign can pay out in total. Once earnings reach it, the campaign stops accruing and `creator_campaign.budget_exhausted` fires.  - `cpm`: `ratePer1kCents` per 1,000 of the counted `metric` (views by default), earned once a post reaches `minViewsToEarn` of it, capped per post by `maxPayoutPerClipCents`. - `per_post`: `perApprovedPostCents` for each approved post, at most `maxPostsPerParticipant` per participant. - `pool`: `budgetCents` is split at close among approved posts by eligible views; a post needs `minViewsToQualify` views to share. - `ad_performance`: pays on the results of the ads that run each post (see `GET /v1/creator-campaigns/{campaignId}/ad-results`), counted once a day through the previous UTC day. Only Instagram, Facebook and TikTok posts. - `retainer`: `amountCents` per `period` once the creator has `requiredApprovedPosts` approved posts in it. `mode: smart` tops the period's commission up to `amountCents`. - `commission`: a share of the sales of the linked store (`storeAccountId`) credited to each creator by their discount code or tracking link.
 type CreatorCampaignEconomics struct {
-	CreatorCampaignEconomicsCpm     *CreatorCampaignEconomicsCpm
-	CreatorCampaignEconomicsPerPost *CreatorCampaignEconomicsPerPost
-	CreatorCampaignEconomicsPool    *CreatorCampaignEconomicsPool
+	CreatorCampaignEconomicsAdPerformance *CreatorCampaignEconomicsAdPerformance
+	CreatorCampaignEconomicsCommission    *CreatorCampaignEconomicsCommission
+	CreatorCampaignEconomicsCpm           *CreatorCampaignEconomicsCpm
+	CreatorCampaignEconomicsPerPost       *CreatorCampaignEconomicsPerPost
+	CreatorCampaignEconomicsPool          *CreatorCampaignEconomicsPool
+	CreatorCampaignEconomicsRetainer      *CreatorCampaignEconomicsRetainer
+}
+
+// CreatorCampaignEconomicsAdPerformanceAsCreatorCampaignEconomics is a convenience function that returns CreatorCampaignEconomicsAdPerformance wrapped in CreatorCampaignEconomics
+func CreatorCampaignEconomicsAdPerformanceAsCreatorCampaignEconomics(v *CreatorCampaignEconomicsAdPerformance) CreatorCampaignEconomics {
+	return CreatorCampaignEconomics{
+		CreatorCampaignEconomicsAdPerformance: v,
+	}
+}
+
+// CreatorCampaignEconomicsCommissionAsCreatorCampaignEconomics is a convenience function that returns CreatorCampaignEconomicsCommission wrapped in CreatorCampaignEconomics
+func CreatorCampaignEconomicsCommissionAsCreatorCampaignEconomics(v *CreatorCampaignEconomicsCommission) CreatorCampaignEconomics {
+	return CreatorCampaignEconomics{
+		CreatorCampaignEconomicsCommission: v,
+	}
 }
 
 // CreatorCampaignEconomicsCpmAsCreatorCampaignEconomics is a convenience function that returns CreatorCampaignEconomicsCpm wrapped in CreatorCampaignEconomics
@@ -45,10 +62,51 @@ func CreatorCampaignEconomicsPoolAsCreatorCampaignEconomics(v *CreatorCampaignEc
 	}
 }
 
+// CreatorCampaignEconomicsRetainerAsCreatorCampaignEconomics is a convenience function that returns CreatorCampaignEconomicsRetainer wrapped in CreatorCampaignEconomics
+func CreatorCampaignEconomicsRetainerAsCreatorCampaignEconomics(v *CreatorCampaignEconomicsRetainer) CreatorCampaignEconomics {
+	return CreatorCampaignEconomics{
+		CreatorCampaignEconomicsRetainer: v,
+	}
+}
+
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *CreatorCampaignEconomics) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
+	// try to unmarshal data into CreatorCampaignEconomicsAdPerformance
+	err = newStrictDecoder(data).Decode(&dst.CreatorCampaignEconomicsAdPerformance)
+	if err == nil {
+		jsonCreatorCampaignEconomicsAdPerformance, _ := json.Marshal(dst.CreatorCampaignEconomicsAdPerformance)
+		if string(jsonCreatorCampaignEconomicsAdPerformance) == "{}" { // empty struct
+			dst.CreatorCampaignEconomicsAdPerformance = nil
+		} else {
+			if err = validator.Validate(dst.CreatorCampaignEconomicsAdPerformance); err != nil {
+				dst.CreatorCampaignEconomicsAdPerformance = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.CreatorCampaignEconomicsAdPerformance = nil
+	}
+
+	// try to unmarshal data into CreatorCampaignEconomicsCommission
+	err = newStrictDecoder(data).Decode(&dst.CreatorCampaignEconomicsCommission)
+	if err == nil {
+		jsonCreatorCampaignEconomicsCommission, _ := json.Marshal(dst.CreatorCampaignEconomicsCommission)
+		if string(jsonCreatorCampaignEconomicsCommission) == "{}" { // empty struct
+			dst.CreatorCampaignEconomicsCommission = nil
+		} else {
+			if err = validator.Validate(dst.CreatorCampaignEconomicsCommission); err != nil {
+				dst.CreatorCampaignEconomicsCommission = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.CreatorCampaignEconomicsCommission = nil
+	}
+
 	// try to unmarshal data into CreatorCampaignEconomicsCpm
 	err = newStrictDecoder(data).Decode(&dst.CreatorCampaignEconomicsCpm)
 	if err == nil {
@@ -100,11 +158,31 @@ func (dst *CreatorCampaignEconomics) UnmarshalJSON(data []byte) error {
 		dst.CreatorCampaignEconomicsPool = nil
 	}
 
+	// try to unmarshal data into CreatorCampaignEconomicsRetainer
+	err = newStrictDecoder(data).Decode(&dst.CreatorCampaignEconomicsRetainer)
+	if err == nil {
+		jsonCreatorCampaignEconomicsRetainer, _ := json.Marshal(dst.CreatorCampaignEconomicsRetainer)
+		if string(jsonCreatorCampaignEconomicsRetainer) == "{}" { // empty struct
+			dst.CreatorCampaignEconomicsRetainer = nil
+		} else {
+			if err = validator.Validate(dst.CreatorCampaignEconomicsRetainer); err != nil {
+				dst.CreatorCampaignEconomicsRetainer = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.CreatorCampaignEconomicsRetainer = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
+		dst.CreatorCampaignEconomicsAdPerformance = nil
+		dst.CreatorCampaignEconomicsCommission = nil
 		dst.CreatorCampaignEconomicsCpm = nil
 		dst.CreatorCampaignEconomicsPerPost = nil
 		dst.CreatorCampaignEconomicsPool = nil
+		dst.CreatorCampaignEconomicsRetainer = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(CreatorCampaignEconomics)")
 	} else if match == 1 {
@@ -116,6 +194,14 @@ func (dst *CreatorCampaignEconomics) UnmarshalJSON(data []byte) error {
 
 // Marshal data from the first non-nil pointers in the struct to JSON
 func (src CreatorCampaignEconomics) MarshalJSON() ([]byte, error) {
+	if src.CreatorCampaignEconomicsAdPerformance != nil {
+		return json.Marshal(&src.CreatorCampaignEconomicsAdPerformance)
+	}
+
+	if src.CreatorCampaignEconomicsCommission != nil {
+		return json.Marshal(&src.CreatorCampaignEconomicsCommission)
+	}
+
 	if src.CreatorCampaignEconomicsCpm != nil {
 		return json.Marshal(&src.CreatorCampaignEconomicsCpm)
 	}
@@ -128,6 +214,10 @@ func (src CreatorCampaignEconomics) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.CreatorCampaignEconomicsPool)
 	}
 
+	if src.CreatorCampaignEconomicsRetainer != nil {
+		return json.Marshal(&src.CreatorCampaignEconomicsRetainer)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -136,6 +226,14 @@ func (obj *CreatorCampaignEconomics) GetActualInstance() interface{} {
 	if obj == nil {
 		return nil
 	}
+	if obj.CreatorCampaignEconomicsAdPerformance != nil {
+		return obj.CreatorCampaignEconomicsAdPerformance
+	}
+
+	if obj.CreatorCampaignEconomicsCommission != nil {
+		return obj.CreatorCampaignEconomicsCommission
+	}
+
 	if obj.CreatorCampaignEconomicsCpm != nil {
 		return obj.CreatorCampaignEconomicsCpm
 	}
@@ -148,12 +246,24 @@ func (obj *CreatorCampaignEconomics) GetActualInstance() interface{} {
 		return obj.CreatorCampaignEconomicsPool
 	}
 
+	if obj.CreatorCampaignEconomicsRetainer != nil {
+		return obj.CreatorCampaignEconomicsRetainer
+	}
+
 	// all schemas are nil
 	return nil
 }
 
 // Get the actual instance value
 func (obj CreatorCampaignEconomics) GetActualInstanceValue() interface{} {
+	if obj.CreatorCampaignEconomicsAdPerformance != nil {
+		return *obj.CreatorCampaignEconomicsAdPerformance
+	}
+
+	if obj.CreatorCampaignEconomicsCommission != nil {
+		return *obj.CreatorCampaignEconomicsCommission
+	}
+
 	if obj.CreatorCampaignEconomicsCpm != nil {
 		return *obj.CreatorCampaignEconomicsCpm
 	}
@@ -164,6 +274,10 @@ func (obj CreatorCampaignEconomics) GetActualInstanceValue() interface{} {
 
 	if obj.CreatorCampaignEconomicsPool != nil {
 		return *obj.CreatorCampaignEconomicsPool
+	}
+
+	if obj.CreatorCampaignEconomicsRetainer != nil {
+		return *obj.CreatorCampaignEconomicsRetainer
 	}
 
 	// all schemas are nil

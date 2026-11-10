@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.552.0
+API version: 1.553.0
 Contact: support@zernio.com
 */
 
@@ -23,13 +23,15 @@ var _ MappedNullable = &CreatorPortalSubmission{}
 
 // CreatorPortalSubmission struct for CreatorPortalSubmission
 type CreatorPortalSubmission struct {
-	Id          string         `json:"id"`
-	Platform    string         `json:"platform"`
-	PostId      string         `json:"postId"`
-	Url         NullableString `json:"url"`
-	Status      string         `json:"status"`
-	SubmittedAt time.Time      `json:"submittedAt"`
-	PublishedAt NullableTime   `json:"publishedAt"`
+	Id       string `json:"id"`
+	Platform string `json:"platform"`
+	PostId   string `json:"postId"`
+	// A TikTok post whose Spark code the creator pasted, so the brand can run it as a Spark Ad. The code itself is never returned.
+	HasSparkCode bool           `json:"hasSparkCode"`
+	Url          NullableString `json:"url"`
+	Status       string         `json:"status"`
+	SubmittedAt  time.Time      `json:"submittedAt"`
+	PublishedAt  NullableTime   `json:"publishedAt"`
 	// Latest view count read for the post.
 	Views int32 `json:"views"`
 	// The campaign engagement types summed at the latest read. Null until the post is read.
@@ -41,6 +43,8 @@ type CreatorPortalSubmission struct {
 	// Creator-safe flags only. Every other review flag shows as `under_review`.
 	Flags          []string     `json:"flags"`
 	TrackingEndsAt NullableTime `json:"trackingEndsAt"`
+	// The approved draft this post publishes.
+	DraftId NullableString `json:"draftId"`
 }
 
 type _CreatorPortalSubmission CreatorPortalSubmission
@@ -49,11 +53,12 @@ type _CreatorPortalSubmission CreatorPortalSubmission
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatorPortalSubmission(id string, platform string, postId string, url NullableString, status string, submittedAt time.Time, publishedAt NullableTime, views int32, engagements NullableInt32, viewsFromAds NullableInt32, earnedCents int32, rejectReason NullableString, flags []string, trackingEndsAt NullableTime) *CreatorPortalSubmission {
+func NewCreatorPortalSubmission(id string, platform string, postId string, hasSparkCode bool, url NullableString, status string, submittedAt time.Time, publishedAt NullableTime, views int32, engagements NullableInt32, viewsFromAds NullableInt32, earnedCents int32, rejectReason NullableString, flags []string, trackingEndsAt NullableTime, draftId NullableString) *CreatorPortalSubmission {
 	this := CreatorPortalSubmission{}
 	this.Id = id
 	this.Platform = platform
 	this.PostId = postId
+	this.HasSparkCode = hasSparkCode
 	this.Url = url
 	this.Status = status
 	this.SubmittedAt = submittedAt
@@ -65,6 +70,7 @@ func NewCreatorPortalSubmission(id string, platform string, postId string, url N
 	this.RejectReason = rejectReason
 	this.Flags = flags
 	this.TrackingEndsAt = trackingEndsAt
+	this.DraftId = draftId
 	return &this
 }
 
@@ -146,6 +152,30 @@ func (o *CreatorPortalSubmission) GetPostIdOk() (*string, bool) {
 // SetPostId sets field value
 func (o *CreatorPortalSubmission) SetPostId(v string) {
 	o.PostId = v
+}
+
+// GetHasSparkCode returns the HasSparkCode field value
+func (o *CreatorPortalSubmission) GetHasSparkCode() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.HasSparkCode
+}
+
+// GetHasSparkCodeOk returns a tuple with the HasSparkCode field value
+// and a boolean to check if the value has been set.
+func (o *CreatorPortalSubmission) GetHasSparkCodeOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.HasSparkCode, true
+}
+
+// SetHasSparkCode sets field value
+func (o *CreatorPortalSubmission) SetHasSparkCode(v bool) {
+	o.HasSparkCode = v
 }
 
 // GetUrl returns the Url field value
@@ -424,6 +454,32 @@ func (o *CreatorPortalSubmission) SetTrackingEndsAt(v time.Time) {
 	o.TrackingEndsAt.Set(&v)
 }
 
+// GetDraftId returns the DraftId field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *CreatorPortalSubmission) GetDraftId() string {
+	if o == nil || o.DraftId.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.DraftId.Get()
+}
+
+// GetDraftIdOk returns a tuple with the DraftId field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatorPortalSubmission) GetDraftIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DraftId.Get(), o.DraftId.IsSet()
+}
+
+// SetDraftId sets field value
+func (o *CreatorPortalSubmission) SetDraftId(v string) {
+	o.DraftId.Set(&v)
+}
+
 func (o CreatorPortalSubmission) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -437,6 +493,7 @@ func (o CreatorPortalSubmission) ToMap() (map[string]interface{}, error) {
 	toSerialize["id"] = o.Id
 	toSerialize["platform"] = o.Platform
 	toSerialize["postId"] = o.PostId
+	toSerialize["hasSparkCode"] = o.HasSparkCode
 	toSerialize["url"] = o.Url.Get()
 	toSerialize["status"] = o.Status
 	toSerialize["submittedAt"] = o.SubmittedAt
@@ -448,6 +505,7 @@ func (o CreatorPortalSubmission) ToMap() (map[string]interface{}, error) {
 	toSerialize["rejectReason"] = o.RejectReason.Get()
 	toSerialize["flags"] = o.Flags
 	toSerialize["trackingEndsAt"] = o.TrackingEndsAt.Get()
+	toSerialize["draftId"] = o.DraftId.Get()
 	return toSerialize, nil
 }
 
@@ -459,6 +517,7 @@ func (o *CreatorPortalSubmission) UnmarshalJSON(data []byte) (err error) {
 		"id",
 		"platform",
 		"postId",
+		"hasSparkCode",
 		"url",
 		"status",
 		"submittedAt",
@@ -470,6 +529,7 @@ func (o *CreatorPortalSubmission) UnmarshalJSON(data []byte) (err error) {
 		"rejectReason",
 		"flags",
 		"trackingEndsAt",
+		"draftId",
 	}
 
 	allProperties := make(map[string]interface{})

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.552.0
+API version: 1.553.0
 Contact: support@zernio.com
 */
 
@@ -59,8 +59,18 @@ type CreatorCampaign struct {
 	ClosedAt          NullableTime                    `json:"closedAt"`
 	// Internal watermark of the payable scan.
 	PayableScannedAt NullableTime `json:"payableScannedAt"`
-	CreatedAt        time.Time    `json:"createdAt"`
-	UpdatedAt        time.Time    `json:"updatedAt"`
+	// auto: creators who join through the open link are active at once. manual: they land `pending` until you approve or deny them. Personal invites are never held.
+	JoinApproval string `json:"joinApproval"`
+	// Creators upload a draft for review first, and submit the live post for an approved draft (`draftId`).
+	RequireDraftApproval bool `json:"requireDraftApproval"`
+	// The connected store (Shopify or WooCommerce) whose orders pay commission and whose products creators can ask as samples. Null when the campaign has neither.
+	StoreAccountId NullableString `json:"storeAccountId"`
+	// Products creators can ask a free sample of.
+	SampleProducts []CreatorCampaignSampleProduct `json:"sampleProducts"`
+	// Days after a sample is approved before a creator with no post since shows as owing content (`contentOwed`).
+	SampleContentDueDays int32     `json:"sampleContentDueDays"`
+	CreatedAt            time.Time `json:"createdAt"`
+	UpdatedAt            time.Time `json:"updatedAt"`
 	// True once an open invite link was created. The link itself is returned only when it is created.
 	HasOpenInvite bool `json:"hasOpenInvite"`
 	// Budget used so far: earnings accrued, approved or adjusted against the campaign.
@@ -69,6 +79,14 @@ type CreatorCampaign struct {
 	SubmissionCounts CampaignSubmissionCounts `json:"submissionCounts"`
 	// What the campaign's creators can be paid now, summed over every participant's payable balance.
 	PayableCents int32 `json:"payableCents"`
+	// The page creator tracking links open.
+	LandingUrl NullableString `json:"landingUrl,omitempty"`
+	// What each creator discount code takes off.
+	CodeDiscountPercent NullableInt32 `json:"codeDiscountPercent,omitempty"`
+	// Creators who asked to join through the open link and wait for a decision. Not counted in `participantCount`.
+	PendingParticipantCount int32                `json:"pendingParticipantCount"`
+	DraftCounts             CampaignDraftCounts  `json:"draftCounts"`
+	SampleCounts            CampaignSampleCounts `json:"sampleCounts"`
 }
 
 type _CreatorCampaign CreatorCampaign
@@ -77,7 +95,7 @@ type _CreatorCampaign CreatorCampaign
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatorCampaign(id string, userId string, profileId string, kind string, name string, brandName string, status string, type_ string, currency string, platforms []string, contentRules NullableString, startsAt NullableTime, endsAt NullableTime, trackingDays int32, holdDays int32, maxPostAgeMinutes NullableInt32, activatedAt NullableTime, settlement string, economics CreatorCampaignEconomics, caps CreatorCampaignCaps, branding NullableCreatorCampaignBranding, budgetExhaustedAt NullableTime, closedAt NullableTime, payableScannedAt NullableTime, createdAt time.Time, updatedAt time.Time, hasOpenInvite bool, consumedCents int32, participantCount int32, submissionCounts CampaignSubmissionCounts, payableCents int32) *CreatorCampaign {
+func NewCreatorCampaign(id string, userId string, profileId string, kind string, name string, brandName string, status string, type_ string, currency string, platforms []string, contentRules NullableString, startsAt NullableTime, endsAt NullableTime, trackingDays int32, holdDays int32, maxPostAgeMinutes NullableInt32, activatedAt NullableTime, settlement string, economics CreatorCampaignEconomics, caps CreatorCampaignCaps, branding NullableCreatorCampaignBranding, budgetExhaustedAt NullableTime, closedAt NullableTime, payableScannedAt NullableTime, joinApproval string, requireDraftApproval bool, storeAccountId NullableString, sampleProducts []CreatorCampaignSampleProduct, sampleContentDueDays int32, createdAt time.Time, updatedAt time.Time, hasOpenInvite bool, consumedCents int32, participantCount int32, submissionCounts CampaignSubmissionCounts, payableCents int32, pendingParticipantCount int32, draftCounts CampaignDraftCounts, sampleCounts CampaignSampleCounts) *CreatorCampaign {
 	this := CreatorCampaign{}
 	this.Id = id
 	this.UserId = userId
@@ -103,6 +121,11 @@ func NewCreatorCampaign(id string, userId string, profileId string, kind string,
 	this.BudgetExhaustedAt = budgetExhaustedAt
 	this.ClosedAt = closedAt
 	this.PayableScannedAt = payableScannedAt
+	this.JoinApproval = joinApproval
+	this.RequireDraftApproval = requireDraftApproval
+	this.StoreAccountId = storeAccountId
+	this.SampleProducts = sampleProducts
+	this.SampleContentDueDays = sampleContentDueDays
 	this.CreatedAt = createdAt
 	this.UpdatedAt = updatedAt
 	this.HasOpenInvite = hasOpenInvite
@@ -110,6 +133,9 @@ func NewCreatorCampaign(id string, userId string, profileId string, kind string,
 	this.ParticipantCount = participantCount
 	this.SubmissionCounts = submissionCounts
 	this.PayableCents = payableCents
+	this.PendingParticipantCount = pendingParticipantCount
+	this.DraftCounts = draftCounts
+	this.SampleCounts = sampleCounts
 	return &this
 }
 
@@ -715,6 +741,128 @@ func (o *CreatorCampaign) SetPayableScannedAt(v time.Time) {
 	o.PayableScannedAt.Set(&v)
 }
 
+// GetJoinApproval returns the JoinApproval field value
+func (o *CreatorCampaign) GetJoinApproval() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.JoinApproval
+}
+
+// GetJoinApprovalOk returns a tuple with the JoinApproval field value
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaign) GetJoinApprovalOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.JoinApproval, true
+}
+
+// SetJoinApproval sets field value
+func (o *CreatorCampaign) SetJoinApproval(v string) {
+	o.JoinApproval = v
+}
+
+// GetRequireDraftApproval returns the RequireDraftApproval field value
+func (o *CreatorCampaign) GetRequireDraftApproval() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.RequireDraftApproval
+}
+
+// GetRequireDraftApprovalOk returns a tuple with the RequireDraftApproval field value
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaign) GetRequireDraftApprovalOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.RequireDraftApproval, true
+}
+
+// SetRequireDraftApproval sets field value
+func (o *CreatorCampaign) SetRequireDraftApproval(v bool) {
+	o.RequireDraftApproval = v
+}
+
+// GetStoreAccountId returns the StoreAccountId field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *CreatorCampaign) GetStoreAccountId() string {
+	if o == nil || o.StoreAccountId.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.StoreAccountId.Get()
+}
+
+// GetStoreAccountIdOk returns a tuple with the StoreAccountId field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatorCampaign) GetStoreAccountIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.StoreAccountId.Get(), o.StoreAccountId.IsSet()
+}
+
+// SetStoreAccountId sets field value
+func (o *CreatorCampaign) SetStoreAccountId(v string) {
+	o.StoreAccountId.Set(&v)
+}
+
+// GetSampleProducts returns the SampleProducts field value
+func (o *CreatorCampaign) GetSampleProducts() []CreatorCampaignSampleProduct {
+	if o == nil {
+		var ret []CreatorCampaignSampleProduct
+		return ret
+	}
+
+	return o.SampleProducts
+}
+
+// GetSampleProductsOk returns a tuple with the SampleProducts field value
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaign) GetSampleProductsOk() ([]CreatorCampaignSampleProduct, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SampleProducts, true
+}
+
+// SetSampleProducts sets field value
+func (o *CreatorCampaign) SetSampleProducts(v []CreatorCampaignSampleProduct) {
+	o.SampleProducts = v
+}
+
+// GetSampleContentDueDays returns the SampleContentDueDays field value
+func (o *CreatorCampaign) GetSampleContentDueDays() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.SampleContentDueDays
+}
+
+// GetSampleContentDueDaysOk returns a tuple with the SampleContentDueDays field value
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaign) GetSampleContentDueDaysOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.SampleContentDueDays, true
+}
+
+// SetSampleContentDueDays sets field value
+func (o *CreatorCampaign) SetSampleContentDueDays(v int32) {
+	o.SampleContentDueDays = v
+}
+
 // GetCreatedAt returns the CreatedAt field value
 func (o *CreatorCampaign) GetCreatedAt() time.Time {
 	if o == nil {
@@ -883,6 +1031,164 @@ func (o *CreatorCampaign) SetPayableCents(v int32) {
 	o.PayableCents = v
 }
 
+// GetLandingUrl returns the LandingUrl field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreatorCampaign) GetLandingUrl() string {
+	if o == nil || IsNil(o.LandingUrl.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.LandingUrl.Get()
+}
+
+// GetLandingUrlOk returns a tuple with the LandingUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatorCampaign) GetLandingUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LandingUrl.Get(), o.LandingUrl.IsSet()
+}
+
+// HasLandingUrl returns a boolean if a field has been set.
+func (o *CreatorCampaign) HasLandingUrl() bool {
+	if o != nil && o.LandingUrl.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLandingUrl gets a reference to the given NullableString and assigns it to the LandingUrl field.
+func (o *CreatorCampaign) SetLandingUrl(v string) {
+	o.LandingUrl.Set(&v)
+}
+
+// SetLandingUrlNil sets the value for LandingUrl to be an explicit nil
+func (o *CreatorCampaign) SetLandingUrlNil() {
+	o.LandingUrl.Set(nil)
+}
+
+// UnsetLandingUrl ensures that no value is present for LandingUrl, not even an explicit nil
+func (o *CreatorCampaign) UnsetLandingUrl() {
+	o.LandingUrl.Unset()
+}
+
+// GetCodeDiscountPercent returns the CodeDiscountPercent field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreatorCampaign) GetCodeDiscountPercent() int32 {
+	if o == nil || IsNil(o.CodeDiscountPercent.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.CodeDiscountPercent.Get()
+}
+
+// GetCodeDiscountPercentOk returns a tuple with the CodeDiscountPercent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatorCampaign) GetCodeDiscountPercentOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CodeDiscountPercent.Get(), o.CodeDiscountPercent.IsSet()
+}
+
+// HasCodeDiscountPercent returns a boolean if a field has been set.
+func (o *CreatorCampaign) HasCodeDiscountPercent() bool {
+	if o != nil && o.CodeDiscountPercent.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCodeDiscountPercent gets a reference to the given NullableInt32 and assigns it to the CodeDiscountPercent field.
+func (o *CreatorCampaign) SetCodeDiscountPercent(v int32) {
+	o.CodeDiscountPercent.Set(&v)
+}
+
+// SetCodeDiscountPercentNil sets the value for CodeDiscountPercent to be an explicit nil
+func (o *CreatorCampaign) SetCodeDiscountPercentNil() {
+	o.CodeDiscountPercent.Set(nil)
+}
+
+// UnsetCodeDiscountPercent ensures that no value is present for CodeDiscountPercent, not even an explicit nil
+func (o *CreatorCampaign) UnsetCodeDiscountPercent() {
+	o.CodeDiscountPercent.Unset()
+}
+
+// GetPendingParticipantCount returns the PendingParticipantCount field value
+func (o *CreatorCampaign) GetPendingParticipantCount() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.PendingParticipantCount
+}
+
+// GetPendingParticipantCountOk returns a tuple with the PendingParticipantCount field value
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaign) GetPendingParticipantCountOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.PendingParticipantCount, true
+}
+
+// SetPendingParticipantCount sets field value
+func (o *CreatorCampaign) SetPendingParticipantCount(v int32) {
+	o.PendingParticipantCount = v
+}
+
+// GetDraftCounts returns the DraftCounts field value
+func (o *CreatorCampaign) GetDraftCounts() CampaignDraftCounts {
+	if o == nil {
+		var ret CampaignDraftCounts
+		return ret
+	}
+
+	return o.DraftCounts
+}
+
+// GetDraftCountsOk returns a tuple with the DraftCounts field value
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaign) GetDraftCountsOk() (*CampaignDraftCounts, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.DraftCounts, true
+}
+
+// SetDraftCounts sets field value
+func (o *CreatorCampaign) SetDraftCounts(v CampaignDraftCounts) {
+	o.DraftCounts = v
+}
+
+// GetSampleCounts returns the SampleCounts field value
+func (o *CreatorCampaign) GetSampleCounts() CampaignSampleCounts {
+	if o == nil {
+		var ret CampaignSampleCounts
+		return ret
+	}
+
+	return o.SampleCounts
+}
+
+// GetSampleCountsOk returns a tuple with the SampleCounts field value
+// and a boolean to check if the value has been set.
+func (o *CreatorCampaign) GetSampleCountsOk() (*CampaignSampleCounts, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.SampleCounts, true
+}
+
+// SetSampleCounts sets field value
+func (o *CreatorCampaign) SetSampleCounts(v CampaignSampleCounts) {
+	o.SampleCounts = v
+}
+
 func (o CreatorCampaign) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -917,6 +1223,11 @@ func (o CreatorCampaign) ToMap() (map[string]interface{}, error) {
 	toSerialize["budgetExhaustedAt"] = o.BudgetExhaustedAt.Get()
 	toSerialize["closedAt"] = o.ClosedAt.Get()
 	toSerialize["payableScannedAt"] = o.PayableScannedAt.Get()
+	toSerialize["joinApproval"] = o.JoinApproval
+	toSerialize["requireDraftApproval"] = o.RequireDraftApproval
+	toSerialize["storeAccountId"] = o.StoreAccountId.Get()
+	toSerialize["sampleProducts"] = o.SampleProducts
+	toSerialize["sampleContentDueDays"] = o.SampleContentDueDays
 	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["updatedAt"] = o.UpdatedAt
 	toSerialize["hasOpenInvite"] = o.HasOpenInvite
@@ -924,6 +1235,15 @@ func (o CreatorCampaign) ToMap() (map[string]interface{}, error) {
 	toSerialize["participantCount"] = o.ParticipantCount
 	toSerialize["submissionCounts"] = o.SubmissionCounts
 	toSerialize["payableCents"] = o.PayableCents
+	if o.LandingUrl.IsSet() {
+		toSerialize["landingUrl"] = o.LandingUrl.Get()
+	}
+	if o.CodeDiscountPercent.IsSet() {
+		toSerialize["codeDiscountPercent"] = o.CodeDiscountPercent.Get()
+	}
+	toSerialize["pendingParticipantCount"] = o.PendingParticipantCount
+	toSerialize["draftCounts"] = o.DraftCounts
+	toSerialize["sampleCounts"] = o.SampleCounts
 	return toSerialize, nil
 }
 
@@ -956,6 +1276,11 @@ func (o *CreatorCampaign) UnmarshalJSON(data []byte) (err error) {
 		"budgetExhaustedAt",
 		"closedAt",
 		"payableScannedAt",
+		"joinApproval",
+		"requireDraftApproval",
+		"storeAccountId",
+		"sampleProducts",
+		"sampleContentDueDays",
 		"createdAt",
 		"updatedAt",
 		"hasOpenInvite",
@@ -963,6 +1288,9 @@ func (o *CreatorCampaign) UnmarshalJSON(data []byte) (err error) {
 		"participantCount",
 		"submissionCounts",
 		"payableCents",
+		"pendingParticipantCount",
+		"draftCounts",
+		"sampleCounts",
 	}
 
 	allProperties := make(map[string]interface{})

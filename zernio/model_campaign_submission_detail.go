@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.552.0
+API version: 1.553.0
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,9 @@ type CampaignSubmissionDetail struct {
 	ParticipantId string `json:"participantId"`
 	CreatorId     string `json:"creatorId"`
 	// The creator account the post was published from.
-	AccountId       string `json:"accountId"`
+	AccountId string `json:"accountId"`
+	// The creator pasted a TikTok Spark code for this post, so it can launch as a Spark Ad. The code itself is never returned.
+	HasSparkCode    *bool  `json:"hasSparkCode,omitempty"`
 	Platform        string `json:"platform"`
 	PlatformPostId  string `json:"platformPostId"`
 	PlatformPostUrl string `json:"platformPostUrl"`
@@ -56,17 +58,19 @@ type CampaignSubmissionDetail struct {
 	// Views from ads the creator ran: YouTube views from the advertising traffic source, X impressions beyond the organic ones. Null on other platforms and before the first read. On an organic-only campaign `viewsEligible` is the latest views minus these.
 	ViewsPaid int32 `json:"viewsPaid"`
 	// When `viewsPaid` was last read. YouTube refreshes every 6 hours and reports ad views up to 2 days late; X about once a day while the post is under 30 days old.
-	PaidViewsReadAt        time.Time                               `json:"paidViewsReadAt"`
-	LastAccruedViews       int32                                   `json:"lastAccruedViews"`
-	AccruedCents           int32                                   `json:"accruedCents"`
-	ApprovedCents          int32                                   `json:"approvedCents"`
-	AuthenticityScore      int32                                   `json:"authenticityScore"`
-	AuthenticityConfidence float32                                 `json:"authenticityConfidence"`
-	Flags                  []CampaignSubmissionFlag                `json:"flags"`
-	CreatedAt              time.Time                               `json:"createdAt"`
-	UpdatedAt              time.Time                               `json:"updatedAt"`
-	Creator                WebhookPayloadCampaignSubmissionCreator `json:"creator"`
-	Authenticity           CampaignSubmissionAuthenticity          `json:"authenticity"`
+	PaidViewsReadAt        time.Time                `json:"paidViewsReadAt"`
+	LastAccruedViews       int32                    `json:"lastAccruedViews"`
+	AccruedCents           int32                    `json:"accruedCents"`
+	ApprovedCents          int32                    `json:"approvedCents"`
+	AuthenticityScore      int32                    `json:"authenticityScore"`
+	AuthenticityConfidence float32                  `json:"authenticityConfidence"`
+	Flags                  []CampaignSubmissionFlag `json:"flags"`
+	// The approved draft this post publishes, on a campaign with `requireDraftApproval`.
+	DraftId      string                                          `json:"draftId"`
+	CreatedAt    time.Time                                       `json:"createdAt"`
+	UpdatedAt    time.Time                                       `json:"updatedAt"`
+	Creator      CreatorCampaignAdResultsSubmissionsInnerCreator `json:"creator"`
+	Authenticity CampaignSubmissionAuthenticity                  `json:"authenticity"`
 	// approvedCents once approved, otherwise accruedCents.
 	EarnedCents int32 `json:"earnedCents"`
 	// Approved cents whose hold is over, so payable or already paid out. 0 unless approved.
@@ -85,7 +89,7 @@ type _CampaignSubmissionDetail CampaignSubmissionDetail
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCampaignSubmissionDetail(id string, campaignId string, participantId string, creatorId string, accountId string, platform string, platformPostId string, platformPostUrl string, externalPostId string, trackingWindowId string, mediaHash string, submittedAt time.Time, postPublishedAt time.Time, status string, rejectReason string, reviewRound int32, reviewedBy string, reviewedAt time.Time, viewsAtSubmission int32, viewsLatest int32, viewsEligible int32, engagementsLatest int32, viewsPaid int32, paidViewsReadAt time.Time, lastAccruedViews int32, accruedCents int32, approvedCents int32, authenticityScore int32, authenticityConfidence float32, flags []CampaignSubmissionFlag, createdAt time.Time, updatedAt time.Time, creator WebhookPayloadCampaignSubmissionCreator, authenticity CampaignSubmissionAuthenticity, earnedCents int32, releasedCents int32, paidOutCents int32, window CampaignSubmissionWindow, post CampaignSubmissionPost, samples []CampaignSubmissionDetailAllOfSamples) *CampaignSubmissionDetail {
+func NewCampaignSubmissionDetail(id string, campaignId string, participantId string, creatorId string, accountId string, platform string, platformPostId string, platformPostUrl string, externalPostId string, trackingWindowId string, mediaHash string, submittedAt time.Time, postPublishedAt time.Time, status string, rejectReason string, reviewRound int32, reviewedBy string, reviewedAt time.Time, viewsAtSubmission int32, viewsLatest int32, viewsEligible int32, engagementsLatest int32, viewsPaid int32, paidViewsReadAt time.Time, lastAccruedViews int32, accruedCents int32, approvedCents int32, authenticityScore int32, authenticityConfidence float32, flags []CampaignSubmissionFlag, draftId string, createdAt time.Time, updatedAt time.Time, creator CreatorCampaignAdResultsSubmissionsInnerCreator, authenticity CampaignSubmissionAuthenticity, earnedCents int32, releasedCents int32, paidOutCents int32, window CampaignSubmissionWindow, post CampaignSubmissionPost, samples []CampaignSubmissionDetailAllOfSamples) *CampaignSubmissionDetail {
 	this := CampaignSubmissionDetail{}
 	this.Id = id
 	this.CampaignId = campaignId
@@ -117,6 +121,7 @@ func NewCampaignSubmissionDetail(id string, campaignId string, participantId str
 	this.AuthenticityScore = authenticityScore
 	this.AuthenticityConfidence = authenticityConfidence
 	this.Flags = flags
+	this.DraftId = draftId
 	this.CreatedAt = createdAt
 	this.UpdatedAt = updatedAt
 	this.Creator = creator
@@ -256,6 +261,38 @@ func (o *CampaignSubmissionDetail) GetAccountIdOk() (*string, bool) {
 // SetAccountId sets field value
 func (o *CampaignSubmissionDetail) SetAccountId(v string) {
 	o.AccountId = v
+}
+
+// GetHasSparkCode returns the HasSparkCode field value if set, zero value otherwise.
+func (o *CampaignSubmissionDetail) GetHasSparkCode() bool {
+	if o == nil || IsNil(o.HasSparkCode) {
+		var ret bool
+		return ret
+	}
+	return *o.HasSparkCode
+}
+
+// GetHasSparkCodeOk returns a tuple with the HasSparkCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CampaignSubmissionDetail) GetHasSparkCodeOk() (*bool, bool) {
+	if o == nil || IsNil(o.HasSparkCode) {
+		return nil, false
+	}
+	return o.HasSparkCode, true
+}
+
+// HasHasSparkCode returns a boolean if a field has been set.
+func (o *CampaignSubmissionDetail) HasHasSparkCode() bool {
+	if o != nil && !IsNil(o.HasSparkCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetHasSparkCode gets a reference to the given bool and assigns it to the HasSparkCode field.
+func (o *CampaignSubmissionDetail) SetHasSparkCode(v bool) {
+	o.HasSparkCode = &v
 }
 
 // GetPlatform returns the Platform field value
@@ -858,6 +895,30 @@ func (o *CampaignSubmissionDetail) SetFlags(v []CampaignSubmissionFlag) {
 	o.Flags = v
 }
 
+// GetDraftId returns the DraftId field value
+func (o *CampaignSubmissionDetail) GetDraftId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.DraftId
+}
+
+// GetDraftIdOk returns a tuple with the DraftId field value
+// and a boolean to check if the value has been set.
+func (o *CampaignSubmissionDetail) GetDraftIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.DraftId, true
+}
+
+// SetDraftId sets field value
+func (o *CampaignSubmissionDetail) SetDraftId(v string) {
+	o.DraftId = v
+}
+
 // GetCreatedAt returns the CreatedAt field value
 func (o *CampaignSubmissionDetail) GetCreatedAt() time.Time {
 	if o == nil {
@@ -907,9 +968,9 @@ func (o *CampaignSubmissionDetail) SetUpdatedAt(v time.Time) {
 }
 
 // GetCreator returns the Creator field value
-func (o *CampaignSubmissionDetail) GetCreator() WebhookPayloadCampaignSubmissionCreator {
+func (o *CampaignSubmissionDetail) GetCreator() CreatorCampaignAdResultsSubmissionsInnerCreator {
 	if o == nil {
-		var ret WebhookPayloadCampaignSubmissionCreator
+		var ret CreatorCampaignAdResultsSubmissionsInnerCreator
 		return ret
 	}
 
@@ -918,7 +979,7 @@ func (o *CampaignSubmissionDetail) GetCreator() WebhookPayloadCampaignSubmission
 
 // GetCreatorOk returns a tuple with the Creator field value
 // and a boolean to check if the value has been set.
-func (o *CampaignSubmissionDetail) GetCreatorOk() (*WebhookPayloadCampaignSubmissionCreator, bool) {
+func (o *CampaignSubmissionDetail) GetCreatorOk() (*CreatorCampaignAdResultsSubmissionsInnerCreator, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -926,7 +987,7 @@ func (o *CampaignSubmissionDetail) GetCreatorOk() (*WebhookPayloadCampaignSubmis
 }
 
 // SetCreator sets field value
-func (o *CampaignSubmissionDetail) SetCreator(v WebhookPayloadCampaignSubmissionCreator) {
+func (o *CampaignSubmissionDetail) SetCreator(v CreatorCampaignAdResultsSubmissionsInnerCreator) {
 	o.Creator = v
 }
 
@@ -1113,6 +1174,9 @@ func (o CampaignSubmissionDetail) ToMap() (map[string]interface{}, error) {
 	toSerialize["participantId"] = o.ParticipantId
 	toSerialize["creatorId"] = o.CreatorId
 	toSerialize["accountId"] = o.AccountId
+	if !IsNil(o.HasSparkCode) {
+		toSerialize["hasSparkCode"] = o.HasSparkCode
+	}
 	toSerialize["platform"] = o.Platform
 	toSerialize["platformPostId"] = o.PlatformPostId
 	toSerialize["platformPostUrl"] = o.PlatformPostUrl
@@ -1138,6 +1202,7 @@ func (o CampaignSubmissionDetail) ToMap() (map[string]interface{}, error) {
 	toSerialize["authenticityScore"] = o.AuthenticityScore
 	toSerialize["authenticityConfidence"] = o.AuthenticityConfidence
 	toSerialize["flags"] = o.Flags
+	toSerialize["draftId"] = o.DraftId
 	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["updatedAt"] = o.UpdatedAt
 	toSerialize["creator"] = o.Creator
@@ -1186,6 +1251,7 @@ func (o *CampaignSubmissionDetail) UnmarshalJSON(data []byte) (err error) {
 		"authenticityScore",
 		"authenticityConfidence",
 		"flags",
+		"draftId",
 		"createdAt",
 		"updatedAt",
 		"creator",

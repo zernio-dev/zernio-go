@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.552.0
+API version: 1.553.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ var _ MappedNullable = &SubmitCreatorPostRequest{}
 type SubmitCreatorPostRequest struct {
 	// The public link to the post.
 	Url string `json:"url"`
+	// The approved draft this post publishes. Required when the campaign has `requireDraftApproval`: it must be one of the creator's own drafts, `approved`, and not used by another post yet (each draft backs one post only).
+	DraftId *string `json:"draftId,omitempty"`
 }
 
 type _SubmitCreatorPostRequest SubmitCreatorPostRequest
@@ -70,6 +72,38 @@ func (o *SubmitCreatorPostRequest) SetUrl(v string) {
 	o.Url = v
 }
 
+// GetDraftId returns the DraftId field value if set, zero value otherwise.
+func (o *SubmitCreatorPostRequest) GetDraftId() string {
+	if o == nil || IsNil(o.DraftId) {
+		var ret string
+		return ret
+	}
+	return *o.DraftId
+}
+
+// GetDraftIdOk returns a tuple with the DraftId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitCreatorPostRequest) GetDraftIdOk() (*string, bool) {
+	if o == nil || IsNil(o.DraftId) {
+		return nil, false
+	}
+	return o.DraftId, true
+}
+
+// HasDraftId returns a boolean if a field has been set.
+func (o *SubmitCreatorPostRequest) HasDraftId() bool {
+	if o != nil && !IsNil(o.DraftId) {
+		return true
+	}
+
+	return false
+}
+
+// SetDraftId gets a reference to the given string and assigns it to the DraftId field.
+func (o *SubmitCreatorPostRequest) SetDraftId(v string) {
+	o.DraftId = &v
+}
+
 func (o SubmitCreatorPostRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -81,6 +115,9 @@ func (o SubmitCreatorPostRequest) MarshalJSON() ([]byte, error) {
 func (o SubmitCreatorPostRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["url"] = o.Url
+	if !IsNil(o.DraftId) {
+		toSerialize["draftId"] = o.DraftId
+	}
 	return toSerialize, nil
 }
 

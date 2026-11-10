@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.552.0
+API version: 1.553.0
 Contact: support@zernio.com
 */
 
@@ -47,6 +47,14 @@ type CreatorPortalCampaign struct {
 	TrackingDays int32 `json:"trackingDays"`
 	// How many connected accounts can submit posts. Null means no limit.
 	MaxAccountsPerParticipant NullableInt32 `json:"maxAccountsPerParticipant"`
+	// manual: a creator who joins through the open link waits `pending` until the campaign team accepts them.
+	JoinApproval string `json:"joinApproval"`
+	// The creator uploads a draft for review first, and submits the live post for an approved draft.
+	RequireDraftApproval bool `json:"requireDraftApproval"`
+	// Products the creator can ask a free sample of; empty when the campaign offers none.
+	SampleProducts []CreatorCampaignSampleProduct `json:"sampleProducts"`
+	// Days after a sample is approved by which a post is expected.
+	SampleContentDueDays int32 `json:"sampleContentDueDays"`
 }
 
 type _CreatorPortalCampaign CreatorPortalCampaign
@@ -55,7 +63,7 @@ type _CreatorPortalCampaign CreatorPortalCampaign
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatorPortalCampaign(id string, name string, brandName string, logoUrl NullableString, theme map[string]interface{}, status string, platforms []string, contentRules NullableString, startsAt NullableTime, endsAt NullableTime, startedAt time.Time, currency string, economics CreatorPortalEconomics, maxPostAgeMinutes NullableInt32, holdDays int32, trackingDays int32, maxAccountsPerParticipant NullableInt32) *CreatorPortalCampaign {
+func NewCreatorPortalCampaign(id string, name string, brandName string, logoUrl NullableString, theme map[string]interface{}, status string, platforms []string, contentRules NullableString, startsAt NullableTime, endsAt NullableTime, startedAt time.Time, currency string, economics CreatorPortalEconomics, maxPostAgeMinutes NullableInt32, holdDays int32, trackingDays int32, maxAccountsPerParticipant NullableInt32, joinApproval string, requireDraftApproval bool, sampleProducts []CreatorCampaignSampleProduct, sampleContentDueDays int32) *CreatorPortalCampaign {
 	this := CreatorPortalCampaign{}
 	this.Id = id
 	this.Name = name
@@ -74,6 +82,10 @@ func NewCreatorPortalCampaign(id string, name string, brandName string, logoUrl 
 	this.HoldDays = holdDays
 	this.TrackingDays = trackingDays
 	this.MaxAccountsPerParticipant = maxAccountsPerParticipant
+	this.JoinApproval = joinApproval
+	this.RequireDraftApproval = requireDraftApproval
+	this.SampleProducts = sampleProducts
+	this.SampleContentDueDays = sampleContentDueDays
 	return &this
 }
 
@@ -507,6 +519,102 @@ func (o *CreatorPortalCampaign) SetMaxAccountsPerParticipant(v int32) {
 	o.MaxAccountsPerParticipant.Set(&v)
 }
 
+// GetJoinApproval returns the JoinApproval field value
+func (o *CreatorPortalCampaign) GetJoinApproval() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.JoinApproval
+}
+
+// GetJoinApprovalOk returns a tuple with the JoinApproval field value
+// and a boolean to check if the value has been set.
+func (o *CreatorPortalCampaign) GetJoinApprovalOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.JoinApproval, true
+}
+
+// SetJoinApproval sets field value
+func (o *CreatorPortalCampaign) SetJoinApproval(v string) {
+	o.JoinApproval = v
+}
+
+// GetRequireDraftApproval returns the RequireDraftApproval field value
+func (o *CreatorPortalCampaign) GetRequireDraftApproval() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.RequireDraftApproval
+}
+
+// GetRequireDraftApprovalOk returns a tuple with the RequireDraftApproval field value
+// and a boolean to check if the value has been set.
+func (o *CreatorPortalCampaign) GetRequireDraftApprovalOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.RequireDraftApproval, true
+}
+
+// SetRequireDraftApproval sets field value
+func (o *CreatorPortalCampaign) SetRequireDraftApproval(v bool) {
+	o.RequireDraftApproval = v
+}
+
+// GetSampleProducts returns the SampleProducts field value
+func (o *CreatorPortalCampaign) GetSampleProducts() []CreatorCampaignSampleProduct {
+	if o == nil {
+		var ret []CreatorCampaignSampleProduct
+		return ret
+	}
+
+	return o.SampleProducts
+}
+
+// GetSampleProductsOk returns a tuple with the SampleProducts field value
+// and a boolean to check if the value has been set.
+func (o *CreatorPortalCampaign) GetSampleProductsOk() ([]CreatorCampaignSampleProduct, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SampleProducts, true
+}
+
+// SetSampleProducts sets field value
+func (o *CreatorPortalCampaign) SetSampleProducts(v []CreatorCampaignSampleProduct) {
+	o.SampleProducts = v
+}
+
+// GetSampleContentDueDays returns the SampleContentDueDays field value
+func (o *CreatorPortalCampaign) GetSampleContentDueDays() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.SampleContentDueDays
+}
+
+// GetSampleContentDueDaysOk returns a tuple with the SampleContentDueDays field value
+// and a boolean to check if the value has been set.
+func (o *CreatorPortalCampaign) GetSampleContentDueDaysOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.SampleContentDueDays, true
+}
+
+// SetSampleContentDueDays sets field value
+func (o *CreatorPortalCampaign) SetSampleContentDueDays(v int32) {
+	o.SampleContentDueDays = v
+}
+
 func (o CreatorPortalCampaign) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -536,6 +644,10 @@ func (o CreatorPortalCampaign) ToMap() (map[string]interface{}, error) {
 	toSerialize["holdDays"] = o.HoldDays
 	toSerialize["trackingDays"] = o.TrackingDays
 	toSerialize["maxAccountsPerParticipant"] = o.MaxAccountsPerParticipant.Get()
+	toSerialize["joinApproval"] = o.JoinApproval
+	toSerialize["requireDraftApproval"] = o.RequireDraftApproval
+	toSerialize["sampleProducts"] = o.SampleProducts
+	toSerialize["sampleContentDueDays"] = o.SampleContentDueDays
 	return toSerialize, nil
 }
 
@@ -561,6 +673,10 @@ func (o *CreatorPortalCampaign) UnmarshalJSON(data []byte) (err error) {
 		"holdDays",
 		"trackingDays",
 		"maxAccountsPerParticipant",
+		"joinApproval",
+		"requireDraftApproval",
+		"sampleProducts",
+		"sampleContentDueDays",
 	}
 
 	allProperties := make(map[string]interface{})

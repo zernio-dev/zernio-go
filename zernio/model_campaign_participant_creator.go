@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.552.0
+API version: 1.553.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,8 @@ type CampaignParticipantCreator struct {
 	Id          string         `json:"id"`
 	DisplayName string         `json:"displayName"`
 	Email       NullableString `json:"email"`
+	// The creator's profile picture: their connected account with the most followers, else their Gravatar. Null when neither exists. Platform picture URLs can expire, so show initials when the image fails to load.
+	AvatarUrl NullableString `json:"avatarUrl"`
 }
 
 type _CampaignParticipantCreator CampaignParticipantCreator
@@ -33,11 +35,12 @@ type _CampaignParticipantCreator CampaignParticipantCreator
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCampaignParticipantCreator(id string, displayName string, email NullableString) *CampaignParticipantCreator {
+func NewCampaignParticipantCreator(id string, displayName string, email NullableString, avatarUrl NullableString) *CampaignParticipantCreator {
 	this := CampaignParticipantCreator{}
 	this.Id = id
 	this.DisplayName = displayName
 	this.Email = email
+	this.AvatarUrl = avatarUrl
 	return &this
 }
 
@@ -123,6 +126,32 @@ func (o *CampaignParticipantCreator) SetEmail(v string) {
 	o.Email.Set(&v)
 }
 
+// GetAvatarUrl returns the AvatarUrl field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *CampaignParticipantCreator) GetAvatarUrl() string {
+	if o == nil || o.AvatarUrl.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.AvatarUrl.Get()
+}
+
+// GetAvatarUrlOk returns a tuple with the AvatarUrl field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CampaignParticipantCreator) GetAvatarUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AvatarUrl.Get(), o.AvatarUrl.IsSet()
+}
+
+// SetAvatarUrl sets field value
+func (o *CampaignParticipantCreator) SetAvatarUrl(v string) {
+	o.AvatarUrl.Set(&v)
+}
+
 func (o CampaignParticipantCreator) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -136,6 +165,7 @@ func (o CampaignParticipantCreator) ToMap() (map[string]interface{}, error) {
 	toSerialize["id"] = o.Id
 	toSerialize["displayName"] = o.DisplayName
 	toSerialize["email"] = o.Email.Get()
+	toSerialize["avatarUrl"] = o.AvatarUrl.Get()
 	return toSerialize, nil
 }
 
@@ -147,6 +177,7 @@ func (o *CampaignParticipantCreator) UnmarshalJSON(data []byte) (err error) {
 		"id",
 		"displayName",
 		"email",
+		"avatarUrl",
 	}
 
 	allProperties := make(map[string]interface{})

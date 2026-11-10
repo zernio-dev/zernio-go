@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.552.0
+API version: 1.553.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadCampaignParticipant type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadCampaignParticipant{}
 
-// WebhookPayloadCampaignParticipant Webhook payload for `campaign_participant.joined`, `campaign_participant.suspended` and `campaign_participant.removed`. `participant.status` is the status after the change. `participant.joinedAt` is null for a participant removed before they ever joined.
+// WebhookPayloadCampaignParticipant Webhook payload for `campaign_participant.joined`, `campaign_participant.pending`, `campaign_participant.approved`, `campaign_participant.denied`, `campaign_participant.suspended` and `campaign_participant.removed`. `participant.status` is the status after the change. `participant.joinedAt` is null for a participant who never joined (pending, denied, or removed before joining).
 type WebhookPayloadCampaignParticipant struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery. It identifies the event only, never an account or other resource.
 	Id string `json:"id"`
