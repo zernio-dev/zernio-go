@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.1
+API version: 1.545.2
 Contact: support@zernio.com
 */
 
@@ -48,8 +48,9 @@ type AdKeyword struct {
 	// Deprecated, use `quality.score`. Google Quality Score, 1-10. Null when unrated.
 	QualityScore NullableInt32     `json:"qualityScore,omitempty"`
 	Quality      *AdKeywordQuality `json:"quality,omitempty"`
-	SyncedAt     NullableTime      `json:"syncedAt,omitempty"`
-	Metrics      *AdKeywordMetrics `json:"metrics,omitempty"`
+	// When Zernio last read this keyword from Google: the last successful keyword sync of its ad account, or a later edit through Zernio.
+	SyncedAt NullableTime      `json:"syncedAt,omitempty"`
+	Metrics  *AdKeywordMetrics `json:"metrics,omitempty"`
 }
 
 // NewAdKeyword instantiates a new AdKeyword object
