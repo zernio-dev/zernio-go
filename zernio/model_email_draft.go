@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -55,8 +55,8 @@ type EmailDraft struct {
 	// On a mail sent from a draft (`POST /v1/email/drafts/{draftId}/send`): the draft it was. The sent mail has a new id.
 	DraftId *string `json:"draftId,omitempty"`
 	// On a forward: the message it forwarded.
-	ForwardedFrom *string `json:"forwardedFrom,omitempty"`
-	Object        *string `json:"object,omitempty"`
+	ForwardedFrom *string           `json:"forwardedFrom,omitempty"`
+	Object        *EmailDraftObject `json:"object,omitempty"`
 	// Fixed when the draft is created. A draft the user wrote in their mail client is read from its headers.
 	Kind *string `json:"kind,omitempty"`
 	// Changes on every edit, the user's in their mail app included. Pass it as `If-Match` to update or send only that version. Also the `ETag` response header.
@@ -962,9 +962,9 @@ func (o *EmailDraft) SetForwardedFrom(v string) {
 }
 
 // GetObject returns the Object field value if set, zero value otherwise.
-func (o *EmailDraft) GetObject() string {
+func (o *EmailDraft) GetObject() EmailDraftObject {
 	if o == nil || IsNil(o.Object) {
-		var ret string
+		var ret EmailDraftObject
 		return ret
 	}
 	return *o.Object
@@ -972,7 +972,7 @@ func (o *EmailDraft) GetObject() string {
 
 // GetObjectOk returns a tuple with the Object field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EmailDraft) GetObjectOk() (*string, bool) {
+func (o *EmailDraft) GetObjectOk() (*EmailDraftObject, bool) {
 	if o == nil || IsNil(o.Object) {
 		return nil, false
 	}
@@ -988,8 +988,8 @@ func (o *EmailDraft) HasObject() bool {
 	return false
 }
 
-// SetObject gets a reference to the given string and assigns it to the Object field.
-func (o *EmailDraft) SetObject(v string) {
+// SetObject gets a reference to the given EmailDraftObject and assigns it to the Object field.
+func (o *EmailDraft) SetObject(v EmailDraftObject) {
 	o.Object = &v
 }
 

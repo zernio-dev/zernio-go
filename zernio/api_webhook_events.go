@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -9059,6 +9059,105 @@ func (a *WebhookEventsAPIService) OnEmailBouncedExecute(r WebhookEventsAPIOnEmai
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnEmailDeletedRequest struct {
+	ctx                        context.Context
+	ApiService                 *WebhookEventsAPIService
+	webhookPayloadEmailDeleted *WebhookPayloadEmailDeleted
+}
+
+func (r WebhookEventsAPIOnEmailDeletedRequest) WebhookPayloadEmailDeleted(webhookPayloadEmailDeleted WebhookPayloadEmailDeleted) WebhookEventsAPIOnEmailDeletedRequest {
+	r.webhookPayloadEmailDeleted = &webhookPayloadEmailDeleted
+	return r
+}
+
+func (r WebhookEventsAPIOnEmailDeletedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnEmailDeletedExecute(r)
+}
+
+/*
+OnEmailDeleted Email deleted
+
+A message was deleted from the mailbox for good. Moving it to Trash is `email.updated` with `folder: "trash"`. IMAP mailboxes do not send it.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnEmailDeletedRequest
+*/
+func (a *WebhookEventsAPIService) OnEmailDeleted(ctx context.Context) WebhookEventsAPIOnEmailDeletedRequest {
+	return WebhookEventsAPIOnEmailDeletedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnEmailDeletedExecute(r WebhookEventsAPIOnEmailDeletedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnEmailDeleted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/email.deleted"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadEmailDeleted == nil {
+		return nil, reportError("webhookPayloadEmailDeleted is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadEmailDeleted
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnEmailLinkClickedRequest struct {
 	ctx                            context.Context
 	ApiService                     *WebhookEventsAPIService
@@ -9540,6 +9639,107 @@ func (a *WebhookEventsAPIService) OnEmailThreadRepliedExecute(r WebhookEventsAPI
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadEmailThreadReplied
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnEmailUpdatedRequest struct {
+	ctx                        context.Context
+	ApiService                 *WebhookEventsAPIService
+	webhookPayloadEmailUpdated *WebhookPayloadEmailUpdated
+}
+
+func (r WebhookEventsAPIOnEmailUpdatedRequest) WebhookPayloadEmailUpdated(webhookPayloadEmailUpdated WebhookPayloadEmailUpdated) WebhookEventsAPIOnEmailUpdatedRequest {
+	r.webhookPayloadEmailUpdated = &webhookPayloadEmailUpdated
+	return r
+}
+
+func (r WebhookEventsAPIOnEmailUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnEmailUpdatedExecute(r)
+}
+
+/*
+OnEmailUpdated Email updated
+
+A message in the mailbox changed: it was read or marked unread, starred or flagged, labelled or categorized, archived, trashed or moved. Covers the Inbox, and Sent on Gmail. A change can arrive more than once; key on `email.messageId`.
+
+Gmail reports exactly what changed in `changes`. Outlook reports the message as it is now, with `changes: null`. A message deleted for good fires `email.deleted` instead. IMAP mailboxes do not send it.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnEmailUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnEmailUpdated(ctx context.Context) WebhookEventsAPIOnEmailUpdatedRequest {
+	return WebhookEventsAPIOnEmailUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnEmailUpdatedExecute(r WebhookEventsAPIOnEmailUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnEmailUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/email.updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadEmailUpdated == nil {
+		return nil, reportError("webhookPayloadEmailUpdated is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadEmailUpdated
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

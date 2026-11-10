@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -23,9 +23,12 @@ var _ MappedNullable = &CalendarFreeBusyRequest{}
 
 // CalendarFreeBusyRequest struct for CalendarFreeBusyRequest
 type CalendarFreeBusyRequest struct {
-	AccountIds []string  `json:"accountIds"`
-	From       time.Time `json:"from"`
-	To         time.Time `json:"to"`
+	// Accounts to read with their defaults. Send this or `accounts`.
+	AccountIds []string `json:"accountIds,omitempty"`
+	// Accounts with per-account options. Send this or `accountIds`.
+	Accounts []CalendarFreeBusyRequestAccountsInner `json:"accounts,omitempty"`
+	From     time.Time                              `json:"from"`
+	To       time.Time                              `json:"to"`
 }
 
 type _CalendarFreeBusyRequest CalendarFreeBusyRequest
@@ -34,9 +37,8 @@ type _CalendarFreeBusyRequest CalendarFreeBusyRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCalendarFreeBusyRequest(accountIds []string, from time.Time, to time.Time) *CalendarFreeBusyRequest {
+func NewCalendarFreeBusyRequest(from time.Time, to time.Time) *CalendarFreeBusyRequest {
 	this := CalendarFreeBusyRequest{}
-	this.AccountIds = accountIds
 	this.From = from
 	this.To = to
 	return &this
@@ -50,28 +52,68 @@ func NewCalendarFreeBusyRequestWithDefaults() *CalendarFreeBusyRequest {
 	return &this
 }
 
-// GetAccountIds returns the AccountIds field value
+// GetAccountIds returns the AccountIds field value if set, zero value otherwise.
 func (o *CalendarFreeBusyRequest) GetAccountIds() []string {
-	if o == nil {
+	if o == nil || IsNil(o.AccountIds) {
 		var ret []string
 		return ret
 	}
-
 	return o.AccountIds
 }
 
-// GetAccountIdsOk returns a tuple with the AccountIds field value
+// GetAccountIdsOk returns a tuple with the AccountIds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CalendarFreeBusyRequest) GetAccountIdsOk() ([]string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.AccountIds) {
 		return nil, false
 	}
 	return o.AccountIds, true
 }
 
-// SetAccountIds sets field value
+// HasAccountIds returns a boolean if a field has been set.
+func (o *CalendarFreeBusyRequest) HasAccountIds() bool {
+	if o != nil && !IsNil(o.AccountIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountIds gets a reference to the given []string and assigns it to the AccountIds field.
 func (o *CalendarFreeBusyRequest) SetAccountIds(v []string) {
 	o.AccountIds = v
+}
+
+// GetAccounts returns the Accounts field value if set, zero value otherwise.
+func (o *CalendarFreeBusyRequest) GetAccounts() []CalendarFreeBusyRequestAccountsInner {
+	if o == nil || IsNil(o.Accounts) {
+		var ret []CalendarFreeBusyRequestAccountsInner
+		return ret
+	}
+	return o.Accounts
+}
+
+// GetAccountsOk returns a tuple with the Accounts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CalendarFreeBusyRequest) GetAccountsOk() ([]CalendarFreeBusyRequestAccountsInner, bool) {
+	if o == nil || IsNil(o.Accounts) {
+		return nil, false
+	}
+	return o.Accounts, true
+}
+
+// HasAccounts returns a boolean if a field has been set.
+func (o *CalendarFreeBusyRequest) HasAccounts() bool {
+	if o != nil && !IsNil(o.Accounts) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccounts gets a reference to the given []CalendarFreeBusyRequestAccountsInner and assigns it to the Accounts field.
+func (o *CalendarFreeBusyRequest) SetAccounts(v []CalendarFreeBusyRequestAccountsInner) {
+	o.Accounts = v
 }
 
 // GetFrom returns the From field value
@@ -132,7 +174,12 @@ func (o CalendarFreeBusyRequest) MarshalJSON() ([]byte, error) {
 
 func (o CalendarFreeBusyRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["accountIds"] = o.AccountIds
+	if !IsNil(o.AccountIds) {
+		toSerialize["accountIds"] = o.AccountIds
+	}
+	if !IsNil(o.Accounts) {
+		toSerialize["accounts"] = o.Accounts
+	}
 	toSerialize["from"] = o.From
 	toSerialize["to"] = o.To
 	return toSerialize, nil
@@ -143,7 +190,6 @@ func (o *CalendarFreeBusyRequest) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"accountIds",
 		"from",
 		"to",
 	}

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,10 @@ var _ MappedNullable = &WebhookPayloadCalendarEventCalendarEvent{}
 type WebhookPayloadCalendarEventCalendarEvent struct {
 	Id         *string `json:"id,omitempty"`
 	ChangeType *string `json:"changeType,omitempty"`
+	// The calendar holding the event, to pass as `calendarId` when reading it: `primary` for the user's main calendar. Null when it is not known, as for a deleted Outlook event.
+	CalendarId NullableString `json:"calendarId,omitempty"`
+	// The series this event belongs to, when it is an occurrence or exception.
+	MasterEventId NullableString `json:"masterEventId,omitempty"`
 }
 
 // NewWebhookPayloadCalendarEventCalendarEvent instantiates a new WebhookPayloadCalendarEventCalendarEvent object
@@ -105,6 +109,92 @@ func (o *WebhookPayloadCalendarEventCalendarEvent) SetChangeType(v string) {
 	o.ChangeType = &v
 }
 
+// GetCalendarId returns the CalendarId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadCalendarEventCalendarEvent) GetCalendarId() string {
+	if o == nil || IsNil(o.CalendarId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CalendarId.Get()
+}
+
+// GetCalendarIdOk returns a tuple with the CalendarId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadCalendarEventCalendarEvent) GetCalendarIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CalendarId.Get(), o.CalendarId.IsSet()
+}
+
+// HasCalendarId returns a boolean if a field has been set.
+func (o *WebhookPayloadCalendarEventCalendarEvent) HasCalendarId() bool {
+	if o != nil && o.CalendarId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCalendarId gets a reference to the given NullableString and assigns it to the CalendarId field.
+func (o *WebhookPayloadCalendarEventCalendarEvent) SetCalendarId(v string) {
+	o.CalendarId.Set(&v)
+}
+
+// SetCalendarIdNil sets the value for CalendarId to be an explicit nil
+func (o *WebhookPayloadCalendarEventCalendarEvent) SetCalendarIdNil() {
+	o.CalendarId.Set(nil)
+}
+
+// UnsetCalendarId ensures that no value is present for CalendarId, not even an explicit nil
+func (o *WebhookPayloadCalendarEventCalendarEvent) UnsetCalendarId() {
+	o.CalendarId.Unset()
+}
+
+// GetMasterEventId returns the MasterEventId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadCalendarEventCalendarEvent) GetMasterEventId() string {
+	if o == nil || IsNil(o.MasterEventId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.MasterEventId.Get()
+}
+
+// GetMasterEventIdOk returns a tuple with the MasterEventId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadCalendarEventCalendarEvent) GetMasterEventIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MasterEventId.Get(), o.MasterEventId.IsSet()
+}
+
+// HasMasterEventId returns a boolean if a field has been set.
+func (o *WebhookPayloadCalendarEventCalendarEvent) HasMasterEventId() bool {
+	if o != nil && o.MasterEventId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMasterEventId gets a reference to the given NullableString and assigns it to the MasterEventId field.
+func (o *WebhookPayloadCalendarEventCalendarEvent) SetMasterEventId(v string) {
+	o.MasterEventId.Set(&v)
+}
+
+// SetMasterEventIdNil sets the value for MasterEventId to be an explicit nil
+func (o *WebhookPayloadCalendarEventCalendarEvent) SetMasterEventIdNil() {
+	o.MasterEventId.Set(nil)
+}
+
+// UnsetMasterEventId ensures that no value is present for MasterEventId, not even an explicit nil
+func (o *WebhookPayloadCalendarEventCalendarEvent) UnsetMasterEventId() {
+	o.MasterEventId.Unset()
+}
+
 func (o WebhookPayloadCalendarEventCalendarEvent) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +210,12 @@ func (o WebhookPayloadCalendarEventCalendarEvent) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.ChangeType) {
 		toSerialize["changeType"] = o.ChangeType
+	}
+	if o.CalendarId.IsSet() {
+		toSerialize["calendarId"] = o.CalendarId.Get()
+	}
+	if o.MasterEventId.IsSet() {
+		toSerialize["masterEventId"] = o.MasterEventId.Get()
 	}
 	return toSerialize, nil
 }

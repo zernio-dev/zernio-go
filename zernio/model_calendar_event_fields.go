@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -30,9 +30,9 @@ type CalendarEventFields struct {
 	End    *string `json:"end,omitempty"`
 	AllDay *bool   `json:"allDay,omitempty"`
 	// IANA zone the event is scheduled in. Defaults to the calendar's zone on Google and the mailbox's working-hours zone on Microsoft (UTC when Outlook has none, as on personal accounts). A PATCH that moves an event without a zone keeps the zone the event already has.
-	Timezone     *string        `json:"timezone,omitempty"`
-	Participants []EmailAddress `json:"participants,omitempty"`
-	// RRULE lines, e.g. `RRULE:FREQ=WEEKLY;BYDAY=MO,WE;COUNT=10`.
+	Timezone     *string                                `json:"timezone,omitempty"`
+	Participants []CalendarEventFieldsParticipantsInner `json:"participants,omitempty"`
+	// RRULE lines, e.g. `RRULE:FREQ=WEEKLY;BYDAY=MO,WE;COUNT=10`. Microsoft takes one RRULE plus EXDATE lines; Zernio removes the EXDATE occurrences after saving the series.
 	Recurrence   []string                      `json:"recurrence,omitempty"`
 	Reminders    *CalendarEventFieldsReminders `json:"reminders,omitempty"`
 	Conferencing *string                       `json:"conferencing,omitempty"`
@@ -290,9 +290,9 @@ func (o *CalendarEventFields) SetTimezone(v string) {
 }
 
 // GetParticipants returns the Participants field value if set, zero value otherwise.
-func (o *CalendarEventFields) GetParticipants() []EmailAddress {
+func (o *CalendarEventFields) GetParticipants() []CalendarEventFieldsParticipantsInner {
 	if o == nil || IsNil(o.Participants) {
-		var ret []EmailAddress
+		var ret []CalendarEventFieldsParticipantsInner
 		return ret
 	}
 	return o.Participants
@@ -300,7 +300,7 @@ func (o *CalendarEventFields) GetParticipants() []EmailAddress {
 
 // GetParticipantsOk returns a tuple with the Participants field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CalendarEventFields) GetParticipantsOk() ([]EmailAddress, bool) {
+func (o *CalendarEventFields) GetParticipantsOk() ([]CalendarEventFieldsParticipantsInner, bool) {
 	if o == nil || IsNil(o.Participants) {
 		return nil, false
 	}
@@ -316,8 +316,8 @@ func (o *CalendarEventFields) HasParticipants() bool {
 	return false
 }
 
-// SetParticipants gets a reference to the given []EmailAddress and assigns it to the Participants field.
-func (o *CalendarEventFields) SetParticipants(v []EmailAddress) {
+// SetParticipants gets a reference to the given []CalendarEventFieldsParticipantsInner and assigns it to the Participants field.
+func (o *CalendarEventFields) SetParticipants(v []CalendarEventFieldsParticipantsInner) {
 	o.Participants = v
 }
 

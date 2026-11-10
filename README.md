@@ -711,6 +711,7 @@ func main() {
 ### Calendar
 | Method | Description |
 |--------|-------------|
+| `client.CalendarAPI.ListCalendarEventInstances(ctx)` | List the occurrences of a recurring event |
 | `client.CalendarAPI.ListCalendarEvents(ctx)` | List events in a window |
 | `client.CalendarAPI.ListCalendars(ctx)` | List calendars |
 | `client.CalendarAPI.CreateCalendarEvent(ctx)` | Create an event |

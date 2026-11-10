@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -27,11 +27,11 @@ type WebhookPayloadFile struct {
 	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Use it to route the event to your tenant without storing Zernio profile ids.  Present on every event tied to a profile, absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once.
 	Profiles []WebhookProfilesInner `json:"profiles,omitempty"`
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
-	Test      *bool                                    `json:"test,omitempty"`
-	Event     string                                   `json:"event"`
-	Account   WebhookPayloadCalendarEventAccount       `json:"account"`
-	File      WebhookPayloadCalendarEventCalendarEvent `json:"file"`
-	Timestamp time.Time                                `json:"timestamp"`
+	Test      *bool                              `json:"test,omitempty"`
+	Event     string                             `json:"event"`
+	Account   WebhookPayloadCalendarEventAccount `json:"account"`
+	File      WebhookPayloadFileFile             `json:"file"`
+	Timestamp time.Time                          `json:"timestamp"`
 }
 
 type _WebhookPayloadFile WebhookPayloadFile
@@ -40,7 +40,7 @@ type _WebhookPayloadFile WebhookPayloadFile
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadFile(id string, event string, account WebhookPayloadCalendarEventAccount, file WebhookPayloadCalendarEventCalendarEvent, timestamp time.Time) *WebhookPayloadFile {
+func NewWebhookPayloadFile(id string, event string, account WebhookPayloadCalendarEventAccount, file WebhookPayloadFileFile, timestamp time.Time) *WebhookPayloadFile {
 	this := WebhookPayloadFile{}
 	this.Id = id
 	this.Event = event
@@ -195,9 +195,9 @@ func (o *WebhookPayloadFile) SetAccount(v WebhookPayloadCalendarEventAccount) {
 }
 
 // GetFile returns the File field value
-func (o *WebhookPayloadFile) GetFile() WebhookPayloadCalendarEventCalendarEvent {
+func (o *WebhookPayloadFile) GetFile() WebhookPayloadFileFile {
 	if o == nil {
-		var ret WebhookPayloadCalendarEventCalendarEvent
+		var ret WebhookPayloadFileFile
 		return ret
 	}
 
@@ -206,7 +206,7 @@ func (o *WebhookPayloadFile) GetFile() WebhookPayloadCalendarEventCalendarEvent 
 
 // GetFileOk returns a tuple with the File field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadFile) GetFileOk() (*WebhookPayloadCalendarEventCalendarEvent, bool) {
+func (o *WebhookPayloadFile) GetFileOk() (*WebhookPayloadFileFile, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -214,7 +214,7 @@ func (o *WebhookPayloadFile) GetFileOk() (*WebhookPayloadCalendarEventCalendarEv
 }
 
 // SetFile sets field value
-func (o *WebhookPayloadFile) SetFile(v WebhookPayloadCalendarEventCalendarEvent) {
+func (o *WebhookPayloadFile) SetFile(v WebhookPayloadFileFile) {
 	o.File = v
 }
 

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -184,6 +184,14 @@ func (r CalendarAPICalendarFreeBusyRequest) Execute() (*CalendarFreeBusy200Respo
 
 /*
 CalendarFreeBusy Busy blocks for one or more accounts
+
+Reads busy time for up to 10 connected accounts, Google and Microsoft mixed, in parallel.
+
+By default a Google account reads every calendar shown in Google Calendar, and a Microsoft account reads the mailbox's schedule. Name calendars with `accounts[].calendarIds`.
+
+Check coworkers who never connected with `accounts[].emails`, read through that account (Google: up to 50 calendars and addresses per account; Microsoft: up to 19 coworkers, work accounts only).
+
+An account that cannot be read gets `busy: null` and an `error`, and the others still answer. When no account can be read, the first error is returned as the response.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CalendarAPICalendarFreeBusyRequest
@@ -723,6 +731,225 @@ func (a *CalendarAPIService) GetCalendarEventExecute(r CalendarAPIGetCalendarEve
 	}
 	if r.timezone != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "timezone", r.timezone, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 412 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type CalendarAPIListCalendarEventInstancesRequest struct {
+	ctx        context.Context
+	ApiService *CalendarAPIService
+	eventId    string
+	accountId  *string
+	from       *time.Time
+	to         *time.Time
+	calendarId *string
+	timezone   *string
+	cursor     *string
+	limit      *int32
+}
+
+func (r CalendarAPIListCalendarEventInstancesRequest) AccountId(accountId string) CalendarAPIListCalendarEventInstancesRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r CalendarAPIListCalendarEventInstancesRequest) From(from time.Time) CalendarAPIListCalendarEventInstancesRequest {
+	r.from = &from
+	return r
+}
+
+func (r CalendarAPIListCalendarEventInstancesRequest) To(to time.Time) CalendarAPIListCalendarEventInstancesRequest {
+	r.to = &to
+	return r
+}
+
+// The calendar holding the event (an id from GET /v1/calendar/calendars). Defaults to the primary calendar.
+func (r CalendarAPIListCalendarEventInstancesRequest) CalendarId(calendarId string) CalendarAPIListCalendarEventInstancesRequest {
+	r.calendarId = &calendarId
+	return r
+}
+
+// IANA zone the &#x60;start&#x60; and &#x60;end&#x60; offsets are rendered in.
+func (r CalendarAPIListCalendarEventInstancesRequest) Timezone(timezone string) CalendarAPIListCalendarEventInstancesRequest {
+	r.timezone = &timezone
+	return r
+}
+
+func (r CalendarAPIListCalendarEventInstancesRequest) Cursor(cursor string) CalendarAPIListCalendarEventInstancesRequest {
+	r.cursor = &cursor
+	return r
+}
+
+func (r CalendarAPIListCalendarEventInstancesRequest) Limit(limit int32) CalendarAPIListCalendarEventInstancesRequest {
+	r.limit = &limit
+	return r
+}
+
+func (r CalendarAPIListCalendarEventInstancesRequest) Execute() (*ListCalendarEventInstances200Response, *http.Response, error) {
+	return r.ApiService.ListCalendarEventInstancesExecute(r)
+}
+
+/*
+ListCalendarEventInstances List the occurrences of a recurring event
+
+Lists the occurrences and exceptions of a series between `from` and `to`. Each one has its own `id` to read, update or delete just that occurrence, and `originalStart` for its place in the pattern.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param eventId The series (master) event id.
+	@return CalendarAPIListCalendarEventInstancesRequest
+*/
+func (a *CalendarAPIService) ListCalendarEventInstances(ctx context.Context, eventId string) CalendarAPIListCalendarEventInstancesRequest {
+	return CalendarAPIListCalendarEventInstancesRequest{
+		ApiService: a,
+		ctx:        ctx,
+		eventId:    eventId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListCalendarEventInstances200Response
+func (a *CalendarAPIService) ListCalendarEventInstancesExecute(r CalendarAPIListCalendarEventInstancesRequest) (*ListCalendarEventInstances200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListCalendarEventInstances200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CalendarAPIService.ListCalendarEventInstances")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/calendar/events/{eventId}/instances"
+	localVarPath = strings.Replace(localVarPath, "{"+"eventId"+"}", url.PathEscape(parameterValueToString(r.eventId, "eventId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.from == nil {
+		return localVarReturnValue, nil, reportError("from is required and must be specified")
+	}
+	if r.to == nil {
+		return localVarReturnValue, nil, reportError("to is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.calendarId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "calendarId", r.calendarId, "form", "")
+	}
+	parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "to", r.to, "form", "")
+	if r.timezone != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "timezone", r.timezone, "form", "")
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 50
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

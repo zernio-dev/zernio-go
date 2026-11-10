@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -21,10 +21,14 @@ var _ MappedNullable = &CalendarFreeBusy200ResponseDataInner{}
 
 // CalendarFreeBusy200ResponseDataInner struct for CalendarFreeBusy200ResponseDataInner
 type CalendarFreeBusy200ResponseDataInner struct {
-	AccountId *string     `json:"accountId,omitempty"`
-	From      *time.Time  `json:"from,omitempty"`
-	To        *time.Time  `json:"to,omitempty"`
-	Busy      []BusyBlock `json:"busy,omitempty"`
+	AccountId *string    `json:"accountId,omitempty"`
+	From      *time.Time `json:"from,omitempty"`
+	To        *time.Time `json:"to,omitempty"`
+	// The account's own busy time across the calendars read, merged. Null when the account could not be read.
+	Busy      []BusyBlock                                          `json:"busy,omitempty"`
+	Calendars []CalendarFreeBusy200ResponseDataInnerCalendarsInner `json:"calendars,omitempty"`
+	People    []CalendarFreeBusy200ResponseDataInnerPeopleInner    `json:"people,omitempty"`
+	Error     *FreeBusyError                                       `json:"error,omitempty"`
 }
 
 // NewCalendarFreeBusy200ResponseDataInner instantiates a new CalendarFreeBusy200ResponseDataInner object
@@ -140,9 +144,9 @@ func (o *CalendarFreeBusy200ResponseDataInner) SetTo(v time.Time) {
 	o.To = &v
 }
 
-// GetBusy returns the Busy field value if set, zero value otherwise.
+// GetBusy returns the Busy field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CalendarFreeBusy200ResponseDataInner) GetBusy() []BusyBlock {
-	if o == nil || IsNil(o.Busy) {
+	if o == nil {
 		var ret []BusyBlock
 		return ret
 	}
@@ -151,6 +155,7 @@ func (o *CalendarFreeBusy200ResponseDataInner) GetBusy() []BusyBlock {
 
 // GetBusyOk returns a tuple with the Busy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *CalendarFreeBusy200ResponseDataInner) GetBusyOk() ([]BusyBlock, bool) {
 	if o == nil || IsNil(o.Busy) {
 		return nil, false
@@ -172,6 +177,102 @@ func (o *CalendarFreeBusy200ResponseDataInner) SetBusy(v []BusyBlock) {
 	o.Busy = v
 }
 
+// GetCalendars returns the Calendars field value if set, zero value otherwise.
+func (o *CalendarFreeBusy200ResponseDataInner) GetCalendars() []CalendarFreeBusy200ResponseDataInnerCalendarsInner {
+	if o == nil || IsNil(o.Calendars) {
+		var ret []CalendarFreeBusy200ResponseDataInnerCalendarsInner
+		return ret
+	}
+	return o.Calendars
+}
+
+// GetCalendarsOk returns a tuple with the Calendars field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CalendarFreeBusy200ResponseDataInner) GetCalendarsOk() ([]CalendarFreeBusy200ResponseDataInnerCalendarsInner, bool) {
+	if o == nil || IsNil(o.Calendars) {
+		return nil, false
+	}
+	return o.Calendars, true
+}
+
+// HasCalendars returns a boolean if a field has been set.
+func (o *CalendarFreeBusy200ResponseDataInner) HasCalendars() bool {
+	if o != nil && !IsNil(o.Calendars) {
+		return true
+	}
+
+	return false
+}
+
+// SetCalendars gets a reference to the given []CalendarFreeBusy200ResponseDataInnerCalendarsInner and assigns it to the Calendars field.
+func (o *CalendarFreeBusy200ResponseDataInner) SetCalendars(v []CalendarFreeBusy200ResponseDataInnerCalendarsInner) {
+	o.Calendars = v
+}
+
+// GetPeople returns the People field value if set, zero value otherwise.
+func (o *CalendarFreeBusy200ResponseDataInner) GetPeople() []CalendarFreeBusy200ResponseDataInnerPeopleInner {
+	if o == nil || IsNil(o.People) {
+		var ret []CalendarFreeBusy200ResponseDataInnerPeopleInner
+		return ret
+	}
+	return o.People
+}
+
+// GetPeopleOk returns a tuple with the People field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CalendarFreeBusy200ResponseDataInner) GetPeopleOk() ([]CalendarFreeBusy200ResponseDataInnerPeopleInner, bool) {
+	if o == nil || IsNil(o.People) {
+		return nil, false
+	}
+	return o.People, true
+}
+
+// HasPeople returns a boolean if a field has been set.
+func (o *CalendarFreeBusy200ResponseDataInner) HasPeople() bool {
+	if o != nil && !IsNil(o.People) {
+		return true
+	}
+
+	return false
+}
+
+// SetPeople gets a reference to the given []CalendarFreeBusy200ResponseDataInnerPeopleInner and assigns it to the People field.
+func (o *CalendarFreeBusy200ResponseDataInner) SetPeople(v []CalendarFreeBusy200ResponseDataInnerPeopleInner) {
+	o.People = v
+}
+
+// GetError returns the Error field value if set, zero value otherwise.
+func (o *CalendarFreeBusy200ResponseDataInner) GetError() FreeBusyError {
+	if o == nil || IsNil(o.Error) {
+		var ret FreeBusyError
+		return ret
+	}
+	return *o.Error
+}
+
+// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CalendarFreeBusy200ResponseDataInner) GetErrorOk() (*FreeBusyError, bool) {
+	if o == nil || IsNil(o.Error) {
+		return nil, false
+	}
+	return o.Error, true
+}
+
+// HasError returns a boolean if a field has been set.
+func (o *CalendarFreeBusy200ResponseDataInner) HasError() bool {
+	if o != nil && !IsNil(o.Error) {
+		return true
+	}
+
+	return false
+}
+
+// SetError gets a reference to the given FreeBusyError and assigns it to the Error field.
+func (o *CalendarFreeBusy200ResponseDataInner) SetError(v FreeBusyError) {
+	o.Error = &v
+}
+
 func (o CalendarFreeBusy200ResponseDataInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -191,8 +292,17 @@ func (o CalendarFreeBusy200ResponseDataInner) ToMap() (map[string]interface{}, e
 	if !IsNil(o.To) {
 		toSerialize["to"] = o.To
 	}
-	if !IsNil(o.Busy) {
+	if o.Busy != nil {
 		toSerialize["busy"] = o.Busy
+	}
+	if !IsNil(o.Calendars) {
+		toSerialize["calendars"] = o.Calendars
+	}
+	if !IsNil(o.People) {
+		toSerialize["people"] = o.People
+	}
+	if !IsNil(o.Error) {
+		toSerialize["error"] = o.Error
 	}
 	return toSerialize, nil
 }

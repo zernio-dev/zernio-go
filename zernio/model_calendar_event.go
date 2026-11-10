@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -43,11 +43,15 @@ type CalendarEvent struct {
 	Status        *string                          `json:"status,omitempty"`
 	IcalUid       NullableString                   `json:"icalUid,omitempty"`
 	MasterEventId NullableString                   `json:"masterEventId,omitempty"`
-	HtmlLink      NullableString                   `json:"htmlLink,omitempty"`
-	ReadOnly      *bool                            `json:"readOnly,omitempty"`
-	Metadata      map[string]string                `json:"metadata,omitempty"`
-	CreatedAt     NullableTime                     `json:"createdAt,omitempty"`
-	UpdatedAt     NullableTime                     `json:"updatedAt,omitempty"`
+	// `series` is a recurring master, `occurrence` one of its instances, and `exception` an instance changed on its own. Google flags an instance as an exception only when it was moved off its slot.
+	Type *string `json:"type,omitempty"`
+	// For an occurrence or exception, the start it has in the series pattern.
+	OriginalStart NullableString    `json:"originalStart,omitempty"`
+	HtmlLink      NullableString    `json:"htmlLink,omitempty"`
+	ReadOnly      *bool             `json:"readOnly,omitempty"`
+	Metadata      map[string]string `json:"metadata,omitempty"`
+	CreatedAt     NullableTime      `json:"createdAt,omitempty"`
+	UpdatedAt     NullableTime      `json:"updatedAt,omitempty"`
 }
 
 // NewCalendarEvent instantiates a new CalendarEvent object
@@ -806,6 +810,81 @@ func (o *CalendarEvent) UnsetMasterEventId() {
 	o.MasterEventId.Unset()
 }
 
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *CalendarEvent) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CalendarEvent) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *CalendarEvent) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *CalendarEvent) SetType(v string) {
+	o.Type = &v
+}
+
+// GetOriginalStart returns the OriginalStart field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CalendarEvent) GetOriginalStart() string {
+	if o == nil || IsNil(o.OriginalStart.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.OriginalStart.Get()
+}
+
+// GetOriginalStartOk returns a tuple with the OriginalStart field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CalendarEvent) GetOriginalStartOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.OriginalStart.Get(), o.OriginalStart.IsSet()
+}
+
+// HasOriginalStart returns a boolean if a field has been set.
+func (o *CalendarEvent) HasOriginalStart() bool {
+	if o != nil && o.OriginalStart.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetOriginalStart gets a reference to the given NullableString and assigns it to the OriginalStart field.
+func (o *CalendarEvent) SetOriginalStart(v string) {
+	o.OriginalStart.Set(&v)
+}
+
+// SetOriginalStartNil sets the value for OriginalStart to be an explicit nil
+func (o *CalendarEvent) SetOriginalStartNil() {
+	o.OriginalStart.Set(nil)
+}
+
+// UnsetOriginalStart ensures that no value is present for OriginalStart, not even an explicit nil
+func (o *CalendarEvent) UnsetOriginalStart() {
+	o.OriginalStart.Unset()
+}
+
 // GetHtmlLink returns the HtmlLink field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CalendarEvent) GetHtmlLink() string {
 	if o == nil || IsNil(o.HtmlLink.Get()) {
@@ -1071,6 +1150,12 @@ func (o CalendarEvent) ToMap() (map[string]interface{}, error) {
 	}
 	if o.MasterEventId.IsSet() {
 		toSerialize["masterEventId"] = o.MasterEventId.Get()
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
+	}
+	if o.OriginalStart.IsSet() {
+		toSerialize["originalStart"] = o.OriginalStart.Get()
 	}
 	if o.HtmlLink.IsSet() {
 		toSerialize["htmlLink"] = o.HtmlLink.Get()

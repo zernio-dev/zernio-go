@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,13 @@ type CalendarEventParticipantsInner struct {
 	Name    *string        `json:"name,omitempty"`
 	Status  *string        `json:"status,omitempty"`
 	Comment NullableString `json:"comment,omitempty"`
+	// The guest may skip the event.
+	Optional *bool `json:"optional,omitempty"`
+	// A room or equipment address.
+	Resource *bool `json:"resource,omitempty"`
+	// This guest is the connected mailbox.
+	Self      *bool `json:"self,omitempty"`
+	Organizer *bool `json:"organizer,omitempty"`
 }
 
 type _CalendarEventParticipantsInner CalendarEventParticipantsInner
@@ -179,6 +186,134 @@ func (o *CalendarEventParticipantsInner) UnsetComment() {
 	o.Comment.Unset()
 }
 
+// GetOptional returns the Optional field value if set, zero value otherwise.
+func (o *CalendarEventParticipantsInner) GetOptional() bool {
+	if o == nil || IsNil(o.Optional) {
+		var ret bool
+		return ret
+	}
+	return *o.Optional
+}
+
+// GetOptionalOk returns a tuple with the Optional field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CalendarEventParticipantsInner) GetOptionalOk() (*bool, bool) {
+	if o == nil || IsNil(o.Optional) {
+		return nil, false
+	}
+	return o.Optional, true
+}
+
+// HasOptional returns a boolean if a field has been set.
+func (o *CalendarEventParticipantsInner) HasOptional() bool {
+	if o != nil && !IsNil(o.Optional) {
+		return true
+	}
+
+	return false
+}
+
+// SetOptional gets a reference to the given bool and assigns it to the Optional field.
+func (o *CalendarEventParticipantsInner) SetOptional(v bool) {
+	o.Optional = &v
+}
+
+// GetResource returns the Resource field value if set, zero value otherwise.
+func (o *CalendarEventParticipantsInner) GetResource() bool {
+	if o == nil || IsNil(o.Resource) {
+		var ret bool
+		return ret
+	}
+	return *o.Resource
+}
+
+// GetResourceOk returns a tuple with the Resource field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CalendarEventParticipantsInner) GetResourceOk() (*bool, bool) {
+	if o == nil || IsNil(o.Resource) {
+		return nil, false
+	}
+	return o.Resource, true
+}
+
+// HasResource returns a boolean if a field has been set.
+func (o *CalendarEventParticipantsInner) HasResource() bool {
+	if o != nil && !IsNil(o.Resource) {
+		return true
+	}
+
+	return false
+}
+
+// SetResource gets a reference to the given bool and assigns it to the Resource field.
+func (o *CalendarEventParticipantsInner) SetResource(v bool) {
+	o.Resource = &v
+}
+
+// GetSelf returns the Self field value if set, zero value otherwise.
+func (o *CalendarEventParticipantsInner) GetSelf() bool {
+	if o == nil || IsNil(o.Self) {
+		var ret bool
+		return ret
+	}
+	return *o.Self
+}
+
+// GetSelfOk returns a tuple with the Self field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CalendarEventParticipantsInner) GetSelfOk() (*bool, bool) {
+	if o == nil || IsNil(o.Self) {
+		return nil, false
+	}
+	return o.Self, true
+}
+
+// HasSelf returns a boolean if a field has been set.
+func (o *CalendarEventParticipantsInner) HasSelf() bool {
+	if o != nil && !IsNil(o.Self) {
+		return true
+	}
+
+	return false
+}
+
+// SetSelf gets a reference to the given bool and assigns it to the Self field.
+func (o *CalendarEventParticipantsInner) SetSelf(v bool) {
+	o.Self = &v
+}
+
+// GetOrganizer returns the Organizer field value if set, zero value otherwise.
+func (o *CalendarEventParticipantsInner) GetOrganizer() bool {
+	if o == nil || IsNil(o.Organizer) {
+		var ret bool
+		return ret
+	}
+	return *o.Organizer
+}
+
+// GetOrganizerOk returns a tuple with the Organizer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CalendarEventParticipantsInner) GetOrganizerOk() (*bool, bool) {
+	if o == nil || IsNil(o.Organizer) {
+		return nil, false
+	}
+	return o.Organizer, true
+}
+
+// HasOrganizer returns a boolean if a field has been set.
+func (o *CalendarEventParticipantsInner) HasOrganizer() bool {
+	if o != nil && !IsNil(o.Organizer) {
+		return true
+	}
+
+	return false
+}
+
+// SetOrganizer gets a reference to the given bool and assigns it to the Organizer field.
+func (o *CalendarEventParticipantsInner) SetOrganizer(v bool) {
+	o.Organizer = &v
+}
+
 func (o CalendarEventParticipantsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -198,6 +333,18 @@ func (o CalendarEventParticipantsInner) ToMap() (map[string]interface{}, error) 
 	}
 	if o.Comment.IsSet() {
 		toSerialize["comment"] = o.Comment.Get()
+	}
+	if !IsNil(o.Optional) {
+		toSerialize["optional"] = o.Optional
+	}
+	if !IsNil(o.Resource) {
+		toSerialize["resource"] = o.Resource
+	}
+	if !IsNil(o.Self) {
+		toSerialize["self"] = o.Self
+	}
+	if !IsNil(o.Organizer) {
+		toSerialize["organizer"] = o.Organizer
 	}
 	return toSerialize, nil
 }

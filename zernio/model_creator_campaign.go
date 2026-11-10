@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -82,7 +82,8 @@ type CreatorCampaign struct {
 	// The page creator tracking links open.
 	LandingUrl NullableString `json:"landingUrl,omitempty"`
 	// What each creator discount code takes off.
-	CodeDiscountPercent NullableInt32 `json:"codeDiscountPercent,omitempty"`
+	CodeDiscountPercent NullableInt32                     `json:"codeDiscountPercent,omitempty"`
+	AutoPayout          NullableCreatorCampaignAutoPayout `json:"autoPayout,omitempty"`
 	// Creators who asked to join through the open link and wait for a decision. Not counted in `participantCount`.
 	PendingParticipantCount int32                `json:"pendingParticipantCount"`
 	DraftCounts             CampaignDraftCounts  `json:"draftCounts"`
@@ -1117,6 +1118,49 @@ func (o *CreatorCampaign) UnsetCodeDiscountPercent() {
 	o.CodeDiscountPercent.Unset()
 }
 
+// GetAutoPayout returns the AutoPayout field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreatorCampaign) GetAutoPayout() CreatorCampaignAutoPayout {
+	if o == nil || IsNil(o.AutoPayout.Get()) {
+		var ret CreatorCampaignAutoPayout
+		return ret
+	}
+	return *o.AutoPayout.Get()
+}
+
+// GetAutoPayoutOk returns a tuple with the AutoPayout field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatorCampaign) GetAutoPayoutOk() (*CreatorCampaignAutoPayout, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AutoPayout.Get(), o.AutoPayout.IsSet()
+}
+
+// HasAutoPayout returns a boolean if a field has been set.
+func (o *CreatorCampaign) HasAutoPayout() bool {
+	if o != nil && o.AutoPayout.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAutoPayout gets a reference to the given NullableCreatorCampaignAutoPayout and assigns it to the AutoPayout field.
+func (o *CreatorCampaign) SetAutoPayout(v CreatorCampaignAutoPayout) {
+	o.AutoPayout.Set(&v)
+}
+
+// SetAutoPayoutNil sets the value for AutoPayout to be an explicit nil
+func (o *CreatorCampaign) SetAutoPayoutNil() {
+	o.AutoPayout.Set(nil)
+}
+
+// UnsetAutoPayout ensures that no value is present for AutoPayout, not even an explicit nil
+func (o *CreatorCampaign) UnsetAutoPayout() {
+	o.AutoPayout.Unset()
+}
+
 // GetPendingParticipantCount returns the PendingParticipantCount field value
 func (o *CreatorCampaign) GetPendingParticipantCount() int32 {
 	if o == nil {
@@ -1240,6 +1284,9 @@ func (o CreatorCampaign) ToMap() (map[string]interface{}, error) {
 	}
 	if o.CodeDiscountPercent.IsSet() {
 		toSerialize["codeDiscountPercent"] = o.CodeDiscountPercent.Get()
+	}
+	if o.AutoPayout.IsSet() {
+		toSerialize["autoPayout"] = o.AutoPayout.Get()
 	}
 	toSerialize["pendingParticipantCount"] = o.PendingParticipantCount
 	toSerialize["draftCounts"] = o.DraftCounts

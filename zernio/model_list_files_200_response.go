@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.1
+API version: 1.560.0
 Contact: support@zernio.com
 */
 
@@ -20,8 +20,8 @@ var _ MappedNullable = &ListFiles200Response{}
 
 // ListFiles200Response struct for ListFiles200Response
 type ListFiles200Response struct {
-	Data       []FileItem                      `json:"data,omitempty"`
-	Pagination *ListFiles200ResponsePagination `json:"pagination,omitempty"`
+	Data       []FileItem                                       `json:"data,omitempty"`
+	Pagination *ListCalendarEventInstances200ResponsePagination `json:"pagination,omitempty"`
 }
 
 // NewListFiles200Response instantiates a new ListFiles200Response object
@@ -74,9 +74,9 @@ func (o *ListFiles200Response) SetData(v []FileItem) {
 }
 
 // GetPagination returns the Pagination field value if set, zero value otherwise.
-func (o *ListFiles200Response) GetPagination() ListFiles200ResponsePagination {
+func (o *ListFiles200Response) GetPagination() ListCalendarEventInstances200ResponsePagination {
 	if o == nil || IsNil(o.Pagination) {
-		var ret ListFiles200ResponsePagination
+		var ret ListCalendarEventInstances200ResponsePagination
 		return ret
 	}
 	return *o.Pagination
@@ -84,7 +84,7 @@ func (o *ListFiles200Response) GetPagination() ListFiles200ResponsePagination {
 
 // GetPaginationOk returns a tuple with the Pagination field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListFiles200Response) GetPaginationOk() (*ListFiles200ResponsePagination, bool) {
+func (o *ListFiles200Response) GetPaginationOk() (*ListCalendarEventInstances200ResponsePagination, bool) {
 	if o == nil || IsNil(o.Pagination) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *ListFiles200Response) HasPagination() bool {
 	return false
 }
 
-// SetPagination gets a reference to the given ListFiles200ResponsePagination and assigns it to the Pagination field.
-func (o *ListFiles200Response) SetPagination(v ListFiles200ResponsePagination) {
+// SetPagination gets a reference to the given ListCalendarEventInstances200ResponsePagination and assigns it to the Pagination field.
+func (o *ListFiles200Response) SetPagination(v ListCalendarEventInstances200ResponsePagination) {
 	o.Pagination = &v
 }
 
