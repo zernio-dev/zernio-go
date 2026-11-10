@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.556.0
+API version: 1.556.1
 Contact: support@zernio.com
 */
 
@@ -8007,7 +8007,7 @@ A contact was deleted in Google Contacts or Outlook.
 
 ### Effect
 
-Zernio removes its email channel for that account; the contact stays when other channels remain. It arrives up to a day after the change, from the daily sync.
+Zernio removes its email channels for that account; the contact stays when other channels remain. It arrives up to 15 minutes after the change, from the sync.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnContactDeletedRequest
@@ -8427,7 +8427,7 @@ A contact sync added or changed a contact; `contact.id` is the Zernio contact id
 
 ### When it fires
 
-It fires from the daily sync of a Google Contacts or Outlook account, so up to a day after the change. It also fires when a WhatsApp coexistence address book adds or renames a contact.
+It fires from the sync of a Google Contacts or Outlook account, which runs every 15 minutes, so up to 15 minutes after the change. It also fires when a WhatsApp coexistence address book adds or renames a contact.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnContactUpdatedRequest
