@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.555.0
+API version: 1.556.0
 Contact: support@zernio.com
 */
 
@@ -1508,9 +1508,13 @@ func (r CreatorPortalAPIStartCreatorConnectRequest) Execute() (*StartCreatorConn
 /*
 StartCreatorConnect Start connecting a creator account
 
-Returns the authorization URL that connects one of the creator's own social accounts,
-read-only, so their posts can be verified. Send the creator's browser to `authUrl`; they
-come back to their participant page. Only the campaign's platforms are accepted.
+Returns the URL that connects one of the creator's own social accounts, read-only, so their
+posts can be verified. Only the campaign's platforms are accepted.
+
+`authUrl` opens the welcome screen in the campaign's brand, then the platform's sign-in.
+
+The creator comes back to their participant page, or to the connect window's result screen
+when `windowUrl` is sent.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param token A participant token or an open invite token. A malformed token answers 404 like an unknown one.

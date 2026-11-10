@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.555.0
+API version: 1.556.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ var _ MappedNullable = &StartCreatorConnectRequest{}
 type StartCreatorConnectRequest struct {
 	// One of the campaign's platforms, for example tiktok.
 	Platform string `json:"platform"`
+	// The Zernio connect window the participant page opened (`/connect/complete` with its `window` id). Any other URL answers 400 `invalid_field_value`.
+	WindowUrl *string `json:"windowUrl,omitempty"`
 }
 
 type _StartCreatorConnectRequest StartCreatorConnectRequest
@@ -70,6 +72,38 @@ func (o *StartCreatorConnectRequest) SetPlatform(v string) {
 	o.Platform = v
 }
 
+// GetWindowUrl returns the WindowUrl field value if set, zero value otherwise.
+func (o *StartCreatorConnectRequest) GetWindowUrl() string {
+	if o == nil || IsNil(o.WindowUrl) {
+		var ret string
+		return ret
+	}
+	return *o.WindowUrl
+}
+
+// GetWindowUrlOk returns a tuple with the WindowUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StartCreatorConnectRequest) GetWindowUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.WindowUrl) {
+		return nil, false
+	}
+	return o.WindowUrl, true
+}
+
+// HasWindowUrl returns a boolean if a field has been set.
+func (o *StartCreatorConnectRequest) HasWindowUrl() bool {
+	if o != nil && !IsNil(o.WindowUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetWindowUrl gets a reference to the given string and assigns it to the WindowUrl field.
+func (o *StartCreatorConnectRequest) SetWindowUrl(v string) {
+	o.WindowUrl = &v
+}
+
 func (o StartCreatorConnectRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -81,6 +115,9 @@ func (o StartCreatorConnectRequest) MarshalJSON() ([]byte, error) {
 func (o StartCreatorConnectRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["platform"] = o.Platform
+	if !IsNil(o.WindowUrl) {
+		toSerialize["windowUrl"] = o.WindowUrl
+	}
 	return toSerialize, nil
 }
 
