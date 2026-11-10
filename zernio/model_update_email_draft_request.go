@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.550.0
+API version: 1.551.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,8 @@ type UpdateEmailDraftRequest struct {
 	// On a draft created with tracking, the new html is instrumented again under the same `trackingId`.
 	Html        *string                `json:"html,omitempty"`
 	Attachments []EmailAttachmentInput `json:"attachments,omitempty"`
+	// Swaps the Zernio signature block in the new `html` or `text` for this signature, so switching never stacks two; `null` removes it. Needs `html` or `text` in the same request.
+	SignatureId NullableString `json:"signatureId,omitempty"`
 }
 
 type _UpdateEmailDraftRequest UpdateEmailDraftRequest
@@ -334,6 +336,49 @@ func (o *UpdateEmailDraftRequest) SetAttachments(v []EmailAttachmentInput) {
 	o.Attachments = v
 }
 
+// GetSignatureId returns the SignatureId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateEmailDraftRequest) GetSignatureId() string {
+	if o == nil || IsNil(o.SignatureId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SignatureId.Get()
+}
+
+// GetSignatureIdOk returns a tuple with the SignatureId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateEmailDraftRequest) GetSignatureIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SignatureId.Get(), o.SignatureId.IsSet()
+}
+
+// HasSignatureId returns a boolean if a field has been set.
+func (o *UpdateEmailDraftRequest) HasSignatureId() bool {
+	if o != nil && o.SignatureId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSignatureId gets a reference to the given NullableString and assigns it to the SignatureId field.
+func (o *UpdateEmailDraftRequest) SetSignatureId(v string) {
+	o.SignatureId.Set(&v)
+}
+
+// SetSignatureIdNil sets the value for SignatureId to be an explicit nil
+func (o *UpdateEmailDraftRequest) SetSignatureIdNil() {
+	o.SignatureId.Set(nil)
+}
+
+// UnsetSignatureId ensures that no value is present for SignatureId, not even an explicit nil
+func (o *UpdateEmailDraftRequest) UnsetSignatureId() {
+	o.SignatureId.Unset()
+}
+
 func (o UpdateEmailDraftRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -368,6 +413,9 @@ func (o UpdateEmailDraftRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Attachments) {
 		toSerialize["attachments"] = o.Attachments
+	}
+	if o.SignatureId.IsSet() {
+		toSerialize["signatureId"] = o.SignatureId.Get()
 	}
 	return toSerialize, nil
 }

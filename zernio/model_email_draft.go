@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.550.0
+API version: 1.551.0
 Contact: support@zernio.com
 */
 
@@ -22,12 +22,14 @@ var _ MappedNullable = &EmailDraft{}
 // EmailDraft A draft in the mailbox. Carries the message fields; `id` is the draft id the drafts endpoints take. Store `id`, not `messageId`.
 type EmailDraft struct {
 	// The draft id: the Gmail draft id, or the Outlook message id.
-	Id          *string           `json:"id,omitempty"`
-	ThreadId    *string           `json:"threadId,omitempty"`
-	AccountId   *string           `json:"accountId,omitempty"`
-	Provider    *string           `json:"provider,omitempty"`
-	Folders     []string          `json:"folders,omitempty"`
-	From        *EmailAddress     `json:"from,omitempty"`
+	Id        *string       `json:"id,omitempty"`
+	ThreadId  *string       `json:"threadId,omitempty"`
+	AccountId *string       `json:"accountId,omitempty"`
+	Provider  *string       `json:"provider,omitempty"`
+	Folders   []string      `json:"folders,omitempty"`
+	From      *EmailAddress `json:"from,omitempty"`
+	// The mailbox that actually sent it. Same as `from`, except when Outlook sent on behalf of `from` (Send on Behalf rather than Send As).
+	Sender      *EmailAddress     `json:"sender,omitempty"`
 	To          []EmailAddress    `json:"to,omitempty"`
 	Cc          []EmailAddress    `json:"cc,omitempty"`
 	Bcc         []EmailAddress    `json:"bcc,omitempty"`
@@ -274,6 +276,38 @@ func (o *EmailDraft) HasFrom() bool {
 // SetFrom gets a reference to the given EmailAddress and assigns it to the From field.
 func (o *EmailDraft) SetFrom(v EmailAddress) {
 	o.From = &v
+}
+
+// GetSender returns the Sender field value if set, zero value otherwise.
+func (o *EmailDraft) GetSender() EmailAddress {
+	if o == nil || IsNil(o.Sender) {
+		var ret EmailAddress
+		return ret
+	}
+	return *o.Sender
+}
+
+// GetSenderOk returns a tuple with the Sender field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailDraft) GetSenderOk() (*EmailAddress, bool) {
+	if o == nil || IsNil(o.Sender) {
+		return nil, false
+	}
+	return o.Sender, true
+}
+
+// HasSender returns a boolean if a field has been set.
+func (o *EmailDraft) HasSender() bool {
+	if o != nil && !IsNil(o.Sender) {
+		return true
+	}
+
+	return false
+}
+
+// SetSender gets a reference to the given EmailAddress and assigns it to the Sender field.
+func (o *EmailDraft) SetSender(v EmailAddress) {
+	o.Sender = &v
 }
 
 // GetTo returns the To field value if set, zero value otherwise.
@@ -1168,6 +1202,9 @@ func (o EmailDraft) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.From) {
 		toSerialize["from"] = o.From
+	}
+	if !IsNil(o.Sender) {
+		toSerialize["sender"] = o.Sender
 	}
 	if !IsNil(o.To) {
 		toSerialize["to"] = o.To

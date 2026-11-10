@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.550.0
+API version: 1.551.0
 Contact: support@zernio.com
 */
 
@@ -31,8 +31,10 @@ type CreateEmailDraftRequest struct {
 	FromName *string        `json:"fromName,omitempty"`
 	// Send from another address of the mailbox, as on `POST /v1/email/messages`. Checked when the draft is saved.
 	From *string `json:"from,omitempty"`
-	// Gmail only. Puts the signature of the sending address in the draft body, where the user sees it.
+	// Puts the signature of the sending address in the draft body, where the user sees it: its Zernio default first, else its Gmail signature.
 	AppendSignature *bool `json:"appendSignature,omitempty"`
+	// Puts this Zernio signature in the draft body instead. Wins over `appendSignature`.
+	SignatureId *string `json:"signatureId,omitempty"`
 	// On a reply draft, empty keeps the thread subject.
 	Subject     *string                `json:"subject,omitempty"`
 	Text        *string                `json:"text,omitempty"`
@@ -330,6 +332,38 @@ func (o *CreateEmailDraftRequest) HasAppendSignature() bool {
 // SetAppendSignature gets a reference to the given bool and assigns it to the AppendSignature field.
 func (o *CreateEmailDraftRequest) SetAppendSignature(v bool) {
 	o.AppendSignature = &v
+}
+
+// GetSignatureId returns the SignatureId field value if set, zero value otherwise.
+func (o *CreateEmailDraftRequest) GetSignatureId() string {
+	if o == nil || IsNil(o.SignatureId) {
+		var ret string
+		return ret
+	}
+	return *o.SignatureId
+}
+
+// GetSignatureIdOk returns a tuple with the SignatureId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateEmailDraftRequest) GetSignatureIdOk() (*string, bool) {
+	if o == nil || IsNil(o.SignatureId) {
+		return nil, false
+	}
+	return o.SignatureId, true
+}
+
+// HasSignatureId returns a boolean if a field has been set.
+func (o *CreateEmailDraftRequest) HasSignatureId() bool {
+	if o != nil && !IsNil(o.SignatureId) {
+		return true
+	}
+
+	return false
+}
+
+// SetSignatureId gets a reference to the given string and assigns it to the SignatureId field.
+func (o *CreateEmailDraftRequest) SetSignatureId(v string) {
+	o.SignatureId = &v
 }
 
 // GetSubject returns the Subject field value if set, zero value otherwise.
@@ -811,6 +845,9 @@ func (o CreateEmailDraftRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AppendSignature) {
 		toSerialize["appendSignature"] = o.AppendSignature
+	}
+	if !IsNil(o.SignatureId) {
+		toSerialize["signatureId"] = o.SignatureId
 	}
 	if !IsNil(o.Subject) {
 		toSerialize["subject"] = o.Subject

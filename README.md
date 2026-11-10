@@ -989,22 +989,30 @@ func main() {
 | `client.EmailAPI.ListEmailLabels(ctx)` | List labels |
 | `client.EmailAPI.ListEmailMessages(ctx)` | List email messages |
 | `client.EmailAPI.ListEmailSendAs(ctx)` | List send-as addresses |
+| `client.EmailAPI.ListEmailSignatures(ctx)` | List signatures |
 | `client.EmailAPI.ListEmailThreads(ctx)` | List email threads |
 | `client.EmailAPI.ListScheduledEmails(ctx)` | List scheduled emails |
 | `client.EmailAPI.CreateEmailDraft(ctx)` | Create a draft |
 | `client.EmailAPI.CreateEmailLabel(ctx)` | Create a label |
+| `client.EmailAPI.CreateEmailSignature(ctx)` | Create a signature |
 | `client.EmailAPI.GetEmailDraft(ctx)` | Get a draft |
 | `client.EmailAPI.GetEmailMessage(ctx)` | Get an email message |
+| `client.EmailAPI.GetEmailSignature(ctx)` | Get a signature |
 | `client.EmailAPI.GetEmailThread(ctx)` | Get an email thread with its messages |
 | `client.EmailAPI.GetScheduledEmail(ctx)` | Get a scheduled email |
 | `client.EmailAPI.UpdateEmailDraft(ctx)` | Update a draft |
 | `client.EmailAPI.UpdateEmailMessage(ctx)` | Mark read or starred, label, or move a message |
+| `client.EmailAPI.UpdateEmailSignature(ctx)` | Update a signature |
 | `client.EmailAPI.UpdateEmailThread(ctx)` | Update every message in a thread |
 | `client.EmailAPI.DeleteEmailDraft(ctx)` | Delete a draft |
 | `client.EmailAPI.DeleteEmailLabel(ctx)` | Delete a label |
+| `client.EmailAPI.DeleteEmailSendAs(ctx)` | Remove a declared send-as address |
+| `client.EmailAPI.DeleteEmailSignature(ctx)` | Delete a signature |
 | `client.EmailAPI.CancelScheduledEmail(ctx)` | Cancel a scheduled email |
+| `client.EmailAPI.DeclareEmailSendAs(ctx)` | Declare a send-as address |
 | `client.EmailAPI.DownloadEmailAttachment(ctx)` | Download an attachment |
 | `client.EmailAPI.ForwardEmailMessage(ctx)` | Forward a message |
+| `client.EmailAPI.ImportEmailSignatures(ctx)` | Import Gmail signatures |
 | `client.EmailAPI.ReplyEmailMessage(ctx)` | Reply to a message |
 | `client.EmailAPI.SendEmailDraft(ctx)` | Send a draft |
 | `client.EmailAPI.SendEmailMessage(ctx)` | Send an email |

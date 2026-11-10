@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.550.0
+API version: 1.551.0
 Contact: support@zernio.com
 */
 
@@ -22,12 +22,14 @@ var _ MappedNullable = &EmailMessage{}
 // EmailMessage struct for EmailMessage
 type EmailMessage struct {
 	// The provider's message id.
-	Id          *string              `json:"id,omitempty"`
-	ThreadId    *string              `json:"threadId,omitempty"`
-	AccountId   *string              `json:"accountId,omitempty"`
-	Provider    *string              `json:"provider,omitempty"`
-	Folders     []string             `json:"folders,omitempty"`
-	From        NullableEmailAddress `json:"from,omitempty"`
+	Id        *string              `json:"id,omitempty"`
+	ThreadId  *string              `json:"threadId,omitempty"`
+	AccountId *string              `json:"accountId,omitempty"`
+	Provider  *string              `json:"provider,omitempty"`
+	Folders   []string             `json:"folders,omitempty"`
+	From      NullableEmailAddress `json:"from,omitempty"`
+	// The mailbox that actually sent it. Same as `from`, except when Outlook sent on behalf of `from` (Send on Behalf rather than Send As).
+	Sender      NullableEmailAddress `json:"sender,omitempty"`
 	To          []EmailAddress       `json:"to,omitempty"`
 	Cc          []EmailAddress       `json:"cc,omitempty"`
 	Bcc         []EmailAddress       `json:"bcc,omitempty"`
@@ -274,6 +276,49 @@ func (o *EmailMessage) SetFromNil() {
 // UnsetFrom ensures that no value is present for From, not even an explicit nil
 func (o *EmailMessage) UnsetFrom() {
 	o.From.Unset()
+}
+
+// GetSender returns the Sender field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EmailMessage) GetSender() EmailAddress {
+	if o == nil || IsNil(o.Sender.Get()) {
+		var ret EmailAddress
+		return ret
+	}
+	return *o.Sender.Get()
+}
+
+// GetSenderOk returns a tuple with the Sender field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EmailMessage) GetSenderOk() (*EmailAddress, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Sender.Get(), o.Sender.IsSet()
+}
+
+// HasSender returns a boolean if a field has been set.
+func (o *EmailMessage) HasSender() bool {
+	if o != nil && o.Sender.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSender gets a reference to the given NullableEmailAddress and assigns it to the Sender field.
+func (o *EmailMessage) SetSender(v EmailAddress) {
+	o.Sender.Set(&v)
+}
+
+// SetSenderNil sets the value for Sender to be an explicit nil
+func (o *EmailMessage) SetSenderNil() {
+	o.Sender.Set(nil)
+}
+
+// UnsetSender ensures that no value is present for Sender, not even an explicit nil
+func (o *EmailMessage) UnsetSender() {
+	o.Sender.Unset()
 }
 
 // GetTo returns the To field value if set, zero value otherwise.
@@ -998,6 +1043,9 @@ func (o EmailMessage) ToMap() (map[string]interface{}, error) {
 	}
 	if o.From.IsSet() {
 		toSerialize["from"] = o.From.Get()
+	}
+	if o.Sender.IsSet() {
+		toSerialize["sender"] = o.Sender.Get()
 	}
 	if !IsNil(o.To) {
 		toSerialize["to"] = o.To

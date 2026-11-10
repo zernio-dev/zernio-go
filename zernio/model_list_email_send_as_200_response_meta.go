@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.550.0
+API version: 1.551.0
 Contact: support@zernio.com
 */
 
@@ -20,10 +20,10 @@ var _ MappedNullable = &ListEmailSendAs200ResponseMeta{}
 
 // ListEmailSendAs200ResponseMeta struct for ListEmailSendAs200ResponseMeta
 type ListEmailSendAs200ResponseMeta struct {
-	// `true` when `from` must be in this list (Gmail). `false` when the provider decides at send time (Outlook).
-	CompleteList *bool `json:"completeList,omitempty"`
-	// Whether `appendSignature` works on this mailbox.
-	Signatures *bool `json:"signatures,omitempty"`
+	// `provider`: the provider lists every address (Gmail), nothing can be declared. `partial`: declare the addresses the provider cannot list (Outlook).
+	List *string `json:"list,omitempty"`
+	// Whether the provider's own signatures appear here (Gmail).
+	ProviderSignatures *bool `json:"providerSignatures,omitempty"`
 }
 
 // NewListEmailSendAs200ResponseMeta instantiates a new ListEmailSendAs200ResponseMeta object
@@ -43,68 +43,68 @@ func NewListEmailSendAs200ResponseMetaWithDefaults() *ListEmailSendAs200Response
 	return &this
 }
 
-// GetCompleteList returns the CompleteList field value if set, zero value otherwise.
-func (o *ListEmailSendAs200ResponseMeta) GetCompleteList() bool {
-	if o == nil || IsNil(o.CompleteList) {
-		var ret bool
+// GetList returns the List field value if set, zero value otherwise.
+func (o *ListEmailSendAs200ResponseMeta) GetList() string {
+	if o == nil || IsNil(o.List) {
+		var ret string
 		return ret
 	}
-	return *o.CompleteList
+	return *o.List
 }
 
-// GetCompleteListOk returns a tuple with the CompleteList field value if set, nil otherwise
+// GetListOk returns a tuple with the List field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListEmailSendAs200ResponseMeta) GetCompleteListOk() (*bool, bool) {
-	if o == nil || IsNil(o.CompleteList) {
+func (o *ListEmailSendAs200ResponseMeta) GetListOk() (*string, bool) {
+	if o == nil || IsNil(o.List) {
 		return nil, false
 	}
-	return o.CompleteList, true
+	return o.List, true
 }
 
-// HasCompleteList returns a boolean if a field has been set.
-func (o *ListEmailSendAs200ResponseMeta) HasCompleteList() bool {
-	if o != nil && !IsNil(o.CompleteList) {
+// HasList returns a boolean if a field has been set.
+func (o *ListEmailSendAs200ResponseMeta) HasList() bool {
+	if o != nil && !IsNil(o.List) {
 		return true
 	}
 
 	return false
 }
 
-// SetCompleteList gets a reference to the given bool and assigns it to the CompleteList field.
-func (o *ListEmailSendAs200ResponseMeta) SetCompleteList(v bool) {
-	o.CompleteList = &v
+// SetList gets a reference to the given string and assigns it to the List field.
+func (o *ListEmailSendAs200ResponseMeta) SetList(v string) {
+	o.List = &v
 }
 
-// GetSignatures returns the Signatures field value if set, zero value otherwise.
-func (o *ListEmailSendAs200ResponseMeta) GetSignatures() bool {
-	if o == nil || IsNil(o.Signatures) {
+// GetProviderSignatures returns the ProviderSignatures field value if set, zero value otherwise.
+func (o *ListEmailSendAs200ResponseMeta) GetProviderSignatures() bool {
+	if o == nil || IsNil(o.ProviderSignatures) {
 		var ret bool
 		return ret
 	}
-	return *o.Signatures
+	return *o.ProviderSignatures
 }
 
-// GetSignaturesOk returns a tuple with the Signatures field value if set, nil otherwise
+// GetProviderSignaturesOk returns a tuple with the ProviderSignatures field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListEmailSendAs200ResponseMeta) GetSignaturesOk() (*bool, bool) {
-	if o == nil || IsNil(o.Signatures) {
+func (o *ListEmailSendAs200ResponseMeta) GetProviderSignaturesOk() (*bool, bool) {
+	if o == nil || IsNil(o.ProviderSignatures) {
 		return nil, false
 	}
-	return o.Signatures, true
+	return o.ProviderSignatures, true
 }
 
-// HasSignatures returns a boolean if a field has been set.
-func (o *ListEmailSendAs200ResponseMeta) HasSignatures() bool {
-	if o != nil && !IsNil(o.Signatures) {
+// HasProviderSignatures returns a boolean if a field has been set.
+func (o *ListEmailSendAs200ResponseMeta) HasProviderSignatures() bool {
+	if o != nil && !IsNil(o.ProviderSignatures) {
 		return true
 	}
 
 	return false
 }
 
-// SetSignatures gets a reference to the given bool and assigns it to the Signatures field.
-func (o *ListEmailSendAs200ResponseMeta) SetSignatures(v bool) {
-	o.Signatures = &v
+// SetProviderSignatures gets a reference to the given bool and assigns it to the ProviderSignatures field.
+func (o *ListEmailSendAs200ResponseMeta) SetProviderSignatures(v bool) {
+	o.ProviderSignatures = &v
 }
 
 func (o ListEmailSendAs200ResponseMeta) MarshalJSON() ([]byte, error) {
@@ -117,11 +117,11 @@ func (o ListEmailSendAs200ResponseMeta) MarshalJSON() ([]byte, error) {
 
 func (o ListEmailSendAs200ResponseMeta) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.CompleteList) {
-		toSerialize["completeList"] = o.CompleteList
+	if !IsNil(o.List) {
+		toSerialize["list"] = o.List
 	}
-	if !IsNil(o.Signatures) {
-		toSerialize["signatures"] = o.Signatures
+	if !IsNil(o.ProviderSignatures) {
+		toSerialize["providerSignatures"] = o.ProviderSignatures
 	}
 	return toSerialize, nil
 }

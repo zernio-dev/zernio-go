@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.550.0
+API version: 1.551.0
 Contact: support@zernio.com
 */
 
@@ -18,20 +18,21 @@ import (
 // checks if the EmailSendAs type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &EmailSendAs{}
 
-// EmailSendAs An address the mailbox can send from.
+// EmailSendAs An address the mailbox can send from: listed by the provider, or declared with `POST /v1/email/send-as`.
 type EmailSendAs struct {
-	Email       *string        `json:"email,omitempty"`
-	DisplayName NullableString `json:"displayName,omitempty"`
+	Email *string `json:"email,omitempty"`
+	// Display name used when `fromName` is not given.
+	Name NullableString `json:"name,omitempty"`
+	// `primary` is the mailbox's own address, `alias` a provider alias, `shared` a declared address (shared mailbox, delegate or alias).
+	Type *string `json:"type,omitempty"`
+	// `pending`: Gmail has not verified the alias, so sends from it are refused. `unverified`: declared and not sent from yet; it becomes `accepted` after its first send.
+	VerificationStatus *string `json:"verificationStatus,omitempty"`
+	// The address the provider picks by default.
+	IsDefault *bool   `json:"isDefault,omitempty"`
+	Source    *string `json:"source,omitempty"`
 	// Gmail alias reply-to address, if set.
-	ReplyTo NullableString `json:"replyTo,omitempty"`
-	// The mailbox's own address.
-	IsPrimary *bool `json:"isPrimary,omitempty"`
-	// The address Gmail picks by default in its compose window.
-	IsDefault *bool `json:"isDefault,omitempty"`
-	// Gmail sends from an alias only once it is verified. Always `true` on Outlook.
-	Verified *bool `json:"verified,omitempty"`
-	// Signature html. Gmail only; always `null` on Outlook.
-	Signature NullableString `json:"signature,omitempty"`
+	ReplyTo   NullableString        `json:"replyTo,omitempty"`
+	Signature *EmailSendAsSignature `json:"signature,omitempty"`
 }
 
 // NewEmailSendAs instantiates a new EmailSendAs object
@@ -83,47 +84,175 @@ func (o *EmailSendAs) SetEmail(v string) {
 	o.Email = &v
 }
 
-// GetDisplayName returns the DisplayName field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *EmailSendAs) GetDisplayName() string {
-	if o == nil || IsNil(o.DisplayName.Get()) {
+// GetName returns the Name field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EmailSendAs) GetName() string {
+	if o == nil || IsNil(o.Name.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.DisplayName.Get()
+	return *o.Name.Get()
 }
 
-// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *EmailSendAs) GetDisplayNameOk() (*string, bool) {
+func (o *EmailSendAs) GetNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.DisplayName.Get(), o.DisplayName.IsSet()
+	return o.Name.Get(), o.Name.IsSet()
 }
 
-// HasDisplayName returns a boolean if a field has been set.
-func (o *EmailSendAs) HasDisplayName() bool {
-	if o != nil && o.DisplayName.IsSet() {
+// HasName returns a boolean if a field has been set.
+func (o *EmailSendAs) HasName() bool {
+	if o != nil && o.Name.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetDisplayName gets a reference to the given NullableString and assigns it to the DisplayName field.
-func (o *EmailSendAs) SetDisplayName(v string) {
-	o.DisplayName.Set(&v)
+// SetName gets a reference to the given NullableString and assigns it to the Name field.
+func (o *EmailSendAs) SetName(v string) {
+	o.Name.Set(&v)
 }
 
-// SetDisplayNameNil sets the value for DisplayName to be an explicit nil
-func (o *EmailSendAs) SetDisplayNameNil() {
-	o.DisplayName.Set(nil)
+// SetNameNil sets the value for Name to be an explicit nil
+func (o *EmailSendAs) SetNameNil() {
+	o.Name.Set(nil)
 }
 
-// UnsetDisplayName ensures that no value is present for DisplayName, not even an explicit nil
-func (o *EmailSendAs) UnsetDisplayName() {
-	o.DisplayName.Unset()
+// UnsetName ensures that no value is present for Name, not even an explicit nil
+func (o *EmailSendAs) UnsetName() {
+	o.Name.Unset()
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *EmailSendAs) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailSendAs) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *EmailSendAs) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *EmailSendAs) SetType(v string) {
+	o.Type = &v
+}
+
+// GetVerificationStatus returns the VerificationStatus field value if set, zero value otherwise.
+func (o *EmailSendAs) GetVerificationStatus() string {
+	if o == nil || IsNil(o.VerificationStatus) {
+		var ret string
+		return ret
+	}
+	return *o.VerificationStatus
+}
+
+// GetVerificationStatusOk returns a tuple with the VerificationStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailSendAs) GetVerificationStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.VerificationStatus) {
+		return nil, false
+	}
+	return o.VerificationStatus, true
+}
+
+// HasVerificationStatus returns a boolean if a field has been set.
+func (o *EmailSendAs) HasVerificationStatus() bool {
+	if o != nil && !IsNil(o.VerificationStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetVerificationStatus gets a reference to the given string and assigns it to the VerificationStatus field.
+func (o *EmailSendAs) SetVerificationStatus(v string) {
+	o.VerificationStatus = &v
+}
+
+// GetIsDefault returns the IsDefault field value if set, zero value otherwise.
+func (o *EmailSendAs) GetIsDefault() bool {
+	if o == nil || IsNil(o.IsDefault) {
+		var ret bool
+		return ret
+	}
+	return *o.IsDefault
+}
+
+// GetIsDefaultOk returns a tuple with the IsDefault field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailSendAs) GetIsDefaultOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsDefault) {
+		return nil, false
+	}
+	return o.IsDefault, true
+}
+
+// HasIsDefault returns a boolean if a field has been set.
+func (o *EmailSendAs) HasIsDefault() bool {
+	if o != nil && !IsNil(o.IsDefault) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsDefault gets a reference to the given bool and assigns it to the IsDefault field.
+func (o *EmailSendAs) SetIsDefault(v bool) {
+	o.IsDefault = &v
+}
+
+// GetSource returns the Source field value if set, zero value otherwise.
+func (o *EmailSendAs) GetSource() string {
+	if o == nil || IsNil(o.Source) {
+		var ret string
+		return ret
+	}
+	return *o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailSendAs) GetSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.Source) {
+		return nil, false
+	}
+	return o.Source, true
+}
+
+// HasSource returns a boolean if a field has been set.
+func (o *EmailSendAs) HasSource() bool {
+	if o != nil && !IsNil(o.Source) {
+		return true
+	}
+
+	return false
+}
+
+// SetSource gets a reference to the given string and assigns it to the Source field.
+func (o *EmailSendAs) SetSource(v string) {
+	o.Source = &v
 }
 
 // GetReplyTo returns the ReplyTo field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -169,143 +298,36 @@ func (o *EmailSendAs) UnsetReplyTo() {
 	o.ReplyTo.Unset()
 }
 
-// GetIsPrimary returns the IsPrimary field value if set, zero value otherwise.
-func (o *EmailSendAs) GetIsPrimary() bool {
-	if o == nil || IsNil(o.IsPrimary) {
-		var ret bool
+// GetSignature returns the Signature field value if set, zero value otherwise.
+func (o *EmailSendAs) GetSignature() EmailSendAsSignature {
+	if o == nil || IsNil(o.Signature) {
+		var ret EmailSendAsSignature
 		return ret
 	}
-	return *o.IsPrimary
-}
-
-// GetIsPrimaryOk returns a tuple with the IsPrimary field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EmailSendAs) GetIsPrimaryOk() (*bool, bool) {
-	if o == nil || IsNil(o.IsPrimary) {
-		return nil, false
-	}
-	return o.IsPrimary, true
-}
-
-// HasIsPrimary returns a boolean if a field has been set.
-func (o *EmailSendAs) HasIsPrimary() bool {
-	if o != nil && !IsNil(o.IsPrimary) {
-		return true
-	}
-
-	return false
-}
-
-// SetIsPrimary gets a reference to the given bool and assigns it to the IsPrimary field.
-func (o *EmailSendAs) SetIsPrimary(v bool) {
-	o.IsPrimary = &v
-}
-
-// GetIsDefault returns the IsDefault field value if set, zero value otherwise.
-func (o *EmailSendAs) GetIsDefault() bool {
-	if o == nil || IsNil(o.IsDefault) {
-		var ret bool
-		return ret
-	}
-	return *o.IsDefault
-}
-
-// GetIsDefaultOk returns a tuple with the IsDefault field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EmailSendAs) GetIsDefaultOk() (*bool, bool) {
-	if o == nil || IsNil(o.IsDefault) {
-		return nil, false
-	}
-	return o.IsDefault, true
-}
-
-// HasIsDefault returns a boolean if a field has been set.
-func (o *EmailSendAs) HasIsDefault() bool {
-	if o != nil && !IsNil(o.IsDefault) {
-		return true
-	}
-
-	return false
-}
-
-// SetIsDefault gets a reference to the given bool and assigns it to the IsDefault field.
-func (o *EmailSendAs) SetIsDefault(v bool) {
-	o.IsDefault = &v
-}
-
-// GetVerified returns the Verified field value if set, zero value otherwise.
-func (o *EmailSendAs) GetVerified() bool {
-	if o == nil || IsNil(o.Verified) {
-		var ret bool
-		return ret
-	}
-	return *o.Verified
-}
-
-// GetVerifiedOk returns a tuple with the Verified field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EmailSendAs) GetVerifiedOk() (*bool, bool) {
-	if o == nil || IsNil(o.Verified) {
-		return nil, false
-	}
-	return o.Verified, true
-}
-
-// HasVerified returns a boolean if a field has been set.
-func (o *EmailSendAs) HasVerified() bool {
-	if o != nil && !IsNil(o.Verified) {
-		return true
-	}
-
-	return false
-}
-
-// SetVerified gets a reference to the given bool and assigns it to the Verified field.
-func (o *EmailSendAs) SetVerified(v bool) {
-	o.Verified = &v
-}
-
-// GetSignature returns the Signature field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *EmailSendAs) GetSignature() string {
-	if o == nil || IsNil(o.Signature.Get()) {
-		var ret string
-		return ret
-	}
-	return *o.Signature.Get()
+	return *o.Signature
 }
 
 // GetSignatureOk returns a tuple with the Signature field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *EmailSendAs) GetSignatureOk() (*string, bool) {
-	if o == nil {
+func (o *EmailSendAs) GetSignatureOk() (*EmailSendAsSignature, bool) {
+	if o == nil || IsNil(o.Signature) {
 		return nil, false
 	}
-	return o.Signature.Get(), o.Signature.IsSet()
+	return o.Signature, true
 }
 
 // HasSignature returns a boolean if a field has been set.
 func (o *EmailSendAs) HasSignature() bool {
-	if o != nil && o.Signature.IsSet() {
+	if o != nil && !IsNil(o.Signature) {
 		return true
 	}
 
 	return false
 }
 
-// SetSignature gets a reference to the given NullableString and assigns it to the Signature field.
-func (o *EmailSendAs) SetSignature(v string) {
-	o.Signature.Set(&v)
-}
-
-// SetSignatureNil sets the value for Signature to be an explicit nil
-func (o *EmailSendAs) SetSignatureNil() {
-	o.Signature.Set(nil)
-}
-
-// UnsetSignature ensures that no value is present for Signature, not even an explicit nil
-func (o *EmailSendAs) UnsetSignature() {
-	o.Signature.Unset()
+// SetSignature gets a reference to the given EmailSendAsSignature and assigns it to the Signature field.
+func (o *EmailSendAs) SetSignature(v EmailSendAsSignature) {
+	o.Signature = &v
 }
 
 func (o EmailSendAs) MarshalJSON() ([]byte, error) {
@@ -321,23 +343,26 @@ func (o EmailSendAs) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Email) {
 		toSerialize["email"] = o.Email
 	}
-	if o.DisplayName.IsSet() {
-		toSerialize["displayName"] = o.DisplayName.Get()
+	if o.Name.IsSet() {
+		toSerialize["name"] = o.Name.Get()
 	}
-	if o.ReplyTo.IsSet() {
-		toSerialize["replyTo"] = o.ReplyTo.Get()
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
 	}
-	if !IsNil(o.IsPrimary) {
-		toSerialize["isPrimary"] = o.IsPrimary
+	if !IsNil(o.VerificationStatus) {
+		toSerialize["verificationStatus"] = o.VerificationStatus
 	}
 	if !IsNil(o.IsDefault) {
 		toSerialize["isDefault"] = o.IsDefault
 	}
-	if !IsNil(o.Verified) {
-		toSerialize["verified"] = o.Verified
+	if !IsNil(o.Source) {
+		toSerialize["source"] = o.Source
 	}
-	if o.Signature.IsSet() {
-		toSerialize["signature"] = o.Signature.Get()
+	if o.ReplyTo.IsSet() {
+		toSerialize["replyTo"] = o.ReplyTo.Get()
+	}
+	if !IsNil(o.Signature) {
+		toSerialize["signature"] = o.Signature
 	}
 	return toSerialize, nil
 }
