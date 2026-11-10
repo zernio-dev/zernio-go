@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.0
+API version: 1.545.1
 Contact: support@zernio.com
 */
 
@@ -10064,6 +10064,8 @@ A post failed on every target platform.
 
 Once per publishing job, after every platform target ends. Exactly one of `post.published`, `post.partial` or `post.failed` fires.
 
+A TikTok target TikTok is still processing (status `uploading`) holds it for up to 48 hours. Meanwhile `post.platform.published` and `post.platform.failed` report the other targets.
+
 ### Payload notes
 
 Each `platforms[]` entry carries `error`, `errorCategory` and `errorSource`, the same taxonomy as `platforms[]` on Get post. Branch on `errorCategory`, not on the message text.
@@ -10170,6 +10172,10 @@ A post published on some platforms and failed on others.
 ### When it fires
 
 Once per publishing job, after every platform target ends. Exactly one of `post.published`, `post.partial` or `post.failed` fires.
+
+A TikTok target TikTok is still processing (status `uploading`) holds it for up to 48 hours. Meanwhile `post.platform.published` and `post.platform.failed` report the other targets.
+
+It can follow a `post.failed` for the same post when TikTok later reports a failed TikTok target as published.
 
 ### Payload notes
 
@@ -10508,9 +10514,15 @@ Once per platform target, as soon as it finishes. A cross-post to 2 accounts on 
 
 `platform` carries the platform post id and URL. `account` identifies the connected account.
 
+### TikTok targets still processing
+
+TikTok can keep processing a post for up to 48 hours (entry status `uploading`). That target fires when TikTok finishes. The other targets fire as they finish, and the post rollup waits for TikTok.
+
 ### Later reconciliation
 
 If a target later fails background reconciliation, `post.platform.failed` fires for the same target afterward.
+
+A failed TikTok target that TikTok later reports as published fires `post.platform.published` afterward, and the rollup fires again.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnPostPlatformPublishedRequest
@@ -10614,6 +10626,10 @@ Every platform target of a post published.
 ### When it fires
 
 Once per publishing job, after every platform target ends. Exactly one of `post.published`, `post.partial` or `post.failed` fires.
+
+A TikTok target TikTok is still processing (status `uploading`) holds it for up to 48 hours. Meanwhile `post.platform.published` and `post.platform.failed` report the other targets.
+
+It can follow a `post.partial` or `post.failed` for the same post when TikTok later reports a failed TikTok target as published.
 
 ### Payload notes
 
