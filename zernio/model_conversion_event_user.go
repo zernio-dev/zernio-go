@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.560.0
+API version: 1.562.0
 Contact: support@zernio.com
 */
 
@@ -30,9 +30,9 @@ type ConversionEventUser struct {
 	LastName *string `json:"lastName,omitempty"`
 	// Stable customer identifier (e.g. CRM user ID). Hashed server-side for Meta and Google. Sent as plaintext to LinkedIn (LinkedIn's Conversions API spec requires the raw value). Maximum effective list size on LinkedIn is 1.
 	ExternalId *string `json:"externalId,omitempty"`
-	// Client IP address. Sent plaintext.
+	// Client IP address. Sent plaintext (Meta, Pinterest, Reddit, OpenAI, Google Ads).
 	IpAddress *string `json:"ipAddress,omitempty"`
-	// Client user-agent string. Sent plaintext.
+	// Client user-agent string. Sent plaintext (Meta, Pinterest, Reddit, OpenAI, Google Ads).
 	UserAgent *string `json:"userAgent,omitempty"`
 	// ISO 3166-1 alpha-2 country code, e.g. 'us'.
 	Country *string `json:"country,omitempty"`
@@ -40,7 +40,7 @@ type ConversionEventUser struct {
 	City *string `json:"city,omitempty"`
 	// Meta advanced matching (st). 2-letter ANSI for US; hashed server-side. Meta only.
 	State *string `json:"state,omitempty"`
-	// Meta advanced matching (zp). US uses first 5 digits; hashed server-side. Meta only.
+	// Postal code. Meta advanced matching (zp; US uses first 5 digits; hashed server-side). Google Ads sends it plain in an address identifier with firstName, lastName and country, only when all four are present.
 	Zip *string `json:"zip,omitempty"`
 	// Meta advanced matching (db). YYYYMMDD; hashed server-side. Meta only.
 	Dob *string `json:"dob,omitempty"`
