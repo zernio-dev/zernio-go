@@ -875,10 +875,12 @@ func main() {
 | `client.ConversionsAPI.ListCustomConversionGoals(ctx)` | List custom conversion goals |
 | `client.ConversionsAPI.ListEventDestinations(ctx)` | List event destinations |
 | `client.ConversionsAPI.ListEvents(ctx)` | List stored events |
+| `client.ConversionsAPI.ListForwardingRules(ctx)` | List forwarding rules |
 | `client.ConversionsAPI.CreateConversionAction(ctx)` | Create website conversion action |
 | `client.ConversionsAPI.CreateConversionDestination(ctx)` | Create a conversion destination |
 | `client.ConversionsAPI.CreateCustomConversionGoal(ctx)` | Create a custom conversion goal |
 | `client.ConversionsAPI.CreateEventDestination(ctx)` | Add an event destination |
+| `client.ConversionsAPI.CreateForwardingRule(ctx)` | Add a forwarding rule |
 | `client.ConversionsAPI.GetConversionDestination(ctx)` | Get a conversion destination |
 | `client.ConversionsAPI.GetConversionMetrics(ctx)` | Get attribution metrics |
 | `client.ConversionsAPI.GetConversionsQuality(ctx)` | Get Event Match Quality |
@@ -889,10 +891,13 @@ func main() {
 | `client.ConversionsAPI.UpdateCustomConversionGoal(ctx)` | Update a custom conversion goal |
 | `client.ConversionsAPI.DeleteConversionDestination(ctx)` | Delete a conversion destination |
 | `client.ConversionsAPI.DeleteEventDestination(ctx)` | Remove an event destination |
+| `client.ConversionsAPI.DeleteForwardingRule(ctx)` | Remove a forwarding rule |
 | `client.ConversionsAPI.AddConversionAssociations(ctx)` | Associate campaigns |
 | `client.ConversionsAPI.AdjustConversions(ctx)` | Adjust uploaded conversions |
 | `client.ConversionsAPI.RemoveConversionAssociations(ctx)` | Remove associated campaigns |
 | `client.ConversionsAPI.RemoveCustomConversionGoal(ctx)` | Remove a custom conversion goal |
+| `client.ConversionsAPI.RestateEvent(ctx)` | Change a stored event's value |
+| `client.ConversionsAPI.RetractEvent(ctx)` | Retract a stored event |
 | `client.ConversionsAPI.SendConversions(ctx)` | Send conversion events |
 | `client.ConversionsAPI.SendEvents(ctx)` | Send events to every destination |
 
