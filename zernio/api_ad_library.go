@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.547.0
+API version: 1.547.1
 Contact: support@zernio.com
 */
 
@@ -167,7 +167,7 @@ Rows are returned in the platform's raw shape under `data`. `paging.after` is an
 
 Spend, impressions and demographics are political-only fields and are left out of the default projection; request them via `fields`.
 
-**Meta rate limit.** Meta searches are capped at 30 requests per hour per team, because all customers share Zernio's Meta quota. Meta can also throttle that shared quota. Either way you get a `429` with `Retry-After`: wait that long before retrying.
+**Meta rate limit.** Meta searches are capped at 40 requests per hour per team, because all customers share Zernio's Meta quota. Meta can also throttle that shared quota. Either way you get a `429` with `Retry-After`: wait that long before retrying.
 
 **LinkedIn coverage.** Ads served after June 1 2023, worldwide, kept for a year after their last impression. EU-delivered ads carry impression ranges and the disclosed targeting facets.
 
