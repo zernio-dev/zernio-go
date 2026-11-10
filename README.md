@@ -987,6 +987,7 @@ func main() {
 | `client.EmailAPI.ListEmailFolders(ctx)` | List mailbox folders |
 | `client.EmailAPI.ListEmailLabels(ctx)` | List labels |
 | `client.EmailAPI.ListEmailMessages(ctx)` | List email messages |
+| `client.EmailAPI.ListEmailSendAs(ctx)` | List send-as addresses |
 | `client.EmailAPI.ListEmailThreads(ctx)` | List email threads |
 | `client.EmailAPI.ListScheduledEmails(ctx)` | List scheduled emails |
 | `client.EmailAPI.CreateEmailLabel(ctx)` | Create a label |

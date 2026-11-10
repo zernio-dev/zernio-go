@@ -1095,6 +1095,7 @@ model_email_label_color.go
 model_email_list_meta.go
 model_email_message.go
 model_email_message_patch.go
+model_email_send_as.go
 model_email_thread.go
 model_enable_sms_on_number_200_response.go
 model_enable_sms_on_number_200_response_reusable.go
@@ -1953,6 +1954,8 @@ model_list_discord_scheduled_events_200_response.go
 model_list_email_folders_200_response.go
 model_list_email_labels_200_response.go
 model_list_email_messages_200_response.go
+model_list_email_send_as_200_response.go
+model_list_email_send_as_200_response_meta.go
 model_list_email_threads_200_response.go
 model_list_event_destinations_200_response.go
 model_list_events_200_response.go

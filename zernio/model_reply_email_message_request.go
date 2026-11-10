@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.548.1
+API version: 1.548.2
 Contact: support@zernio.com
 */
 
@@ -29,6 +29,10 @@ type ReplyEmailMessageRequest struct {
 	Bcc       []EmailAddress `json:"bcc,omitempty"`
 	ReplyTo   []EmailAddress `json:"replyTo,omitempty"`
 	FromName  *string        `json:"fromName,omitempty"`
+	// Send from another address of the mailbox, listed by `GET /v1/email/send-as`. Gmail: a verified send-as alias, else 400. Outlook: any address the mailbox has Send As or Send on Behalf rights on, else 403. Omitted, the mail leaves from the mailbox address.
+	From *string `json:"from,omitempty"`
+	// Gmail only. Appends the signature of the sending address (the `from` alias, or the mailbox address) to `html` and `text`. Outlook answers 400: Graph does not expose Outlook signatures.
+	AppendSignature *bool `json:"appendSignature,omitempty"`
 	// Optional on replies; the provider keeps the thread subject.
 	Subject string `json:"subject"`
 	// Plain-text body. One of `text` or `html` is required.
@@ -252,6 +256,70 @@ func (o *ReplyEmailMessageRequest) HasFromName() bool {
 // SetFromName gets a reference to the given string and assigns it to the FromName field.
 func (o *ReplyEmailMessageRequest) SetFromName(v string) {
 	o.FromName = &v
+}
+
+// GetFrom returns the From field value if set, zero value otherwise.
+func (o *ReplyEmailMessageRequest) GetFrom() string {
+	if o == nil || IsNil(o.From) {
+		var ret string
+		return ret
+	}
+	return *o.From
+}
+
+// GetFromOk returns a tuple with the From field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ReplyEmailMessageRequest) GetFromOk() (*string, bool) {
+	if o == nil || IsNil(o.From) {
+		return nil, false
+	}
+	return o.From, true
+}
+
+// HasFrom returns a boolean if a field has been set.
+func (o *ReplyEmailMessageRequest) HasFrom() bool {
+	if o != nil && !IsNil(o.From) {
+		return true
+	}
+
+	return false
+}
+
+// SetFrom gets a reference to the given string and assigns it to the From field.
+func (o *ReplyEmailMessageRequest) SetFrom(v string) {
+	o.From = &v
+}
+
+// GetAppendSignature returns the AppendSignature field value if set, zero value otherwise.
+func (o *ReplyEmailMessageRequest) GetAppendSignature() bool {
+	if o == nil || IsNil(o.AppendSignature) {
+		var ret bool
+		return ret
+	}
+	return *o.AppendSignature
+}
+
+// GetAppendSignatureOk returns a tuple with the AppendSignature field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ReplyEmailMessageRequest) GetAppendSignatureOk() (*bool, bool) {
+	if o == nil || IsNil(o.AppendSignature) {
+		return nil, false
+	}
+	return o.AppendSignature, true
+}
+
+// HasAppendSignature returns a boolean if a field has been set.
+func (o *ReplyEmailMessageRequest) HasAppendSignature() bool {
+	if o != nil && !IsNil(o.AppendSignature) {
+		return true
+	}
+
+	return false
+}
+
+// SetAppendSignature gets a reference to the given bool and assigns it to the AppendSignature field.
+func (o *ReplyEmailMessageRequest) SetAppendSignature(v bool) {
+	o.AppendSignature = &v
 }
 
 // GetSubject returns the Subject field value
@@ -653,6 +721,12 @@ func (o ReplyEmailMessageRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.FromName) {
 		toSerialize["fromName"] = o.FromName
+	}
+	if !IsNil(o.From) {
+		toSerialize["from"] = o.From
+	}
+	if !IsNil(o.AppendSignature) {
+		toSerialize["appendSignature"] = o.AppendSignature
 	}
 	toSerialize["subject"] = o.Subject
 	if !IsNil(o.Text) {
