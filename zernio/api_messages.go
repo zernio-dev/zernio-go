@@ -3612,7 +3612,8 @@ Changes who answers a conversation: Meta Business Agent handover on WhatsApp, Me
 **Facebook and Instagram** (conversation routing between the apps on the account, such as Page Inbox or the Instagram Inbox):
 
 - `pass` with `targetAppId`: give the thread to another app (`pass_thread_control`). Page Inbox is 263902037430900, the Instagram Inbox is 1217981644879628.
-- `take`: take the thread back (`take_thread_control`). Only on accounts connected through a Facebook Page, and Meta accepts it only when the account has a default app set in its conversation routing settings and the business has allowed Zernio to take control of conversations (Page settings > Page setup > Advanced messaging). Otherwise Meta answers code 27, returned as 400 `platform_api_error` with an explanation. On an Instagram Login connection it answers 400 `platform_not_supported`.
+- `take`: take the thread back (`take_thread_control`), only on accounts connected through a Facebook Page. Instagram Login answers 400 `platform_not_supported`.
+- `take` preconditions: a default app set in the account's conversation routing settings, and Zernio allowed to take control of conversations (Page settings > Page setup > Advanced messaging). Otherwise Meta answers code 27 (400 `platform_api_error`).
 - `request`: ask the current owner to pass the thread (`request_thread_control`); nothing changes until it does. Not available on Instagram Login connections (400 `platform_not_supported`).
 - `release`: make the thread idle (`release_thread_control`); the account's default app answers next.
 

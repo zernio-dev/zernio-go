@@ -8546,11 +8546,17 @@ Sending any message through the inbox takes control back. To hand it to the agen
 
 ### Facebook and Instagram
 
-Meta sent Zernio a `pass_thread_control` (another app passed the thread to you) or `take_thread_control` (another app took it from you) event. Meta sends nothing on `release` or when two other apps move a thread between them, and your own thread-control calls do not fire this event (their response carries the new owner). It fires once per change of the stored owner. While you are not the owner, sends answer `409` `not_thread_owner`.
+Meta sent Zernio a `pass_thread_control` (another app passed the thread to you) or `take_thread_control` (another app took it from you) event. It fires once per change of the stored owner.
+
+It does not fire on `release` or when two other apps move a thread between them (Meta sends nothing), nor for your own thread-control calls (their response carries the new owner).
+
+While you are not the owner, sends answer `409` `not_thread_owner`.
 
 ### Taking control on Facebook and Instagram
 
-Call `POST /v1/inbox/conversations/{conversationId}/thread-control` with `action: "take"`, or `"request"` to ask the owner to pass it. Meta accepts `take` only when the account has a default app set in conversation routing and the business has allowed Zernio to take control of conversations; otherwise it answers code 27. Both answer 400 `platform_not_supported` on Instagram Login connections.
+Call `POST /v1/inbox/conversations/{conversationId}/thread-control` with `action: "take"`, or `"request"` to ask the owner to pass it. Both answer 400 `platform_not_supported` on Instagram Login connections.
+
+Meta accepts `take` only when the account has a default app set in conversation routing and the business has allowed Zernio to take control of conversations; otherwise it answers code 27.
 
 ### When it does not fire
 
