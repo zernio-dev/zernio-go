@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.546.0
+API version: 1.547.0
 Contact: support@zernio.com
 */
 
@@ -90,8 +90,9 @@ That read covers the bound post, or the 5 newest posts for an account-wide autom
 
 ### Targeting (comment trigger)
 
-- Per-post: set `platformPostId` to scope to one specific post (only one active per-post automation is allowed per post).
-- Account-wide ("any post"): omit `platformPostId` (and `postId`). The automation evaluates every comment on every post on the account.
+  - Per-post: set `platformPostId` to scope to one specific post (only one active per-post automation is allowed per post).
+    On Instagram this is the Graph media id (`platformPostId` from GET /v1/external-posts), not the number inside an instagram.com link. A link id (19 digits) is swapped for the media id of the matching synced post, or rejected with a 400 when that post has not synced yet.
+  - Account-wide ("any post"): omit `platformPostId` (and `postId`). The automation evaluates every comment on every post on the account.
 
 You can stack unlimited account-wide automations, each with its own keyword set, and they all run independently. Per-post automations take priority on their post.
 
