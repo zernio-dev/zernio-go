@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.551.1
+API version: 1.552.0
 Contact: support@zernio.com
 */
 
@@ -33,6 +33,10 @@ type WebhookPayloadAccountDisconnectedAccount struct {
 	DisconnectionType string `json:"disconnectionType"`
 	// Human-readable reason for the disconnection
 	Reason string `json:"reason"`
+	// IMAP mailboxes only: why polling stopped, or replaced when a Google or Microsoft account took over the mailbox.
+	ReasonCode *string `json:"reasonCode,omitempty"`
+	// IMAP mailboxes only: a hosted link, valid seven days, that reconnects the same account in place. Send it to the user.
+	ReconnectUrl *string `json:"reconnectUrl,omitempty"`
 }
 
 type _WebhookPayloadAccountDisconnectedAccount WebhookPayloadAccountDisconnectedAccount
@@ -236,6 +240,70 @@ func (o *WebhookPayloadAccountDisconnectedAccount) SetReason(v string) {
 	o.Reason = v
 }
 
+// GetReasonCode returns the ReasonCode field value if set, zero value otherwise.
+func (o *WebhookPayloadAccountDisconnectedAccount) GetReasonCode() string {
+	if o == nil || IsNil(o.ReasonCode) {
+		var ret string
+		return ret
+	}
+	return *o.ReasonCode
+}
+
+// GetReasonCodeOk returns a tuple with the ReasonCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadAccountDisconnectedAccount) GetReasonCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.ReasonCode) {
+		return nil, false
+	}
+	return o.ReasonCode, true
+}
+
+// HasReasonCode returns a boolean if a field has been set.
+func (o *WebhookPayloadAccountDisconnectedAccount) HasReasonCode() bool {
+	if o != nil && !IsNil(o.ReasonCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetReasonCode gets a reference to the given string and assigns it to the ReasonCode field.
+func (o *WebhookPayloadAccountDisconnectedAccount) SetReasonCode(v string) {
+	o.ReasonCode = &v
+}
+
+// GetReconnectUrl returns the ReconnectUrl field value if set, zero value otherwise.
+func (o *WebhookPayloadAccountDisconnectedAccount) GetReconnectUrl() string {
+	if o == nil || IsNil(o.ReconnectUrl) {
+		var ret string
+		return ret
+	}
+	return *o.ReconnectUrl
+}
+
+// GetReconnectUrlOk returns a tuple with the ReconnectUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadAccountDisconnectedAccount) GetReconnectUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.ReconnectUrl) {
+		return nil, false
+	}
+	return o.ReconnectUrl, true
+}
+
+// HasReconnectUrl returns a boolean if a field has been set.
+func (o *WebhookPayloadAccountDisconnectedAccount) HasReconnectUrl() bool {
+	if o != nil && !IsNil(o.ReconnectUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetReconnectUrl gets a reference to the given string and assigns it to the ReconnectUrl field.
+func (o *WebhookPayloadAccountDisconnectedAccount) SetReconnectUrl(v string) {
+	o.ReconnectUrl = &v
+}
+
 func (o WebhookPayloadAccountDisconnectedAccount) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -255,6 +323,12 @@ func (o WebhookPayloadAccountDisconnectedAccount) ToMap() (map[string]interface{
 	}
 	toSerialize["disconnectionType"] = o.DisconnectionType
 	toSerialize["reason"] = o.Reason
+	if !IsNil(o.ReasonCode) {
+		toSerialize["reasonCode"] = o.ReasonCode
+	}
+	if !IsNil(o.ReconnectUrl) {
+		toSerialize["reconnectUrl"] = o.ReconnectUrl
+	}
 	return toSerialize, nil
 }
 

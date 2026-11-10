@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.551.1
+API version: 1.552.0
 Contact: support@zernio.com
 */
 
@@ -29,6 +29,10 @@ type WebhookPayloadAccountConnectedAccount struct {
 	Platform    string  `json:"platform"`
 	Username    string  `json:"username"`
 	DisplayName *string `json:"displayName,omitempty"`
+	// Present and true when a reconnect restored an existing account in place, keeping its accountId.
+	Reconnected *bool `json:"reconnected,omitempty"`
+	// The IMAP account this connection replaces, when a reconnected mailbox moved to Google or Microsoft. That account is retired at the same time, with account.disconnected and reasonCode replaced.
+	ReplacedAccountId *string `json:"replacedAccountId,omitempty"`
 }
 
 type _WebhookPayloadAccountConnectedAccount WebhookPayloadAccountConnectedAccount
@@ -182,6 +186,70 @@ func (o *WebhookPayloadAccountConnectedAccount) SetDisplayName(v string) {
 	o.DisplayName = &v
 }
 
+// GetReconnected returns the Reconnected field value if set, zero value otherwise.
+func (o *WebhookPayloadAccountConnectedAccount) GetReconnected() bool {
+	if o == nil || IsNil(o.Reconnected) {
+		var ret bool
+		return ret
+	}
+	return *o.Reconnected
+}
+
+// GetReconnectedOk returns a tuple with the Reconnected field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadAccountConnectedAccount) GetReconnectedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Reconnected) {
+		return nil, false
+	}
+	return o.Reconnected, true
+}
+
+// HasReconnected returns a boolean if a field has been set.
+func (o *WebhookPayloadAccountConnectedAccount) HasReconnected() bool {
+	if o != nil && !IsNil(o.Reconnected) {
+		return true
+	}
+
+	return false
+}
+
+// SetReconnected gets a reference to the given bool and assigns it to the Reconnected field.
+func (o *WebhookPayloadAccountConnectedAccount) SetReconnected(v bool) {
+	o.Reconnected = &v
+}
+
+// GetReplacedAccountId returns the ReplacedAccountId field value if set, zero value otherwise.
+func (o *WebhookPayloadAccountConnectedAccount) GetReplacedAccountId() string {
+	if o == nil || IsNil(o.ReplacedAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.ReplacedAccountId
+}
+
+// GetReplacedAccountIdOk returns a tuple with the ReplacedAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadAccountConnectedAccount) GetReplacedAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ReplacedAccountId) {
+		return nil, false
+	}
+	return o.ReplacedAccountId, true
+}
+
+// HasReplacedAccountId returns a boolean if a field has been set.
+func (o *WebhookPayloadAccountConnectedAccount) HasReplacedAccountId() bool {
+	if o != nil && !IsNil(o.ReplacedAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetReplacedAccountId gets a reference to the given string and assigns it to the ReplacedAccountId field.
+func (o *WebhookPayloadAccountConnectedAccount) SetReplacedAccountId(v string) {
+	o.ReplacedAccountId = &v
+}
+
 func (o WebhookPayloadAccountConnectedAccount) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -198,6 +266,12 @@ func (o WebhookPayloadAccountConnectedAccount) ToMap() (map[string]interface{}, 
 	toSerialize["username"] = o.Username
 	if !IsNil(o.DisplayName) {
 		toSerialize["displayName"] = o.DisplayName
+	}
+	if !IsNil(o.Reconnected) {
+		toSerialize["reconnected"] = o.Reconnected
+	}
+	if !IsNil(o.ReplacedAccountId) {
+		toSerialize["replacedAccountId"] = o.ReplacedAccountId
 	}
 	return toSerialize, nil
 }
