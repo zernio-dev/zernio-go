@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.549.0
+API version: 1.550.0
 Contact: support@zernio.com
 */
 
@@ -49,6 +49,11 @@ type EmailMessage struct {
 	Metadata map[string]string `json:"metadata,omitempty"`
 	// Set on a send with `trackOpens`, `trackLinks` or `trackReplies`; the email.* webhooks carry it.
 	TrackingId NullableString `json:"trackingId,omitempty"`
+	Clean      *EmailClean    `json:"clean,omitempty"`
+	// On a mail sent from a draft (`POST /v1/email/drafts/{draftId}/send`): the draft it was. The sent mail has a new id.
+	DraftId NullableString `json:"draftId,omitempty"`
+	// On a forward: the message it forwarded.
+	ForwardedFrom NullableString `json:"forwardedFrom,omitempty"`
 }
 
 // NewEmailMessage instantiates a new EmailMessage object
@@ -848,6 +853,124 @@ func (o *EmailMessage) UnsetTrackingId() {
 	o.TrackingId.Unset()
 }
 
+// GetClean returns the Clean field value if set, zero value otherwise.
+func (o *EmailMessage) GetClean() EmailClean {
+	if o == nil || IsNil(o.Clean) {
+		var ret EmailClean
+		return ret
+	}
+	return *o.Clean
+}
+
+// GetCleanOk returns a tuple with the Clean field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailMessage) GetCleanOk() (*EmailClean, bool) {
+	if o == nil || IsNil(o.Clean) {
+		return nil, false
+	}
+	return o.Clean, true
+}
+
+// HasClean returns a boolean if a field has been set.
+func (o *EmailMessage) HasClean() bool {
+	if o != nil && !IsNil(o.Clean) {
+		return true
+	}
+
+	return false
+}
+
+// SetClean gets a reference to the given EmailClean and assigns it to the Clean field.
+func (o *EmailMessage) SetClean(v EmailClean) {
+	o.Clean = &v
+}
+
+// GetDraftId returns the DraftId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EmailMessage) GetDraftId() string {
+	if o == nil || IsNil(o.DraftId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.DraftId.Get()
+}
+
+// GetDraftIdOk returns a tuple with the DraftId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EmailMessage) GetDraftIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DraftId.Get(), o.DraftId.IsSet()
+}
+
+// HasDraftId returns a boolean if a field has been set.
+func (o *EmailMessage) HasDraftId() bool {
+	if o != nil && o.DraftId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDraftId gets a reference to the given NullableString and assigns it to the DraftId field.
+func (o *EmailMessage) SetDraftId(v string) {
+	o.DraftId.Set(&v)
+}
+
+// SetDraftIdNil sets the value for DraftId to be an explicit nil
+func (o *EmailMessage) SetDraftIdNil() {
+	o.DraftId.Set(nil)
+}
+
+// UnsetDraftId ensures that no value is present for DraftId, not even an explicit nil
+func (o *EmailMessage) UnsetDraftId() {
+	o.DraftId.Unset()
+}
+
+// GetForwardedFrom returns the ForwardedFrom field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EmailMessage) GetForwardedFrom() string {
+	if o == nil || IsNil(o.ForwardedFrom.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ForwardedFrom.Get()
+}
+
+// GetForwardedFromOk returns a tuple with the ForwardedFrom field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EmailMessage) GetForwardedFromOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ForwardedFrom.Get(), o.ForwardedFrom.IsSet()
+}
+
+// HasForwardedFrom returns a boolean if a field has been set.
+func (o *EmailMessage) HasForwardedFrom() bool {
+	if o != nil && o.ForwardedFrom.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetForwardedFrom gets a reference to the given NullableString and assigns it to the ForwardedFrom field.
+func (o *EmailMessage) SetForwardedFrom(v string) {
+	o.ForwardedFrom.Set(&v)
+}
+
+// SetForwardedFromNil sets the value for ForwardedFrom to be an explicit nil
+func (o *EmailMessage) SetForwardedFromNil() {
+	o.ForwardedFrom.Set(nil)
+}
+
+// UnsetForwardedFrom ensures that no value is present for ForwardedFrom, not even an explicit nil
+func (o *EmailMessage) UnsetForwardedFrom() {
+	o.ForwardedFrom.Unset()
+}
+
 func (o EmailMessage) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -926,6 +1049,15 @@ func (o EmailMessage) ToMap() (map[string]interface{}, error) {
 	}
 	if o.TrackingId.IsSet() {
 		toSerialize["trackingId"] = o.TrackingId.Get()
+	}
+	if !IsNil(o.Clean) {
+		toSerialize["clean"] = o.Clean
+	}
+	if o.DraftId.IsSet() {
+		toSerialize["draftId"] = o.DraftId.Get()
+	}
+	if o.ForwardedFrom.IsSet() {
+		toSerialize["forwardedFrom"] = o.ForwardedFrom.Get()
 	}
 	return toSerialize, nil
 }

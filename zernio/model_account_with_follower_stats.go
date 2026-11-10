@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.549.0
+API version: 1.550.0
 Contact: support@zernio.com
 */
 
@@ -23,11 +23,12 @@ var _ MappedNullable = &AccountWithFollowerStats{}
 
 // AccountWithFollowerStats struct for AccountWithFollowerStats
 type AccountWithFollowerStats struct {
-	Id          string                 `json:"_id"`
-	Platform    string                 `json:"platform"`
-	ProfileId   SocialAccountProfileId `json:"profileId"`
-	Username    *string                `json:"username,omitempty"`
-	DisplayName *string                `json:"displayName,omitempty"`
+	Id           string                 `json:"_id"`
+	Platform     string                 `json:"platform"`
+	ProfileId    SocialAccountProfileId `json:"profileId"`
+	Username     *string                `json:"username,omitempty"`
+	DisplayName  *string                `json:"displayName,omitempty"`
+	Capabilities *EmailCapabilities     `json:"capabilities,omitempty"`
 	// The account's id on its platform, as the platform reports it to Zernio. Stable across reconnects, so use it to match an account against your own records.  - **Instagram Login accounts:** the app-scoped user id (the professional account id is in `metadata.instagramScopedId`). - **Instagram via Facebook Login:** the professional account id (`17841...`). - **TikTok:** the open_id of Zernio's TikTok app, which differs from the open_id any other app sees for the same user.  Either value can be passed back as `expectedPlatformUserId` on GET /v1/connect/{platform}.
 	PlatformUserId *string `json:"platformUserId,omitempty"`
 	// The permission areas the connect requested: the `scopes` of GET /v1/connect/{platform}, or your OAuth app's areas. Null when the connect requested every area.
@@ -226,6 +227,38 @@ func (o *AccountWithFollowerStats) HasDisplayName() bool {
 // SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
 func (o *AccountWithFollowerStats) SetDisplayName(v string) {
 	o.DisplayName = &v
+}
+
+// GetCapabilities returns the Capabilities field value if set, zero value otherwise.
+func (o *AccountWithFollowerStats) GetCapabilities() EmailCapabilities {
+	if o == nil || IsNil(o.Capabilities) {
+		var ret EmailCapabilities
+		return ret
+	}
+	return *o.Capabilities
+}
+
+// GetCapabilitiesOk returns a tuple with the Capabilities field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AccountWithFollowerStats) GetCapabilitiesOk() (*EmailCapabilities, bool) {
+	if o == nil || IsNil(o.Capabilities) {
+		return nil, false
+	}
+	return o.Capabilities, true
+}
+
+// HasCapabilities returns a boolean if a field has been set.
+func (o *AccountWithFollowerStats) HasCapabilities() bool {
+	if o != nil && !IsNil(o.Capabilities) {
+		return true
+	}
+
+	return false
+}
+
+// SetCapabilities gets a reference to the given EmailCapabilities and assigns it to the Capabilities field.
+func (o *AccountWithFollowerStats) SetCapabilities(v EmailCapabilities) {
+	o.Capabilities = &v
 }
 
 // GetPlatformUserId returns the PlatformUserId field value if set, zero value otherwise.
@@ -910,6 +943,9 @@ func (o AccountWithFollowerStats) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DisplayName) {
 		toSerialize["displayName"] = o.DisplayName
+	}
+	if !IsNil(o.Capabilities) {
+		toSerialize["capabilities"] = o.Capabilities
 	}
 	if !IsNil(o.PlatformUserId) {
 		toSerialize["platformUserId"] = o.PlatformUserId

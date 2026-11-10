@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.549.0
+API version: 1.550.0
 Contact: support@zernio.com
 */
 
@@ -7823,6 +7823,107 @@ func (a *WebhookEventsAPIService) OnCreatorCampaignClosedExecute(r WebhookEvents
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnEmailBouncedRequest struct {
+	ctx                        context.Context
+	ApiService                 *WebhookEventsAPIService
+	webhookPayloadEmailBounced *WebhookPayloadEmailBounced
+}
+
+func (r WebhookEventsAPIOnEmailBouncedRequest) WebhookPayloadEmailBounced(webhookPayloadEmailBounced WebhookPayloadEmailBounced) WebhookEventsAPIOnEmailBouncedRequest {
+	r.webhookPayloadEmailBounced = &webhookPayloadEmailBounced
+	return r
+}
+
+func (r WebhookEventsAPIOnEmailBouncedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnEmailBouncedExecute(r)
+}
+
+/*
+OnEmailBounced Email bounced
+
+A delivery failure report for mail the mailbox sent arrived: the receiving server refused it for a recipient. Fires for every send from the mailbox, once per failed recipient. Delayed-delivery warnings and out-of-office replies do not fire it.
+
+Act on `recommendedAction`: `remove` means the address does not take mail. Refusals on the sending side (`auth_failure`, `blocklisted`, `spam_blocked`, `policy_blocked`) never say `remove`. The report also arrives as `message.received`, and it does not count as a reply for `email.thread_replied`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnEmailBouncedRequest
+*/
+func (a *WebhookEventsAPIService) OnEmailBounced(ctx context.Context) WebhookEventsAPIOnEmailBouncedRequest {
+	return WebhookEventsAPIOnEmailBouncedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnEmailBouncedExecute(r WebhookEventsAPIOnEmailBouncedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnEmailBounced")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/email.bounced"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadEmailBounced == nil {
+		return nil, reportError("webhookPayloadEmailBounced is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadEmailBounced
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnEmailLinkClickedRequest struct {
 	ctx                            context.Context
 	ApiService                     *WebhookEventsAPIService
@@ -8130,6 +8231,107 @@ func (a *WebhookEventsAPIService) OnEmailSendFailedExecute(r WebhookEventsAPIOnE
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnEmailSentRequest struct {
+	ctx                     context.Context
+	ApiService              *WebhookEventsAPIService
+	webhookPayloadEmailSent *WebhookPayloadEmailSent
+}
+
+func (r WebhookEventsAPIOnEmailSentRequest) WebhookPayloadEmailSent(webhookPayloadEmailSent WebhookPayloadEmailSent) WebhookEventsAPIOnEmailSentRequest {
+	r.webhookPayloadEmailSent = &webhookPayloadEmailSent
+	return r
+}
+
+func (r WebhookEventsAPIOnEmailSentRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnEmailSentExecute(r)
+}
+
+/*
+OnEmailSent Email sent
+
+A mail left through the email API. Exactly one event per mail, whichever path sent it: `source` is `send`, `reply`, `forward`, `draft` or `scheduled`. A scheduled draft carries both `scheduleId` and `draftId`.
+
+Use it to record sends in your own system with the `metadata` you passed. The sent copy also arrives as `message.sent` in the inbox.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnEmailSentRequest
+*/
+func (a *WebhookEventsAPIService) OnEmailSent(ctx context.Context) WebhookEventsAPIOnEmailSentRequest {
+	return WebhookEventsAPIOnEmailSentRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnEmailSentExecute(r WebhookEventsAPIOnEmailSentRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnEmailSent")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/email.sent"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadEmailSent == nil {
+		return nil, reportError("webhookPayloadEmailSent is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadEmailSent
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnEmailThreadRepliedRequest struct {
 	ctx                              context.Context
 	ApiService                       *WebhookEventsAPIService
@@ -8148,9 +8350,9 @@ func (r WebhookEventsAPIOnEmailThreadRepliedRequest) Execute() (*http.Response, 
 /*
 OnEmailThreadReplied Email thread replied
 
-Mail from someone other than the mailbox arrived in the thread of a message sent with `trackReplies: true`. Works on text and html sends. Auto-replies and bounce reports in the thread count as replies.
+Mail from someone other than the mailbox arrived in the thread of a message sent with `trackReplies: true`. Works on text and html sends. Auto-replies count as replies; bounce reports do not and fire `email.bounced` instead.
 
-The reply also arrives as `message.received` with its full content.
+`reply.clean.text` is the reply without the quoted history, so an agent can act on it without reading the message. The reply also arrives as `message.received` with its full content.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnEmailThreadRepliedRequest

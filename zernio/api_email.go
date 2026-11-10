@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.549.0
+API version: 1.550.0
 Contact: support@zernio.com
 */
 
@@ -173,6 +173,172 @@ func (a *EmailAPIService) CancelScheduledEmailExecute(r EmailAPICancelScheduledE
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type EmailAPICreateEmailDraftRequest struct {
+	ctx                     context.Context
+	ApiService              *EmailAPIService
+	createEmailDraftRequest *CreateEmailDraftRequest
+	idempotencyKey          *string
+}
+
+func (r EmailAPICreateEmailDraftRequest) CreateEmailDraftRequest(createEmailDraftRequest CreateEmailDraftRequest) EmailAPICreateEmailDraftRequest {
+	r.createEmailDraftRequest = &createEmailDraftRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r EmailAPICreateEmailDraftRequest) IdempotencyKey(idempotencyKey string) EmailAPICreateEmailDraftRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
+}
+
+func (r EmailAPICreateEmailDraftRequest) Execute() (*CreateEmailDraft201Response, *http.Response, error) {
+	return r.ApiService.CreateEmailDraftExecute(r)
+}
+
+/*
+CreateEmailDraft Create a draft
+
+Saves a draft in the user's mailbox, where they see it in Gmail or Outlook. Recipients and subject can come later. `inReplyTo` makes a reply draft in that thread and `forwardOf` a forward draft with the original's attachments; the `kind` is fixed for the life of the draft.
+
+Send it with `POST /v1/email/drafts/{draftId}/send`. Edits the user makes in their mail client are what goes out. Store the draft `id`, and pass its `version` as `If-Match` so an update or send applies only to the version you saw.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return EmailAPICreateEmailDraftRequest
+*/
+func (a *EmailAPIService) CreateEmailDraft(ctx context.Context) EmailAPICreateEmailDraftRequest {
+	return EmailAPICreateEmailDraftRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateEmailDraft201Response
+func (a *EmailAPIService) CreateEmailDraftExecute(r EmailAPICreateEmailDraftRequest) (*CreateEmailDraft201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateEmailDraft201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EmailAPIService.CreateEmailDraft")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/email/drafts"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createEmailDraftRequest == nil {
+		return localVarReturnValue, nil, reportError("createEmailDraftRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.createEmailDraftRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 412 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type EmailAPICreateEmailLabelRequest struct {
 	ctx                     context.Context
 	ApiService              *EmailAPIService
@@ -316,6 +482,162 @@ func (a *EmailAPIService) CreateEmailLabelExecute(r EmailAPICreateEmailLabelRequ
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type EmailAPIDeleteEmailDraftRequest struct {
+	ctx        context.Context
+	ApiService *EmailAPIService
+	draftId    string
+	accountId  *string
+}
+
+// The connected Google or Microsoft account.
+func (r EmailAPIDeleteEmailDraftRequest) AccountId(accountId string) EmailAPIDeleteEmailDraftRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r EmailAPIDeleteEmailDraftRequest) Execute() (*DeleteEmailDraft200Response, *http.Response, error) {
+	return r.ApiService.DeleteEmailDraftExecute(r)
+}
+
+/*
+DeleteEmailDraft Delete a draft
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param draftId
+	@return EmailAPIDeleteEmailDraftRequest
+*/
+func (a *EmailAPIService) DeleteEmailDraft(ctx context.Context, draftId string) EmailAPIDeleteEmailDraftRequest {
+	return EmailAPIDeleteEmailDraftRequest{
+		ApiService: a,
+		ctx:        ctx,
+		draftId:    draftId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return DeleteEmailDraft200Response
+func (a *EmailAPIService) DeleteEmailDraftExecute(r EmailAPIDeleteEmailDraftRequest) (*DeleteEmailDraft200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeleteEmailDraft200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EmailAPIService.DeleteEmailDraft")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/email/drafts/{draftId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"draftId"+"}", url.PathEscape(parameterValueToString(r.draftId, "draftId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 412 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type EmailAPIDeleteEmailLabelRequest struct {
 	ctx        context.Context
 	ApiService *EmailAPIService
@@ -329,7 +651,7 @@ func (r EmailAPIDeleteEmailLabelRequest) AccountId(accountId string) EmailAPIDel
 	return r
 }
 
-func (r EmailAPIDeleteEmailLabelRequest) Execute() (*DeleteEmailLabel200Response, *http.Response, error) {
+func (r EmailAPIDeleteEmailLabelRequest) Execute() (*DeleteEmailDraft200Response, *http.Response, error) {
 	return r.ApiService.DeleteEmailLabelExecute(r)
 }
 
@@ -352,13 +674,13 @@ func (a *EmailAPIService) DeleteEmailLabel(ctx context.Context, labelId string) 
 
 // Execute executes the request
 //
-//	@return DeleteEmailLabel200Response
-func (a *EmailAPIService) DeleteEmailLabelExecute(r EmailAPIDeleteEmailLabelRequest) (*DeleteEmailLabel200Response, *http.Response, error) {
+//	@return DeleteEmailDraft200Response
+func (a *EmailAPIService) DeleteEmailLabelExecute(r EmailAPIDeleteEmailLabelRequest) (*DeleteEmailDraft200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *DeleteEmailLabel200Response
+		localVarReturnValue *DeleteEmailDraft200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EmailAPIService.DeleteEmailLabel")
@@ -642,6 +964,369 @@ func (a *EmailAPIService) DownloadEmailAttachmentExecute(r EmailAPIDownloadEmail
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type EmailAPIForwardEmailMessageRequest struct {
+	ctx                 context.Context
+	ApiService          *EmailAPIService
+	messageId           string
+	forwardEmailRequest *ForwardEmailRequest
+	idempotencyKey      *string
+}
+
+func (r EmailAPIForwardEmailMessageRequest) ForwardEmailRequest(forwardEmailRequest ForwardEmailRequest) EmailAPIForwardEmailMessageRequest {
+	r.forwardEmailRequest = &forwardEmailRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r EmailAPIForwardEmailMessageRequest) IdempotencyKey(idempotencyKey string) EmailAPIForwardEmailMessageRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
+}
+
+func (r EmailAPIForwardEmailMessageRequest) Execute() (*SendEmailMessage201Response, *http.Response, error) {
+	return r.ApiService.ForwardEmailMessageExecute(r)
+}
+
+/*
+ForwardEmailMessage Forward a message
+
+Forwards the message with its attachments. Your `text` or `html` goes above the forwarded mail, and the subject defaults to "Fwd: " plus the original's. On Google the forward stays in the original thread; on Microsoft it goes through Outlook's own forward.
+
+`includeAttachments: false` keeps only the original's inline images, and `excludeAttachmentIds` leaves out the ones you name. Everything together stays under 25 MB.
+
+`trackOpens`, `trackLinks` and `trackReplies` work as on send. Same protection, caps and headers as sending. The response carries `forwardedFrom`, and `email.sent` fires with `source: forward`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param messageId
+	@return EmailAPIForwardEmailMessageRequest
+*/
+func (a *EmailAPIService) ForwardEmailMessage(ctx context.Context, messageId string) EmailAPIForwardEmailMessageRequest {
+	return EmailAPIForwardEmailMessageRequest{
+		ApiService: a,
+		ctx:        ctx,
+		messageId:  messageId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SendEmailMessage201Response
+func (a *EmailAPIService) ForwardEmailMessageExecute(r EmailAPIForwardEmailMessageRequest) (*SendEmailMessage201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SendEmailMessage201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EmailAPIService.ForwardEmailMessage")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/email/messages/{messageId}/forward"
+	localVarPath = strings.Replace(localVarPath, "{"+"messageId"+"}", url.PathEscape(parameterValueToString(r.messageId, "messageId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.forwardEmailRequest == nil {
+		return localVarReturnValue, nil, reportError("forwardEmailRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.forwardEmailRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject3
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 412 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 413 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type EmailAPIGetEmailDraftRequest struct {
+	ctx        context.Context
+	ApiService *EmailAPIService
+	draftId    string
+	accountId  *string
+}
+
+// The connected Google or Microsoft account.
+func (r EmailAPIGetEmailDraftRequest) AccountId(accountId string) EmailAPIGetEmailDraftRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r EmailAPIGetEmailDraftRequest) Execute() (*CreateEmailDraft201Response, *http.Response, error) {
+	return r.ApiService.GetEmailDraftExecute(r)
+}
+
+/*
+GetEmailDraft Get a draft
+
+The draft as it stands in the mailbox now, with its bodies. A draft deleted in the mail client answers 404.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param draftId
+	@return EmailAPIGetEmailDraftRequest
+*/
+func (a *EmailAPIService) GetEmailDraft(ctx context.Context, draftId string) EmailAPIGetEmailDraftRequest {
+	return EmailAPIGetEmailDraftRequest{
+		ApiService: a,
+		ctx:        ctx,
+		draftId:    draftId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateEmailDraft201Response
+func (a *EmailAPIService) GetEmailDraftExecute(r EmailAPIGetEmailDraftRequest) (*CreateEmailDraft201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateEmailDraft201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EmailAPIService.GetEmailDraft")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/email/drafts/{draftId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"draftId"+"}", url.PathEscape(parameterValueToString(r.draftId, "draftId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 412 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type EmailAPIGetEmailMessageRequest struct {
 	ctx            context.Context
 	ApiService     *EmailAPIService
@@ -649,6 +1334,7 @@ type EmailAPIGetEmailMessageRequest struct {
 	accountId      *string
 	includeHeaders *bool
 	raw            *bool
+	clean          *bool
 }
 
 // The connected Google or Microsoft account.
@@ -666,6 +1352,12 @@ func (r EmailAPIGetEmailMessageRequest) IncludeHeaders(includeHeaders bool) Emai
 // Include the MIME source under &#x60;raw&#x60;.
 func (r EmailAPIGetEmailMessageRequest) Raw(raw bool) EmailAPIGetEmailMessageRequest {
 	r.raw = &raw
+	return r
+}
+
+// Add &#x60;cleanText&#x60;: the new text only, without quoted replies, forwarded history, signature or tracking pixels. Ready to hand to an LLM.
+func (r EmailAPIGetEmailMessageRequest) Clean(clean bool) EmailAPIGetEmailMessageRequest {
+	r.clean = &clean
 	return r
 }
 
@@ -728,6 +1420,13 @@ func (a *EmailAPIService) GetEmailMessageExecute(r EmailAPIGetEmailMessageReques
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "raw", defaultValue, "form", "")
 		r.raw = &defaultValue
+	}
+	if r.clean != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "clean", r.clean, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "clean", defaultValue, "form", "")
+		r.clean = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -831,11 +1530,18 @@ type EmailAPIGetEmailThreadRequest struct {
 	ApiService *EmailAPIService
 	threadId   string
 	accountId  *string
+	clean      *bool
 }
 
 // The connected Google or Microsoft account.
 func (r EmailAPIGetEmailThreadRequest) AccountId(accountId string) EmailAPIGetEmailThreadRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Add &#x60;cleanText&#x60; to every message: what each one added to the conversation, without the quoted history.
+func (r EmailAPIGetEmailThreadRequest) Clean(clean bool) EmailAPIGetEmailThreadRequest {
+	r.clean = &clean
 	return r
 }
 
@@ -885,6 +1591,13 @@ func (a *EmailAPIService) GetEmailThreadExecute(r EmailAPIGetEmailThreadRequest)
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.clean != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "clean", r.clean, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "clean", defaultValue, "form", "")
+		r.clean = &defaultValue
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1104,6 +1817,182 @@ func (a *EmailAPIService) GetScheduledEmailExecute(r EmailAPIGetScheduledEmailRe
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type EmailAPIListEmailDraftsRequest struct {
+	ctx        context.Context
+	ApiService *EmailAPIService
+	accountId  *string
+	limit      *int32
+	cursor     *string
+}
+
+// The connected Google or Microsoft account.
+func (r EmailAPIListEmailDraftsRequest) AccountId(accountId string) EmailAPIListEmailDraftsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r EmailAPIListEmailDraftsRequest) Limit(limit int32) EmailAPIListEmailDraftsRequest {
+	r.limit = &limit
+	return r
+}
+
+func (r EmailAPIListEmailDraftsRequest) Cursor(cursor string) EmailAPIListEmailDraftsRequest {
+	r.cursor = &cursor
+	return r
+}
+
+func (r EmailAPIListEmailDraftsRequest) Execute() (*ListEmailDrafts200Response, *http.Response, error) {
+	return r.ApiService.ListEmailDraftsExecute(r)
+}
+
+/*
+ListEmailDrafts List drafts
+
+The mailbox's drafts, newest first, including drafts the user wrote in Gmail or Outlook. Drafts in the trash are left out. Rows carry no bodies on Google; get a draft to read them.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return EmailAPIListEmailDraftsRequest
+*/
+func (a *EmailAPIService) ListEmailDrafts(ctx context.Context) EmailAPIListEmailDraftsRequest {
+	return EmailAPIListEmailDraftsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListEmailDrafts200Response
+func (a *EmailAPIService) ListEmailDraftsExecute(r EmailAPIListEmailDraftsRequest) (*ListEmailDrafts200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListEmailDrafts200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EmailAPIService.ListEmailDrafts")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/email/drafts"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 25
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 412 {
+			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2354,10 +3243,17 @@ type EmailAPIReplyEmailMessageRequest struct {
 	ApiService               *EmailAPIService
 	messageId                string
 	replyEmailMessageRequest *ReplyEmailMessageRequest
+	idempotencyKey           *string
 }
 
 func (r EmailAPIReplyEmailMessageRequest) ReplyEmailMessageRequest(replyEmailMessageRequest ReplyEmailMessageRequest) EmailAPIReplyEmailMessageRequest {
 	r.replyEmailMessageRequest = &replyEmailMessageRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r EmailAPIReplyEmailMessageRequest) IdempotencyKey(idempotencyKey string) EmailAPIReplyEmailMessageRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -2426,6 +3322,9 @@ func (a *EmailAPIService) ReplyEmailMessageExecute(r EmailAPIReplyEmailMessageRe
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.replyEmailMessageRequest
@@ -2542,14 +3441,236 @@ func (a *EmailAPIService) ReplyEmailMessageExecute(r EmailAPIReplyEmailMessageRe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type EmailAPISendEmailDraftRequest struct {
+	ctx                   context.Context
+	ApiService            *EmailAPIService
+	draftId               string
+	sendEmailDraftRequest *SendEmailDraftRequest
+	ifMatch               *string
+	idempotencyKey        *string
+}
+
+func (r EmailAPISendEmailDraftRequest) SendEmailDraftRequest(sendEmailDraftRequest SendEmailDraftRequest) EmailAPISendEmailDraftRequest {
+	r.sendEmailDraftRequest = &sendEmailDraftRequest
+	return r
+}
+
+// The draft &#x60;version&#x60; (also its &#x60;ETag&#x60;). The request applies only if the draft is still that version; otherwise 412 &#x60;draft_conflict&#x60; with the current draft in &#x60;details.draft&#x60;.
+func (r EmailAPISendEmailDraftRequest) IfMatch(ifMatch string) EmailAPISendEmailDraftRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r EmailAPISendEmailDraftRequest) IdempotencyKey(idempotencyKey string) EmailAPISendEmailDraftRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
+}
+
+func (r EmailAPISendEmailDraftRequest) Execute() (*SendEmailMessage201Response, *http.Response, error) {
+	return r.ApiService.SendEmailDraftExecute(r)
+}
+
+/*
+SendEmailDraft Send a draft
+
+Sends the draft as it stands in the mailbox now, edits made in Gmail or Outlook included, and returns the sent message with `draftId`. The draft needs at least one recipient. A draft the user deleted or already sent answers 404 `draft_not_found`.
+
+With `If-Match` it goes out only if it is still the version the approver saw (412 `draft_conflict` otherwise). If the user removed the open pixel or rewrote links, tracking is put back before it is sent. Fires `email.sent` with `source: draft`.
+
+Tracking set when the draft was created applies, and its `metadata` comes back on the sent message. Same protection, caps and headers as sending.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param draftId
+	@return EmailAPISendEmailDraftRequest
+*/
+func (a *EmailAPIService) SendEmailDraft(ctx context.Context, draftId string) EmailAPISendEmailDraftRequest {
+	return EmailAPISendEmailDraftRequest{
+		ApiService: a,
+		ctx:        ctx,
+		draftId:    draftId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SendEmailMessage201Response
+func (a *EmailAPIService) SendEmailDraftExecute(r EmailAPISendEmailDraftRequest) (*SendEmailMessage201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SendEmailMessage201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EmailAPIService.SendEmailDraft")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/email/drafts/{draftId}/send"
+	localVarPath = strings.Replace(localVarPath, "{"+"draftId"+"}", url.PathEscape(parameterValueToString(r.draftId, "draftId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.sendEmailDraftRequest == nil {
+		return localVarReturnValue, nil, reportError("sendEmailDraftRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.sendEmailDraftRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject3
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 412 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type EmailAPISendEmailMessageRequest struct {
 	ctx              context.Context
 	ApiService       *EmailAPIService
 	sendEmailRequest *SendEmailRequest
+	idempotencyKey   *string
 }
 
 func (r EmailAPISendEmailMessageRequest) SendEmailRequest(sendEmailRequest SendEmailRequest) EmailAPISendEmailMessageRequest {
 	r.sendEmailRequest = &sendEmailRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r EmailAPISendEmailMessageRequest) IdempotencyKey(idempotencyKey string) EmailAPISendEmailMessageRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -2639,6 +3760,9 @@ func (a *EmailAPIService) SendEmailMessageExecute(r EmailAPISendEmailMessageRequ
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.sendEmailRequest
@@ -2866,6 +3990,185 @@ func (a *EmailAPIService) TrashEmailMessageExecute(r EmailAPITrashEmailMessageRe
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 412 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type EmailAPIUpdateEmailDraftRequest struct {
+	ctx                     context.Context
+	ApiService              *EmailAPIService
+	draftId                 string
+	updateEmailDraftRequest *UpdateEmailDraftRequest
+	ifMatch                 *string
+}
+
+func (r EmailAPIUpdateEmailDraftRequest) UpdateEmailDraftRequest(updateEmailDraftRequest UpdateEmailDraftRequest) EmailAPIUpdateEmailDraftRequest {
+	r.updateEmailDraftRequest = &updateEmailDraftRequest
+	return r
+}
+
+// The draft &#x60;version&#x60; (also its &#x60;ETag&#x60;). The request applies only if the draft is still that version; otherwise 412 &#x60;draft_conflict&#x60; with the current draft in &#x60;details.draft&#x60;.
+func (r EmailAPIUpdateEmailDraftRequest) IfMatch(ifMatch string) EmailAPIUpdateEmailDraftRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r EmailAPIUpdateEmailDraftRequest) Execute() (*CreateEmailDraft201Response, *http.Response, error) {
+	return r.ApiService.UpdateEmailDraftExecute(r)
+}
+
+/*
+UpdateEmailDraft Update a draft
+
+Changes the fields you send and keeps the rest. A reply draft stays in its thread, and a new body on a reply or forward draft goes above the quoted original. With `If-Match`, a draft someone edited since answers 412 `draft_conflict` with the current draft.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param draftId
+	@return EmailAPIUpdateEmailDraftRequest
+*/
+func (a *EmailAPIService) UpdateEmailDraft(ctx context.Context, draftId string) EmailAPIUpdateEmailDraftRequest {
+	return EmailAPIUpdateEmailDraftRequest{
+		ApiService: a,
+		ctx:        ctx,
+		draftId:    draftId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateEmailDraft201Response
+func (a *EmailAPIService) UpdateEmailDraftExecute(r EmailAPIUpdateEmailDraftRequest) (*CreateEmailDraft201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateEmailDraft201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EmailAPIService.UpdateEmailDraft")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/email/drafts/{draftId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"draftId"+"}", url.PathEscape(parameterValueToString(r.draftId, "draftId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateEmailDraftRequest == nil {
+		return localVarReturnValue, nil, reportError("updateEmailDraftRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.updateEmailDraftRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

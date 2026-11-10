@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.549.0
+API version: 1.550.0
 Contact: support@zernio.com
 */
 
@@ -36,7 +36,16 @@ type BalanceRequiredError struct {
 	Platform *string `json:"platform,omitempty"`
 	// Raw error payload from the upstream platform, passed through verbatim so integrators can read provider-specific codes. For Meta this includes error_subcode, error_user_title, and error_user_msg.
 	PlatformError map[string]interface{} `json:"platformError,omitempty"`
-	Details       *ErrorResponseDetails  `json:"details,omitempty"`
+	// Email API: the mailbox provider the error came from (`google`, `microsoft`).
+	Provider      *string                     `json:"provider,omitempty"`
+	ProviderError *ErrorResponseProviderError `json:"providerError,omitempty"`
+	// Email API: whether the same request can succeed if retried (with the same `Idempotency-Key` for sends).
+	Retryable *bool `json:"retryable,omitempty"`
+	// Email API: the request id, also in the `X-Request-Id` header. Quote it when you contact support.
+	RequestId *string `json:"requestId,omitempty"`
+	// Email API: where this `code` is documented.
+	DocsUrl *string               `json:"docsUrl,omitempty"`
+	Details *ErrorResponseDetails `json:"details,omitempty"`
 	// Dashboard link to Billing that opens the Add funds drawer (the add-card drawer first when there is no card). Send the user there, then retry.
 	FundingUrl string `json:"funding_url"`
 }
@@ -285,6 +294,166 @@ func (o *BalanceRequiredError) SetPlatformError(v map[string]interface{}) {
 	o.PlatformError = v
 }
 
+// GetProvider returns the Provider field value if set, zero value otherwise.
+func (o *BalanceRequiredError) GetProvider() string {
+	if o == nil || IsNil(o.Provider) {
+		var ret string
+		return ret
+	}
+	return *o.Provider
+}
+
+// GetProviderOk returns a tuple with the Provider field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BalanceRequiredError) GetProviderOk() (*string, bool) {
+	if o == nil || IsNil(o.Provider) {
+		return nil, false
+	}
+	return o.Provider, true
+}
+
+// HasProvider returns a boolean if a field has been set.
+func (o *BalanceRequiredError) HasProvider() bool {
+	if o != nil && !IsNil(o.Provider) {
+		return true
+	}
+
+	return false
+}
+
+// SetProvider gets a reference to the given string and assigns it to the Provider field.
+func (o *BalanceRequiredError) SetProvider(v string) {
+	o.Provider = &v
+}
+
+// GetProviderError returns the ProviderError field value if set, zero value otherwise.
+func (o *BalanceRequiredError) GetProviderError() ErrorResponseProviderError {
+	if o == nil || IsNil(o.ProviderError) {
+		var ret ErrorResponseProviderError
+		return ret
+	}
+	return *o.ProviderError
+}
+
+// GetProviderErrorOk returns a tuple with the ProviderError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BalanceRequiredError) GetProviderErrorOk() (*ErrorResponseProviderError, bool) {
+	if o == nil || IsNil(o.ProviderError) {
+		return nil, false
+	}
+	return o.ProviderError, true
+}
+
+// HasProviderError returns a boolean if a field has been set.
+func (o *BalanceRequiredError) HasProviderError() bool {
+	if o != nil && !IsNil(o.ProviderError) {
+		return true
+	}
+
+	return false
+}
+
+// SetProviderError gets a reference to the given ErrorResponseProviderError and assigns it to the ProviderError field.
+func (o *BalanceRequiredError) SetProviderError(v ErrorResponseProviderError) {
+	o.ProviderError = &v
+}
+
+// GetRetryable returns the Retryable field value if set, zero value otherwise.
+func (o *BalanceRequiredError) GetRetryable() bool {
+	if o == nil || IsNil(o.Retryable) {
+		var ret bool
+		return ret
+	}
+	return *o.Retryable
+}
+
+// GetRetryableOk returns a tuple with the Retryable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BalanceRequiredError) GetRetryableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Retryable) {
+		return nil, false
+	}
+	return o.Retryable, true
+}
+
+// HasRetryable returns a boolean if a field has been set.
+func (o *BalanceRequiredError) HasRetryable() bool {
+	if o != nil && !IsNil(o.Retryable) {
+		return true
+	}
+
+	return false
+}
+
+// SetRetryable gets a reference to the given bool and assigns it to the Retryable field.
+func (o *BalanceRequiredError) SetRetryable(v bool) {
+	o.Retryable = &v
+}
+
+// GetRequestId returns the RequestId field value if set, zero value otherwise.
+func (o *BalanceRequiredError) GetRequestId() string {
+	if o == nil || IsNil(o.RequestId) {
+		var ret string
+		return ret
+	}
+	return *o.RequestId
+}
+
+// GetRequestIdOk returns a tuple with the RequestId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BalanceRequiredError) GetRequestIdOk() (*string, bool) {
+	if o == nil || IsNil(o.RequestId) {
+		return nil, false
+	}
+	return o.RequestId, true
+}
+
+// HasRequestId returns a boolean if a field has been set.
+func (o *BalanceRequiredError) HasRequestId() bool {
+	if o != nil && !IsNil(o.RequestId) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequestId gets a reference to the given string and assigns it to the RequestId field.
+func (o *BalanceRequiredError) SetRequestId(v string) {
+	o.RequestId = &v
+}
+
+// GetDocsUrl returns the DocsUrl field value if set, zero value otherwise.
+func (o *BalanceRequiredError) GetDocsUrl() string {
+	if o == nil || IsNil(o.DocsUrl) {
+		var ret string
+		return ret
+	}
+	return *o.DocsUrl
+}
+
+// GetDocsUrlOk returns a tuple with the DocsUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BalanceRequiredError) GetDocsUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.DocsUrl) {
+		return nil, false
+	}
+	return o.DocsUrl, true
+}
+
+// HasDocsUrl returns a boolean if a field has been set.
+func (o *BalanceRequiredError) HasDocsUrl() bool {
+	if o != nil && !IsNil(o.DocsUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetDocsUrl gets a reference to the given string and assigns it to the DocsUrl field.
+func (o *BalanceRequiredError) SetDocsUrl(v string) {
+	o.DocsUrl = &v
+}
+
 // GetDetails returns the Details field value if set, zero value otherwise.
 func (o *BalanceRequiredError) GetDetails() ErrorResponseDetails {
 	if o == nil || IsNil(o.Details) {
@@ -371,6 +540,21 @@ func (o BalanceRequiredError) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PlatformError) {
 		toSerialize["platformError"] = o.PlatformError
+	}
+	if !IsNil(o.Provider) {
+		toSerialize["provider"] = o.Provider
+	}
+	if !IsNil(o.ProviderError) {
+		toSerialize["providerError"] = o.ProviderError
+	}
+	if !IsNil(o.Retryable) {
+		toSerialize["retryable"] = o.Retryable
+	}
+	if !IsNil(o.RequestId) {
+		toSerialize["requestId"] = o.RequestId
+	}
+	if !IsNil(o.DocsUrl) {
+		toSerialize["docsUrl"] = o.DocsUrl
 	}
 	if !IsNil(o.Details) {
 		toSerialize["details"] = o.Details

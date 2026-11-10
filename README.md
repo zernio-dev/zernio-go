@@ -984,22 +984,29 @@ func main() {
 ### Email
 | Method | Description |
 |--------|-------------|
+| `client.EmailAPI.ListEmailDrafts(ctx)` | List drafts |
 | `client.EmailAPI.ListEmailFolders(ctx)` | List mailbox folders |
 | `client.EmailAPI.ListEmailLabels(ctx)` | List labels |
 | `client.EmailAPI.ListEmailMessages(ctx)` | List email messages |
 | `client.EmailAPI.ListEmailSendAs(ctx)` | List send-as addresses |
 | `client.EmailAPI.ListEmailThreads(ctx)` | List email threads |
 | `client.EmailAPI.ListScheduledEmails(ctx)` | List scheduled emails |
+| `client.EmailAPI.CreateEmailDraft(ctx)` | Create a draft |
 | `client.EmailAPI.CreateEmailLabel(ctx)` | Create a label |
+| `client.EmailAPI.GetEmailDraft(ctx)` | Get a draft |
 | `client.EmailAPI.GetEmailMessage(ctx)` | Get an email message |
 | `client.EmailAPI.GetEmailThread(ctx)` | Get an email thread with its messages |
 | `client.EmailAPI.GetScheduledEmail(ctx)` | Get a scheduled email |
+| `client.EmailAPI.UpdateEmailDraft(ctx)` | Update a draft |
 | `client.EmailAPI.UpdateEmailMessage(ctx)` | Mark read or starred, label, or move a message |
 | `client.EmailAPI.UpdateEmailThread(ctx)` | Update every message in a thread |
+| `client.EmailAPI.DeleteEmailDraft(ctx)` | Delete a draft |
 | `client.EmailAPI.DeleteEmailLabel(ctx)` | Delete a label |
 | `client.EmailAPI.CancelScheduledEmail(ctx)` | Cancel a scheduled email |
 | `client.EmailAPI.DownloadEmailAttachment(ctx)` | Download an attachment |
+| `client.EmailAPI.ForwardEmailMessage(ctx)` | Forward a message |
 | `client.EmailAPI.ReplyEmailMessage(ctx)` | Reply to a message |
+| `client.EmailAPI.SendEmailDraft(ctx)` | Send a draft |
 | `client.EmailAPI.SendEmailMessage(ctx)` | Send an email |
 | `client.EmailAPI.TrashEmailMessage(ctx)` | Move a message to trash |
 
