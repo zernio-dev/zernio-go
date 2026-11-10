@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.547.4
+API version: 1.548.1
 Contact: support@zernio.com
 */
 
@@ -835,6 +835,7 @@ Each top-up has an invoice, with VAT where it applies (`GET /v1/balance/top-ups/
 - 402 `card_declined`: the bank's reason.
 - 400: `method: bank_transfer` (bank transfers are not available yet).
 - 400 `invalid_billing_address`: the billing address gives no tax location. Add it in Billing, then retry.
+- 400 `billing_address_required`: the total with tax is over EUR 400 (at the day's ECB rate) and the billing details hold no name and street address. An invoice over that amount must name the buyer and their address. Add them in Billing > Billing details, then retry. Nothing is charged.
 - 429 `payment_attempts_limited`: five card payments were declined in 24 hours. Nothing reaches the bank until `Retry-After` runs out.
 
 Needs an owner, admin or billing admin, signed in or through a full-access key they created.

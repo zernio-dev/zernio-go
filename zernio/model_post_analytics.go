@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.547.4
+API version: 1.548.1
 Contact: support@zernio.com
 */
 
@@ -57,6 +57,12 @@ type PostAnalytics struct {
 	RetentionCurve map[string]float32 `json:"retentionCurve,omitempty"`
 	// Reposts of the media by other users, minus deleted reposts, on feed posts, reels and stories. Instagram accounts connected with Facebook Login only.  - Instagram Login accounts: always 0 (Meta does not expose this metric for them). - Other platforms: 0, including Threads, where reposts are counted in shares instead.
 	Reposts *int32 `json:"reposts,omitempty"`
+	// Views across every surface Meta counts for the post (Meta total_views_count): Instagram itself, the same post shared to Facebook, and its boosts and ads, replays included. Instagram videos and Reels on accounts connected with Facebook Login only. `views` stays Instagram organic only.  - Null for Instagram Login accounts, other platforms, and snapshots taken before the field existed (it fills on the post's next analytics sync). - On a post published to several accounts, the sum across accounts, counting views for the accounts that do not report it. Null when no account reports it. - Also null for images and carousels.
+	TotalViews NullableInt32 `json:"totalViews,omitempty"`
+	// Likes across every surface Meta counts for the post (Meta total_like_count): Instagram itself, the same post shared to Facebook, and its boosts and ads. Instagram accounts connected with Facebook Login only. `likes` stays Instagram organic only.  - Null for Instagram Login accounts, other platforms, and snapshots taken before the field existed (it fills on the post's next analytics sync). - On a post published to several accounts, the sum across accounts, counting likes for the accounts that do not report it. Null when no account reports it.
+	TotalLikes NullableInt32 `json:"totalLikes,omitempty"`
+	// Comments across every surface Meta counts for the post (Meta total_comments_count): Instagram itself, the same post shared to Facebook, and its boosts and ads. Instagram accounts connected with Facebook Login only. `comments` stays Instagram organic only.  - Null for Instagram Login accounts, other platforms, and snapshots taken before the field existed (it fills on the post's next analytics sync). - On a post published to several accounts, the sum across accounts, counting comments for the accounts that do not report it. Null when no account reports it.
+	TotalComments NullableInt32 `json:"totalComments,omitempty"`
 	// Video length in seconds. Null when unknown: platforms that do not report a length, non-video media, or when Instagram does not expose the media URL (e.g. reels with copyrighted audio).  - YouTube: filled for public videos once their analytics next refresh (from the Data API; live streams may report null). The Data API has no Shorts flag: a video over 180 seconds cannot be a Short, but a shorter one may be a regular upload. - Instagram Reels: also filled. Combine with igReelsAvgWatchTime (ms) to estimate retention.
 	VideoDurationSeconds NullableInt32 `json:"videoDurationSeconds,omitempty"`
 	// Percentage, rounded to 2 decimals: (likes + comments + shares + saves) / (impressions or reach or views) * 100. Clicks and follows are never counted.  The denominator is the FIRST of impressions, reach, views that is non-zero, so the basis varies by post: impressions if present, else reach, else views. For a single consistent basis (e.g. interactions / reach), compute it from the raw fields above.  On the post-level roll-up of a cross-posted post, the denominator is the SUM of the denominators resolved per platform entry. An entry reporting none of impressions, reach or views is excluded from both sides of the ratio. Each platformAnalytics entry below keeps its own single denominator.  The engagementRate on the LinkedIn account endpoints uses a different formula.
@@ -764,6 +770,135 @@ func (o *PostAnalytics) SetReposts(v int32) {
 	o.Reposts = &v
 }
 
+// GetTotalViews returns the TotalViews field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PostAnalytics) GetTotalViews() int32 {
+	if o == nil || IsNil(o.TotalViews.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.TotalViews.Get()
+}
+
+// GetTotalViewsOk returns a tuple with the TotalViews field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PostAnalytics) GetTotalViewsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TotalViews.Get(), o.TotalViews.IsSet()
+}
+
+// HasTotalViews returns a boolean if a field has been set.
+func (o *PostAnalytics) HasTotalViews() bool {
+	if o != nil && o.TotalViews.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTotalViews gets a reference to the given NullableInt32 and assigns it to the TotalViews field.
+func (o *PostAnalytics) SetTotalViews(v int32) {
+	o.TotalViews.Set(&v)
+}
+
+// SetTotalViewsNil sets the value for TotalViews to be an explicit nil
+func (o *PostAnalytics) SetTotalViewsNil() {
+	o.TotalViews.Set(nil)
+}
+
+// UnsetTotalViews ensures that no value is present for TotalViews, not even an explicit nil
+func (o *PostAnalytics) UnsetTotalViews() {
+	o.TotalViews.Unset()
+}
+
+// GetTotalLikes returns the TotalLikes field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PostAnalytics) GetTotalLikes() int32 {
+	if o == nil || IsNil(o.TotalLikes.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.TotalLikes.Get()
+}
+
+// GetTotalLikesOk returns a tuple with the TotalLikes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PostAnalytics) GetTotalLikesOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TotalLikes.Get(), o.TotalLikes.IsSet()
+}
+
+// HasTotalLikes returns a boolean if a field has been set.
+func (o *PostAnalytics) HasTotalLikes() bool {
+	if o != nil && o.TotalLikes.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTotalLikes gets a reference to the given NullableInt32 and assigns it to the TotalLikes field.
+func (o *PostAnalytics) SetTotalLikes(v int32) {
+	o.TotalLikes.Set(&v)
+}
+
+// SetTotalLikesNil sets the value for TotalLikes to be an explicit nil
+func (o *PostAnalytics) SetTotalLikesNil() {
+	o.TotalLikes.Set(nil)
+}
+
+// UnsetTotalLikes ensures that no value is present for TotalLikes, not even an explicit nil
+func (o *PostAnalytics) UnsetTotalLikes() {
+	o.TotalLikes.Unset()
+}
+
+// GetTotalComments returns the TotalComments field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PostAnalytics) GetTotalComments() int32 {
+	if o == nil || IsNil(o.TotalComments.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.TotalComments.Get()
+}
+
+// GetTotalCommentsOk returns a tuple with the TotalComments field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PostAnalytics) GetTotalCommentsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TotalComments.Get(), o.TotalComments.IsSet()
+}
+
+// HasTotalComments returns a boolean if a field has been set.
+func (o *PostAnalytics) HasTotalComments() bool {
+	if o != nil && o.TotalComments.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTotalComments gets a reference to the given NullableInt32 and assigns it to the TotalComments field.
+func (o *PostAnalytics) SetTotalComments(v int32) {
+	o.TotalComments.Set(&v)
+}
+
+// SetTotalCommentsNil sets the value for TotalComments to be an explicit nil
+func (o *PostAnalytics) SetTotalCommentsNil() {
+	o.TotalComments.Set(nil)
+}
+
+// UnsetTotalComments ensures that no value is present for TotalComments, not even an explicit nil
+func (o *PostAnalytics) UnsetTotalComments() {
+	o.TotalComments.Unset()
+}
+
 // GetVideoDurationSeconds returns the VideoDurationSeconds field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *PostAnalytics) GetVideoDurationSeconds() int32 {
 	if o == nil || IsNil(o.VideoDurationSeconds.Get()) {
@@ -943,6 +1078,15 @@ func (o PostAnalytics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Reposts) {
 		toSerialize["reposts"] = o.Reposts
+	}
+	if o.TotalViews.IsSet() {
+		toSerialize["totalViews"] = o.TotalViews.Get()
+	}
+	if o.TotalLikes.IsSet() {
+		toSerialize["totalLikes"] = o.TotalLikes.Get()
+	}
+	if o.TotalComments.IsSet() {
+		toSerialize["totalComments"] = o.TotalComments.Get()
 	}
 	if o.VideoDurationSeconds.IsSet() {
 		toSerialize["videoDurationSeconds"] = o.VideoDurationSeconds.Get()
