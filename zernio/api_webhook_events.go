@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.562.0
+API version: 1.562.2
 Contact: support@zernio.com
 */
 
@@ -3708,7 +3708,7 @@ func (r WebhookEventsAPIOnCalendarEventCreatedRequest) Execute() (*http.Response
 /*
 OnCalendarEventCreated Calendar event created
 
-An event was added to the primary calendar of a connected mailbox, by the user, an invitation or the API.
+An event was added to a watched calendar of a connected mailbox, by the user, an invitation or the API. Google watches every calendar the user shows (up to 25), Outlook the default calendar; `calendarId` names it.
 
 ### Platform notes
 
@@ -3811,7 +3811,7 @@ func (r WebhookEventsAPIOnCalendarEventDeletedRequest) Execute() (*http.Response
 /*
 OnCalendarEventDeleted Calendar event deleted
 
-An event was deleted from the primary calendar.
+An event was deleted from a watched calendar.
 
 ### Platform notes
 
@@ -3914,7 +3914,7 @@ func (r WebhookEventsAPIOnCalendarEventUpdatedRequest) Execute() (*http.Response
 /*
 OnCalendarEventUpdated Calendar event updated
 
-An event on the primary calendar changed: its time, details or participants' answers.
+An event on a watched calendar changed: its time, details or participants' answers.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnCalendarEventUpdatedRequest

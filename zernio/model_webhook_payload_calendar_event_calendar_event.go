@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.562.0
+API version: 1.562.2
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &WebhookPayloadCalendarEventCalendarEvent{}
 type WebhookPayloadCalendarEventCalendarEvent struct {
 	Id         *string `json:"id,omitempty"`
 	ChangeType *string `json:"changeType,omitempty"`
-	// The calendar holding the event, to pass as `calendarId` when reading it: `primary` for the user's main calendar. Null when it is not known, as for a deleted Outlook event.
+	// The calendar holding the event, to pass as `calendarId` when reading it: `primary` for the user's main calendar, else the Google calendar id. Null when it is not known, as for a deleted Outlook event.
 	CalendarId NullableString `json:"calendarId,omitempty"`
 	// The series this event belongs to, when it is an occurrence or exception.
 	MasterEventId NullableString `json:"masterEventId,omitempty"`
