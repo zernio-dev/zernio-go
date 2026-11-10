@@ -860,6 +860,7 @@ func main() {
 | `client.ContactsAPI.GetContactChannels(ctx)` | List channels for a contact |
 | `client.ContactsAPI.UpdateContact(ctx)` | Update contact |
 | `client.ContactsAPI.DeleteContact(ctx)` | Delete contact |
+| `client.ContactsAPI.AutocompleteContacts(ctx)` | Search people |
 
 ### Content Retention
 | Method | Description |
@@ -1015,6 +1016,7 @@ func main() {
 | `client.EmailAPI.ListEmailLabels(ctx)` | List labels |
 | `client.EmailAPI.ListEmailMessages(ctx)` | List email messages |
 | `client.EmailAPI.ListEmailSendAs(ctx)` | List send-as addresses |
+| `client.EmailAPI.ListEmailSharedMailboxes(ctx)` | List shared mailboxes |
 | `client.EmailAPI.ListEmailSignatures(ctx)` | List signatures |
 | `client.EmailAPI.ListEmailThreads(ctx)` | List email threads |
 | `client.EmailAPI.ListScheduledEmails(ctx)` | List scheduled emails |
@@ -1035,6 +1037,7 @@ func main() {
 | `client.EmailAPI.DeleteEmailLabel(ctx)` | Delete a label |
 | `client.EmailAPI.DeleteEmailSendAs(ctx)` | Remove a declared send-as address |
 | `client.EmailAPI.DeleteEmailSignature(ctx)` | Delete a signature |
+| `client.EmailAPI.AddEmailSharedMailbox(ctx)` | Add a shared mailbox |
 | `client.EmailAPI.CancelScheduledEmail(ctx)` | Cancel a scheduled email |
 | `client.EmailAPI.DeclareEmailSendAs(ctx)` | Declare a send-as address |
 | `client.EmailAPI.DiscoverImapSettings(ctx)` | Find the mail settings for an address |
