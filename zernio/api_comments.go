@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.551.0
+API version: 1.551.1
 Contact: support@zernio.com
 */
 
@@ -1620,11 +1620,13 @@ The failed call still consumes the comment's single private reply. On an affecte
 
 - 400 with `details.privateReplyConsumed: true`: the comment's single private reply is spent (by this call or an earlier one). Never retry it.
 - 502: Meta answered a server error after receiving the reply. It carries `details.privateReplyOutcome: "unknown"`. The reply is usually delivered and the comment's private reply spent, so check the conversation before retrying.
-- Meta-originated failures carry Meta's error object in `platformError` (`code`, `error_subcode`, `message`, `type`, `fbtrace_id`). Common Instagram subcodes: 2534014 commenter not found, 2534023 already replied, 2534024 older than 7 days, 2534025 not eligible for a private reply, 2534066 declined.
+- Meta-originated failures carry Meta's error object in `platformError` (`code`, `error_subcode`, `message`, `type`, `fbtrace_id`). Common Instagram subcodes: 2534014 commenter not found (no reason given), 2534023 already replied, 2534024 older than 7 days, 2534025 not eligible for a private reply, 2534066 declined.
 
 ### Recording
 
 The reply is recorded in the inbox conversation with the commenter (`sentVia` `api` for key auth, `human` for a session) and fires `message.sent` once.
+
+A success response and `message.sent` mean Meta accepted the reply, not that the commenter saw it. Instagram has no delivery event, and the reply can land in the commenter's Message Requests folder, where they may never open it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId The media/post ID (Instagram media ID or Facebook post ID)
