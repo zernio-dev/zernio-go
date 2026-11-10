@@ -3601,7 +3601,7 @@ func (r MessagesAPISetConversationThreadControlRequest) Execute() (*SetConversat
 /*
 SetConversationThreadControl Change who answers a conversation (handover)
 
-Changes who answers a conversation, using Meta's handover protocol on WhatsApp, Facebook and Instagram.
+Changes who answers a conversation: Meta Business Agent handover on WhatsApp, Meta's conversation routing on Facebook and Instagram. On Instagram, Conversation Routing replaced the Handover Protocol in October 2025 and kept the thread-control calls below.
 
 **WhatsApp**, on numbers with Meta Business Agent enabled:
 
@@ -3609,18 +3609,20 @@ Changes who answers a conversation, using Meta's handover protocol on WhatsApp, 
 - `take`: take control before sending anything, so the agent stops replying while an operator reads the thread. Meta accepts this only from the business configured as the number's escalation partner; other apps take control by sending a message.
 - `pass`: transfer control to the number's configured escalation partner, or to the agent with `target: ai_agent`. Meta's Cloud API currently rejects it ("Pass action is not supported", verified 2026-09-08); use `release` to hand a thread back to the agent.
 
-**Facebook and Instagram** (Messenger Platform handover between the apps on the Page, such as Page Inbox):
+**Facebook and Instagram** (conversation routing between the apps on the account, such as Page Inbox or the Instagram Inbox):
 
-- `pass` with `targetAppId`: give the thread to another app (`pass_thread_control`). Page Inbox is 263902037430900.
-- `take`: take the thread back (`take_thread_control`). Meta allows it only to the Page's primary receiver, and only on accounts connected through a Facebook Page. On an Instagram Login connection it answers 400 `platform_not_supported`.
+- `pass` with `targetAppId`: give the thread to another app (`pass_thread_control`). Page Inbox is 263902037430900, the Instagram Inbox is 1217981644879628.
+- `take`: take the thread back (`take_thread_control`). Only on accounts connected through a Facebook Page, and Meta accepts it only when the account has a default app set in its conversation routing settings and the business has allowed Zernio to take control of conversations (Page settings > Page setup > Advanced messaging). Otherwise Meta answers code 27, returned as 400 `platform_api_error` with an explanation. On an Instagram Login connection it answers 400 `platform_not_supported`.
 - `request`: ask the current owner to pass the thread (`request_thread_control`); nothing changes until it does. Not available on Instagram Login connections (400 `platform_not_supported`).
-- `release`: give the thread back to the primary receiver (`release_thread_control`).
+- `release`: make the thread idle (`release_thread_control`); the account's default app answers next.
+
+A send refused with `not_thread_owner` on a Facebook Login connection already tries `take` once and resends.
 
 ### While another app owns the thread
 
 While another app owns a Facebook or Instagram thread, inbound messages arrive with `metadata.standby: true` and a send answers 409 `not_thread_owner`.
 
-The conversation's `threadControl` follows the result. A `conversation.control_changed` webhook fires when Meta later reports the change.
+The conversation's `threadControl` follows the result. This call does not fire `conversation.control_changed`; that event fires only when Meta tells Zernio another app passed a thread to it or took one from it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param conversationId The conversation ID

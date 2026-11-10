@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadConversationControlChanged type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadConversationControlChanged{}
 
-// WebhookPayloadConversationControlChanged Who answers a conversation changed under Meta's handover protocol. WhatsApp: Meta Business Agent took it over, handed it to you, or another partner app took it. Facebook and Instagram: another app passed the thread to you, or took or received it.
+// WebhookPayloadConversationControlChanged Who answers a conversation changed. WhatsApp: Meta Business Agent took it over, handed it to you, or another partner app took it. Facebook and Instagram (Meta's conversation routing): another app passed the thread to you or took it from you.
 type WebhookPayloadConversationControlChanged struct {
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
 	Test *bool `json:"test,omitempty"`
