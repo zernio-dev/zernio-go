@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,7 @@ type ListSequenceEnrollments200ResponseEnrollmentsInner struct {
 	ContactId          *string        `json:"contactId,omitempty"`
 	ChannelId          *string        `json:"channelId,omitempty"`
 	PlatformIdentifier *string        `json:"platformIdentifier,omitempty"`
-	ContactName        *string        `json:"contactName,omitempty"`
+	ContactName        NullableString `json:"contactName,omitempty"`
 	CurrentStepIndex   *int32         `json:"currentStepIndex,omitempty"`
 	Status             *string        `json:"status,omitempty"`
 	ExitReason         NullableString `json:"exitReason,omitempty"`
@@ -180,36 +180,47 @@ func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) SetPlatformIdentifi
 	o.PlatformIdentifier = &v
 }
 
-// GetContactName returns the ContactName field value if set, zero value otherwise.
+// GetContactName returns the ContactName field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) GetContactName() string {
-	if o == nil || IsNil(o.ContactName) {
+	if o == nil || IsNil(o.ContactName.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.ContactName
+	return *o.ContactName.Get()
 }
 
 // GetContactNameOk returns a tuple with the ContactName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) GetContactNameOk() (*string, bool) {
-	if o == nil || IsNil(o.ContactName) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ContactName, true
+	return o.ContactName.Get(), o.ContactName.IsSet()
 }
 
 // HasContactName returns a boolean if a field has been set.
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) HasContactName() bool {
-	if o != nil && !IsNil(o.ContactName) {
+	if o != nil && o.ContactName.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetContactName gets a reference to the given string and assigns it to the ContactName field.
+// SetContactName gets a reference to the given NullableString and assigns it to the ContactName field.
 func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) SetContactName(v string) {
-	o.ContactName = &v
+	o.ContactName.Set(&v)
+}
+
+// SetContactNameNil sets the value for ContactName to be an explicit nil
+func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) SetContactNameNil() {
+	o.ContactName.Set(nil)
+}
+
+// UnsetContactName ensures that no value is present for ContactName, not even an explicit nil
+func (o *ListSequenceEnrollments200ResponseEnrollmentsInner) UnsetContactName() {
+	o.ContactName.Unset()
 }
 
 // GetCurrentStepIndex returns the CurrentStepIndex field value if set, zero value otherwise.
@@ -491,8 +502,8 @@ func (o ListSequenceEnrollments200ResponseEnrollmentsInner) ToMap() (map[string]
 	if !IsNil(o.PlatformIdentifier) {
 		toSerialize["platformIdentifier"] = o.PlatformIdentifier
 	}
-	if !IsNil(o.ContactName) {
-		toSerialize["contactName"] = o.ContactName
+	if o.ContactName.IsSet() {
+		toSerialize["contactName"] = o.ContactName.Get()
 	}
 	if !IsNil(o.CurrentStepIndex) {
 		toSerialize["currentStepIndex"] = o.CurrentStepIndex

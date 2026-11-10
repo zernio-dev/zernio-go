@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -27,19 +27,21 @@ type ListInboxConversations200ResponseDataInner struct {
 	AccountId       *string `json:"accountId,omitempty"`
 	AccountUsername *string `json:"accountUsername,omitempty"`
 	// The bare Facebook Page id behind the account, for Facebook and Instagram connected through Facebook Login. Null when the account has no Facebook Page.
-	PageId             NullableString `json:"pageId,omitempty"`
-	ParticipantId      *string        `json:"participantId,omitempty"`
-	ParticipantName    *string        `json:"participantName,omitempty"`
+	PageId          NullableString `json:"pageId,omitempty"`
+	ParticipantId   *string        `json:"participantId,omitempty"`
+	ParticipantName NullableString `json:"participantName,omitempty"`
+	// True when this team does not retain content, so the content fields of this row are null. Identifiers and metadata stay.
+	ContentNotRetained *bool          `json:"contentNotRetained,omitempty"`
 	ParticipantPicture NullableString `json:"participantPicture,omitempty"`
 	// X verified badge type. Only present for X conversations.
 	ParticipantVerifiedType NullableString `json:"participantVerifiedType,omitempty"`
 	// WhatsApp only. Meta business-scoped user ID (BSUID), the stable identity anchor; present when Meta has sent it for this participant.
 	BusinessScopedUserId *string `json:"businessScopedUserId,omitempty"`
 	// WhatsApp only. The participant's WhatsApp username (e.g. `jane.shop`, no leading @). Not a stable identifier, because users can change it: useful for display, not recommended as an identity anchor. Captured from inbound messages, so older threads fill in on their next inbound.
-	WhatsappUsername *string    `json:"whatsappUsername,omitempty"`
-	LastMessage      *string    `json:"lastMessage,omitempty"`
-	UpdatedTime      *time.Time `json:"updatedTime,omitempty"`
-	Status           *string    `json:"status,omitempty"`
+	WhatsappUsername *string        `json:"whatsappUsername,omitempty"`
+	LastMessage      NullableString `json:"lastMessage,omitempty"`
+	UpdatedTime      *time.Time     `json:"updatedTime,omitempty"`
+	Status           *string        `json:"status,omitempty"`
 	// Number of unread incoming messages, capped at 1000. Read from a replica, so it can trail a conversation you just marked read by a few seconds.
 	UnreadCount NullableInt32 `json:"unreadCount,omitempty"`
 	// Present once a handover has touched the thread (WhatsApp, Facebook, Instagram). ai_agent: Meta Business Agent answers (WhatsApp) and new inbound arrive flagged metadata.standby; app: you hold control; other: another app does (a WhatsApp partner, or a Messenger / Instagram receiver such as Page Inbox). Change it with POST /v1/inbox/conversations/{conversationId}/thread-control.
@@ -275,36 +277,79 @@ func (o *ListInboxConversations200ResponseDataInner) SetParticipantId(v string) 
 	o.ParticipantId = &v
 }
 
-// GetParticipantName returns the ParticipantName field value if set, zero value otherwise.
+// GetParticipantName returns the ParticipantName field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListInboxConversations200ResponseDataInner) GetParticipantName() string {
-	if o == nil || IsNil(o.ParticipantName) {
+	if o == nil || IsNil(o.ParticipantName.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.ParticipantName
+	return *o.ParticipantName.Get()
 }
 
 // GetParticipantNameOk returns a tuple with the ParticipantName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListInboxConversations200ResponseDataInner) GetParticipantNameOk() (*string, bool) {
-	if o == nil || IsNil(o.ParticipantName) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ParticipantName, true
+	return o.ParticipantName.Get(), o.ParticipantName.IsSet()
 }
 
 // HasParticipantName returns a boolean if a field has been set.
 func (o *ListInboxConversations200ResponseDataInner) HasParticipantName() bool {
-	if o != nil && !IsNil(o.ParticipantName) {
+	if o != nil && o.ParticipantName.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetParticipantName gets a reference to the given string and assigns it to the ParticipantName field.
+// SetParticipantName gets a reference to the given NullableString and assigns it to the ParticipantName field.
 func (o *ListInboxConversations200ResponseDataInner) SetParticipantName(v string) {
-	o.ParticipantName = &v
+	o.ParticipantName.Set(&v)
+}
+
+// SetParticipantNameNil sets the value for ParticipantName to be an explicit nil
+func (o *ListInboxConversations200ResponseDataInner) SetParticipantNameNil() {
+	o.ParticipantName.Set(nil)
+}
+
+// UnsetParticipantName ensures that no value is present for ParticipantName, not even an explicit nil
+func (o *ListInboxConversations200ResponseDataInner) UnsetParticipantName() {
+	o.ParticipantName.Unset()
+}
+
+// GetContentNotRetained returns the ContentNotRetained field value if set, zero value otherwise.
+func (o *ListInboxConversations200ResponseDataInner) GetContentNotRetained() bool {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		var ret bool
+		return ret
+	}
+	return *o.ContentNotRetained
+}
+
+// GetContentNotRetainedOk returns a tuple with the ContentNotRetained field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxConversations200ResponseDataInner) GetContentNotRetainedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		return nil, false
+	}
+	return o.ContentNotRetained, true
+}
+
+// HasContentNotRetained returns a boolean if a field has been set.
+func (o *ListInboxConversations200ResponseDataInner) HasContentNotRetained() bool {
+	if o != nil && !IsNil(o.ContentNotRetained) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentNotRetained gets a reference to the given bool and assigns it to the ContentNotRetained field.
+func (o *ListInboxConversations200ResponseDataInner) SetContentNotRetained(v bool) {
+	o.ContentNotRetained = &v
 }
 
 // GetParticipantPicture returns the ParticipantPicture field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -457,36 +502,47 @@ func (o *ListInboxConversations200ResponseDataInner) SetWhatsappUsername(v strin
 	o.WhatsappUsername = &v
 }
 
-// GetLastMessage returns the LastMessage field value if set, zero value otherwise.
+// GetLastMessage returns the LastMessage field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListInboxConversations200ResponseDataInner) GetLastMessage() string {
-	if o == nil || IsNil(o.LastMessage) {
+	if o == nil || IsNil(o.LastMessage.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.LastMessage
+	return *o.LastMessage.Get()
 }
 
 // GetLastMessageOk returns a tuple with the LastMessage field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListInboxConversations200ResponseDataInner) GetLastMessageOk() (*string, bool) {
-	if o == nil || IsNil(o.LastMessage) {
+	if o == nil {
 		return nil, false
 	}
-	return o.LastMessage, true
+	return o.LastMessage.Get(), o.LastMessage.IsSet()
 }
 
 // HasLastMessage returns a boolean if a field has been set.
 func (o *ListInboxConversations200ResponseDataInner) HasLastMessage() bool {
-	if o != nil && !IsNil(o.LastMessage) {
+	if o != nil && o.LastMessage.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLastMessage gets a reference to the given string and assigns it to the LastMessage field.
+// SetLastMessage gets a reference to the given NullableString and assigns it to the LastMessage field.
 func (o *ListInboxConversations200ResponseDataInner) SetLastMessage(v string) {
-	o.LastMessage = &v
+	o.LastMessage.Set(&v)
+}
+
+// SetLastMessageNil sets the value for LastMessage to be an explicit nil
+func (o *ListInboxConversations200ResponseDataInner) SetLastMessageNil() {
+	o.LastMessage.Set(nil)
+}
+
+// UnsetLastMessage ensures that no value is present for LastMessage, not even an explicit nil
+func (o *ListInboxConversations200ResponseDataInner) UnsetLastMessage() {
+	o.LastMessage.Unset()
 }
 
 // GetUpdatedTime returns the UpdatedTime field value if set, zero value otherwise.
@@ -859,8 +915,11 @@ func (o ListInboxConversations200ResponseDataInner) ToMap() (map[string]interfac
 	if !IsNil(o.ParticipantId) {
 		toSerialize["participantId"] = o.ParticipantId
 	}
-	if !IsNil(o.ParticipantName) {
-		toSerialize["participantName"] = o.ParticipantName
+	if o.ParticipantName.IsSet() {
+		toSerialize["participantName"] = o.ParticipantName.Get()
+	}
+	if !IsNil(o.ContentNotRetained) {
+		toSerialize["contentNotRetained"] = o.ContentNotRetained
 	}
 	if o.ParticipantPicture.IsSet() {
 		toSerialize["participantPicture"] = o.ParticipantPicture.Get()
@@ -874,8 +933,8 @@ func (o ListInboxConversations200ResponseDataInner) ToMap() (map[string]interfac
 	if !IsNil(o.WhatsappUsername) {
 		toSerialize["whatsappUsername"] = o.WhatsappUsername
 	}
-	if !IsNil(o.LastMessage) {
-		toSerialize["lastMessage"] = o.LastMessage
+	if o.LastMessage.IsSet() {
+		toSerialize["lastMessage"] = o.LastMessage.Get()
 	}
 	if !IsNil(o.UpdatedTime) {
 		toSerialize["updatedTime"] = o.UpdatedTime

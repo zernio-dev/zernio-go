@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -25,9 +25,12 @@ type SearchInboxConversations200ResponseDataInnerConversation struct {
 	Id                  *string        `json:"id,omitempty"`
 	Platform            *string        `json:"platform,omitempty"`
 	AccountId           *string        `json:"accountId,omitempty"`
+	ParticipantId       NullableString `json:"participantId,omitempty"`
 	ParticipantName     NullableString `json:"participantName,omitempty"`
 	ParticipantUsername NullableString `json:"participantUsername,omitempty"`
 	ParticipantPicture  NullableString `json:"participantPicture,omitempty"`
+	// True when this team does not retain content, so the content fields of this row are null. Identifiers and metadata stay.
+	ContentNotRetained *bool `json:"contentNotRetained,omitempty"`
 	// WhatsApp only. Meta business-scoped user ID (BSUID), the stable identity anchor; present when Meta has sent it for this participant.
 	BusinessScopedUserId *string `json:"businessScopedUserId,omitempty"`
 	// WhatsApp only. The participant's WhatsApp username (e.g. `jane.shop`, no leading @). Not a stable identifier, because users can change it: useful for display, not recommended as an identity anchor. Captured from inbound messages, so older threads fill in on their next inbound.
@@ -149,6 +152,49 @@ func (o *SearchInboxConversations200ResponseDataInnerConversation) HasAccountId(
 // SetAccountId gets a reference to the given string and assigns it to the AccountId field.
 func (o *SearchInboxConversations200ResponseDataInnerConversation) SetAccountId(v string) {
 	o.AccountId = &v
+}
+
+// GetParticipantId returns the ParticipantId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SearchInboxConversations200ResponseDataInnerConversation) GetParticipantId() string {
+	if o == nil || IsNil(o.ParticipantId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ParticipantId.Get()
+}
+
+// GetParticipantIdOk returns a tuple with the ParticipantId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SearchInboxConversations200ResponseDataInnerConversation) GetParticipantIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ParticipantId.Get(), o.ParticipantId.IsSet()
+}
+
+// HasParticipantId returns a boolean if a field has been set.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) HasParticipantId() bool {
+	if o != nil && o.ParticipantId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetParticipantId gets a reference to the given NullableString and assigns it to the ParticipantId field.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) SetParticipantId(v string) {
+	o.ParticipantId.Set(&v)
+}
+
+// SetParticipantIdNil sets the value for ParticipantId to be an explicit nil
+func (o *SearchInboxConversations200ResponseDataInnerConversation) SetParticipantIdNil() {
+	o.ParticipantId.Set(nil)
+}
+
+// UnsetParticipantId ensures that no value is present for ParticipantId, not even an explicit nil
+func (o *SearchInboxConversations200ResponseDataInnerConversation) UnsetParticipantId() {
+	o.ParticipantId.Unset()
 }
 
 // GetParticipantName returns the ParticipantName field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -278,6 +324,38 @@ func (o *SearchInboxConversations200ResponseDataInnerConversation) SetParticipan
 // UnsetParticipantPicture ensures that no value is present for ParticipantPicture, not even an explicit nil
 func (o *SearchInboxConversations200ResponseDataInnerConversation) UnsetParticipantPicture() {
 	o.ParticipantPicture.Unset()
+}
+
+// GetContentNotRetained returns the ContentNotRetained field value if set, zero value otherwise.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) GetContentNotRetained() bool {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		var ret bool
+		return ret
+	}
+	return *o.ContentNotRetained
+}
+
+// GetContentNotRetainedOk returns a tuple with the ContentNotRetained field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) GetContentNotRetainedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		return nil, false
+	}
+	return o.ContentNotRetained, true
+}
+
+// HasContentNotRetained returns a boolean if a field has been set.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) HasContentNotRetained() bool {
+	if o != nil && !IsNil(o.ContentNotRetained) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentNotRetained gets a reference to the given bool and assigns it to the ContentNotRetained field.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) SetContentNotRetained(v bool) {
+	o.ContentNotRetained = &v
 }
 
 // GetBusinessScopedUserId returns the BusinessScopedUserId field value if set, zero value otherwise.
@@ -481,6 +559,9 @@ func (o SearchInboxConversations200ResponseDataInnerConversation) ToMap() (map[s
 	if !IsNil(o.AccountId) {
 		toSerialize["accountId"] = o.AccountId
 	}
+	if o.ParticipantId.IsSet() {
+		toSerialize["participantId"] = o.ParticipantId.Get()
+	}
 	if o.ParticipantName.IsSet() {
 		toSerialize["participantName"] = o.ParticipantName.Get()
 	}
@@ -489,6 +570,9 @@ func (o SearchInboxConversations200ResponseDataInnerConversation) ToMap() (map[s
 	}
 	if o.ParticipantPicture.IsSet() {
 		toSerialize["participantPicture"] = o.ParticipantPicture.Get()
+	}
+	if !IsNil(o.ContentNotRetained) {
+		toSerialize["contentNotRetained"] = o.ContentNotRetained
 	}
 	if !IsNil(o.BusinessScopedUserId) {
 		toSerialize["businessScopedUserId"] = o.BusinessScopedUserId

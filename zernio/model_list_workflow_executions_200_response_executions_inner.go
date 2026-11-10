@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -21,12 +21,13 @@ var _ MappedNullable = &ListWorkflowExecutions200ResponseExecutionsInner{}
 
 // ListWorkflowExecutions200ResponseExecutionsInner struct for ListWorkflowExecutions200ResponseExecutionsInner
 type ListWorkflowExecutions200ResponseExecutionsInner struct {
-	Id                 *string                                                     `json:"id,omitempty"`
-	Status             *string                                                     `json:"status,omitempty"`
-	CurrentNodeId      *string                                                     `json:"currentNodeId,omitempty"`
-	WaitingFor         *ListWorkflowExecutions200ResponseExecutionsInnerWaitingFor `json:"waitingFor,omitempty"`
-	Variables          map[string]interface{}                                      `json:"variables,omitempty"`
-	PlatformIdentifier *string                                                     `json:"platformIdentifier,omitempty"`
+	Id            *string                                                     `json:"id,omitempty"`
+	Status        *string                                                     `json:"status,omitempty"`
+	CurrentNodeId *string                                                     `json:"currentNodeId,omitempty"`
+	WaitingFor    *ListWorkflowExecutions200ResponseExecutionsInnerWaitingFor `json:"waitingFor,omitempty"`
+	// Empty once the run finishes when the team does not retain content.
+	Variables          map[string]interface{} `json:"variables,omitempty"`
+	PlatformIdentifier *string                `json:"platformIdentifier,omitempty"`
 	// Null only while a comment-triggered run has not sent its private reply yet.
 	ConversationId NullableString `json:"conversationId,omitempty"`
 	StepCount      *int32         `json:"stepCount,omitempty"`

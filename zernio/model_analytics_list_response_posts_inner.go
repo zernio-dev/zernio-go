@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -23,16 +23,18 @@ var _ MappedNullable = &AnalyticsListResponsePostsInner{}
 type AnalyticsListResponsePostsInner struct {
 	Id *string `json:"_id,omitempty"`
 	// Original Zernio post ID if scheduled via Zernio
-	LatePostId      NullableString      `json:"latePostId,omitempty"`
-	Content         *string             `json:"content,omitempty"`
-	ScheduledFor    *time.Time          `json:"scheduledFor,omitempty"`
-	PublishedAt     *time.Time          `json:"publishedAt,omitempty"`
-	Status          *string             `json:"status,omitempty"`
-	Analytics       *PostAnalytics      `json:"analytics,omitempty"`
-	Platforms       []PlatformAnalytics `json:"platforms,omitempty"`
-	Platform        *string             `json:"platform,omitempty"`
-	PlatformPostUrl *string             `json:"platformPostUrl,omitempty"`
-	IsExternal      *bool               `json:"isExternal,omitempty"`
+	LatePostId NullableString `json:"latePostId,omitempty"`
+	Content    NullableString `json:"content,omitempty"`
+	// True when this team does not retain content, so the content fields of this row are null. Identifiers and metadata stay.
+	ContentNotRetained *bool               `json:"contentNotRetained,omitempty"`
+	ScheduledFor       *time.Time          `json:"scheduledFor,omitempty"`
+	PublishedAt        *time.Time          `json:"publishedAt,omitempty"`
+	Status             *string             `json:"status,omitempty"`
+	Analytics          *PostAnalytics      `json:"analytics,omitempty"`
+	Platforms          []PlatformAnalytics `json:"platforms,omitempty"`
+	Platform           *string             `json:"platform,omitempty"`
+	PlatformPostUrl    *string             `json:"platformPostUrl,omitempty"`
+	IsExternal         *bool               `json:"isExternal,omitempty"`
 	// True when this post's metrics include paid delivery, so organic reporting should exclude it.  Set for LinkedIn dark posts and for TikTok posts one of your TikTok ads promotes (Spark / boosted).  TikTok exposes no ad flag of its own. A video created by an uploaded-asset (non-Spark) TikTok ad is posted to the profile with a fresh organic id and cannot be detected, so those still report false.
 	IsAd      *bool          `json:"isAd,omitempty"`
 	ProfileId NullableString `json:"profileId,omitempty"`
@@ -143,36 +145,79 @@ func (o *AnalyticsListResponsePostsInner) UnsetLatePostId() {
 	o.LatePostId.Unset()
 }
 
-// GetContent returns the Content field value if set, zero value otherwise.
+// GetContent returns the Content field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AnalyticsListResponsePostsInner) GetContent() string {
-	if o == nil || IsNil(o.Content) {
+	if o == nil || IsNil(o.Content.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Content
+	return *o.Content.Get()
 }
 
 // GetContentOk returns a tuple with the Content field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AnalyticsListResponsePostsInner) GetContentOk() (*string, bool) {
-	if o == nil || IsNil(o.Content) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Content, true
+	return o.Content.Get(), o.Content.IsSet()
 }
 
 // HasContent returns a boolean if a field has been set.
 func (o *AnalyticsListResponsePostsInner) HasContent() bool {
-	if o != nil && !IsNil(o.Content) {
+	if o != nil && o.Content.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetContent gets a reference to the given string and assigns it to the Content field.
+// SetContent gets a reference to the given NullableString and assigns it to the Content field.
 func (o *AnalyticsListResponsePostsInner) SetContent(v string) {
-	o.Content = &v
+	o.Content.Set(&v)
+}
+
+// SetContentNil sets the value for Content to be an explicit nil
+func (o *AnalyticsListResponsePostsInner) SetContentNil() {
+	o.Content.Set(nil)
+}
+
+// UnsetContent ensures that no value is present for Content, not even an explicit nil
+func (o *AnalyticsListResponsePostsInner) UnsetContent() {
+	o.Content.Unset()
+}
+
+// GetContentNotRetained returns the ContentNotRetained field value if set, zero value otherwise.
+func (o *AnalyticsListResponsePostsInner) GetContentNotRetained() bool {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		var ret bool
+		return ret
+	}
+	return *o.ContentNotRetained
+}
+
+// GetContentNotRetainedOk returns a tuple with the ContentNotRetained field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsListResponsePostsInner) GetContentNotRetainedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		return nil, false
+	}
+	return o.ContentNotRetained, true
+}
+
+// HasContentNotRetained returns a boolean if a field has been set.
+func (o *AnalyticsListResponsePostsInner) HasContentNotRetained() bool {
+	if o != nil && !IsNil(o.ContentNotRetained) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentNotRetained gets a reference to the given bool and assigns it to the ContentNotRetained field.
+func (o *AnalyticsListResponsePostsInner) SetContentNotRetained(v bool) {
+	o.ContentNotRetained = &v
 }
 
 // GetScheduledFor returns the ScheduledFor field value if set, zero value otherwise.
@@ -746,8 +791,11 @@ func (o AnalyticsListResponsePostsInner) ToMap() (map[string]interface{}, error)
 	if o.LatePostId.IsSet() {
 		toSerialize["latePostId"] = o.LatePostId.Get()
 	}
-	if !IsNil(o.Content) {
-		toSerialize["content"] = o.Content
+	if o.Content.IsSet() {
+		toSerialize["content"] = o.Content.Get()
+	}
+	if !IsNil(o.ContentNotRetained) {
+		toSerialize["contentNotRetained"] = o.ContentNotRetained
 	}
 	if !IsNil(o.ScheduledFor) {
 		toSerialize["scheduledFor"] = o.ScheduledFor

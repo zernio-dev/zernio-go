@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -4427,6 +4427,220 @@ func (a *WebhookEventsAPIService) OnCallReceivedExecute(r WebhookEventsAPIOnCall
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnCallRecordingReadyRequest struct {
+	ctx                              context.Context
+	ApiService                       *WebhookEventsAPIService
+	webhookPayloadCallRecordingReady *WebhookPayloadCallRecordingReady
+}
+
+func (r WebhookEventsAPIOnCallRecordingReadyRequest) WebhookPayloadCallRecordingReady(webhookPayloadCallRecordingReady WebhookPayloadCallRecordingReady) WebhookEventsAPIOnCallRecordingReadyRequest {
+	r.webhookPayloadCallRecordingReady = &webhookPayloadCallRecordingReady
+	return r
+}
+
+func (r WebhookEventsAPIOnCallRecordingReadyRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCallRecordingReadyExecute(r)
+}
+
+/*
+OnCallRecordingReady Call recording ready event
+
+A call recording is ready to download.
+
+### When it fires
+
+Only for teams with zero content retention, on calls with recording on, and only while a webhook listens to it. Zernio keeps no recording for these teams, and the copy behind the link expires after about 3 days. Download the file before `recording.expiresAt`.
+
+### Payload notes
+
+`call.isVoicemail` tells a voicemail from a recorded call. If the recording could not be copied, no event fires and `call.ended` lists it in `callErrors`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCallRecordingReadyRequest
+*/
+func (a *WebhookEventsAPIService) OnCallRecordingReady(ctx context.Context) WebhookEventsAPIOnCallRecordingReadyRequest {
+	return WebhookEventsAPIOnCallRecordingReadyRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCallRecordingReadyExecute(r WebhookEventsAPIOnCallRecordingReadyRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCallRecordingReady")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/call.recording_ready"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCallRecordingReady == nil {
+		return nil, reportError("webhookPayloadCallRecordingReady is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCallRecordingReady
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCallTranscriptSegmentRequest struct {
+	ctx                                 context.Context
+	ApiService                          *WebhookEventsAPIService
+	webhookPayloadCallTranscriptSegment *WebhookPayloadCallTranscriptSegment
+}
+
+func (r WebhookEventsAPIOnCallTranscriptSegmentRequest) WebhookPayloadCallTranscriptSegment(webhookPayloadCallTranscriptSegment WebhookPayloadCallTranscriptSegment) WebhookEventsAPIOnCallTranscriptSegmentRequest {
+	r.webhookPayloadCallTranscriptSegment = &webhookPayloadCallTranscriptSegment
+	return r
+}
+
+func (r WebhookEventsAPIOnCallTranscriptSegmentRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCallTranscriptSegmentExecute(r)
+}
+
+/*
+OnCallTranscriptSegment Call transcript segment event
+
+One final segment of a live call transcript.
+
+### When it fires
+
+Only for teams with zero content retention, on calls with transcription on: once per final segment, while the call is live. Zernio stores no transcript for these teams, so it cannot be fetched later. Store each segment when it arrives.
+
+### Payload notes
+
+`segment.text` is the final text, `segment.confidence` the recognition confidence and `segment.at` when it was transcribed.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCallTranscriptSegmentRequest
+*/
+func (a *WebhookEventsAPIService) OnCallTranscriptSegment(ctx context.Context) WebhookEventsAPIOnCallTranscriptSegmentRequest {
+	return WebhookEventsAPIOnCallTranscriptSegmentRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCallTranscriptSegmentExecute(r WebhookEventsAPIOnCallTranscriptSegmentRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCallTranscriptSegment")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/call.transcript_segment"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCallTranscriptSegment == nil {
+		return nil, reportError("webhookPayloadCallTranscriptSegment is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCallTranscriptSegment
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnCampaignBudgetDepletedRequest struct {
 	ctx                                  context.Context
 	ApiService                           *WebhookEventsAPIService
@@ -8526,6 +8740,116 @@ func (a *WebhookEventsAPIService) OnLeadReceivedExecute(r WebhookEventsAPIOnLead
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadLead
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnMentionReceivedRequest struct {
+	ctx                   context.Context
+	ApiService            *WebhookEventsAPIService
+	webhookPayloadMention *WebhookPayloadMention
+}
+
+func (r WebhookEventsAPIOnMentionReceivedRequest) WebhookPayloadMention(webhookPayloadMention WebhookPayloadMention) WebhookEventsAPIOnMentionReceivedRequest {
+	r.webhookPayloadMention = &webhookPayloadMention
+	return r
+}
+
+func (r WebhookEventsAPIOnMentionReceivedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnMentionReceivedExecute(r)
+}
+
+/*
+OnMentionReceived Mention received event
+
+A connected Instagram, Facebook or LinkedIn account was mentioned in a post, caption or comment.
+
+### When it fires
+
+Once per mention, the first time Zernio sees it. Delivery is at most once: reconcile with `GET /v1/inbox/mentions`.
+
+- Instagram and Facebook arrive in real time from the platform's webhook.
+- LinkedIn arrives from its webhook or from polling, so delivery can take minutes. A newly connected account can receive mentions from the last 48 hours once.
+
+### Payload notes
+
+Carries the same fields as `GET /v1/inbox/mentions`. Fields a platform does not provide are null. A LinkedIn mention found by polling for a team that does not retain content has no author, and an Instagram mention has no content if the live read fails.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnMentionReceivedRequest
+*/
+func (a *WebhookEventsAPIService) OnMentionReceived(ctx context.Context) WebhookEventsAPIOnMentionReceivedRequest {
+	return WebhookEventsAPIOnMentionReceivedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnMentionReceivedExecute(r WebhookEventsAPIOnMentionReceivedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnMentionReceived")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/mention.received"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadMention == nil {
+		return nil, reportError("webhookPayloadMention is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadMention
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

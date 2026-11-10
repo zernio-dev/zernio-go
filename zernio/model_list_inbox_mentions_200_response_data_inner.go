@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -35,7 +35,9 @@ type ListInboxMentions200ResponseDataInner struct {
 	AccountId       *string        `json:"accountId,omitempty"`
 	AccountUsername *string        `json:"accountUsername,omitempty"`
 	// Text that mentioned you: the post text on LinkedIn, the caption or comment text on Instagram, the post or comment text on Facebook. Empty until it has been read.
-	Content *string `json:"content,omitempty"`
+	Content NullableString `json:"content,omitempty"`
+	// True when this team does not retain content, so the content fields of this row are null. Identifiers and metadata stay.
+	ContentNotRetained *bool `json:"contentNotRetained,omitempty"`
 	// URL to the source post on LinkedIn. Null on Instagram and Facebook.
 	Permalink NullableString `json:"permalink,omitempty"`
 	// LinkedIn URN of the person who mentioned you, the Instagram-scoped ID of the commenter on an Instagram comment mention, or the ID of the Facebook user or Page that mentioned your Page when Meta sends it.
@@ -369,36 +371,79 @@ func (o *ListInboxMentions200ResponseDataInner) SetAccountUsername(v string) {
 	o.AccountUsername = &v
 }
 
-// GetContent returns the Content field value if set, zero value otherwise.
+// GetContent returns the Content field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListInboxMentions200ResponseDataInner) GetContent() string {
-	if o == nil || IsNil(o.Content) {
+	if o == nil || IsNil(o.Content.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Content
+	return *o.Content.Get()
 }
 
 // GetContentOk returns a tuple with the Content field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListInboxMentions200ResponseDataInner) GetContentOk() (*string, bool) {
-	if o == nil || IsNil(o.Content) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Content, true
+	return o.Content.Get(), o.Content.IsSet()
 }
 
 // HasContent returns a boolean if a field has been set.
 func (o *ListInboxMentions200ResponseDataInner) HasContent() bool {
-	if o != nil && !IsNil(o.Content) {
+	if o != nil && o.Content.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetContent gets a reference to the given string and assigns it to the Content field.
+// SetContent gets a reference to the given NullableString and assigns it to the Content field.
 func (o *ListInboxMentions200ResponseDataInner) SetContent(v string) {
-	o.Content = &v
+	o.Content.Set(&v)
+}
+
+// SetContentNil sets the value for Content to be an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) SetContentNil() {
+	o.Content.Set(nil)
+}
+
+// UnsetContent ensures that no value is present for Content, not even an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) UnsetContent() {
+	o.Content.Unset()
+}
+
+// GetContentNotRetained returns the ContentNotRetained field value if set, zero value otherwise.
+func (o *ListInboxMentions200ResponseDataInner) GetContentNotRetained() bool {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		var ret bool
+		return ret
+	}
+	return *o.ContentNotRetained
+}
+
+// GetContentNotRetainedOk returns a tuple with the ContentNotRetained field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxMentions200ResponseDataInner) GetContentNotRetainedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		return nil, false
+	}
+	return o.ContentNotRetained, true
+}
+
+// HasContentNotRetained returns a boolean if a field has been set.
+func (o *ListInboxMentions200ResponseDataInner) HasContentNotRetained() bool {
+	if o != nil && !IsNil(o.ContentNotRetained) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentNotRetained gets a reference to the given bool and assigns it to the ContentNotRetained field.
+func (o *ListInboxMentions200ResponseDataInner) SetContentNotRetained(v bool) {
+	o.ContentNotRetained = &v
 }
 
 // GetPermalink returns the Permalink field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -746,8 +791,11 @@ func (o ListInboxMentions200ResponseDataInner) ToMap() (map[string]interface{}, 
 	if !IsNil(o.AccountUsername) {
 		toSerialize["accountUsername"] = o.AccountUsername
 	}
-	if !IsNil(o.Content) {
-		toSerialize["content"] = o.Content
+	if o.Content.IsSet() {
+		toSerialize["content"] = o.Content.Get()
+	}
+	if !IsNil(o.ContentNotRetained) {
+		toSerialize["contentNotRetained"] = o.ContentNotRetained
 	}
 	if o.Permalink.IsSet() {
 		toSerialize["permalink"] = o.Permalink.Get()

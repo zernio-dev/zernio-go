@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -32,7 +32,7 @@ type WebhookPayloadComment struct {
 	Event   string                       `json:"event"`
 	Comment WebhookPayloadCommentComment `json:"comment"`
 	Post    WebhookPayloadCommentPost    `json:"post"`
-	Account WebhookPayloadCommentAccount `json:"account"`
+	Account WebhookPayloadMentionAccount `json:"account"`
 	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
 	Timestamp time.Time `json:"timestamp"`
 }
@@ -43,7 +43,7 @@ type _WebhookPayloadComment WebhookPayloadComment
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadComment(id string, event string, comment WebhookPayloadCommentComment, post WebhookPayloadCommentPost, account WebhookPayloadCommentAccount, timestamp time.Time) *WebhookPayloadComment {
+func NewWebhookPayloadComment(id string, event string, comment WebhookPayloadCommentComment, post WebhookPayloadCommentPost, account WebhookPayloadMentionAccount, timestamp time.Time) *WebhookPayloadComment {
 	this := WebhookPayloadComment{}
 	this.Id = id
 	this.Event = event
@@ -223,9 +223,9 @@ func (o *WebhookPayloadComment) SetPost(v WebhookPayloadCommentPost) {
 }
 
 // GetAccount returns the Account field value
-func (o *WebhookPayloadComment) GetAccount() WebhookPayloadCommentAccount {
+func (o *WebhookPayloadComment) GetAccount() WebhookPayloadMentionAccount {
 	if o == nil {
-		var ret WebhookPayloadCommentAccount
+		var ret WebhookPayloadMentionAccount
 		return ret
 	}
 
@@ -234,7 +234,7 @@ func (o *WebhookPayloadComment) GetAccount() WebhookPayloadCommentAccount {
 
 // GetAccountOk returns a tuple with the Account field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadComment) GetAccountOk() (*WebhookPayloadCommentAccount, bool) {
+func (o *WebhookPayloadComment) GetAccountOk() (*WebhookPayloadMentionAccount, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -242,7 +242,7 @@ func (o *WebhookPayloadComment) GetAccountOk() (*WebhookPayloadCommentAccount, b
 }
 
 // SetAccount sets field value
-func (o *WebhookPayloadComment) SetAccount(v WebhookPayloadCommentAccount) {
+func (o *WebhookPayloadComment) SetAccount(v WebhookPayloadMentionAccount) {
 	o.Account = v
 }
 

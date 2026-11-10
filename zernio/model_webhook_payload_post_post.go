@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -23,12 +23,15 @@ var _ MappedNullable = &WebhookPayloadPostPost{}
 
 // WebhookPayloadPostPost struct for WebhookPayloadPostPost
 type WebhookPayloadPostPost struct {
-	Id           string                                 `json:"id"`
-	Content      string                                 `json:"content"`
-	Status       string                                 `json:"status"`
-	ScheduledFor time.Time                              `json:"scheduledFor"`
-	PublishedAt  *time.Time                             `json:"publishedAt,omitempty"`
-	Platforms    []WebhookPayloadPostPostPlatformsInner `json:"platforms"`
+	Id string `json:"id"`
+	// Absent once publishing finishes when the team does not retain content.
+	Content *string `json:"content,omitempty"`
+	// True when this team does not retain content and the post text was already cleared.
+	ContentNotRetained *bool                                  `json:"contentNotRetained,omitempty"`
+	Status             string                                 `json:"status"`
+	ScheduledFor       time.Time                              `json:"scheduledFor"`
+	PublishedAt        *time.Time                             `json:"publishedAt,omitempty"`
+	Platforms          []WebhookPayloadPostPostPlatformsInner `json:"platforms"`
 	// The free-form `metadata` object supplied when the post was created, echoed back so you can map events onto your own records. Omitted when the post was created without it.
 	Metadata map[string]interface{} `json:"metadata,omitempty"`
 }
@@ -39,10 +42,9 @@ type _WebhookPayloadPostPost WebhookPayloadPostPost
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadPostPost(id string, content string, status string, scheduledFor time.Time, platforms []WebhookPayloadPostPostPlatformsInner) *WebhookPayloadPostPost {
+func NewWebhookPayloadPostPost(id string, status string, scheduledFor time.Time, platforms []WebhookPayloadPostPostPlatformsInner) *WebhookPayloadPostPost {
 	this := WebhookPayloadPostPost{}
 	this.Id = id
-	this.Content = content
 	this.Status = status
 	this.ScheduledFor = scheduledFor
 	this.Platforms = platforms
@@ -81,28 +83,68 @@ func (o *WebhookPayloadPostPost) SetId(v string) {
 	o.Id = v
 }
 
-// GetContent returns the Content field value
+// GetContent returns the Content field value if set, zero value otherwise.
 func (o *WebhookPayloadPostPost) GetContent() string {
-	if o == nil {
+	if o == nil || IsNil(o.Content) {
 		var ret string
 		return ret
 	}
-
-	return o.Content
+	return *o.Content
 }
 
-// GetContentOk returns a tuple with the Content field value
+// GetContentOk returns a tuple with the Content field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WebhookPayloadPostPost) GetContentOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Content) {
 		return nil, false
 	}
-	return &o.Content, true
+	return o.Content, true
 }
 
-// SetContent sets field value
+// HasContent returns a boolean if a field has been set.
+func (o *WebhookPayloadPostPost) HasContent() bool {
+	if o != nil && !IsNil(o.Content) {
+		return true
+	}
+
+	return false
+}
+
+// SetContent gets a reference to the given string and assigns it to the Content field.
 func (o *WebhookPayloadPostPost) SetContent(v string) {
-	o.Content = v
+	o.Content = &v
+}
+
+// GetContentNotRetained returns the ContentNotRetained field value if set, zero value otherwise.
+func (o *WebhookPayloadPostPost) GetContentNotRetained() bool {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		var ret bool
+		return ret
+	}
+	return *o.ContentNotRetained
+}
+
+// GetContentNotRetainedOk returns a tuple with the ContentNotRetained field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadPostPost) GetContentNotRetainedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		return nil, false
+	}
+	return o.ContentNotRetained, true
+}
+
+// HasContentNotRetained returns a boolean if a field has been set.
+func (o *WebhookPayloadPostPost) HasContentNotRetained() bool {
+	if o != nil && !IsNil(o.ContentNotRetained) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentNotRetained gets a reference to the given bool and assigns it to the ContentNotRetained field.
+func (o *WebhookPayloadPostPost) SetContentNotRetained(v bool) {
+	o.ContentNotRetained = &v
 }
 
 // GetStatus returns the Status field value
@@ -252,7 +294,12 @@ func (o WebhookPayloadPostPost) MarshalJSON() ([]byte, error) {
 func (o WebhookPayloadPostPost) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
-	toSerialize["content"] = o.Content
+	if !IsNil(o.Content) {
+		toSerialize["content"] = o.Content
+	}
+	if !IsNil(o.ContentNotRetained) {
+		toSerialize["contentNotRetained"] = o.ContentNotRetained
+	}
 	toSerialize["status"] = o.Status
 	toSerialize["scheduledFor"] = o.ScheduledFor
 	if !IsNil(o.PublishedAt) {
@@ -271,7 +318,6 @@ func (o *WebhookPayloadPostPost) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"id",
-		"content",
 		"status",
 		"scheduledFor",
 		"platforms",

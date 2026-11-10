@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -26,9 +26,11 @@ type GetInboxConversationMessages200ResponseMessagesInner struct {
 	ConversationId *string        `json:"conversationId,omitempty"`
 	AccountId      *string        `json:"accountId,omitempty"`
 	Platform       *string        `json:"platform,omitempty"`
-	Message        *string        `json:"message,omitempty"`
-	SenderId       *string        `json:"senderId,omitempty"`
-	SenderName     NullableString `json:"senderName,omitempty"`
+	Message        NullableString `json:"message,omitempty"`
+	// True when this team does not retain content, so the content fields of this row are null. Identifiers and metadata stay.
+	ContentNotRetained *bool          `json:"contentNotRetained,omitempty"`
+	SenderId           *string        `json:"senderId,omitempty"`
+	SenderName         NullableString `json:"senderName,omitempty"`
 	// X verified badge type. Only present for X messages.
 	SenderVerifiedType NullableString                                                         `json:"senderVerifiedType,omitempty"`
 	Direction          *string                                                                `json:"direction,omitempty"`
@@ -212,36 +214,79 @@ func (o *GetInboxConversationMessages200ResponseMessagesInner) SetPlatform(v str
 	o.Platform = &v
 }
 
-// GetMessage returns the Message field value if set, zero value otherwise.
+// GetMessage returns the Message field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetInboxConversationMessages200ResponseMessagesInner) GetMessage() string {
-	if o == nil || IsNil(o.Message) {
+	if o == nil || IsNil(o.Message.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Message
+	return *o.Message.Get()
 }
 
 // GetMessageOk returns a tuple with the Message field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetInboxConversationMessages200ResponseMessagesInner) GetMessageOk() (*string, bool) {
-	if o == nil || IsNil(o.Message) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Message, true
+	return o.Message.Get(), o.Message.IsSet()
 }
 
 // HasMessage returns a boolean if a field has been set.
 func (o *GetInboxConversationMessages200ResponseMessagesInner) HasMessage() bool {
-	if o != nil && !IsNil(o.Message) {
+	if o != nil && o.Message.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMessage gets a reference to the given string and assigns it to the Message field.
+// SetMessage gets a reference to the given NullableString and assigns it to the Message field.
 func (o *GetInboxConversationMessages200ResponseMessagesInner) SetMessage(v string) {
-	o.Message = &v
+	o.Message.Set(&v)
+}
+
+// SetMessageNil sets the value for Message to be an explicit nil
+func (o *GetInboxConversationMessages200ResponseMessagesInner) SetMessageNil() {
+	o.Message.Set(nil)
+}
+
+// UnsetMessage ensures that no value is present for Message, not even an explicit nil
+func (o *GetInboxConversationMessages200ResponseMessagesInner) UnsetMessage() {
+	o.Message.Unset()
+}
+
+// GetContentNotRetained returns the ContentNotRetained field value if set, zero value otherwise.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) GetContentNotRetained() bool {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		var ret bool
+		return ret
+	}
+	return *o.ContentNotRetained
+}
+
+// GetContentNotRetainedOk returns a tuple with the ContentNotRetained field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) GetContentNotRetainedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		return nil, false
+	}
+	return o.ContentNotRetained, true
+}
+
+// HasContentNotRetained returns a boolean if a field has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) HasContentNotRetained() bool {
+	if o != nil && !IsNil(o.ContentNotRetained) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentNotRetained gets a reference to the given bool and assigns it to the ContentNotRetained field.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) SetContentNotRetained(v bool) {
+	o.ContentNotRetained = &v
 }
 
 // GetSenderId returns the SenderId field value if set, zero value otherwise.
@@ -1144,8 +1189,11 @@ func (o GetInboxConversationMessages200ResponseMessagesInner) ToMap() (map[strin
 	if !IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
 	}
-	if !IsNil(o.Message) {
-		toSerialize["message"] = o.Message
+	if o.Message.IsSet() {
+		toSerialize["message"] = o.Message.Get()
+	}
+	if !IsNil(o.ContentNotRetained) {
+		toSerialize["contentNotRetained"] = o.ContentNotRetained
 	}
 	if !IsNil(o.SenderId) {
 		toSerialize["senderId"] = o.SenderId

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,8 @@ type SearchInboxConversations200ResponseMeta struct {
 	AccountsFailed  *int32                                                       `json:"accountsFailed,omitempty"`
 	FailedAccounts  []SearchInboxConversations200ResponseMetaFailedAccountsInner `json:"failedAccounts,omitempty"`
 	LastUpdated     *time.Time                                                   `json:"lastUpdated,omitempty"`
+	// True when a searched account belongs to a team that does not retain content. Message text is not searchable there, only identifiers match.
+	ContentNotRetained *bool `json:"contentNotRetained,omitempty"`
 	// Connected messaging accounts that cannot be searched (live-fetched platforms)
 	AccountsSkipped []ListInboxConversations200ResponseMetaAccountsSkippedInner `json:"accountsSkipped,omitempty"`
 }
@@ -174,6 +176,38 @@ func (o *SearchInboxConversations200ResponseMeta) SetLastUpdated(v time.Time) {
 	o.LastUpdated = &v
 }
 
+// GetContentNotRetained returns the ContentNotRetained field value if set, zero value otherwise.
+func (o *SearchInboxConversations200ResponseMeta) GetContentNotRetained() bool {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		var ret bool
+		return ret
+	}
+	return *o.ContentNotRetained
+}
+
+// GetContentNotRetainedOk returns a tuple with the ContentNotRetained field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchInboxConversations200ResponseMeta) GetContentNotRetainedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		return nil, false
+	}
+	return o.ContentNotRetained, true
+}
+
+// HasContentNotRetained returns a boolean if a field has been set.
+func (o *SearchInboxConversations200ResponseMeta) HasContentNotRetained() bool {
+	if o != nil && !IsNil(o.ContentNotRetained) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentNotRetained gets a reference to the given bool and assigns it to the ContentNotRetained field.
+func (o *SearchInboxConversations200ResponseMeta) SetContentNotRetained(v bool) {
+	o.ContentNotRetained = &v
+}
+
 // GetAccountsSkipped returns the AccountsSkipped field value if set, zero value otherwise.
 func (o *SearchInboxConversations200ResponseMeta) GetAccountsSkipped() []ListInboxConversations200ResponseMetaAccountsSkippedInner {
 	if o == nil || IsNil(o.AccountsSkipped) {
@@ -227,6 +261,9 @@ func (o SearchInboxConversations200ResponseMeta) ToMap() (map[string]interface{}
 	}
 	if !IsNil(o.LastUpdated) {
 		toSerialize["lastUpdated"] = o.LastUpdated
+	}
+	if !IsNil(o.ContentNotRetained) {
+		toSerialize["contentNotRetained"] = o.ContentNotRetained
 	}
 	if !IsNil(o.AccountsSkipped) {
 		toSerialize["accountsSkipped"] = o.AccountsSkipped

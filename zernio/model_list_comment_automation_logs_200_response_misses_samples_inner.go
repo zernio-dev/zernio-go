@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -21,8 +21,8 @@ var _ MappedNullable = &ListCommentAutomationLogs200ResponseMissesSamplesInner{}
 
 // ListCommentAutomationLogs200ResponseMissesSamplesInner struct for ListCommentAutomationLogs200ResponseMissesSamplesInner
 type ListCommentAutomationLogs200ResponseMissesSamplesInner struct {
-	CommentText   *string `json:"commentText,omitempty"`
-	CommenterName *string `json:"commenterName,omitempty"`
+	CommentText   NullableString `json:"commentText,omitempty"`
+	CommenterName NullableString `json:"commenterName,omitempty"`
 	// Set when an exclusion keyword vetoed an otherwise matching comment
 	ExcludedBy *string    `json:"excludedBy,omitempty"`
 	At         *time.Time `json:"at,omitempty"`
@@ -45,68 +45,90 @@ func NewListCommentAutomationLogs200ResponseMissesSamplesInnerWithDefaults() *Li
 	return &this
 }
 
-// GetCommentText returns the CommentText field value if set, zero value otherwise.
+// GetCommentText returns the CommentText field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) GetCommentText() string {
-	if o == nil || IsNil(o.CommentText) {
+	if o == nil || IsNil(o.CommentText.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.CommentText
+	return *o.CommentText.Get()
 }
 
 // GetCommentTextOk returns a tuple with the CommentText field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) GetCommentTextOk() (*string, bool) {
-	if o == nil || IsNil(o.CommentText) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CommentText, true
+	return o.CommentText.Get(), o.CommentText.IsSet()
 }
 
 // HasCommentText returns a boolean if a field has been set.
 func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) HasCommentText() bool {
-	if o != nil && !IsNil(o.CommentText) {
+	if o != nil && o.CommentText.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCommentText gets a reference to the given string and assigns it to the CommentText field.
+// SetCommentText gets a reference to the given NullableString and assigns it to the CommentText field.
 func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) SetCommentText(v string) {
-	o.CommentText = &v
+	o.CommentText.Set(&v)
 }
 
-// GetCommenterName returns the CommenterName field value if set, zero value otherwise.
+// SetCommentTextNil sets the value for CommentText to be an explicit nil
+func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) SetCommentTextNil() {
+	o.CommentText.Set(nil)
+}
+
+// UnsetCommentText ensures that no value is present for CommentText, not even an explicit nil
+func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) UnsetCommentText() {
+	o.CommentText.Unset()
+}
+
+// GetCommenterName returns the CommenterName field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) GetCommenterName() string {
-	if o == nil || IsNil(o.CommenterName) {
+	if o == nil || IsNil(o.CommenterName.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.CommenterName
+	return *o.CommenterName.Get()
 }
 
 // GetCommenterNameOk returns a tuple with the CommenterName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) GetCommenterNameOk() (*string, bool) {
-	if o == nil || IsNil(o.CommenterName) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CommenterName, true
+	return o.CommenterName.Get(), o.CommenterName.IsSet()
 }
 
 // HasCommenterName returns a boolean if a field has been set.
 func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) HasCommenterName() bool {
-	if o != nil && !IsNil(o.CommenterName) {
+	if o != nil && o.CommenterName.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCommenterName gets a reference to the given string and assigns it to the CommenterName field.
+// SetCommenterName gets a reference to the given NullableString and assigns it to the CommenterName field.
 func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) SetCommenterName(v string) {
-	o.CommenterName = &v
+	o.CommenterName.Set(&v)
+}
+
+// SetCommenterNameNil sets the value for CommenterName to be an explicit nil
+func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) SetCommenterNameNil() {
+	o.CommenterName.Set(nil)
+}
+
+// UnsetCommenterName ensures that no value is present for CommenterName, not even an explicit nil
+func (o *ListCommentAutomationLogs200ResponseMissesSamplesInner) UnsetCommenterName() {
+	o.CommenterName.Unset()
 }
 
 // GetExcludedBy returns the ExcludedBy field value if set, zero value otherwise.
@@ -183,11 +205,11 @@ func (o ListCommentAutomationLogs200ResponseMissesSamplesInner) MarshalJSON() ([
 
 func (o ListCommentAutomationLogs200ResponseMissesSamplesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.CommentText) {
-		toSerialize["commentText"] = o.CommentText
+	if o.CommentText.IsSet() {
+		toSerialize["commentText"] = o.CommentText.Get()
 	}
-	if !IsNil(o.CommenterName) {
-		toSerialize["commenterName"] = o.CommenterName
+	if o.CommenterName.IsSet() {
+		toSerialize["commenterName"] = o.CommenterName.Get()
 	}
 	if !IsNil(o.ExcludedBy) {
 		toSerialize["excludedBy"] = o.ExcludedBy

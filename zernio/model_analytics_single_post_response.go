@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -25,15 +25,17 @@ type AnalyticsSinglePostResponse struct {
 	// Original Zernio post ID if scheduled via Zernio
 	LatePostId NullableString `json:"latePostId,omitempty"`
 	// Overall post status. \"partial\" when some platforms published and others failed.  While any platform is still pending or processing, the post's own status is returned instead (usually scheduled or publishing), even if another platform already published.  A post with no published or failed platform (for example every platform cancelled) returns its own status with syncStatus unavailable and no platformAnalytics.
-	Status            *string             `json:"status,omitempty"`
-	Content           *string             `json:"content,omitempty"`
-	ScheduledFor      *time.Time          `json:"scheduledFor,omitempty"`
-	PublishedAt       NullableTime        `json:"publishedAt,omitempty"`
-	Analytics         *PostAnalytics      `json:"analytics,omitempty"`
-	PlatformAnalytics []PlatformAnalytics `json:"platformAnalytics,omitempty"`
-	Platform          *string             `json:"platform,omitempty"`
-	PlatformPostUrl   NullableString      `json:"platformPostUrl,omitempty"`
-	IsExternal        *bool               `json:"isExternal,omitempty"`
+	Status  *string        `json:"status,omitempty"`
+	Content NullableString `json:"content,omitempty"`
+	// True when this team does not retain content, so the content fields of this row are null. Identifiers and metadata stay.
+	ContentNotRetained *bool               `json:"contentNotRetained,omitempty"`
+	ScheduledFor       *time.Time          `json:"scheduledFor,omitempty"`
+	PublishedAt        NullableTime        `json:"publishedAt,omitempty"`
+	Analytics          *PostAnalytics      `json:"analytics,omitempty"`
+	PlatformAnalytics  []PlatformAnalytics `json:"platformAnalytics,omitempty"`
+	Platform           *string             `json:"platform,omitempty"`
+	PlatformPostUrl    NullableString      `json:"platformPostUrl,omitempty"`
+	IsExternal         *bool               `json:"isExternal,omitempty"`
 	// Overall sync state across all platforms
 	SyncStatus *string `json:"syncStatus,omitempty"`
 	// Human-readable status message for pending, partial, or failed states
@@ -177,36 +179,79 @@ func (o *AnalyticsSinglePostResponse) SetStatus(v string) {
 	o.Status = &v
 }
 
-// GetContent returns the Content field value if set, zero value otherwise.
+// GetContent returns the Content field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AnalyticsSinglePostResponse) GetContent() string {
-	if o == nil || IsNil(o.Content) {
+	if o == nil || IsNil(o.Content.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Content
+	return *o.Content.Get()
 }
 
 // GetContentOk returns a tuple with the Content field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AnalyticsSinglePostResponse) GetContentOk() (*string, bool) {
-	if o == nil || IsNil(o.Content) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Content, true
+	return o.Content.Get(), o.Content.IsSet()
 }
 
 // HasContent returns a boolean if a field has been set.
 func (o *AnalyticsSinglePostResponse) HasContent() bool {
-	if o != nil && !IsNil(o.Content) {
+	if o != nil && o.Content.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetContent gets a reference to the given string and assigns it to the Content field.
+// SetContent gets a reference to the given NullableString and assigns it to the Content field.
 func (o *AnalyticsSinglePostResponse) SetContent(v string) {
-	o.Content = &v
+	o.Content.Set(&v)
+}
+
+// SetContentNil sets the value for Content to be an explicit nil
+func (o *AnalyticsSinglePostResponse) SetContentNil() {
+	o.Content.Set(nil)
+}
+
+// UnsetContent ensures that no value is present for Content, not even an explicit nil
+func (o *AnalyticsSinglePostResponse) UnsetContent() {
+	o.Content.Unset()
+}
+
+// GetContentNotRetained returns the ContentNotRetained field value if set, zero value otherwise.
+func (o *AnalyticsSinglePostResponse) GetContentNotRetained() bool {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		var ret bool
+		return ret
+	}
+	return *o.ContentNotRetained
+}
+
+// GetContentNotRetainedOk returns a tuple with the ContentNotRetained field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsSinglePostResponse) GetContentNotRetainedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		return nil, false
+	}
+	return o.ContentNotRetained, true
+}
+
+// HasContentNotRetained returns a boolean if a field has been set.
+func (o *AnalyticsSinglePostResponse) HasContentNotRetained() bool {
+	if o != nil && !IsNil(o.ContentNotRetained) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentNotRetained gets a reference to the given bool and assigns it to the ContentNotRetained field.
+func (o *AnalyticsSinglePostResponse) SetContentNotRetained(v bool) {
+	o.ContentNotRetained = &v
 }
 
 // GetScheduledFor returns the ScheduledFor field value if set, zero value otherwise.
@@ -795,8 +840,11 @@ func (o AnalyticsSinglePostResponse) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
 	}
-	if !IsNil(o.Content) {
-		toSerialize["content"] = o.Content
+	if o.Content.IsSet() {
+		toSerialize["content"] = o.Content.Get()
+	}
+	if !IsNil(o.ContentNotRetained) {
+		toSerialize["contentNotRetained"] = o.ContentNotRetained
 	}
 	if !IsNil(o.ScheduledFor) {
 		toSerialize["scheduledFor"] = o.ScheduledFor

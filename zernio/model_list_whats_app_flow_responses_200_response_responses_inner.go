@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -33,6 +33,8 @@ type ListWhatsAppFlowResponses200ResponseResponsesInner struct {
 	Data map[string]interface{} `json:"data,omitempty"`
 	// Raw response_json string
 	Raw NullableString `json:"raw,omitempty"`
+	// True when this team does not retain content, so the content fields of this row are null. Identifiers and metadata stay.
+	ContentNotRetained *bool `json:"contentNotRetained,omitempty"`
 }
 
 // NewListWhatsAppFlowResponses200ResponseResponsesInner instantiates a new ListWhatsAppFlowResponses200ResponseResponsesInner object
@@ -288,9 +290,9 @@ func (o *ListWhatsAppFlowResponses200ResponseResponsesInner) UnsetFlowToken() {
 	o.FlowToken.Unset()
 }
 
-// GetData returns the Data field value if set, zero value otherwise.
+// GetData returns the Data field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListWhatsAppFlowResponses200ResponseResponsesInner) GetData() map[string]interface{} {
-	if o == nil || IsNil(o.Data) {
+	if o == nil {
 		var ret map[string]interface{}
 		return ret
 	}
@@ -299,6 +301,7 @@ func (o *ListWhatsAppFlowResponses200ResponseResponsesInner) GetData() map[strin
 
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListWhatsAppFlowResponses200ResponseResponsesInner) GetDataOk() (map[string]interface{}, bool) {
 	if o == nil || IsNil(o.Data) {
 		return map[string]interface{}{}, false
@@ -363,6 +366,38 @@ func (o *ListWhatsAppFlowResponses200ResponseResponsesInner) UnsetRaw() {
 	o.Raw.Unset()
 }
 
+// GetContentNotRetained returns the ContentNotRetained field value if set, zero value otherwise.
+func (o *ListWhatsAppFlowResponses200ResponseResponsesInner) GetContentNotRetained() bool {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		var ret bool
+		return ret
+	}
+	return *o.ContentNotRetained
+}
+
+// GetContentNotRetainedOk returns a tuple with the ContentNotRetained field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListWhatsAppFlowResponses200ResponseResponsesInner) GetContentNotRetainedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		return nil, false
+	}
+	return o.ContentNotRetained, true
+}
+
+// HasContentNotRetained returns a boolean if a field has been set.
+func (o *ListWhatsAppFlowResponses200ResponseResponsesInner) HasContentNotRetained() bool {
+	if o != nil && !IsNil(o.ContentNotRetained) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentNotRetained gets a reference to the given bool and assigns it to the ContentNotRetained field.
+func (o *ListWhatsAppFlowResponses200ResponseResponsesInner) SetContentNotRetained(v bool) {
+	o.ContentNotRetained = &v
+}
+
 func (o ListWhatsAppFlowResponses200ResponseResponsesInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -391,11 +426,14 @@ func (o ListWhatsAppFlowResponses200ResponseResponsesInner) ToMap() (map[string]
 	if o.FlowToken.IsSet() {
 		toSerialize["flowToken"] = o.FlowToken.Get()
 	}
-	if !IsNil(o.Data) {
+	if o.Data != nil {
 		toSerialize["data"] = o.Data
 	}
 	if o.Raw.IsSet() {
 		toSerialize["raw"] = o.Raw.Get()
+	}
+	if !IsNil(o.ContentNotRetained) {
+		toSerialize["contentNotRetained"] = o.ContentNotRetained
 	}
 	return toSerialize, nil
 }

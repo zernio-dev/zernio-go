@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,11 @@ type Profile struct {
 	Timezone NullableString `json:"timezone,omitempty"`
 	// Your own identifier for this profile, set on create or update. Null when none is set.
 	ExternalId NullableString `json:"externalId,omitempty"`
-	IsDefault  *bool          `json:"isDefault,omitempty"`
+	// This profile's own zero content retention setting. `none` stores identifiers and metadata only for this profile. Change it with `contentRetention` on update; only the team owner can.
+	ContentRetention *string `json:"contentRetention,omitempty"`
+	// The mode that applies to this profile: `none` when the profile or the whole team uses zero content retention.
+	EffectiveContentRetention *string `json:"effectiveContentRetention,omitempty"`
+	IsDefault                 *bool   `json:"isDefault,omitempty"`
 	// Only present when includeOverLimit=true. Indicates if this profile exceeds the plan limit.
 	IsOverLimit *bool `json:"isOverLimit,omitempty"`
 	// In the profile list. Connected accounts on the profile, including ones that need reconnecting; phone and SMS number internals and posting accounts hidden by an ads connect are not counted.
@@ -301,6 +305,70 @@ func (o *Profile) UnsetExternalId() {
 	o.ExternalId.Unset()
 }
 
+// GetContentRetention returns the ContentRetention field value if set, zero value otherwise.
+func (o *Profile) GetContentRetention() string {
+	if o == nil || IsNil(o.ContentRetention) {
+		var ret string
+		return ret
+	}
+	return *o.ContentRetention
+}
+
+// GetContentRetentionOk returns a tuple with the ContentRetention field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Profile) GetContentRetentionOk() (*string, bool) {
+	if o == nil || IsNil(o.ContentRetention) {
+		return nil, false
+	}
+	return o.ContentRetention, true
+}
+
+// HasContentRetention returns a boolean if a field has been set.
+func (o *Profile) HasContentRetention() bool {
+	if o != nil && !IsNil(o.ContentRetention) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentRetention gets a reference to the given string and assigns it to the ContentRetention field.
+func (o *Profile) SetContentRetention(v string) {
+	o.ContentRetention = &v
+}
+
+// GetEffectiveContentRetention returns the EffectiveContentRetention field value if set, zero value otherwise.
+func (o *Profile) GetEffectiveContentRetention() string {
+	if o == nil || IsNil(o.EffectiveContentRetention) {
+		var ret string
+		return ret
+	}
+	return *o.EffectiveContentRetention
+}
+
+// GetEffectiveContentRetentionOk returns a tuple with the EffectiveContentRetention field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Profile) GetEffectiveContentRetentionOk() (*string, bool) {
+	if o == nil || IsNil(o.EffectiveContentRetention) {
+		return nil, false
+	}
+	return o.EffectiveContentRetention, true
+}
+
+// HasEffectiveContentRetention returns a boolean if a field has been set.
+func (o *Profile) HasEffectiveContentRetention() bool {
+	if o != nil && !IsNil(o.EffectiveContentRetention) {
+		return true
+	}
+
+	return false
+}
+
+// SetEffectiveContentRetention gets a reference to the given string and assigns it to the EffectiveContentRetention field.
+func (o *Profile) SetEffectiveContentRetention(v string) {
+	o.EffectiveContentRetention = &v
+}
+
 // GetIsDefault returns the IsDefault field value if set, zero value otherwise.
 func (o *Profile) GetIsDefault() bool {
 	if o == nil || IsNil(o.IsDefault) {
@@ -459,6 +527,12 @@ func (o Profile) ToMap() (map[string]interface{}, error) {
 	}
 	if o.ExternalId.IsSet() {
 		toSerialize["externalId"] = o.ExternalId.Get()
+	}
+	if !IsNil(o.ContentRetention) {
+		toSerialize["contentRetention"] = o.ContentRetention
+	}
+	if !IsNil(o.EffectiveContentRetention) {
+		toSerialize["effectiveContentRetention"] = o.EffectiveContentRetention
 	}
 	if !IsNil(o.IsDefault) {
 		toSerialize["isDefault"] = o.IsDefault

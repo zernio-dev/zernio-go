@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,7 @@ type WebhookPayloadPostPlatform struct {
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
 	Test     *bool                              `json:"test,omitempty"`
 	Event    string                             `json:"event"`
-	Post     WebhookPayloadPostPost             `json:"post"`
+	Post     WebhookPayloadPostPlatformPost     `json:"post"`
 	Platform WebhookPayloadPostPlatformPlatform `json:"platform"`
 	Account  WebhookPayloadPostPlatformAccount  `json:"account"`
 	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
@@ -43,7 +43,7 @@ type _WebhookPayloadPostPlatform WebhookPayloadPostPlatform
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadPostPlatform(id string, event string, post WebhookPayloadPostPost, platform WebhookPayloadPostPlatformPlatform, account WebhookPayloadPostPlatformAccount, timestamp time.Time) *WebhookPayloadPostPlatform {
+func NewWebhookPayloadPostPlatform(id string, event string, post WebhookPayloadPostPlatformPost, platform WebhookPayloadPostPlatformPlatform, account WebhookPayloadPostPlatformAccount, timestamp time.Time) *WebhookPayloadPostPlatform {
 	this := WebhookPayloadPostPlatform{}
 	this.Id = id
 	this.Event = event
@@ -175,9 +175,9 @@ func (o *WebhookPayloadPostPlatform) SetEvent(v string) {
 }
 
 // GetPost returns the Post field value
-func (o *WebhookPayloadPostPlatform) GetPost() WebhookPayloadPostPost {
+func (o *WebhookPayloadPostPlatform) GetPost() WebhookPayloadPostPlatformPost {
 	if o == nil {
-		var ret WebhookPayloadPostPost
+		var ret WebhookPayloadPostPlatformPost
 		return ret
 	}
 
@@ -186,7 +186,7 @@ func (o *WebhookPayloadPostPlatform) GetPost() WebhookPayloadPostPost {
 
 // GetPostOk returns a tuple with the Post field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadPostPlatform) GetPostOk() (*WebhookPayloadPostPost, bool) {
+func (o *WebhookPayloadPostPlatform) GetPostOk() (*WebhookPayloadPostPlatformPost, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -194,7 +194,7 @@ func (o *WebhookPayloadPostPlatform) GetPostOk() (*WebhookPayloadPostPost, bool)
 }
 
 // SetPost sets field value
-func (o *WebhookPayloadPostPlatform) SetPost(v WebhookPayloadPostPost) {
+func (o *WebhookPayloadPostPlatform) SetPost(v WebhookPayloadPostPlatformPost) {
 	o.Post = v
 }
 

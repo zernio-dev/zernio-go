@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -25,8 +25,8 @@ type PlatformTarget struct {
 	Platform  *string                  `json:"platform,omitempty"`
 	AccountId *PlatformTargetAccountId `json:"accountId,omitempty"`
 	// Platform-specific text override. When set, this content is used instead of the top-level post content for this platform. Useful for tailoring captions per platform (e.g. keeping tweets under 280 characters).
-	CustomContent *string     `json:"customContent,omitempty"`
-	CustomMedia   []MediaItem `json:"customMedia,omitempty"`
+	CustomContent NullableString `json:"customContent,omitempty"`
+	CustomMedia   []MediaItem    `json:"customMedia,omitempty"`
 	// Optional per-platform scheduled time override (uses post.scheduledFor when omitted)
 	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
 	// The platform-specific options stored on this target, echoed back as sent.  Typed per platform on the way in (see the *PlatformData schemas on the request body); free-form on the way out. A response is not guaranteed to match exactly one variant, and generated clients that pick a variant by structure reject the entire response when it doesn't.  Zernio's internal publishing state (snapshots, container ids, publish stage) is never returned here. The key is omitted rather than sent as an empty object.
@@ -139,36 +139,47 @@ func (o *PlatformTarget) SetAccountId(v PlatformTargetAccountId) {
 	o.AccountId = &v
 }
 
-// GetCustomContent returns the CustomContent field value if set, zero value otherwise.
+// GetCustomContent returns the CustomContent field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *PlatformTarget) GetCustomContent() string {
-	if o == nil || IsNil(o.CustomContent) {
+	if o == nil || IsNil(o.CustomContent.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.CustomContent
+	return *o.CustomContent.Get()
 }
 
 // GetCustomContentOk returns a tuple with the CustomContent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PlatformTarget) GetCustomContentOk() (*string, bool) {
-	if o == nil || IsNil(o.CustomContent) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CustomContent, true
+	return o.CustomContent.Get(), o.CustomContent.IsSet()
 }
 
 // HasCustomContent returns a boolean if a field has been set.
 func (o *PlatformTarget) HasCustomContent() bool {
-	if o != nil && !IsNil(o.CustomContent) {
+	if o != nil && o.CustomContent.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCustomContent gets a reference to the given string and assigns it to the CustomContent field.
+// SetCustomContent gets a reference to the given NullableString and assigns it to the CustomContent field.
 func (o *PlatformTarget) SetCustomContent(v string) {
-	o.CustomContent = &v
+	o.CustomContent.Set(&v)
+}
+
+// SetCustomContentNil sets the value for CustomContent to be an explicit nil
+func (o *PlatformTarget) SetCustomContentNil() {
+	o.CustomContent.Set(nil)
+}
+
+// UnsetCustomContent ensures that no value is present for CustomContent, not even an explicit nil
+func (o *PlatformTarget) UnsetCustomContent() {
+	o.CustomContent.Unset()
 }
 
 // GetCustomMedia returns the CustomMedia field value if set, zero value otherwise.
@@ -721,8 +732,8 @@ func (o PlatformTarget) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.AccountId) {
 		toSerialize["accountId"] = o.AccountId
 	}
-	if !IsNil(o.CustomContent) {
-		toSerialize["customContent"] = o.CustomContent
+	if o.CustomContent.IsSet() {
+		toSerialize["customContent"] = o.CustomContent.Get()
 	}
 	if !IsNil(o.CustomMedia) {
 		toSerialize["customMedia"] = o.CustomMedia

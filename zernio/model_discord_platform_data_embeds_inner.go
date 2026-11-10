@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -28,8 +28,8 @@ type DiscordPlatformDataEmbedsInner struct {
 	Url *string `json:"url,omitempty"`
 	// Embed accent color as decimal integer (e.g. 5814783 for blue). Convert hex to decimal.
 	Color     *int32                                `json:"color,omitempty"`
-	Image     *GetWhatsAppCallRecording200Response  `json:"image,omitempty"`
-	Thumbnail *GetWhatsAppCallRecording200Response  `json:"thumbnail,omitempty"`
+	Image     *UploadSmsOptInProofFile200Response   `json:"image,omitempty"`
+	Thumbnail *UploadSmsOptInProofFile200Response   `json:"thumbnail,omitempty"`
 	Footer    *DiscordPlatformDataEmbedsInnerFooter `json:"footer,omitempty"`
 	Author    *DiscordPlatformDataEmbedsInnerAuthor `json:"author,omitempty"`
 	// Up to 25 fields per embed
@@ -182,9 +182,9 @@ func (o *DiscordPlatformDataEmbedsInner) SetColor(v int32) {
 }
 
 // GetImage returns the Image field value if set, zero value otherwise.
-func (o *DiscordPlatformDataEmbedsInner) GetImage() GetWhatsAppCallRecording200Response {
+func (o *DiscordPlatformDataEmbedsInner) GetImage() UploadSmsOptInProofFile200Response {
 	if o == nil || IsNil(o.Image) {
-		var ret GetWhatsAppCallRecording200Response
+		var ret UploadSmsOptInProofFile200Response
 		return ret
 	}
 	return *o.Image
@@ -192,7 +192,7 @@ func (o *DiscordPlatformDataEmbedsInner) GetImage() GetWhatsAppCallRecording200R
 
 // GetImageOk returns a tuple with the Image field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DiscordPlatformDataEmbedsInner) GetImageOk() (*GetWhatsAppCallRecording200Response, bool) {
+func (o *DiscordPlatformDataEmbedsInner) GetImageOk() (*UploadSmsOptInProofFile200Response, bool) {
 	if o == nil || IsNil(o.Image) {
 		return nil, false
 	}
@@ -208,15 +208,15 @@ func (o *DiscordPlatformDataEmbedsInner) HasImage() bool {
 	return false
 }
 
-// SetImage gets a reference to the given GetWhatsAppCallRecording200Response and assigns it to the Image field.
-func (o *DiscordPlatformDataEmbedsInner) SetImage(v GetWhatsAppCallRecording200Response) {
+// SetImage gets a reference to the given UploadSmsOptInProofFile200Response and assigns it to the Image field.
+func (o *DiscordPlatformDataEmbedsInner) SetImage(v UploadSmsOptInProofFile200Response) {
 	o.Image = &v
 }
 
 // GetThumbnail returns the Thumbnail field value if set, zero value otherwise.
-func (o *DiscordPlatformDataEmbedsInner) GetThumbnail() GetWhatsAppCallRecording200Response {
+func (o *DiscordPlatformDataEmbedsInner) GetThumbnail() UploadSmsOptInProofFile200Response {
 	if o == nil || IsNil(o.Thumbnail) {
-		var ret GetWhatsAppCallRecording200Response
+		var ret UploadSmsOptInProofFile200Response
 		return ret
 	}
 	return *o.Thumbnail
@@ -224,7 +224,7 @@ func (o *DiscordPlatformDataEmbedsInner) GetThumbnail() GetWhatsAppCallRecording
 
 // GetThumbnailOk returns a tuple with the Thumbnail field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DiscordPlatformDataEmbedsInner) GetThumbnailOk() (*GetWhatsAppCallRecording200Response, bool) {
+func (o *DiscordPlatformDataEmbedsInner) GetThumbnailOk() (*UploadSmsOptInProofFile200Response, bool) {
 	if o == nil || IsNil(o.Thumbnail) {
 		return nil, false
 	}
@@ -240,8 +240,8 @@ func (o *DiscordPlatformDataEmbedsInner) HasThumbnail() bool {
 	return false
 }
 
-// SetThumbnail gets a reference to the given GetWhatsAppCallRecording200Response and assigns it to the Thumbnail field.
-func (o *DiscordPlatformDataEmbedsInner) SetThumbnail(v GetWhatsAppCallRecording200Response) {
+// SetThumbnail gets a reference to the given UploadSmsOptInProofFile200Response and assigns it to the Thumbnail field.
+func (o *DiscordPlatformDataEmbedsInner) SetThumbnail(v UploadSmsOptInProofFile200Response) {
 	o.Thumbnail = &v
 }
 

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -24,12 +24,15 @@ type Post struct {
 	Id     *string     `json:"_id,omitempty"`
 	UserId *PostUserId `json:"userId,omitempty"`
 	// Stored on the post for reference/display only. This field is NOT used as the video title when publishing. To set a YouTube video title, use platformSpecificData.title on the youtube platform target (falls back to the first line of content when omitted).
-	Title        *string          `json:"title,omitempty"`
-	Content      *string          `json:"content,omitempty"`
-	MediaItems   []MediaItem      `json:"mediaItems,omitempty"`
-	Platforms    []PlatformTarget `json:"platforms,omitempty"`
-	ScheduledFor *time.Time       `json:"scheduledFor,omitempty"`
-	Timezone     *string          `json:"timezone,omitempty"`
+	Title NullableString `json:"title,omitempty"`
+	// Null once publishing finishes when the team does not retain content.
+	Content NullableString `json:"content,omitempty"`
+	// True when this team does not retain content, so `title`, `content` and every `customContent` are null after publishing. Identifiers and metadata stay.
+	ContentNotRetained *bool            `json:"contentNotRetained,omitempty"`
+	MediaItems         []MediaItem      `json:"mediaItems,omitempty"`
+	Platforms          []PlatformTarget `json:"platforms,omitempty"`
+	ScheduledFor       *time.Time       `json:"scheduledFor,omitempty"`
+	Timezone           *string          `json:"timezone,omitempty"`
 	// `cancelled` is set by POST /v1/posts/{postId}/unpublish once every platform entry has been removed from its platform (a post with published entries left becomes `partial`); cancelled posts can be edited and rescheduled like drafts. `pending_approval` (set by `requiresApproval: true`) never publishes until POST /v1/posts/{postId}/review approves it.
 	Status *string `json:"status,omitempty"`
 	// YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates removed.
@@ -135,68 +138,122 @@ func (o *Post) SetUserId(v PostUserId) {
 	o.UserId = &v
 }
 
-// GetTitle returns the Title field value if set, zero value otherwise.
+// GetTitle returns the Title field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Post) GetTitle() string {
-	if o == nil || IsNil(o.Title) {
+	if o == nil || IsNil(o.Title.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Title
+	return *o.Title.Get()
 }
 
 // GetTitleOk returns a tuple with the Title field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *Post) GetTitleOk() (*string, bool) {
-	if o == nil || IsNil(o.Title) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Title, true
+	return o.Title.Get(), o.Title.IsSet()
 }
 
 // HasTitle returns a boolean if a field has been set.
 func (o *Post) HasTitle() bool {
-	if o != nil && !IsNil(o.Title) {
+	if o != nil && o.Title.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetTitle gets a reference to the given string and assigns it to the Title field.
+// SetTitle gets a reference to the given NullableString and assigns it to the Title field.
 func (o *Post) SetTitle(v string) {
-	o.Title = &v
+	o.Title.Set(&v)
 }
 
-// GetContent returns the Content field value if set, zero value otherwise.
+// SetTitleNil sets the value for Title to be an explicit nil
+func (o *Post) SetTitleNil() {
+	o.Title.Set(nil)
+}
+
+// UnsetTitle ensures that no value is present for Title, not even an explicit nil
+func (o *Post) UnsetTitle() {
+	o.Title.Unset()
+}
+
+// GetContent returns the Content field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Post) GetContent() string {
-	if o == nil || IsNil(o.Content) {
+	if o == nil || IsNil(o.Content.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Content
+	return *o.Content.Get()
 }
 
 // GetContentOk returns a tuple with the Content field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *Post) GetContentOk() (*string, bool) {
-	if o == nil || IsNil(o.Content) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Content, true
+	return o.Content.Get(), o.Content.IsSet()
 }
 
 // HasContent returns a boolean if a field has been set.
 func (o *Post) HasContent() bool {
-	if o != nil && !IsNil(o.Content) {
+	if o != nil && o.Content.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetContent gets a reference to the given string and assigns it to the Content field.
+// SetContent gets a reference to the given NullableString and assigns it to the Content field.
 func (o *Post) SetContent(v string) {
-	o.Content = &v
+	o.Content.Set(&v)
+}
+
+// SetContentNil sets the value for Content to be an explicit nil
+func (o *Post) SetContentNil() {
+	o.Content.Set(nil)
+}
+
+// UnsetContent ensures that no value is present for Content, not even an explicit nil
+func (o *Post) UnsetContent() {
+	o.Content.Unset()
+}
+
+// GetContentNotRetained returns the ContentNotRetained field value if set, zero value otherwise.
+func (o *Post) GetContentNotRetained() bool {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		var ret bool
+		return ret
+	}
+	return *o.ContentNotRetained
+}
+
+// GetContentNotRetainedOk returns a tuple with the ContentNotRetained field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Post) GetContentNotRetainedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContentNotRetained) {
+		return nil, false
+	}
+	return o.ContentNotRetained, true
+}
+
+// HasContentNotRetained returns a boolean if a field has been set.
+func (o *Post) HasContentNotRetained() bool {
+	if o != nil && !IsNil(o.ContentNotRetained) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentNotRetained gets a reference to the given bool and assigns it to the ContentNotRetained field.
+func (o *Post) SetContentNotRetained(v bool) {
+	o.ContentNotRetained = &v
 }
 
 // GetMediaItems returns the MediaItems field value if set, zero value otherwise.
@@ -759,11 +816,14 @@ func (o Post) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.UserId) {
 		toSerialize["userId"] = o.UserId
 	}
-	if !IsNil(o.Title) {
-		toSerialize["title"] = o.Title
+	if o.Title.IsSet() {
+		toSerialize["title"] = o.Title.Get()
 	}
-	if !IsNil(o.Content) {
-		toSerialize["content"] = o.Content
+	if o.Content.IsSet() {
+		toSerialize["content"] = o.Content.Get()
+	}
+	if !IsNil(o.ContentNotRetained) {
+		toSerialize["contentNotRetained"] = o.ContentNotRetained
 	}
 	if !IsNil(o.MediaItems) {
 		toSerialize["mediaItems"] = o.MediaItems

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -29,6 +29,8 @@ type UpdateProfileRequest struct {
 	// Your own identifier for this profile (1 to 255 characters, trimmed). Set to null to clear it. A value another profile of the same owner already holds returns 409 profile_external_id_conflict.
 	ExternalId NullableString `json:"externalId,omitempty"`
 	IsDefault  *bool          `json:"isDefault,omitempty"`
+	// Turns zero content retention on (`none`) or off (`standard`) for this profile only, for new data within about a minute. Only the team owner can change it. `standard` answers 409 while the whole team has it on; `none` answers 409 during a WhatsApp verification of a number of this profile.
+	ContentRetention *string `json:"contentRetention,omitempty"`
 }
 
 // NewUpdateProfileRequest instantiates a new UpdateProfileRequest object
@@ -273,6 +275,38 @@ func (o *UpdateProfileRequest) SetIsDefault(v bool) {
 	o.IsDefault = &v
 }
 
+// GetContentRetention returns the ContentRetention field value if set, zero value otherwise.
+func (o *UpdateProfileRequest) GetContentRetention() string {
+	if o == nil || IsNil(o.ContentRetention) {
+		var ret string
+		return ret
+	}
+	return *o.ContentRetention
+}
+
+// GetContentRetentionOk returns a tuple with the ContentRetention field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateProfileRequest) GetContentRetentionOk() (*string, bool) {
+	if o == nil || IsNil(o.ContentRetention) {
+		return nil, false
+	}
+	return o.ContentRetention, true
+}
+
+// HasContentRetention returns a boolean if a field has been set.
+func (o *UpdateProfileRequest) HasContentRetention() bool {
+	if o != nil && !IsNil(o.ContentRetention) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentRetention gets a reference to the given string and assigns it to the ContentRetention field.
+func (o *UpdateProfileRequest) SetContentRetention(v string) {
+	o.ContentRetention = &v
+}
+
 func (o UpdateProfileRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -300,6 +334,9 @@ func (o UpdateProfileRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IsDefault) {
 		toSerialize["isDefault"] = o.IsDefault
+	}
+	if !IsNil(o.ContentRetention) {
+		toSerialize["contentRetention"] = o.ContentRetention
 	}
 	return toSerialize, nil
 }

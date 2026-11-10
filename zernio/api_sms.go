@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -2565,7 +2565,7 @@ func (r SMSAPIUploadSmsOptInProofRequest) File(file *os.File) SMSAPIUploadSmsOpt
 	return r
 }
 
-func (r SMSAPIUploadSmsOptInProofRequest) Execute() (*GetWhatsAppCallRecording200Response, *http.Response, error) {
+func (r SMSAPIUploadSmsOptInProofRequest) Execute() (*UploadSmsOptInProofFile200Response, *http.Response, error) {
 	return r.ApiService.UploadSmsOptInProofExecute(r)
 }
 
@@ -2592,13 +2592,13 @@ func (a *SMSAPIService) UploadSmsOptInProof(ctx context.Context, id string) SMSA
 
 // Execute executes the request
 //
-//	@return GetWhatsAppCallRecording200Response
-func (a *SMSAPIService) UploadSmsOptInProofExecute(r SMSAPIUploadSmsOptInProofRequest) (*GetWhatsAppCallRecording200Response, *http.Response, error) {
+//	@return UploadSmsOptInProofFile200Response
+func (a *SMSAPIService) UploadSmsOptInProofExecute(r SMSAPIUploadSmsOptInProofRequest) (*UploadSmsOptInProofFile200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetWhatsAppCallRecording200Response
+		localVarReturnValue *UploadSmsOptInProofFile200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SMSAPIService.UploadSmsOptInProof")
@@ -2708,7 +2708,7 @@ func (r SMSAPIUploadSmsOptInProofFileRequest) File(file *os.File) SMSAPIUploadSm
 	return r
 }
 
-func (r SMSAPIUploadSmsOptInProofFileRequest) Execute() (*GetWhatsAppCallRecording200Response, *http.Response, error) {
+func (r SMSAPIUploadSmsOptInProofFileRequest) Execute() (*UploadSmsOptInProofFile200Response, *http.Response, error) {
 	return r.ApiService.UploadSmsOptInProofFileExecute(r)
 }
 
@@ -2733,13 +2733,13 @@ func (a *SMSAPIService) UploadSmsOptInProofFile(ctx context.Context) SMSAPIUploa
 
 // Execute executes the request
 //
-//	@return GetWhatsAppCallRecording200Response
-func (a *SMSAPIService) UploadSmsOptInProofFileExecute(r SMSAPIUploadSmsOptInProofFileRequest) (*GetWhatsAppCallRecording200Response, *http.Response, error) {
+//	@return UploadSmsOptInProofFile200Response
+func (a *SMSAPIService) UploadSmsOptInProofFileExecute(r SMSAPIUploadSmsOptInProofFileRequest) (*UploadSmsOptInProofFile200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetWhatsAppCallRecording200Response
+		localVarReturnValue *UploadSmsOptInProofFile200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SMSAPIService.UploadSmsOptInProofFile")

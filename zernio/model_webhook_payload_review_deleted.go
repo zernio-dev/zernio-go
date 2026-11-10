@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.545.2
+API version: 1.546.0
 Contact: support@zernio.com
 */
 
@@ -31,7 +31,7 @@ type WebhookPayloadReviewDeleted struct {
 	Test    *bool                             `json:"test,omitempty"`
 	Event   string                            `json:"event"`
 	Review  WebhookPayloadReviewDeletedReview `json:"review"`
-	Account WebhookPayloadCommentAccount      `json:"account"`
+	Account WebhookPayloadMentionAccount      `json:"account"`
 	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
 	Timestamp time.Time `json:"timestamp"`
 }
@@ -42,7 +42,7 @@ type _WebhookPayloadReviewDeleted WebhookPayloadReviewDeleted
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadReviewDeleted(id string, event string, review WebhookPayloadReviewDeletedReview, account WebhookPayloadCommentAccount, timestamp time.Time) *WebhookPayloadReviewDeleted {
+func NewWebhookPayloadReviewDeleted(id string, event string, review WebhookPayloadReviewDeletedReview, account WebhookPayloadMentionAccount, timestamp time.Time) *WebhookPayloadReviewDeleted {
 	this := WebhookPayloadReviewDeleted{}
 	this.Id = id
 	this.Event = event
@@ -197,9 +197,9 @@ func (o *WebhookPayloadReviewDeleted) SetReview(v WebhookPayloadReviewDeletedRev
 }
 
 // GetAccount returns the Account field value
-func (o *WebhookPayloadReviewDeleted) GetAccount() WebhookPayloadCommentAccount {
+func (o *WebhookPayloadReviewDeleted) GetAccount() WebhookPayloadMentionAccount {
 	if o == nil {
-		var ret WebhookPayloadCommentAccount
+		var ret WebhookPayloadMentionAccount
 		return ret
 	}
 
@@ -208,7 +208,7 @@ func (o *WebhookPayloadReviewDeleted) GetAccount() WebhookPayloadCommentAccount 
 
 // GetAccountOk returns a tuple with the Account field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadReviewDeleted) GetAccountOk() (*WebhookPayloadCommentAccount, bool) {
+func (o *WebhookPayloadReviewDeleted) GetAccountOk() (*WebhookPayloadMentionAccount, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -216,7 +216,7 @@ func (o *WebhookPayloadReviewDeleted) GetAccountOk() (*WebhookPayloadCommentAcco
 }
 
 // SetAccount sets field value
-func (o *WebhookPayloadReviewDeleted) SetAccount(v WebhookPayloadCommentAccount) {
+func (o *WebhookPayloadReviewDeleted) SetAccount(v WebhookPayloadMentionAccount) {
 	o.Account = v
 }
 
