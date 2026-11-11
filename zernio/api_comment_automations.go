@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.565.2
+API version: 1.565.4
 Contact: support@zernio.com
 */
 
@@ -87,6 +87,10 @@ The initial comment DM alone does not start the workflow: the recipient must tap
 Comments on Instagram and Facebook arrive by webhook. Every 10 minutes Zernio also reads the latest comments and replies back and runs any comment the webhook did not deliver, so a dropped webhook still fires.
 
 That read covers the bound post, or the 5 newest posts for an account-wide automation, up to 20 Graph reads per account per run. A post not fully read is picked up again on the next run. A comment is answered at most once, whichever path sees it first.
+
+An automation answers only comments posted while it is active. A comment posted before the automation was created, or before it was last switched on with `isActive: true`, never fires on either path, even when its webhook arrives late.
+
+Creating an automation paused and switching it on later answers only the comments posted after the switch, so existing comments on the post get no DM.
 
 ### Targeting (comment trigger)
 

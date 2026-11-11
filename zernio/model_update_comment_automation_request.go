@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.565.2
+API version: 1.565.4
 Contact: support@zernio.com
 */
 
@@ -56,11 +56,12 @@ type UpdateCommentAutomationRequest struct {
 	// Seconds to wait after the trigger before sending the DM. Send 0 to clear the delay and reply immediately.
 	DmDelaySeconds *int32 `json:"dmDelaySeconds,omitempty"`
 	// Seconds to wait before posting the public comment reply. Send 0 to clear it. The reply never goes out before the DM.
-	CommentReplyDelaySeconds *int32                         `json:"commentReplyDelaySeconds,omitempty"`
-	Audience                 *CommentAutomationAudience     `json:"audience,omitempty"`
-	FollowGate               *CommentAutomationFollowGate   `json:"followGate,omitempty"`
-	IsActive                 *bool                          `json:"isActive,omitempty"`
-	RepeatPolicy             *CommentAutomationRepeatPolicy `json:"repeatPolicy,omitempty"`
+	CommentReplyDelaySeconds *int32                       `json:"commentReplyDelaySeconds,omitempty"`
+	Audience                 *CommentAutomationAudience   `json:"audience,omitempty"`
+	FollowGate               *CommentAutomationFollowGate `json:"followGate,omitempty"`
+	// false pauses the automation. true on a paused automation resumes it for comments posted from that moment: comments left while it was paused get no DM.
+	IsActive     *bool                          `json:"isActive,omitempty"`
+	RepeatPolicy *CommentAutomationRepeatPolicy `json:"repeatPolicy,omitempty"`
 	// Skip the DM when this recipient already received identical DM text (after personalisation) from this account, from any automation, within this many hours. The skip is logged with status skipped. Send null to clear.
 	DedupeSameTextHours NullableInt32 `json:"dedupeSameTextHours,omitempty"`
 	// 'after_dm' posts commentReply only after a successful DM. 'always' posts it whatever the audience rule, dedupe or DM outcome: the moment a comment matches, or after commentReplyDelaySeconds when set (raised to dmDelaySeconds, so it never precedes the DM attempt).
