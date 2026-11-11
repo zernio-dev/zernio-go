@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.565.5
+API version: 1.566.0
 Contact: support@zernio.com
 */
 
@@ -34,8 +34,8 @@ type CreateConversionDestinationRequest struct {
 	// LinkedIn only. Default 7. Same 365-day-window type restriction applies as `postClickAttributionWindowSize`.
 	ViewThroughAttributionWindowSize *int32 `json:"viewThroughAttributionWindowSize,omitempty"`
 	// LinkedIn only. DYNAMIC (default) uses the per-event `value` from `sendConversions`. FIXED uses the rule's `value` field. NO_VALUE drops monetary value entirely.
-	ValueType *string                                  `json:"valueType,omitempty"`
-	Value     *CreateConversionDestinationRequestValue `json:"value,omitempty"`
+	ValueType *string                                    `json:"valueType,omitempty"`
+	Value     *CreateAdConversionDestinationRequestValue `json:"value,omitempty"`
 	// LinkedIn only. Controls campaign association at rule-creation time:  - ALL_CAMPAIGNS: associate the rule with every active, paused, and draft campaign in the ad account. - OBJECTIVE_BASED: associate only campaigns whose objective matches the rule's type. - NONE: don't auto-associate. Manage associations via the `/associations` endpoints below.  Auto-association runs once at create time; campaigns added after the rule still need explicit association.
 	AutoAssociationType *string `json:"autoAssociationType,omitempty"`
 	// Google Ads only. Whether to count multiple conversions from the same click (MANY_PER_CLICK) or at most one (ONE_PER_CLICK). Defaults to MANY_PER_CLICK if omitted.
@@ -271,9 +271,9 @@ func (o *CreateConversionDestinationRequest) SetValueType(v string) {
 }
 
 // GetValue returns the Value field value if set, zero value otherwise.
-func (o *CreateConversionDestinationRequest) GetValue() CreateConversionDestinationRequestValue {
+func (o *CreateConversionDestinationRequest) GetValue() CreateAdConversionDestinationRequestValue {
 	if o == nil || IsNil(o.Value) {
-		var ret CreateConversionDestinationRequestValue
+		var ret CreateAdConversionDestinationRequestValue
 		return ret
 	}
 	return *o.Value
@@ -281,7 +281,7 @@ func (o *CreateConversionDestinationRequest) GetValue() CreateConversionDestinat
 
 // GetValueOk returns a tuple with the Value field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateConversionDestinationRequest) GetValueOk() (*CreateConversionDestinationRequestValue, bool) {
+func (o *CreateConversionDestinationRequest) GetValueOk() (*CreateAdConversionDestinationRequestValue, bool) {
 	if o == nil || IsNil(o.Value) {
 		return nil, false
 	}
@@ -297,8 +297,8 @@ func (o *CreateConversionDestinationRequest) HasValue() bool {
 	return false
 }
 
-// SetValue gets a reference to the given CreateConversionDestinationRequestValue and assigns it to the Value field.
-func (o *CreateConversionDestinationRequest) SetValue(v CreateConversionDestinationRequestValue) {
+// SetValue gets a reference to the given CreateAdConversionDestinationRequestValue and assigns it to the Value field.
+func (o *CreateConversionDestinationRequest) SetValue(v CreateAdConversionDestinationRequestValue) {
 	o.Value = &v
 }
 

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.565.5
+API version: 1.566.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,158 @@ import (
 // ConversionsAPIService ConversionsAPI service
 type ConversionsAPIService service
 
+type ConversionsAPIAddAdConversionAssociationsRequest struct {
+	ctx                                context.Context
+	ApiService                         *ConversionsAPIService
+	destinationId                      string
+	addAdConversionAssociationsRequest *AddAdConversionAssociationsRequest
+}
+
+func (r ConversionsAPIAddAdConversionAssociationsRequest) AddAdConversionAssociationsRequest(addAdConversionAssociationsRequest AddAdConversionAssociationsRequest) ConversionsAPIAddAdConversionAssociationsRequest {
+	r.addAdConversionAssociationsRequest = &addAdConversionAssociationsRequest
+	return r
+}
+
+func (r ConversionsAPIAddAdConversionAssociationsRequest) Execute() (*AddAdConversionAssociations200Response, *http.Response, error) {
+	return r.ApiService.AddAdConversionAssociationsExecute(r)
+}
+
+/*
+AddAdConversionAssociations Associate campaigns
+
+Links campaigns to a LinkedIn conversion rule so they track it, reporting which links succeeded or failed.
+
+Returns a
+per-campaign success/failure result so callers can retry only the
+rows that failed (e.g. wrong campaign type for the rule's objective).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param destinationId
+	@return ConversionsAPIAddAdConversionAssociationsRequest
+*/
+func (a *ConversionsAPIService) AddAdConversionAssociations(ctx context.Context, destinationId string) ConversionsAPIAddAdConversionAssociationsRequest {
+	return ConversionsAPIAddAdConversionAssociationsRequest{
+		ApiService:    a,
+		ctx:           ctx,
+		destinationId: destinationId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return AddAdConversionAssociations200Response
+func (a *ConversionsAPIService) AddAdConversionAssociationsExecute(r ConversionsAPIAddAdConversionAssociationsRequest) (*AddAdConversionAssociations200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AddAdConversionAssociations200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.AddAdConversionAssociations")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/conversions/destinations/{destinationId}/associations"
+	localVarPath = strings.Replace(localVarPath, "{"+"destinationId"+"}", url.PathEscape(parameterValueToString(r.destinationId, "destinationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.addAdConversionAssociationsRequest == nil {
+		return localVarReturnValue, nil, reportError("addAdConversionAssociationsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.addAdConversionAssociationsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConversionsAPIAddConversionAssociationsRequest struct {
 	ctx                              context.Context
 	ApiService                       *ConversionsAPIService
@@ -37,23 +189,21 @@ func (r ConversionsAPIAddConversionAssociationsRequest) AddConversionAssociation
 	return r
 }
 
-func (r ConversionsAPIAddConversionAssociationsRequest) Execute() (*AddConversionAssociations200Response, *http.Response, error) {
+func (r ConversionsAPIAddConversionAssociationsRequest) Execute() (*AddAdConversionAssociations200Response, *http.Response, error) {
 	return r.ApiService.AddConversionAssociationsExecute(r)
 }
 
 /*
 AddConversionAssociations Associate campaigns
 
-Links campaigns to a LinkedIn conversion rule so they track it, reporting which links succeeded or failed.
-
-Returns a
-per-campaign success/failure result so callers can retry only the
-rows that failed (e.g. wrong campaign type for the rule's objective).
+The first path of `POST /v1/ads/conversions/destinations/{destinationId}/associations` (`addAdConversionAssociations`), which does the same with `accountId` as a parameter. It keeps working.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param destinationId
 	@return ConversionsAPIAddConversionAssociationsRequest
+
+Deprecated
 */
 func (a *ConversionsAPIService) AddConversionAssociations(ctx context.Context, accountId string, destinationId string) ConversionsAPIAddConversionAssociationsRequest {
 	return ConversionsAPIAddConversionAssociationsRequest{
@@ -66,13 +216,15 @@ func (a *ConversionsAPIService) AddConversionAssociations(ctx context.Context, a
 
 // Execute executes the request
 //
-//	@return AddConversionAssociations200Response
-func (a *ConversionsAPIService) AddConversionAssociationsExecute(r ConversionsAPIAddConversionAssociationsRequest) (*AddConversionAssociations200Response, *http.Response, error) {
+//	@return AddAdConversionAssociations200Response
+//
+// Deprecated
+func (a *ConversionsAPIService) AddConversionAssociationsExecute(r ConversionsAPIAddConversionAssociationsRequest) (*AddAdConversionAssociations200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *AddConversionAssociations200Response
+		localVarReturnValue *AddAdConversionAssociations200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.AddConversionAssociations")
@@ -353,6 +505,325 @@ func (a *ConversionsAPIService) AdjustConversionsExecute(r ConversionsAPIAdjustC
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConversionsAPICreateAdConversionDestinationRequest struct {
+	ctx                                  context.Context
+	ApiService                           *ConversionsAPIService
+	createAdConversionDestinationRequest *CreateAdConversionDestinationRequest
+}
+
+func (r ConversionsAPICreateAdConversionDestinationRequest) CreateAdConversionDestinationRequest(createAdConversionDestinationRequest CreateAdConversionDestinationRequest) ConversionsAPICreateAdConversionDestinationRequest {
+	r.createAdConversionDestinationRequest = &createAdConversionDestinationRequest
+	return r
+}
+
+func (r ConversionsAPICreateAdConversionDestinationRequest) Execute() (*CreateAdConversionDestination201Response, *http.Response, error) {
+	return r.ApiService.CreateAdConversionDestinationExecute(r)
+}
+
+/*
+CreateAdConversionDestination Create a conversion destination
+
+Creates a new place to send conversion events: a Google Ads conversion action or a LinkedIn conversion rule.
+
+Supported for LinkedIn (conversion rule) and Google Ads (conversion action). It returns 405 for:
+
+- Meta and OpenAI Ads: their pixels are created via their own tracking-tags flow instead (`POST /v1/accounts/{accountId}/tracking-tags`)
+- Reddit: create Reddit pixels in Reddit Ads Manager
+
+### LinkedIn
+
+Creation is NOT idempotent. A retry creates a second destination. Deduplicate before retrying.
+
+The rule is created with `conversionMethod=CONVERSIONS_API` and (by default) auto-associated with all of the ad account's campaigns via `autoAssociationType=ALL_CAMPAIGNS`. Pass `autoAssociationType: NONE` to opt out and manage associations explicitly via the associations endpoints below.
+
+365-day attribution windows are only valid for these rule types; the API rejects other combinations locally:
+
+- `SUBMIT_APPLICATION`
+- `PURCHASE`
+- `ADD_TO_CART`
+- `QUALIFIED_LEAD`
+- `LEAD`
+
+### Google Ads
+
+Calling with a name that already exists reuses the existing conversion action transparently (the response is identical to a fresh create).
+
+Calling with the same name but a different category, or a name already used by a website (`WEBPAGE`) action, returns a typed `IDEMPOTENCY_CONFLICT` (409) rather than silently returning the mismatched action.
+
+The conversion action is created with `type=UPLOAD_CLICKS` (required for API-uploaded offline conversions, immutable after creation).
+
+The `type` field carries the Google `ConversionActionCategory` enum value, e.g. `PURCHASE`, `SUBSCRIBE_PAID`, `SIGNUP`, `IMPORTED_LEAD`, `BOOK_APPOINTMENT`. Unified standard event names (e.g. `Purchase`, `Subscribe`, `CompleteRegistration`, `Lead`, `Schedule`) are resolved to their Google category equivalents automatically.
+
+The action defaults to secondary (non-primary) to avoid immediately steering Smart Bidding; pass `primaryForGoal: true` to opt in.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConversionsAPICreateAdConversionDestinationRequest
+*/
+func (a *ConversionsAPIService) CreateAdConversionDestination(ctx context.Context) ConversionsAPICreateAdConversionDestinationRequest {
+	return ConversionsAPICreateAdConversionDestinationRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateAdConversionDestination201Response
+func (a *ConversionsAPIService) CreateAdConversionDestinationExecute(r ConversionsAPICreateAdConversionDestinationRequest) (*CreateAdConversionDestination201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateAdConversionDestination201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.CreateAdConversionDestination")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/conversions/destinations"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createAdConversionDestinationRequest == nil {
+		return localVarReturnValue, nil, reportError("createAdConversionDestinationRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createAdConversionDestinationRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConversionsAPICreateAdCustomConversionRequest struct {
+	ctx                             context.Context
+	ApiService                      *ConversionsAPIService
+	createAdCustomConversionRequest *CreateAdCustomConversionRequest
+}
+
+func (r ConversionsAPICreateAdCustomConversionRequest) CreateAdCustomConversionRequest(createAdCustomConversionRequest CreateAdCustomConversionRequest) ConversionsAPICreateAdCustomConversionRequest {
+	r.createAdCustomConversionRequest = &createAdCustomConversionRequest
+	return r
+}
+
+func (r ConversionsAPICreateAdCustomConversionRequest) Execute() (*CustomConversionResult, *http.Response, error) {
+	return r.ApiService.CreateAdCustomConversionExecute(r)
+}
+
+/*
+CreateAdCustomConversion Create custom conversion
+
+Creates a Meta custom conversion for ads to optimise toward, reusing an existing one with the same name and pixel.
+
+It provisions the Meta custom conversion an ads flow optimises toward, and hands back the `customConversionId` for `promotedObject.customConversionId` on POST /v1/ads/create. This removes the manual "create it in Ads Manager first" step.
+
+### Reuse is ours, not Meta's
+
+Meta's create is not idempotent, so a retried request would otherwise mint a duplicate carrying none of the original's optimisation history.
+
+A non-archived conversion with the same `name` on the same `pixelId` is returned instead of created, with `reused: true` and a 200 rather than a 201.
+
+### Rule
+
+`rule` is forwarded verbatim in Meta's own grammar (e.g. `{"url": {"i_contains": "thank-you"}}`). Meta validates it and rejects a malformed one with "A conversion rule is required at creation time".
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConversionsAPICreateAdCustomConversionRequest
+*/
+func (a *ConversionsAPIService) CreateAdCustomConversion(ctx context.Context) ConversionsAPICreateAdCustomConversionRequest {
+	return ConversionsAPICreateAdCustomConversionRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CustomConversionResult
+func (a *ConversionsAPIService) CreateAdCustomConversionExecute(r ConversionsAPICreateAdCustomConversionRequest) (*CustomConversionResult, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CustomConversionResult
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.CreateAdCustomConversion")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/conversions/custom-conversions"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createAdCustomConversionRequest == nil {
+		return localVarReturnValue, nil, reportError("createAdCustomConversionRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createAdCustomConversionRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConversionsAPICreateConversionActionRequest struct {
 	ctx                           context.Context
 	ApiService                    *ConversionsAPIService
@@ -369,15 +840,17 @@ func (r ConversionsAPICreateConversionActionRequest) Execute() (*CreateConversio
 }
 
 /*
-CreateConversionAction Create website conversion action
+CreateConversionAction Create conversion action
 
-Creates a Google Ads website conversion action and returns the tag snippets to install on your site.
+Creates a Google Ads conversion action: a website one counted by a tag on your site, or one counted from the conversions you send to Zernio.
 
-Creates a `WEBPAGE` conversion action (category `DEFAULT`) and returns it with
-its tag snippets, read back after creation since Google never returns them on
-the create response itself. Invalidates the cached list `GET` on this resource
-would otherwise keep serving. Google-only; other platforms return `501`.
-Requires the Ads add-on.
+- `type: WEBPAGE` creates a website action and returns it with the tag snippets to install, read back after creation since Google never returns them on the create response itself.
+- `type: UPLOAD_CLICKS` creates an action for the conversions sent with `POST /v1/events`, the same action `POST /v1/ads/conversions/destinations` creates. It is secondary unless `primaryForGoal: true`.
+
+The category defaults to `DEFAULT`. A name already used by another action returns Google's error.
+
+Clears the cached list that `GET` on this resource would otherwise keep serving.
+Google-only; other platforms return `501`. Requires the Ads add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConversionsAPICreateConversionActionRequest
@@ -526,47 +999,20 @@ func (r ConversionsAPICreateConversionDestinationRequest) CreateConversionDestin
 	return r
 }
 
-func (r ConversionsAPICreateConversionDestinationRequest) Execute() (*CreateConversionDestination201Response, *http.Response, error) {
+func (r ConversionsAPICreateConversionDestinationRequest) Execute() (*CreateAdConversionDestination201Response, *http.Response, error) {
 	return r.ApiService.CreateConversionDestinationExecute(r)
 }
 
 /*
 CreateConversionDestination Create a conversion destination
 
-Creates a new place to send conversion events: a Google Ads conversion action or a LinkedIn conversion rule.
-
-Supported for LinkedIn (conversion rule) and Google Ads (conversion action). It returns 405 for:
-
-- Meta and OpenAI Ads: their pixels are created via their own tracking-tags flow instead (`POST /v1/accounts/{accountId}/tracking-tags`)
-- Reddit: create Reddit pixels in Reddit Ads Manager
-
-### LinkedIn
-
-Creation is NOT idempotent. A retry creates a second destination. Deduplicate before retrying.
-
-The rule is created with `conversionMethod=CONVERSIONS_API` and (by default) auto-associated with all of the ad account's campaigns via `autoAssociationType=ALL_CAMPAIGNS`. Pass `autoAssociationType: NONE` to opt out and manage associations explicitly via the associations endpoints below.
-
-365-day attribution windows are only valid for these rule types; the API rejects other combinations locally:
-
-- `SUBMIT_APPLICATION`
-- `PURCHASE`
-- `ADD_TO_CART`
-- `QUALIFIED_LEAD`
-- `LEAD`
-
-### Google Ads
-
-Calling with a name that already exists reuses the existing conversion action transparently (the response is identical to a fresh create). Calling with the same name but a different category returns a typed `IDEMPOTENCY_CONFLICT` (409) rather than silently returning the mismatched action.
-
-The conversion action is created with `type=UPLOAD_CLICKS` (required for API-uploaded offline conversions, immutable after creation).
-
-The `type` field carries the Google `ConversionActionCategory` enum value, e.g. `PURCHASE`, `SUBSCRIBE_PAID`, `SIGNUP`, `IMPORTED_LEAD`, `BOOK_APPOINTMENT`. Unified standard event names (e.g. `Purchase`, `Subscribe`, `CompleteRegistration`, `Lead`, `Schedule`) are resolved to their Google category equivalents automatically.
-
-The action defaults to secondary (non-primary) to avoid immediately steering Smart Bidding; pass `primaryForGoal: true` to opt in.
+The first path of `POST /v1/ads/conversions/destinations` (`createAdConversionDestination`), which does the same with `accountId` as a parameter. It keeps working.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId SocialAccount ID (linkedinads or googleads).
 	@return ConversionsAPICreateConversionDestinationRequest
+
+Deprecated
 */
 func (a *ConversionsAPIService) CreateConversionDestination(ctx context.Context, accountId string) ConversionsAPICreateConversionDestinationRequest {
 	return ConversionsAPICreateConversionDestinationRequest{
@@ -578,13 +1024,15 @@ func (a *ConversionsAPIService) CreateConversionDestination(ctx context.Context,
 
 // Execute executes the request
 //
-//	@return CreateConversionDestination201Response
-func (a *ConversionsAPIService) CreateConversionDestinationExecute(r ConversionsAPICreateConversionDestinationRequest) (*CreateConversionDestination201Response, *http.Response, error) {
+//	@return CreateAdConversionDestination201Response
+//
+// Deprecated
+func (a *ConversionsAPIService) CreateConversionDestinationExecute(r ConversionsAPICreateConversionDestinationRequest) (*CreateAdConversionDestination201Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *CreateConversionDestination201Response
+		localVarReturnValue *CreateAdConversionDestination201Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.CreateConversionDestination")
@@ -1026,7 +1474,7 @@ CreateForwardingRule Add a forwarding rule
 
 Saves where a profile's events go: every event sent to `POST /v1/events` for that profile is then forwarded to this destination.
 
-Pick `destinationId` from `GET /v1/accounts/{accountId}/conversion-destinations`. Set `eventNames` to forward only those events, such as only `Purchase`; leave it out to forward every event.
+Pick `destinationId` from `GET /v1/ads/conversions/destinations`. Set `eventNames` to forward only those events, such as only `Purchase`; leave it out to forward every event.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConversionsAPICreateForwardingRuleRequest
@@ -1162,6 +1610,161 @@ func (a *ConversionsAPIService) CreateForwardingRuleExecute(r ConversionsAPICrea
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConversionsAPIDeleteAdConversionDestinationRequest struct {
+	ctx           context.Context
+	ApiService    *ConversionsAPIService
+	accountId     *string
+	destinationId string
+	adAccountId   *string
+}
+
+// The connected ads account (SocialAccount ID).
+func (r ConversionsAPIDeleteAdConversionDestinationRequest) AccountId(accountId string) ConversionsAPIDeleteAdConversionDestinationRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Required as query OR in JSON body.
+func (r ConversionsAPIDeleteAdConversionDestinationRequest) AdAccountId(adAccountId string) ConversionsAPIDeleteAdConversionDestinationRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r ConversionsAPIDeleteAdConversionDestinationRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeleteAdConversionDestinationExecute(r)
+}
+
+/*
+DeleteAdConversionDestination Delete a conversion destination
+
+Disables a LinkedIn conversion rule, which is how LinkedIn deletes it; the rule can still be read afterwards.
+
+LinkedIn-only today. LinkedIn does not expose hard-delete on conversion
+rules; what their UI calls "delete" is the same `enabled: false` flip
+we apply here. The rule remains fetchable via GET with
+`status: 'inactive'`; the unified discovery endpoint hides it by
+default.
+
+`adAccountId` may be passed as a query parameter (recommended) or as
+a JSON body field for clients that can send DELETE bodies.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param destinationId
+	@return ConversionsAPIDeleteAdConversionDestinationRequest
+*/
+func (a *ConversionsAPIService) DeleteAdConversionDestination(ctx context.Context, destinationId string) ConversionsAPIDeleteAdConversionDestinationRequest {
+	return ConversionsAPIDeleteAdConversionDestinationRequest{
+		ApiService:    a,
+		ctx:           ctx,
+		destinationId: destinationId,
+	}
+}
+
+// Execute executes the request
+func (a *ConversionsAPIService) DeleteAdConversionDestinationExecute(r ConversionsAPIDeleteAdConversionDestinationRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.DeleteAdConversionDestination")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/conversions/destinations/{destinationId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"destinationId"+"}", url.PathEscape(parameterValueToString(r.destinationId, "destinationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type ConversionsAPIDeleteConversionDestinationRequest struct {
 	ctx           context.Context
 	ApiService    *ConversionsAPIService
@@ -1183,21 +1786,14 @@ func (r ConversionsAPIDeleteConversionDestinationRequest) Execute() (*http.Respo
 /*
 DeleteConversionDestination Delete a conversion destination
 
-Disables a LinkedIn conversion rule, which is how LinkedIn deletes it; the rule can still be read afterwards.
-
-LinkedIn-only today. LinkedIn does not expose hard-delete on conversion
-rules; what their UI calls "delete" is the same `enabled: false` flip
-we apply here. The rule remains fetchable via GET with
-`status: 'inactive'`; the unified discovery endpoint hides it by
-default.
-
-`adAccountId` may be passed as a query parameter (recommended) or as
-a JSON body field for clients that can send DELETE bodies.
+The first path of `DELETE /v1/ads/conversions/destinations/{destinationId}` (`deleteAdConversionDestination`), which does the same with `accountId` as a parameter. It keeps working.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param destinationId
 	@return ConversionsAPIDeleteConversionDestinationRequest
+
+Deprecated
 */
 func (a *ConversionsAPIService) DeleteConversionDestination(ctx context.Context, accountId string, destinationId string) ConversionsAPIDeleteConversionDestinationRequest {
 	return ConversionsAPIDeleteConversionDestinationRequest{
@@ -1209,6 +1805,7 @@ func (a *ConversionsAPIService) DeleteConversionDestination(ctx context.Context,
 }
 
 // Execute executes the request
+// Deprecated
 func (a *ConversionsAPIService) DeleteConversionDestinationExecute(r ConversionsAPIDeleteConversionDestinationRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod = http.MethodDelete
@@ -1586,6 +2183,373 @@ func (a *ConversionsAPIService) DeleteForwardingRuleExecute(r ConversionsAPIDele
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConversionsAPIGetAdConversionDestinationRequest struct {
+	ctx           context.Context
+	ApiService    *ConversionsAPIService
+	accountId     *string
+	destinationId string
+	adAccountId   *string
+}
+
+// The connected ads account (SocialAccount ID).
+func (r ConversionsAPIGetAdConversionDestinationRequest) AccountId(accountId string) ConversionsAPIGetAdConversionDestinationRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Numeric ID or full &#x60;urn:li:sponsoredAccount:{id}&#x60; URN.
+func (r ConversionsAPIGetAdConversionDestinationRequest) AdAccountId(adAccountId string) ConversionsAPIGetAdConversionDestinationRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r ConversionsAPIGetAdConversionDestinationRequest) Execute() (*GetAdConversionDestination200Response, *http.Response, error) {
+	return r.ApiService.GetAdConversionDestinationExecute(r)
+}
+
+/*
+GetAdConversionDestination Get a conversion destination
+
+Shows one LinkedIn conversion rule with its full settings.
+
+LinkedIn-only today. Returns the full destination record for one
+conversion rule. The `adAccountId` query parameter is required because
+LinkedIn rules are scoped to a sponsored ad account.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param destinationId
+	@return ConversionsAPIGetAdConversionDestinationRequest
+*/
+func (a *ConversionsAPIService) GetAdConversionDestination(ctx context.Context, destinationId string) ConversionsAPIGetAdConversionDestinationRequest {
+	return ConversionsAPIGetAdConversionDestinationRequest{
+		ApiService:    a,
+		ctx:           ctx,
+		destinationId: destinationId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdConversionDestination200Response
+func (a *ConversionsAPIService) GetAdConversionDestinationExecute(r ConversionsAPIGetAdConversionDestinationRequest) (*GetAdConversionDestination200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdConversionDestination200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.GetAdConversionDestination")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/conversions/destinations/{destinationId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"destinationId"+"}", url.PathEscape(parameterValueToString(r.destinationId, "destinationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConversionsAPIGetAdConversionMetricsRequest struct {
+	ctx           context.Context
+	ApiService    *ConversionsAPIService
+	accountId     *string
+	destinationId string
+	adAccountId   *string
+	startDate     *string
+	endDate       *string
+	granularity   *string
+}
+
+// The connected ads account (SocialAccount ID).
+func (r ConversionsAPIGetAdConversionMetricsRequest) AccountId(accountId string) ConversionsAPIGetAdConversionMetricsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r ConversionsAPIGetAdConversionMetricsRequest) AdAccountId(adAccountId string) ConversionsAPIGetAdConversionMetricsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r ConversionsAPIGetAdConversionMetricsRequest) StartDate(startDate string) ConversionsAPIGetAdConversionMetricsRequest {
+	r.startDate = &startDate
+	return r
+}
+
+func (r ConversionsAPIGetAdConversionMetricsRequest) EndDate(endDate string) ConversionsAPIGetAdConversionMetricsRequest {
+	r.endDate = &endDate
+	return r
+}
+
+func (r ConversionsAPIGetAdConversionMetricsRequest) Granularity(granularity string) ConversionsAPIGetAdConversionMetricsRequest {
+	r.granularity = &granularity
+	return r
+}
+
+func (r ConversionsAPIGetAdConversionMetricsRequest) Execute() (*GetAdConversionMetrics200Response, *http.Response, error) {
+	return r.ApiService.GetAdConversionMetricsExecute(r)
+}
+
+/*
+GetAdConversionMetrics Get attribution metrics
+
+Shows a LinkedIn conversion rule's attributed conversions, value, leads and cost over time.
+
+LinkedIn-only today. Returns conversion-attribution metrics
+(`externalWebsiteConversions`, `externalWebsitePostClickConversions`,
+`externalWebsitePostViewConversions`, `conversionValueInLocalCurrency`,
+`qualifiedLeads`, `costInLocalCurrency`) bucketed by date.
+
+Date-range constraints (passed through from LinkedIn):
+- `granularity=DAILY` is retained for ~6 months only
+- `granularity=ALL` with a range > 6 months auto-rounds to month boundaries
+- `granularity=MONTHLY`/`YEARLY` retains 24 months
+
+Throttle: LinkedIn caps adAnalytics at 45M metric values per 5-minute
+window across the calling token. Single-rule queries are well within
+that limit; surfaces as 429 if hit.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param destinationId
+	@return ConversionsAPIGetAdConversionMetricsRequest
+*/
+func (a *ConversionsAPIService) GetAdConversionMetrics(ctx context.Context, destinationId string) ConversionsAPIGetAdConversionMetricsRequest {
+	return ConversionsAPIGetAdConversionMetricsRequest{
+		ApiService:    a,
+		ctx:           ctx,
+		destinationId: destinationId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdConversionMetrics200Response
+func (a *ConversionsAPIService) GetAdConversionMetricsExecute(r ConversionsAPIGetAdConversionMetricsRequest) (*GetAdConversionMetrics200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdConversionMetrics200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.GetAdConversionMetrics")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/conversions/destinations/{destinationId}/metrics"
+	localVarPath = strings.Replace(localVarPath, "{"+"destinationId"+"}", url.PathEscape(parameterValueToString(r.destinationId, "destinationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+	if r.startDate == nil {
+		return localVarReturnValue, nil, reportError("startDate is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "startDate", r.startDate, "form", "")
+	if r.endDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "endDate", r.endDate, "form", "")
+	}
+	if r.granularity != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", r.granularity, "form", "")
+	} else {
+		var defaultValue string = "DAILY"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", defaultValue, "form", "")
+		r.granularity = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConversionsAPIGetConversionDestinationRequest struct {
 	ctx           context.Context
 	ApiService    *ConversionsAPIService
@@ -1600,23 +2564,21 @@ func (r ConversionsAPIGetConversionDestinationRequest) AdAccountId(adAccountId s
 	return r
 }
 
-func (r ConversionsAPIGetConversionDestinationRequest) Execute() (*GetConversionDestination200Response, *http.Response, error) {
+func (r ConversionsAPIGetConversionDestinationRequest) Execute() (*GetAdConversionDestination200Response, *http.Response, error) {
 	return r.ApiService.GetConversionDestinationExecute(r)
 }
 
 /*
 GetConversionDestination Get a conversion destination
 
-Shows one LinkedIn conversion rule with its full settings.
-
-LinkedIn-only today. Returns the full destination record for one
-conversion rule. The `adAccountId` query parameter is required because
-LinkedIn rules are scoped to a sponsored ad account.
+The first path of `GET /v1/ads/conversions/destinations/{destinationId}` (`getAdConversionDestination`), which does the same with `accountId` as a parameter. It keeps working.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param destinationId
 	@return ConversionsAPIGetConversionDestinationRequest
+
+Deprecated
 */
 func (a *ConversionsAPIService) GetConversionDestination(ctx context.Context, accountId string, destinationId string) ConversionsAPIGetConversionDestinationRequest {
 	return ConversionsAPIGetConversionDestinationRequest{
@@ -1629,13 +2591,15 @@ func (a *ConversionsAPIService) GetConversionDestination(ctx context.Context, ac
 
 // Execute executes the request
 //
-//	@return GetConversionDestination200Response
-func (a *ConversionsAPIService) GetConversionDestinationExecute(r ConversionsAPIGetConversionDestinationRequest) (*GetConversionDestination200Response, *http.Response, error) {
+//	@return GetAdConversionDestination200Response
+//
+// Deprecated
+func (a *ConversionsAPIService) GetConversionDestinationExecute(r ConversionsAPIGetConversionDestinationRequest) (*GetAdConversionDestination200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetConversionDestination200Response
+		localVarReturnValue *GetAdConversionDestination200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.GetConversionDestination")
@@ -1773,33 +2737,21 @@ func (r ConversionsAPIGetConversionMetricsRequest) Granularity(granularity strin
 	return r
 }
 
-func (r ConversionsAPIGetConversionMetricsRequest) Execute() (*GetConversionMetrics200Response, *http.Response, error) {
+func (r ConversionsAPIGetConversionMetricsRequest) Execute() (*GetAdConversionMetrics200Response, *http.Response, error) {
 	return r.ApiService.GetConversionMetricsExecute(r)
 }
 
 /*
 GetConversionMetrics Get attribution metrics
 
-Shows a LinkedIn conversion rule's attributed conversions, value, leads and cost over time.
-
-LinkedIn-only today. Returns conversion-attribution metrics
-(`externalWebsiteConversions`, `externalWebsitePostClickConversions`,
-`externalWebsitePostViewConversions`, `conversionValueInLocalCurrency`,
-`qualifiedLeads`, `costInLocalCurrency`) bucketed by date.
-
-Date-range constraints (passed through from LinkedIn):
-- `granularity=DAILY` is retained for ~6 months only
-- `granularity=ALL` with a range > 6 months auto-rounds to month boundaries
-- `granularity=MONTHLY`/`YEARLY` retains 24 months
-
-Throttle: LinkedIn caps adAnalytics at 45M metric values per 5-minute
-window across the calling token. Single-rule queries are well within
-that limit; surfaces as 429 if hit.
+The first path of `GET /v1/ads/conversions/destinations/{destinationId}/metrics` (`getAdConversionMetrics`), which does the same with `accountId` as a parameter. It keeps working.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param destinationId
 	@return ConversionsAPIGetConversionMetricsRequest
+
+Deprecated
 */
 func (a *ConversionsAPIService) GetConversionMetrics(ctx context.Context, accountId string, destinationId string) ConversionsAPIGetConversionMetricsRequest {
 	return ConversionsAPIGetConversionMetricsRequest{
@@ -1812,13 +2764,15 @@ func (a *ConversionsAPIService) GetConversionMetrics(ctx context.Context, accoun
 
 // Execute executes the request
 //
-//	@return GetConversionMetrics200Response
-func (a *ConversionsAPIService) GetConversionMetricsExecute(r ConversionsAPIGetConversionMetricsRequest) (*GetConversionMetrics200Response, *http.Response, error) {
+//	@return GetAdConversionMetrics200Response
+//
+// Deprecated
+func (a *ConversionsAPIService) GetConversionMetricsExecute(r ConversionsAPIGetConversionMetricsRequest) (*GetAdConversionMetrics200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetConversionMetrics200Response
+		localVarReturnValue *GetAdConversionMetrics200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.GetConversionMetrics")
@@ -2249,6 +3203,332 @@ func (a *ConversionsAPIService) GetEventExecute(r ConversionsAPIGetEventRequest)
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConversionsAPIListAdConversionAssociationsRequest struct {
+	ctx           context.Context
+	ApiService    *ConversionsAPIService
+	accountId     *string
+	destinationId string
+	adAccountId   *string
+}
+
+// The connected ads account (SocialAccount ID).
+func (r ConversionsAPIListAdConversionAssociationsRequest) AccountId(accountId string) ConversionsAPIListAdConversionAssociationsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r ConversionsAPIListAdConversionAssociationsRequest) AdAccountId(adAccountId string) ConversionsAPIListAdConversionAssociationsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r ConversionsAPIListAdConversionAssociationsRequest) Execute() (*ListAdConversionAssociations200Response, *http.Response, error) {
+	return r.ApiService.ListAdConversionAssociationsExecute(r)
+}
+
+/*
+ListAdConversionAssociations List associated campaigns
+
+Lists the LinkedIn campaigns that track a conversion rule, so you can spot newer campaigns that still need linking.
+
+LinkedIn-only today. Returns the campaigns currently associated with
+this conversion rule. Auto-association on rule creation
+runs once at create time; campaigns created after the rule still need
+explicit association.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param destinationId
+	@return ConversionsAPIListAdConversionAssociationsRequest
+*/
+func (a *ConversionsAPIService) ListAdConversionAssociations(ctx context.Context, destinationId string) ConversionsAPIListAdConversionAssociationsRequest {
+	return ConversionsAPIListAdConversionAssociationsRequest{
+		ApiService:    a,
+		ctx:           ctx,
+		destinationId: destinationId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListAdConversionAssociations200Response
+func (a *ConversionsAPIService) ListAdConversionAssociationsExecute(r ConversionsAPIListAdConversionAssociationsRequest) (*ListAdConversionAssociations200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListAdConversionAssociations200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.ListAdConversionAssociations")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/conversions/destinations/{destinationId}/associations"
+	localVarPath = strings.Replace(localVarPath, "{"+"destinationId"+"}", url.PathEscape(parameterValueToString(r.destinationId, "destinationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConversionsAPIListAdConversionDestinationsRequest struct {
+	ctx        context.Context
+	ApiService *ConversionsAPIService
+	accountId  *string
+}
+
+// SocialAccount ID (metaads, googleads, linkedinads, tiktokads, openaiads, pinterestads, or redditads).
+func (r ConversionsAPIListAdConversionDestinationsRequest) AccountId(accountId string) ConversionsAPIListAdConversionDestinationsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r ConversionsAPIListAdConversionDestinationsRequest) Execute() (*ListAdConversionDestinations200Response, *http.Response, error) {
+	return r.ApiService.ListAdConversionDestinationsExecute(r)
+}
+
+/*
+ListAdConversionDestinations List conversion destinations
+
+Lists where an ad account can receive conversion events (pixels, conversion actions or rules), so you know where to send them.
+
+Returns the list of pixels (Meta), conversion actions (Google),
+conversion rules (LinkedIn), pixels (OpenAI Ads, Reddit) or ad accounts
+(Pinterest) accessible to the connected ads account. Use the returned `id` as `destinationId` when
+posting to `POST /v1/ads/conversions`.
+
+For Google and LinkedIn, each destination's `type` reflects the
+conversion type (PURCHASE, LEAD, SIGN_UP, etc.), and the event type is
+locked to the destination. For Meta, OpenAI Ads and Reddit, `type` is absent:
+pixels accept any event name per request.
+
+For Reddit, the pixels of every ad account the connection reaches (only the scoped
+ones when the connection has an ad-account scope), each with the `adAccountId` that owns
+it. Reddit pixels are created in Reddit Ads Manager, not through Zernio.
+
+For LinkedIn, destinations are returned across every sponsored ad
+account the connected token can access; the `adAccountId` field on
+each destination identifies the parent ad account and is required for
+subsequent CRUD calls (update, delete, associations, metrics).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConversionsAPIListAdConversionDestinationsRequest
+*/
+func (a *ConversionsAPIService) ListAdConversionDestinations(ctx context.Context) ConversionsAPIListAdConversionDestinationsRequest {
+	return ConversionsAPIListAdConversionDestinationsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListAdConversionDestinations200Response
+func (a *ConversionsAPIService) ListAdConversionDestinationsExecute(r ConversionsAPIListAdConversionDestinationsRequest) (*ListAdConversionDestinations200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListAdConversionDestinations200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.ListAdConversionDestinations")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/conversions/destinations"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConversionsAPIListAdConversionGoalsRequest struct {
 	ctx         context.Context
 	ApiService  *ConversionsAPIService
@@ -2429,6 +3709,162 @@ func (a *ConversionsAPIService) ListAdConversionGoalsExecute(r ConversionsAPILis
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConversionsAPIListAdCustomConversionsRequest struct {
+	ctx         context.Context
+	ApiService  *ConversionsAPIService
+	accountId   *string
+	adAccountId *string
+}
+
+// Meta ads SocialAccount id.
+func (r ConversionsAPIListAdCustomConversionsRequest) AccountId(accountId string) ConversionsAPIListAdCustomConversionsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account id (act_&lt;n&gt;).
+func (r ConversionsAPIListAdCustomConversionsRequest) AdAccountId(adAccountId string) ConversionsAPIListAdCustomConversionsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r ConversionsAPIListAdCustomConversionsRequest) Execute() (*ListAdCustomConversions200Response, *http.Response, error) {
+	return r.ApiService.ListAdCustomConversionsExecute(r)
+}
+
+/*
+ListAdCustomConversions List custom conversions
+
+Lists a Meta ad account's custom conversions, including archived ones.
+
+The ad account's Meta custom conversions, including archived ones (`isArchived`).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConversionsAPIListAdCustomConversionsRequest
+*/
+func (a *ConversionsAPIService) ListAdCustomConversions(ctx context.Context) ConversionsAPIListAdCustomConversionsRequest {
+	return ConversionsAPIListAdCustomConversionsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListAdCustomConversions200Response
+func (a *ConversionsAPIService) ListAdCustomConversionsExecute(r ConversionsAPIListAdCustomConversionsRequest) (*ListAdCustomConversions200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListAdCustomConversions200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.ListAdCustomConversions")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/conversions/custom-conversions"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2658,24 +4094,21 @@ func (r ConversionsAPIListConversionAssociationsRequest) AdAccountId(adAccountId
 	return r
 }
 
-func (r ConversionsAPIListConversionAssociationsRequest) Execute() (*ListConversionAssociations200Response, *http.Response, error) {
+func (r ConversionsAPIListConversionAssociationsRequest) Execute() (*ListAdConversionAssociations200Response, *http.Response, error) {
 	return r.ApiService.ListConversionAssociationsExecute(r)
 }
 
 /*
 ListConversionAssociations List associated campaigns
 
-Lists the LinkedIn campaigns that track a conversion rule, so you can spot newer campaigns that still need linking.
-
-LinkedIn-only today. Returns the campaigns currently associated with
-this conversion rule. Auto-association on rule creation
-runs once at create time; campaigns created after the rule still need
-explicit association.
+The first path of `GET /v1/ads/conversions/destinations/{destinationId}/associations` (`listAdConversionAssociations`), which does the same with `accountId` as a parameter. It keeps working.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param destinationId
 	@return ConversionsAPIListConversionAssociationsRequest
+
+Deprecated
 */
 func (a *ConversionsAPIService) ListConversionAssociations(ctx context.Context, accountId string, destinationId string) ConversionsAPIListConversionAssociationsRequest {
 	return ConversionsAPIListConversionAssociationsRequest{
@@ -2688,13 +4121,15 @@ func (a *ConversionsAPIService) ListConversionAssociations(ctx context.Context, 
 
 // Execute executes the request
 //
-//	@return ListConversionAssociations200Response
-func (a *ConversionsAPIService) ListConversionAssociationsExecute(r ConversionsAPIListConversionAssociationsRequest) (*ListConversionAssociations200Response, *http.Response, error) {
+//	@return ListAdConversionAssociations200Response
+//
+// Deprecated
+func (a *ConversionsAPIService) ListConversionAssociationsExecute(r ConversionsAPIListConversionAssociationsRequest) (*ListAdConversionAssociations200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ListConversionAssociations200Response
+		localVarReturnValue *ListAdConversionAssociations200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.ListConversionAssociations")
@@ -2807,37 +4242,20 @@ type ConversionsAPIListConversionDestinationsRequest struct {
 	accountId  string
 }
 
-func (r ConversionsAPIListConversionDestinationsRequest) Execute() (*ListConversionDestinations200Response, *http.Response, error) {
+func (r ConversionsAPIListConversionDestinationsRequest) Execute() (*ListAdConversionDestinations200Response, *http.Response, error) {
 	return r.ApiService.ListConversionDestinationsExecute(r)
 }
 
 /*
 ListConversionDestinations List conversion destinations
 
-Lists where an ad account can receive conversion events (pixels, conversion actions or rules), so you know where to send them.
-
-Returns the list of pixels (Meta), conversion actions (Google),
-conversion rules (LinkedIn), pixels (OpenAI Ads, Reddit) or ad accounts
-(Pinterest) accessible to the connected ads account. Use the returned `id` as `destinationId` when
-posting to `POST /v1/ads/conversions`.
-
-For Google and LinkedIn, each destination's `type` reflects the
-conversion type (PURCHASE, LEAD, SIGN_UP, etc.), and the event type is
-locked to the destination. For Meta, OpenAI Ads and Reddit, `type` is absent:
-pixels accept any event name per request.
-
-For Reddit, the pixels of every ad account the connection reaches (only the scoped
-ones when the connection has an ad-account scope), each with the `adAccountId` that owns
-it. Reddit pixels are created in Reddit Ads Manager, not through Zernio.
-
-For LinkedIn, destinations are returned across every sponsored ad
-account the connected token can access; the `adAccountId` field on
-each destination identifies the parent ad account and is required for
-subsequent CRUD calls (update, delete, associations, metrics).
+The first path of `GET /v1/ads/conversions/destinations` (`listAdConversionDestinations`), which does the same with `accountId` as a parameter. It keeps working.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId SocialAccount ID (metaads, googleads, linkedinads, tiktokads, openaiads, pinterestads, or redditads).
 	@return ConversionsAPIListConversionDestinationsRequest
+
+Deprecated
 */
 func (a *ConversionsAPIService) ListConversionDestinations(ctx context.Context, accountId string) ConversionsAPIListConversionDestinationsRequest {
 	return ConversionsAPIListConversionDestinationsRequest{
@@ -2849,13 +4267,15 @@ func (a *ConversionsAPIService) ListConversionDestinations(ctx context.Context, 
 
 // Execute executes the request
 //
-//	@return ListConversionDestinations200Response
-func (a *ConversionsAPIService) ListConversionDestinationsExecute(r ConversionsAPIListConversionDestinationsRequest) (*ListConversionDestinations200Response, *http.Response, error) {
+//	@return ListAdConversionDestinations200Response
+//
+// Deprecated
+func (a *ConversionsAPIService) ListConversionDestinationsExecute(r ConversionsAPIListConversionDestinationsRequest) (*ListAdConversionDestinations200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ListConversionDestinations200Response
+		localVarReturnValue *ListAdConversionDestinations200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.ListConversionDestinations")
@@ -3631,6 +5051,179 @@ func (a *ConversionsAPIService) ListForwardingRulesExecute(r ConversionsAPIListF
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConversionsAPIRemoveAdConversionAssociationsRequest struct {
+	ctx           context.Context
+	ApiService    *ConversionsAPIService
+	accountId     *string
+	destinationId string
+	adAccountId   *string
+	campaignIds   *string
+}
+
+// The connected ads account (SocialAccount ID).
+func (r ConversionsAPIRemoveAdConversionAssociationsRequest) AccountId(accountId string) ConversionsAPIRemoveAdConversionAssociationsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r ConversionsAPIRemoveAdConversionAssociationsRequest) AdAccountId(adAccountId string) ConversionsAPIRemoveAdConversionAssociationsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Comma-separated list of campaign IDs.
+func (r ConversionsAPIRemoveAdConversionAssociationsRequest) CampaignIds(campaignIds string) ConversionsAPIRemoveAdConversionAssociationsRequest {
+	r.campaignIds = &campaignIds
+	return r
+}
+
+func (r ConversionsAPIRemoveAdConversionAssociationsRequest) Execute() (*AddAdConversionAssociations200Response, *http.Response, error) {
+	return r.ApiService.RemoveAdConversionAssociationsExecute(r)
+}
+
+/*
+RemoveAdConversionAssociations Remove associated campaigns
+
+Unlinks campaigns from a LinkedIn conversion rule so they stop tracking it.
+
+Pass `adAccountId` and `campaignIds` as query parameters (`campaignIds` is comma-separated).
+
+The route also accepts a JSON body with the same fields, for clients that prefer DELETE-with-body. The documented surface is query-only because some SDK code generators (e.g. Python) collapse query + body parameters with the same name into a single kwarg.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param destinationId
+	@return ConversionsAPIRemoveAdConversionAssociationsRequest
+*/
+func (a *ConversionsAPIService) RemoveAdConversionAssociations(ctx context.Context, destinationId string) ConversionsAPIRemoveAdConversionAssociationsRequest {
+	return ConversionsAPIRemoveAdConversionAssociationsRequest{
+		ApiService:    a,
+		ctx:           ctx,
+		destinationId: destinationId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return AddAdConversionAssociations200Response
+func (a *ConversionsAPIService) RemoveAdConversionAssociationsExecute(r ConversionsAPIRemoveAdConversionAssociationsRequest) (*AddAdConversionAssociations200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AddAdConversionAssociations200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.RemoveAdConversionAssociations")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/conversions/destinations/{destinationId}/associations"
+	localVarPath = strings.Replace(localVarPath, "{"+"destinationId"+"}", url.PathEscape(parameterValueToString(r.destinationId, "destinationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+	if r.campaignIds == nil {
+		return localVarReturnValue, nil, reportError("campaignIds is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "campaignIds", r.campaignIds, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConversionsAPIRemoveConversionAssociationsRequest struct {
 	ctx           context.Context
 	ApiService    *ConversionsAPIService
@@ -3651,23 +5244,21 @@ func (r ConversionsAPIRemoveConversionAssociationsRequest) CampaignIds(campaignI
 	return r
 }
 
-func (r ConversionsAPIRemoveConversionAssociationsRequest) Execute() (*AddConversionAssociations200Response, *http.Response, error) {
+func (r ConversionsAPIRemoveConversionAssociationsRequest) Execute() (*AddAdConversionAssociations200Response, *http.Response, error) {
 	return r.ApiService.RemoveConversionAssociationsExecute(r)
 }
 
 /*
 RemoveConversionAssociations Remove associated campaigns
 
-Unlinks campaigns from a LinkedIn conversion rule so they stop tracking it.
-
-Pass `adAccountId` and `campaignIds` as query parameters (`campaignIds` is comma-separated).
-
-The route also accepts a JSON body with the same fields, for clients that prefer DELETE-with-body. The documented surface is query-only because some SDK code generators (e.g. Python) collapse query + body parameters with the same name into a single kwarg.
+The first path of `DELETE /v1/ads/conversions/destinations/{destinationId}/associations` (`removeAdConversionAssociations`), which does the same with `accountId` as a parameter. It keeps working.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param destinationId
 	@return ConversionsAPIRemoveConversionAssociationsRequest
+
+Deprecated
 */
 func (a *ConversionsAPIService) RemoveConversionAssociations(ctx context.Context, accountId string, destinationId string) ConversionsAPIRemoveConversionAssociationsRequest {
 	return ConversionsAPIRemoveConversionAssociationsRequest{
@@ -3680,13 +5271,15 @@ func (a *ConversionsAPIService) RemoveConversionAssociations(ctx context.Context
 
 // Execute executes the request
 //
-//	@return AddConversionAssociations200Response
-func (a *ConversionsAPIService) RemoveConversionAssociationsExecute(r ConversionsAPIRemoveConversionAssociationsRequest) (*AddConversionAssociations200Response, *http.Response, error) {
+//	@return AddAdConversionAssociations200Response
+//
+// Deprecated
+func (a *ConversionsAPIService) RemoveConversionAssociationsExecute(r ConversionsAPIRemoveConversionAssociationsRequest) (*AddAdConversionAssociations200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *AddConversionAssociations200Response
+		localVarReturnValue *AddAdConversionAssociations200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.RemoveConversionAssociations")
@@ -4315,11 +5908,11 @@ Relays one or more events to the target ad platform's native Conversions API. Th
 - Google: conversion action resource name, e.g. `customers/1234567890/conversionActions/987654321`
 - LinkedIn: conversion rule ID or URN, e.g. `104012` or `urn:lla:llaPartnerConversion:104012`
 - TikTok: Offline Event Set ID, e.g. `7057103914977558530`
-- OpenAI Ads: pixel wire id (numeric `pixel_id`, distinct from the internal pixel id), as returned by `GET /v1/accounts/{accountId}/conversion-destinations`
+- OpenAI Ads: pixel wire id (numeric `pixel_id`, distinct from the internal pixel id), as returned by `GET /v1/ads/conversions/destinations`
 - Pinterest: numeric ad account id, e.g. `549755885175` (Pinterest attributes to the ad account, not to a tag)
-- Reddit: pixel id, e.g. `a2_abc123`, as returned by `GET /v1/accounts/{accountId}/conversion-destinations` (any other shape returns 400)
+- Reddit: pixel id, e.g. `a2_abc123`, as returned by `GET /v1/ads/conversions/destinations` (any other shape returns 400)
 
-Callers can list valid destinations via `GET /v1/accounts/{accountId}/conversion-destinations`.
+Callers can list valid destinations via `GET /v1/ads/conversions/destinations`.
 
 ### Pinterest notes
 
@@ -4673,6 +6266,160 @@ func (a *ConversionsAPIService) SendEventsExecute(r ConversionsAPISendEventsRequ
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConversionsAPIUpdateAdConversionDestinationRequest struct {
+	ctx                                  context.Context
+	ApiService                           *ConversionsAPIService
+	destinationId                        string
+	updateAdConversionDestinationRequest *UpdateAdConversionDestinationRequest
+}
+
+func (r ConversionsAPIUpdateAdConversionDestinationRequest) UpdateAdConversionDestinationRequest(updateAdConversionDestinationRequest UpdateAdConversionDestinationRequest) ConversionsAPIUpdateAdConversionDestinationRequest {
+	r.updateAdConversionDestinationRequest = &updateAdConversionDestinationRequest
+	return r
+}
+
+func (r ConversionsAPIUpdateAdConversionDestinationRequest) Execute() (*GetAdConversionDestination200Response, *http.Response, error) {
+	return r.ApiService.UpdateAdConversionDestinationExecute(r)
+}
+
+/*
+UpdateAdConversionDestination Update a conversion destination
+
+Changes a LinkedIn conversion rule's name, value, attribution windows, or turns it on or off.
+
+Partial-update a conversion rule. LinkedIn-only today. Whitelisted
+fields: `name`, `enabled`, attribution windows, `valueType`, `value`,
+`attributionType`. The rule's `type` and parent ad account are
+intentionally not exposed for update. Recreate the rule if those
+need to change.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param destinationId
+	@return ConversionsAPIUpdateAdConversionDestinationRequest
+*/
+func (a *ConversionsAPIService) UpdateAdConversionDestination(ctx context.Context, destinationId string) ConversionsAPIUpdateAdConversionDestinationRequest {
+	return ConversionsAPIUpdateAdConversionDestinationRequest{
+		ApiService:    a,
+		ctx:           ctx,
+		destinationId: destinationId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdConversionDestination200Response
+func (a *ConversionsAPIService) UpdateAdConversionDestinationExecute(r ConversionsAPIUpdateAdConversionDestinationRequest) (*GetAdConversionDestination200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdConversionDestination200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.UpdateAdConversionDestination")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/conversions/destinations/{destinationId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"destinationId"+"}", url.PathEscape(parameterValueToString(r.destinationId, "destinationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateAdConversionDestinationRequest == nil {
+		return localVarReturnValue, nil, reportError("updateAdConversionDestinationRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateAdConversionDestinationRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -5063,25 +6810,21 @@ func (r ConversionsAPIUpdateConversionDestinationRequest) UpdateConversionDestin
 	return r
 }
 
-func (r ConversionsAPIUpdateConversionDestinationRequest) Execute() (*GetConversionDestination200Response, *http.Response, error) {
+func (r ConversionsAPIUpdateConversionDestinationRequest) Execute() (*GetAdConversionDestination200Response, *http.Response, error) {
 	return r.ApiService.UpdateConversionDestinationExecute(r)
 }
 
 /*
 UpdateConversionDestination Update a conversion destination
 
-Changes a LinkedIn conversion rule's name, value, attribution windows, or turns it on or off.
-
-Partial-update a conversion rule. LinkedIn-only today. Whitelisted
-fields: `name`, `enabled`, attribution windows, `valueType`, `value`,
-`attributionType`. The rule's `type` and parent ad account are
-intentionally not exposed for update. Recreate the rule if those
-need to change.
+The first path of `PATCH /v1/ads/conversions/destinations/{destinationId}` (`updateAdConversionDestination`), which does the same with `accountId` as a parameter. It keeps working.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param destinationId
 	@return ConversionsAPIUpdateConversionDestinationRequest
+
+Deprecated
 */
 func (a *ConversionsAPIService) UpdateConversionDestination(ctx context.Context, accountId string, destinationId string) ConversionsAPIUpdateConversionDestinationRequest {
 	return ConversionsAPIUpdateConversionDestinationRequest{
@@ -5094,13 +6837,15 @@ func (a *ConversionsAPIService) UpdateConversionDestination(ctx context.Context,
 
 // Execute executes the request
 //
-//	@return GetConversionDestination200Response
-func (a *ConversionsAPIService) UpdateConversionDestinationExecute(r ConversionsAPIUpdateConversionDestinationRequest) (*GetConversionDestination200Response, *http.Response, error) {
+//	@return GetAdConversionDestination200Response
+//
+// Deprecated
+func (a *ConversionsAPIService) UpdateConversionDestinationExecute(r ConversionsAPIUpdateConversionDestinationRequest) (*GetAdConversionDestination200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetConversionDestination200Response
+		localVarReturnValue *GetAdConversionDestination200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.UpdateConversionDestination")

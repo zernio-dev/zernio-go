@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.565.5
+API version: 1.566.0
 Contact: support@zernio.com
 */
 
@@ -30,9 +30,9 @@ type UpdateConversionDestinationRequest struct {
 	// 365 only allowed for LEAD, PURCHASE, ADD_TO_CART, QUALIFIED_LEAD, SUBMIT_APPLICATION rule types.
 	PostClickAttributionWindowSize *int32 `json:"postClickAttributionWindowSize,omitempty"`
 	// 365 only allowed for LEAD, PURCHASE, ADD_TO_CART, QUALIFIED_LEAD, SUBMIT_APPLICATION rule types.
-	ViewThroughAttributionWindowSize *int32                                   `json:"viewThroughAttributionWindowSize,omitempty"`
-	ValueType                        *string                                  `json:"valueType,omitempty"`
-	Value                            *UpdateConversionDestinationRequestValue `json:"value,omitempty"`
+	ViewThroughAttributionWindowSize *int32                                     `json:"viewThroughAttributionWindowSize,omitempty"`
+	ValueType                        *string                                    `json:"valueType,omitempty"`
+	Value                            *UpdateAdConversionDestinationRequestValue `json:"value,omitempty"`
 }
 
 type _UpdateConversionDestinationRequest UpdateConversionDestinationRequest
@@ -272,9 +272,9 @@ func (o *UpdateConversionDestinationRequest) SetValueType(v string) {
 }
 
 // GetValue returns the Value field value if set, zero value otherwise.
-func (o *UpdateConversionDestinationRequest) GetValue() UpdateConversionDestinationRequestValue {
+func (o *UpdateConversionDestinationRequest) GetValue() UpdateAdConversionDestinationRequestValue {
 	if o == nil || IsNil(o.Value) {
-		var ret UpdateConversionDestinationRequestValue
+		var ret UpdateAdConversionDestinationRequestValue
 		return ret
 	}
 	return *o.Value
@@ -282,7 +282,7 @@ func (o *UpdateConversionDestinationRequest) GetValue() UpdateConversionDestinat
 
 // GetValueOk returns a tuple with the Value field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateConversionDestinationRequest) GetValueOk() (*UpdateConversionDestinationRequestValue, bool) {
+func (o *UpdateConversionDestinationRequest) GetValueOk() (*UpdateAdConversionDestinationRequestValue, bool) {
 	if o == nil || IsNil(o.Value) {
 		return nil, false
 	}
@@ -298,8 +298,8 @@ func (o *UpdateConversionDestinationRequest) HasValue() bool {
 	return false
 }
 
-// SetValue gets a reference to the given UpdateConversionDestinationRequestValue and assigns it to the Value field.
-func (o *UpdateConversionDestinationRequest) SetValue(v UpdateConversionDestinationRequestValue) {
+// SetValue gets a reference to the given UpdateAdConversionDestinationRequestValue and assigns it to the Value field.
+func (o *UpdateConversionDestinationRequest) SetValue(v UpdateAdConversionDestinationRequestValue) {
 	o.Value = &v
 }
 

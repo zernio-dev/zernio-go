@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.565.5
+API version: 1.566.0
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,7 @@ type CreateConversionActionRequest struct {
 	// Deprecated
 	CustomerId *string `json:"customerId,omitempty"`
 	Name       string  `json:"name"`
-	// Only WEBPAGE is supported for creation today.
+	// WEBPAGE for a website tag, UPLOAD_CLICKS for the conversions you send to Zernio.
 	Type string `json:"type"`
 	// Default conversion value used when an event doesn't carry its own value.
 	DefaultValue *float32 `json:"defaultValue,omitempty"`
@@ -46,7 +46,7 @@ type CreateConversionActionRequest struct {
 	ClickThroughLookbackWindowDays *int32 `json:"clickThroughLookbackWindowDays,omitempty"`
 	// Days after an ad view a view-through conversion still counts.
 	ViewThroughLookbackWindowDays *int32 `json:"viewThroughLookbackWindowDays,omitempty"`
-	// true = primary (counts toward bidding when its goal is biddable), false = secondary.
+	// true = primary (counts toward bidding when its goal is biddable), false = secondary. Defaults to secondary for UPLOAD_CLICKS.
 	PrimaryForGoal *bool `json:"primaryForGoal,omitempty"`
 }
 

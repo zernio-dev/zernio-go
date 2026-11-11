@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.565.5
+API version: 1.566.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &SendEventsRequestDestinationsInner{}
 type SendEventsRequestDestinationsInner struct {
 	// Connected ads account ID (metaads, googleads, linkedinads, tiktokads, openaiads, pinterestads or redditads).
 	AccountId string `json:"accountId"`
-	// Platform destination, as listed by GET /v1/accounts/{accountId}/conversion-destinations.
+	// Platform destination, as listed by GET /v1/ads/conversions/destinations.
 	DestinationId        string `json:"destinationId"`
 	AdditionalProperties map[string]interface{}
 }

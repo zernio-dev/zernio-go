@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.565.5
+API version: 1.566.0
 Contact: support@zernio.com
 */
 
@@ -1553,23 +1553,13 @@ func (r AdAccountsAPICreateCustomConversionRequest) Execute() (*CustomConversion
 /*
 CreateCustomConversion Create custom conversion
 
-Creates a Meta custom conversion for ads to optimise toward, reusing an existing one with the same name and pixel.
-
-It provisions the Meta custom conversion an ads flow optimises toward, and hands back the `customConversionId` for `promotedObject.customConversionId` on POST /v1/ads/create. This removes the manual "create it in Ads Manager first" step.
-
-### Reuse is ours, not Meta's
-
-Meta's create is not idempotent, so a retried request would otherwise mint a duplicate carrying none of the original's optimisation history.
-
-A non-archived conversion with the same `name` on the same `pixelId` is returned instead of created, with `reused: true` and a 200 rather than a 201.
-
-### Rule
-
-`rule` is forwarded verbatim in Meta's own grammar (e.g. `{"url": {"i_contains": "thank-you"}}`). Meta validates it and rejects a malformed one with "A conversion rule is required at creation time".
+The first path of `POST /v1/ads/conversions/custom-conversions` (`createAdCustomConversion`), which does the same with `accountId` as a parameter. It keeps working.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Meta ads SocialAccount id.
 	@return AdAccountsAPICreateCustomConversionRequest
+
+Deprecated
 */
 func (a *AdAccountsAPIService) CreateCustomConversion(ctx context.Context, accountId string) AdAccountsAPICreateCustomConversionRequest {
 	return AdAccountsAPICreateCustomConversionRequest{
@@ -1582,6 +1572,8 @@ func (a *AdAccountsAPIService) CreateCustomConversion(ctx context.Context, accou
 // Execute executes the request
 //
 //	@return CustomConversionResult
+//
+// Deprecated
 func (a *AdAccountsAPIService) CreateCustomConversionExecute(r AdAccountsAPICreateCustomConversionRequest) (*CustomConversionResult, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -8317,20 +8309,20 @@ func (r AdAccountsAPIListCustomConversionsRequest) AdAccountId(adAccountId strin
 	return r
 }
 
-func (r AdAccountsAPIListCustomConversionsRequest) Execute() (*ListCustomConversions200Response, *http.Response, error) {
+func (r AdAccountsAPIListCustomConversionsRequest) Execute() (*ListAdCustomConversions200Response, *http.Response, error) {
 	return r.ApiService.ListCustomConversionsExecute(r)
 }
 
 /*
 ListCustomConversions List custom conversions
 
-Lists a Meta ad account's custom conversions, including archived ones.
-
-The ad account's Meta custom conversions, including archived ones (`isArchived`).
+The first path of `GET /v1/ads/conversions/custom-conversions` (`listAdCustomConversions`), which does the same with `accountId` as a parameter. It keeps working.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Meta ads SocialAccount id.
 	@return AdAccountsAPIListCustomConversionsRequest
+
+Deprecated
 */
 func (a *AdAccountsAPIService) ListCustomConversions(ctx context.Context, accountId string) AdAccountsAPIListCustomConversionsRequest {
 	return AdAccountsAPIListCustomConversionsRequest{
@@ -8342,13 +8334,15 @@ func (a *AdAccountsAPIService) ListCustomConversions(ctx context.Context, accoun
 
 // Execute executes the request
 //
-//	@return ListCustomConversions200Response
-func (a *AdAccountsAPIService) ListCustomConversionsExecute(r AdAccountsAPIListCustomConversionsRequest) (*ListCustomConversions200Response, *http.Response, error) {
+//	@return ListAdCustomConversions200Response
+//
+// Deprecated
+func (a *AdAccountsAPIService) ListCustomConversionsExecute(r AdAccountsAPIListCustomConversionsRequest) (*ListAdCustomConversions200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ListCustomConversions200Response
+		localVarReturnValue *ListAdCustomConversions200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.ListCustomConversions")
