@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.571.0
+API version: 1.572.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,9 @@ var _ MappedNullable = &StoredEvent{}
 
 // StoredEvent struct for StoredEvent
 type StoredEvent struct {
-	EventId      *string         `json:"eventId,omitempty"`
+	EventId *string `json:"eventId,omitempty"`
+	// Where the event came from: `api`, `relay`, `web`, `shopify`, `woocommerce`, `hubspot`, `meta_leads`, `google_leads`, `linkedin_leads` or `tiktok_leads`.
+	Source       *string         `json:"source,omitempty"`
 	EventName    *string         `json:"eventName,omitempty"`
 	EventTime    *time.Time      `json:"eventTime,omitempty"`
 	ReceivedAt   *time.Time      `json:"receivedAt,omitempty"`
@@ -89,6 +91,38 @@ func (o *StoredEvent) HasEventId() bool {
 // SetEventId gets a reference to the given string and assigns it to the EventId field.
 func (o *StoredEvent) SetEventId(v string) {
 	o.EventId = &v
+}
+
+// GetSource returns the Source field value if set, zero value otherwise.
+func (o *StoredEvent) GetSource() string {
+	if o == nil || IsNil(o.Source) {
+		var ret string
+		return ret
+	}
+	return *o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StoredEvent) GetSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.Source) {
+		return nil, false
+	}
+	return o.Source, true
+}
+
+// HasSource returns a boolean if a field has been set.
+func (o *StoredEvent) HasSource() bool {
+	if o != nil && !IsNil(o.Source) {
+		return true
+	}
+
+	return false
+}
+
+// SetSource gets a reference to the given string and assigns it to the Source field.
+func (o *StoredEvent) SetSource(v string) {
+	o.Source = &v
 }
 
 // GetEventName returns the EventName field value if set, zero value otherwise.
@@ -638,6 +672,9 @@ func (o StoredEvent) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.EventId) {
 		toSerialize["eventId"] = o.EventId
+	}
+	if !IsNil(o.Source) {
+		toSerialize["source"] = o.Source
 	}
 	if !IsNil(o.EventName) {
 		toSerialize["eventName"] = o.EventName

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.530.0
+API version: 1.572.0
 Contact: support@zernio.com
 */
 
@@ -21,25 +21,29 @@ var _ MappedNullable = &ListEvents200ResponseEventsInner{}
 
 // ListEvents200ResponseEventsInner struct for ListEvents200ResponseEventsInner
 type ListEvents200ResponseEventsInner struct {
-	EventId      *string         `json:"eventId,omitempty"`
-	EventName    *string         `json:"eventName,omitempty"`
-	EventTime    *time.Time      `json:"eventTime,omitempty"`
-	ReceivedAt   *time.Time      `json:"receivedAt,omitempty"`
-	ActionSource NullableString  `json:"actionSource,omitempty"`
-	Value        NullableFloat32 `json:"value,omitempty"`
-	Currency     NullableString  `json:"currency,omitempty"`
+	EventId *string `json:"eventId,omitempty"`
+	// Where the event came from: `api`, `relay`, `web`, `shopify`, `woocommerce`, `hubspot`, `meta_leads`, `google_leads`, `linkedin_leads` or `tiktok_leads`.
+	Source       *string    `json:"source,omitempty"`
+	EventName    *string    `json:"eventName,omitempty"`
+	EventTime    *time.Time `json:"eventTime,omitempty"`
+	ReceivedAt   *time.Time `json:"receivedAt,omitempty"`
+	ActionSource *string    `json:"actionSource,omitempty"`
+	Value        *float32   `json:"value,omitempty"`
+	Currency     *string    `json:"currency,omitempty"`
 	// Origin, path and attribution parameters only.
-	SourceUrl NullableString                       `json:"sourceUrl,omitempty"`
-	Utm       *ListEvents200ResponseEventsInnerUtm `json:"utm,omitempty"`
+	SourceUrl *string         `json:"sourceUrl,omitempty"`
+	Utm       *StoredEventUtm `json:"utm,omitempty"`
 	// Ad ID from the `zrn` parameter Zernio adds to links of ads it creates.
-	Zrn      NullableString                            `json:"zrn,omitempty"`
-	ClickIds *ListEvents200ResponseEventsInnerClickIds `json:"clickIds,omitempty"`
+	Zrn      *string              `json:"zrn,omitempty"`
+	ClickIds *StoredEventClickIds `json:"clickIds,omitempty"`
 	// Destinations the event was forwarded to.
-	DestinationsSent *int32                              `json:"destinationsSent,omitempty"`
-	HasEmail         *bool                               `json:"hasEmail,omitempty"`
-	HasPhone         *bool                               `json:"hasPhone,omitempty"`
-	HasExternalId    *bool                               `json:"hasExternalId,omitempty"`
-	Ad               *ListEvents200ResponseEventsInnerAd `json:"ad,omitempty"`
+	DestinationsSent *int32         `json:"destinationsSent,omitempty"`
+	HasEmail         *bool          `json:"hasEmail,omitempty"`
+	HasPhone         *bool          `json:"hasPhone,omitempty"`
+	HasExternalId    *bool          `json:"hasExternalId,omitempty"`
+	Ad               *StoredEventAd `json:"ad,omitempty"`
+	// Each destination the event was forwarded to, with its latest send status. The full detail is on GET /v1/events/{eventId}.
+	Deliveries []ListEvents200ResponseEventsInnerAllOfDeliveriesInner `json:"deliveries,omitempty"`
 }
 
 // NewListEvents200ResponseEventsInner instantiates a new ListEvents200ResponseEventsInner object
@@ -89,6 +93,38 @@ func (o *ListEvents200ResponseEventsInner) HasEventId() bool {
 // SetEventId gets a reference to the given string and assigns it to the EventId field.
 func (o *ListEvents200ResponseEventsInner) SetEventId(v string) {
 	o.EventId = &v
+}
+
+// GetSource returns the Source field value if set, zero value otherwise.
+func (o *ListEvents200ResponseEventsInner) GetSource() string {
+	if o == nil || IsNil(o.Source) {
+		var ret string
+		return ret
+	}
+	return *o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListEvents200ResponseEventsInner) GetSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.Source) {
+		return nil, false
+	}
+	return o.Source, true
+}
+
+// HasSource returns a boolean if a field has been set.
+func (o *ListEvents200ResponseEventsInner) HasSource() bool {
+	if o != nil && !IsNil(o.Source) {
+		return true
+	}
+
+	return false
+}
+
+// SetSource gets a reference to the given string and assigns it to the Source field.
+func (o *ListEvents200ResponseEventsInner) SetSource(v string) {
+	o.Source = &v
 }
 
 // GetEventName returns the EventName field value if set, zero value otherwise.
@@ -187,182 +223,138 @@ func (o *ListEvents200ResponseEventsInner) SetReceivedAt(v time.Time) {
 	o.ReceivedAt = &v
 }
 
-// GetActionSource returns the ActionSource field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetActionSource returns the ActionSource field value if set, zero value otherwise.
 func (o *ListEvents200ResponseEventsInner) GetActionSource() string {
-	if o == nil || IsNil(o.ActionSource.Get()) {
+	if o == nil || IsNil(o.ActionSource) {
 		var ret string
 		return ret
 	}
-	return *o.ActionSource.Get()
+	return *o.ActionSource
 }
 
 // GetActionSourceOk returns a tuple with the ActionSource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListEvents200ResponseEventsInner) GetActionSourceOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.ActionSource) {
 		return nil, false
 	}
-	return o.ActionSource.Get(), o.ActionSource.IsSet()
+	return o.ActionSource, true
 }
 
 // HasActionSource returns a boolean if a field has been set.
 func (o *ListEvents200ResponseEventsInner) HasActionSource() bool {
-	if o != nil && o.ActionSource.IsSet() {
+	if o != nil && !IsNil(o.ActionSource) {
 		return true
 	}
 
 	return false
 }
 
-// SetActionSource gets a reference to the given NullableString and assigns it to the ActionSource field.
+// SetActionSource gets a reference to the given string and assigns it to the ActionSource field.
 func (o *ListEvents200ResponseEventsInner) SetActionSource(v string) {
-	o.ActionSource.Set(&v)
+	o.ActionSource = &v
 }
 
-// SetActionSourceNil sets the value for ActionSource to be an explicit nil
-func (o *ListEvents200ResponseEventsInner) SetActionSourceNil() {
-	o.ActionSource.Set(nil)
-}
-
-// UnsetActionSource ensures that no value is present for ActionSource, not even an explicit nil
-func (o *ListEvents200ResponseEventsInner) UnsetActionSource() {
-	o.ActionSource.Unset()
-}
-
-// GetValue returns the Value field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetValue returns the Value field value if set, zero value otherwise.
 func (o *ListEvents200ResponseEventsInner) GetValue() float32 {
-	if o == nil || IsNil(o.Value.Get()) {
+	if o == nil || IsNil(o.Value) {
 		var ret float32
 		return ret
 	}
-	return *o.Value.Get()
+	return *o.Value
 }
 
 // GetValueOk returns a tuple with the Value field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListEvents200ResponseEventsInner) GetValueOk() (*float32, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Value) {
 		return nil, false
 	}
-	return o.Value.Get(), o.Value.IsSet()
+	return o.Value, true
 }
 
 // HasValue returns a boolean if a field has been set.
 func (o *ListEvents200ResponseEventsInner) HasValue() bool {
-	if o != nil && o.Value.IsSet() {
+	if o != nil && !IsNil(o.Value) {
 		return true
 	}
 
 	return false
 }
 
-// SetValue gets a reference to the given NullableFloat32 and assigns it to the Value field.
+// SetValue gets a reference to the given float32 and assigns it to the Value field.
 func (o *ListEvents200ResponseEventsInner) SetValue(v float32) {
-	o.Value.Set(&v)
+	o.Value = &v
 }
 
-// SetValueNil sets the value for Value to be an explicit nil
-func (o *ListEvents200ResponseEventsInner) SetValueNil() {
-	o.Value.Set(nil)
-}
-
-// UnsetValue ensures that no value is present for Value, not even an explicit nil
-func (o *ListEvents200ResponseEventsInner) UnsetValue() {
-	o.Value.Unset()
-}
-
-// GetCurrency returns the Currency field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetCurrency returns the Currency field value if set, zero value otherwise.
 func (o *ListEvents200ResponseEventsInner) GetCurrency() string {
-	if o == nil || IsNil(o.Currency.Get()) {
+	if o == nil || IsNil(o.Currency) {
 		var ret string
 		return ret
 	}
-	return *o.Currency.Get()
+	return *o.Currency
 }
 
 // GetCurrencyOk returns a tuple with the Currency field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListEvents200ResponseEventsInner) GetCurrencyOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Currency) {
 		return nil, false
 	}
-	return o.Currency.Get(), o.Currency.IsSet()
+	return o.Currency, true
 }
 
 // HasCurrency returns a boolean if a field has been set.
 func (o *ListEvents200ResponseEventsInner) HasCurrency() bool {
-	if o != nil && o.Currency.IsSet() {
+	if o != nil && !IsNil(o.Currency) {
 		return true
 	}
 
 	return false
 }
 
-// SetCurrency gets a reference to the given NullableString and assigns it to the Currency field.
+// SetCurrency gets a reference to the given string and assigns it to the Currency field.
 func (o *ListEvents200ResponseEventsInner) SetCurrency(v string) {
-	o.Currency.Set(&v)
+	o.Currency = &v
 }
 
-// SetCurrencyNil sets the value for Currency to be an explicit nil
-func (o *ListEvents200ResponseEventsInner) SetCurrencyNil() {
-	o.Currency.Set(nil)
-}
-
-// UnsetCurrency ensures that no value is present for Currency, not even an explicit nil
-func (o *ListEvents200ResponseEventsInner) UnsetCurrency() {
-	o.Currency.Unset()
-}
-
-// GetSourceUrl returns the SourceUrl field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetSourceUrl returns the SourceUrl field value if set, zero value otherwise.
 func (o *ListEvents200ResponseEventsInner) GetSourceUrl() string {
-	if o == nil || IsNil(o.SourceUrl.Get()) {
+	if o == nil || IsNil(o.SourceUrl) {
 		var ret string
 		return ret
 	}
-	return *o.SourceUrl.Get()
+	return *o.SourceUrl
 }
 
 // GetSourceUrlOk returns a tuple with the SourceUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListEvents200ResponseEventsInner) GetSourceUrlOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.SourceUrl) {
 		return nil, false
 	}
-	return o.SourceUrl.Get(), o.SourceUrl.IsSet()
+	return o.SourceUrl, true
 }
 
 // HasSourceUrl returns a boolean if a field has been set.
 func (o *ListEvents200ResponseEventsInner) HasSourceUrl() bool {
-	if o != nil && o.SourceUrl.IsSet() {
+	if o != nil && !IsNil(o.SourceUrl) {
 		return true
 	}
 
 	return false
 }
 
-// SetSourceUrl gets a reference to the given NullableString and assigns it to the SourceUrl field.
+// SetSourceUrl gets a reference to the given string and assigns it to the SourceUrl field.
 func (o *ListEvents200ResponseEventsInner) SetSourceUrl(v string) {
-	o.SourceUrl.Set(&v)
-}
-
-// SetSourceUrlNil sets the value for SourceUrl to be an explicit nil
-func (o *ListEvents200ResponseEventsInner) SetSourceUrlNil() {
-	o.SourceUrl.Set(nil)
-}
-
-// UnsetSourceUrl ensures that no value is present for SourceUrl, not even an explicit nil
-func (o *ListEvents200ResponseEventsInner) UnsetSourceUrl() {
-	o.SourceUrl.Unset()
+	o.SourceUrl = &v
 }
 
 // GetUtm returns the Utm field value if set, zero value otherwise.
-func (o *ListEvents200ResponseEventsInner) GetUtm() ListEvents200ResponseEventsInnerUtm {
+func (o *ListEvents200ResponseEventsInner) GetUtm() StoredEventUtm {
 	if o == nil || IsNil(o.Utm) {
-		var ret ListEvents200ResponseEventsInnerUtm
+		var ret StoredEventUtm
 		return ret
 	}
 	return *o.Utm
@@ -370,7 +362,7 @@ func (o *ListEvents200ResponseEventsInner) GetUtm() ListEvents200ResponseEventsI
 
 // GetUtmOk returns a tuple with the Utm field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListEvents200ResponseEventsInner) GetUtmOk() (*ListEvents200ResponseEventsInnerUtm, bool) {
+func (o *ListEvents200ResponseEventsInner) GetUtmOk() (*StoredEventUtm, bool) {
 	if o == nil || IsNil(o.Utm) {
 		return nil, false
 	}
@@ -386,58 +378,47 @@ func (o *ListEvents200ResponseEventsInner) HasUtm() bool {
 	return false
 }
 
-// SetUtm gets a reference to the given ListEvents200ResponseEventsInnerUtm and assigns it to the Utm field.
-func (o *ListEvents200ResponseEventsInner) SetUtm(v ListEvents200ResponseEventsInnerUtm) {
+// SetUtm gets a reference to the given StoredEventUtm and assigns it to the Utm field.
+func (o *ListEvents200ResponseEventsInner) SetUtm(v StoredEventUtm) {
 	o.Utm = &v
 }
 
-// GetZrn returns the Zrn field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetZrn returns the Zrn field value if set, zero value otherwise.
 func (o *ListEvents200ResponseEventsInner) GetZrn() string {
-	if o == nil || IsNil(o.Zrn.Get()) {
+	if o == nil || IsNil(o.Zrn) {
 		var ret string
 		return ret
 	}
-	return *o.Zrn.Get()
+	return *o.Zrn
 }
 
 // GetZrnOk returns a tuple with the Zrn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListEvents200ResponseEventsInner) GetZrnOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Zrn) {
 		return nil, false
 	}
-	return o.Zrn.Get(), o.Zrn.IsSet()
+	return o.Zrn, true
 }
 
 // HasZrn returns a boolean if a field has been set.
 func (o *ListEvents200ResponseEventsInner) HasZrn() bool {
-	if o != nil && o.Zrn.IsSet() {
+	if o != nil && !IsNil(o.Zrn) {
 		return true
 	}
 
 	return false
 }
 
-// SetZrn gets a reference to the given NullableString and assigns it to the Zrn field.
+// SetZrn gets a reference to the given string and assigns it to the Zrn field.
 func (o *ListEvents200ResponseEventsInner) SetZrn(v string) {
-	o.Zrn.Set(&v)
-}
-
-// SetZrnNil sets the value for Zrn to be an explicit nil
-func (o *ListEvents200ResponseEventsInner) SetZrnNil() {
-	o.Zrn.Set(nil)
-}
-
-// UnsetZrn ensures that no value is present for Zrn, not even an explicit nil
-func (o *ListEvents200ResponseEventsInner) UnsetZrn() {
-	o.Zrn.Unset()
+	o.Zrn = &v
 }
 
 // GetClickIds returns the ClickIds field value if set, zero value otherwise.
-func (o *ListEvents200ResponseEventsInner) GetClickIds() ListEvents200ResponseEventsInnerClickIds {
+func (o *ListEvents200ResponseEventsInner) GetClickIds() StoredEventClickIds {
 	if o == nil || IsNil(o.ClickIds) {
-		var ret ListEvents200ResponseEventsInnerClickIds
+		var ret StoredEventClickIds
 		return ret
 	}
 	return *o.ClickIds
@@ -445,7 +426,7 @@ func (o *ListEvents200ResponseEventsInner) GetClickIds() ListEvents200ResponseEv
 
 // GetClickIdsOk returns a tuple with the ClickIds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListEvents200ResponseEventsInner) GetClickIdsOk() (*ListEvents200ResponseEventsInnerClickIds, bool) {
+func (o *ListEvents200ResponseEventsInner) GetClickIdsOk() (*StoredEventClickIds, bool) {
 	if o == nil || IsNil(o.ClickIds) {
 		return nil, false
 	}
@@ -461,8 +442,8 @@ func (o *ListEvents200ResponseEventsInner) HasClickIds() bool {
 	return false
 }
 
-// SetClickIds gets a reference to the given ListEvents200ResponseEventsInnerClickIds and assigns it to the ClickIds field.
-func (o *ListEvents200ResponseEventsInner) SetClickIds(v ListEvents200ResponseEventsInnerClickIds) {
+// SetClickIds gets a reference to the given StoredEventClickIds and assigns it to the ClickIds field.
+func (o *ListEvents200ResponseEventsInner) SetClickIds(v StoredEventClickIds) {
 	o.ClickIds = &v
 }
 
@@ -595,9 +576,9 @@ func (o *ListEvents200ResponseEventsInner) SetHasExternalId(v bool) {
 }
 
 // GetAd returns the Ad field value if set, zero value otherwise.
-func (o *ListEvents200ResponseEventsInner) GetAd() ListEvents200ResponseEventsInnerAd {
+func (o *ListEvents200ResponseEventsInner) GetAd() StoredEventAd {
 	if o == nil || IsNil(o.Ad) {
-		var ret ListEvents200ResponseEventsInnerAd
+		var ret StoredEventAd
 		return ret
 	}
 	return *o.Ad
@@ -605,7 +586,7 @@ func (o *ListEvents200ResponseEventsInner) GetAd() ListEvents200ResponseEventsIn
 
 // GetAdOk returns a tuple with the Ad field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListEvents200ResponseEventsInner) GetAdOk() (*ListEvents200ResponseEventsInnerAd, bool) {
+func (o *ListEvents200ResponseEventsInner) GetAdOk() (*StoredEventAd, bool) {
 	if o == nil || IsNil(o.Ad) {
 		return nil, false
 	}
@@ -621,9 +602,41 @@ func (o *ListEvents200ResponseEventsInner) HasAd() bool {
 	return false
 }
 
-// SetAd gets a reference to the given ListEvents200ResponseEventsInnerAd and assigns it to the Ad field.
-func (o *ListEvents200ResponseEventsInner) SetAd(v ListEvents200ResponseEventsInnerAd) {
+// SetAd gets a reference to the given StoredEventAd and assigns it to the Ad field.
+func (o *ListEvents200ResponseEventsInner) SetAd(v StoredEventAd) {
 	o.Ad = &v
+}
+
+// GetDeliveries returns the Deliveries field value if set, zero value otherwise.
+func (o *ListEvents200ResponseEventsInner) GetDeliveries() []ListEvents200ResponseEventsInnerAllOfDeliveriesInner {
+	if o == nil || IsNil(o.Deliveries) {
+		var ret []ListEvents200ResponseEventsInnerAllOfDeliveriesInner
+		return ret
+	}
+	return o.Deliveries
+}
+
+// GetDeliveriesOk returns a tuple with the Deliveries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListEvents200ResponseEventsInner) GetDeliveriesOk() ([]ListEvents200ResponseEventsInnerAllOfDeliveriesInner, bool) {
+	if o == nil || IsNil(o.Deliveries) {
+		return nil, false
+	}
+	return o.Deliveries, true
+}
+
+// HasDeliveries returns a boolean if a field has been set.
+func (o *ListEvents200ResponseEventsInner) HasDeliveries() bool {
+	if o != nil && !IsNil(o.Deliveries) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeliveries gets a reference to the given []ListEvents200ResponseEventsInnerAllOfDeliveriesInner and assigns it to the Deliveries field.
+func (o *ListEvents200ResponseEventsInner) SetDeliveries(v []ListEvents200ResponseEventsInnerAllOfDeliveriesInner) {
+	o.Deliveries = v
 }
 
 func (o ListEvents200ResponseEventsInner) MarshalJSON() ([]byte, error) {
@@ -639,6 +652,9 @@ func (o ListEvents200ResponseEventsInner) ToMap() (map[string]interface{}, error
 	if !IsNil(o.EventId) {
 		toSerialize["eventId"] = o.EventId
 	}
+	if !IsNil(o.Source) {
+		toSerialize["source"] = o.Source
+	}
 	if !IsNil(o.EventName) {
 		toSerialize["eventName"] = o.EventName
 	}
@@ -648,23 +664,23 @@ func (o ListEvents200ResponseEventsInner) ToMap() (map[string]interface{}, error
 	if !IsNil(o.ReceivedAt) {
 		toSerialize["receivedAt"] = o.ReceivedAt
 	}
-	if o.ActionSource.IsSet() {
-		toSerialize["actionSource"] = o.ActionSource.Get()
+	if !IsNil(o.ActionSource) {
+		toSerialize["actionSource"] = o.ActionSource
 	}
-	if o.Value.IsSet() {
-		toSerialize["value"] = o.Value.Get()
+	if !IsNil(o.Value) {
+		toSerialize["value"] = o.Value
 	}
-	if o.Currency.IsSet() {
-		toSerialize["currency"] = o.Currency.Get()
+	if !IsNil(o.Currency) {
+		toSerialize["currency"] = o.Currency
 	}
-	if o.SourceUrl.IsSet() {
-		toSerialize["sourceUrl"] = o.SourceUrl.Get()
+	if !IsNil(o.SourceUrl) {
+		toSerialize["sourceUrl"] = o.SourceUrl
 	}
 	if !IsNil(o.Utm) {
 		toSerialize["utm"] = o.Utm
 	}
-	if o.Zrn.IsSet() {
-		toSerialize["zrn"] = o.Zrn.Get()
+	if !IsNil(o.Zrn) {
+		toSerialize["zrn"] = o.Zrn
 	}
 	if !IsNil(o.ClickIds) {
 		toSerialize["clickIds"] = o.ClickIds
@@ -683,6 +699,9 @@ func (o ListEvents200ResponseEventsInner) ToMap() (map[string]interface{}, error
 	}
 	if !IsNil(o.Ad) {
 		toSerialize["ad"] = o.Ad
+	}
+	if !IsNil(o.Deliveries) {
+		toSerialize["deliveries"] = o.Deliveries
 	}
 	return toSerialize, nil
 }
