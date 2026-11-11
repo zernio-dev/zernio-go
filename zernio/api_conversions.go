@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.566.0
+API version: 1.567.0
 Contact: support@zernio.com
 */
 
@@ -1455,13 +1455,13 @@ func (a *ConversionsAPIService) CreateEventDestinationExecute(r ConversionsAPICr
 }
 
 type ConversionsAPICreateForwardingRuleRequest struct {
-	ctx                           context.Context
-	ApiService                    *ConversionsAPIService
-	createEventDestinationRequest *CreateEventDestinationRequest
+	ctx                         context.Context
+	ApiService                  *ConversionsAPIService
+	createForwardingRuleRequest *CreateForwardingRuleRequest
 }
 
-func (r ConversionsAPICreateForwardingRuleRequest) CreateEventDestinationRequest(createEventDestinationRequest CreateEventDestinationRequest) ConversionsAPICreateForwardingRuleRequest {
-	r.createEventDestinationRequest = &createEventDestinationRequest
+func (r ConversionsAPICreateForwardingRuleRequest) CreateForwardingRuleRequest(createForwardingRuleRequest CreateForwardingRuleRequest) ConversionsAPICreateForwardingRuleRequest {
+	r.createForwardingRuleRequest = &createForwardingRuleRequest
 	return r
 }
 
@@ -1507,8 +1507,8 @@ func (a *ConversionsAPIService) CreateForwardingRuleExecute(r ConversionsAPICrea
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.createEventDestinationRequest == nil {
-		return localVarReturnValue, nil, reportError("createEventDestinationRequest is required and must be specified")
+	if r.createForwardingRuleRequest == nil {
+		return localVarReturnValue, nil, reportError("createForwardingRuleRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1529,7 +1529,7 @@ func (a *ConversionsAPIService) CreateForwardingRuleExecute(r ConversionsAPICrea
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.createEventDestinationRequest
+	localVarPostBody = r.createForwardingRuleRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
