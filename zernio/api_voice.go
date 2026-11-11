@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.576.1
+API version: 1.576.2
 Contact: support@zernio.com
 */
 
@@ -364,6 +364,10 @@ Destinations can be your own AI voice agent (Vapi/Retell), a phone, or a SIP end
 The 200 response means the call is dialing. The lifecycle continues asynchronously: track it via `GET /v1/voice/calls/{id}` or the `call.*` webhooks.
 
 Outbound calls are capped per rolling hour (429 when hit).
+
+### Balance time limit
+
+On balance billing a call runs only as long as the balance, plus what auto top-up can still add this month, funds at its per-minute price, minus calls already in progress. Then it ends with `hangup_cause: time_limit`. Under one minute is refused with 402.
 
 ### Idempotency
 
@@ -890,6 +894,7 @@ The callee's pickup then connects immediately, with no ringing after they answer
 
 - The call is logged as outbound (from = your number, to = target) and recorded per the number's settings.
 - `ringTimeoutSeconds` applies to the target's phone, not to the browser.
+- On balance billing the call gets the same time limit as `POST /v1/voice/calls`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return VoiceAPIDialVoiceWebCallRequest
