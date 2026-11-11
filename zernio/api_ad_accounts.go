@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.570.1
+API version: 1.571.0
 Contact: support@zernio.com
 */
 
@@ -966,10 +966,17 @@ type AdAccountsAPICreateAdAccountRequest struct {
 	ctx                    context.Context
 	ApiService             *AdAccountsAPIService
 	createAdAccountRequest *CreateAdAccountRequest
+	idempotencyKey         *string
 }
 
 func (r AdAccountsAPICreateAdAccountRequest) CreateAdAccountRequest(createAdAccountRequest CreateAdAccountRequest) AdAccountsAPICreateAdAccountRequest {
 	r.createAdAccountRequest = &createAdAccountRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdAccountsAPICreateAdAccountRequest) IdempotencyKey(idempotencyKey string) AdAccountsAPICreateAdAccountRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -1015,9 +1022,9 @@ Discovery is nudged immediately. Use the returned adAccountId with the existing 
 
 ### Meta retries and failures
 
-This operation is not idempotent and Zernio never automatically retries it. Unknown body fields are rejected. The Meta flow has no validateOnly or dry-run option.
+Zernio never retries creation. Send an Idempotency-Key to make a resend safe: the same key and body replay the original 201 without creating again. Without a key every request creates a new account. Unknown body fields are rejected. The Meta flow has no validateOnly or dry-run option.
 
-- After a timeout or a 502 with details.creationStatus=unknown, check the business in Ads Manager before attempting another creation.
+- After a timeout or a 502 with details.creationStatus=unknown, check the business in Ads Manager before attempting another creation. An Idempotency-Key does not cover that 502.
 - A 201 with connectionUpdated=false means the account exists but needs reconnecting via GET /v1/connect/facebook/ads, with adAccountIds containing the returned ID and the previous scoped IDs. Do not repeat the create call.
 
 **Google** (send `platform: google`).
@@ -1038,7 +1045,10 @@ The new customer is added to the connection (and to a scoped connection's allowl
 
 `validateOnly: true` asks Google to validate the request without creating anything and returns 200.
 
-A real create is not idempotent: after a 502 with details.creationStatus=unknown, check the manager in Google Ads before trying again.
+Zernio never retries creation. Send an Idempotency-Key to make a resend safe: the same key and body replay the original 201 without creating again. Without a key every request creates a new account.
+
+- A validateOnly call and the real create need different keys.
+- After a 502 with details.creationStatus=unknown, check the manager in Google Ads before trying again: an Idempotency-Key does not cover that 502.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPICreateAdAccountRequest
@@ -1091,6 +1101,9 @@ func (a *AdAccountsAPIService) CreateAdAccountExecute(r AdAccountsAPICreateAdAcc
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.createAdAccountRequest
