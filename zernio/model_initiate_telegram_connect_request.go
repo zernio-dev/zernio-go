@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.572.0
+API version: 1.575.1
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type InitiateTelegramConnectRequest struct {
 	ChatId string `json:"chatId"`
 	// The profile ID to connect the account to
 	ProfileId string `json:"profileId"`
+	// Connect the account for notifications only. Slack and Telegram only: `GET /v1/connect/{platform}` returns 400 for any other platform, and other platforms' own connect endpoints ignore it.  The account is free, receives Zernio notifications, and cannot publish. To publish with it, connect it again without `purpose`. Refused with 400 when the channel or chat is already connected for publishing: connect a separate one for notifications.
+	Purpose *string `json:"purpose,omitempty"`
 }
 
 type _InitiateTelegramConnectRequest InitiateTelegramConnectRequest
@@ -97,6 +99,38 @@ func (o *InitiateTelegramConnectRequest) SetProfileId(v string) {
 	o.ProfileId = v
 }
 
+// GetPurpose returns the Purpose field value if set, zero value otherwise.
+func (o *InitiateTelegramConnectRequest) GetPurpose() string {
+	if o == nil || IsNil(o.Purpose) {
+		var ret string
+		return ret
+	}
+	return *o.Purpose
+}
+
+// GetPurposeOk returns a tuple with the Purpose field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InitiateTelegramConnectRequest) GetPurposeOk() (*string, bool) {
+	if o == nil || IsNil(o.Purpose) {
+		return nil, false
+	}
+	return o.Purpose, true
+}
+
+// HasPurpose returns a boolean if a field has been set.
+func (o *InitiateTelegramConnectRequest) HasPurpose() bool {
+	if o != nil && !IsNil(o.Purpose) {
+		return true
+	}
+
+	return false
+}
+
+// SetPurpose gets a reference to the given string and assigns it to the Purpose field.
+func (o *InitiateTelegramConnectRequest) SetPurpose(v string) {
+	o.Purpose = &v
+}
+
 func (o InitiateTelegramConnectRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -109,6 +143,9 @@ func (o InitiateTelegramConnectRequest) ToMap() (map[string]interface{}, error) 
 	toSerialize := map[string]interface{}{}
 	toSerialize["chatId"] = o.ChatId
 	toSerialize["profileId"] = o.ProfileId
+	if !IsNil(o.Purpose) {
+		toSerialize["purpose"] = o.Purpose
+	}
 	return toSerialize, nil
 }
 

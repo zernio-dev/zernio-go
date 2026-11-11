@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.572.0
+API version: 1.575.1
 Contact: support@zernio.com
 */
 
@@ -4399,6 +4399,7 @@ type ConnectAPIGetConnectUrlRequest struct {
 	profileId              *string
 	reconnectAccountId     *string
 	oauthAppId             *string
+	purpose                *string
 	expectedPlatformUserId *string
 	expectedUsername       *string
 	forceReauth            *bool
@@ -4433,6 +4434,12 @@ func (r ConnectAPIGetConnectUrlRequest) ReconnectAccountId(reconnectAccountId st
 // Connect through one of your own OAuth apps (see /v1/connect/oauth-apps), so the consent screen shows your app and the platform&#39;s limits are your app&#39;s. Without it the connect runs on Zernio&#39;s app, whatever apps the workspace has saved.  - Only platforms listed in &#x60;platforms&#x60; of GET /v1/connect/oauth-apps accept an app. Any other returns 400, and so do ads connects (&#x60;adsConnect&#x3D;true&#x60; in the redirect URL). - Connects that end on a destination picker also return 400, except Facebook Pages, Google Business locations, Pinterest boards and Snapchat public profiles (Instagram through Facebook Login, for example). - A LinkedIn connect through an app saves the member&#39;s own profile: organization pages, and mention lookups, stay on Zernio&#39;s app. - The connect requests the app&#39;s &#x60;scopeAreas&#x60;. &#x60;scopes&#x60; may narrow them but not add an area the app does not enable (400). - If the user does not grant every requested area, the account still connects and the redirect carries &#x60;missing_permissions&#x3D;&lt;areas&gt;&#x60; (the headless POST returns &#x60;missingPermissions&#x60;). - If the platform refuses a permission your app is not approved for, the redirect carries &#x60;error&#x3D;oauth_app_scope_not_allowed&#x60;.  The account remembers the app, and token refresh, publishing and inbox run on it. Reconnecting through another app, or without one, moves the account to that app.
 func (r ConnectAPIGetConnectUrlRequest) OauthAppId(oauthAppId string) ConnectAPIGetConnectUrlRequest {
 	r.oauthAppId = &oauthAppId
+	return r
+}
+
+// Connect the account for notifications only. Slack and Telegram only: &#x60;GET /v1/connect/{platform}&#x60; returns 400 for any other platform, and other platforms&#39; own connect endpoints ignore it.  The account is free, receives Zernio notifications, and cannot publish. To publish with it, connect it again without &#x60;purpose&#x60;. Refused with 400 when the channel or chat is already connected for publishing: connect a separate one for notifications.
+func (r ConnectAPIGetConnectUrlRequest) Purpose(purpose string) ConnectAPIGetConnectUrlRequest {
+	r.purpose = &purpose
 	return r
 }
 
@@ -4610,6 +4617,9 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 	}
 	if r.oauthAppId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "oauthAppId", r.oauthAppId, "form", "")
+	}
+	if r.purpose != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "purpose", r.purpose, "form", "")
 	}
 	if r.expectedPlatformUserId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "expectedPlatformUserId", r.expectedPlatformUserId, "form", "")
@@ -7209,11 +7219,18 @@ type ConnectAPIGetTelegramConnectStatusRequest struct {
 	ctx        context.Context
 	ApiService *ConnectAPIService
 	profileId  *string
+	purpose    *string
 }
 
 // The profile ID to connect the Telegram account to
 func (r ConnectAPIGetTelegramConnectStatusRequest) ProfileId(profileId string) ConnectAPIGetTelegramConnectStatusRequest {
 	r.profileId = &profileId
+	return r
+}
+
+// Connect the account for notifications only. Slack and Telegram only: &#x60;GET /v1/connect/{platform}&#x60; returns 400 for any other platform, and other platforms&#39; own connect endpoints ignore it.  The account is free, receives Zernio notifications, and cannot publish. To publish with it, connect it again without &#x60;purpose&#x60;. If the chat is already connected for publishing, the bot refuses the code in the private chat and the code stays pending.
+func (r ConnectAPIGetTelegramConnectStatusRequest) Purpose(purpose string) ConnectAPIGetTelegramConnectStatusRequest {
+	r.purpose = &purpose
 	return r
 }
 
@@ -7262,6 +7279,9 @@ func (a *ConnectAPIService) GetTelegramConnectStatusExecute(r ConnectAPIGetTeleg
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.purpose != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "purpose", r.purpose, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -10078,6 +10098,7 @@ type ConnectAPIListSlackChannelsRequest struct {
 	accountId        *string
 	redirectUrl      *string
 	scopes           *string
+	purpose          *string
 }
 
 // Zernio profile the channel account will belong to. Must match the profile the OAuth flow was started on when &#x60;pendingDataToken&#x60; is used.
@@ -10107,6 +10128,12 @@ func (r ConnectAPIListSlackChannelsRequest) RedirectUrl(redirectUrl string) Conn
 // Start-OAuth mode only. Comma-separated permission areas to request instead of the full Slack scope set, same semantics as &#x60;scopes&#x60; on &#x60;GET /v1/connect/{platform}&#x60;. Omit it to request everything.  - &#x60;posting&#x60;: installs the bot with the channel scopes it needs to post. - &#x60;messaging&#x60;: adds the history, DM and reaction scopes the inbox reads. - &#x60;analytics&#x60;, &#x60;comments&#x60;, &#x60;ads&#x60;: add nothing on Slack.
 func (r ConnectAPIListSlackChannelsRequest) Scopes(scopes string) ConnectAPIListSlackChannelsRequest {
 	r.scopes = &scopes
+	return r
+}
+
+// Start-OAuth mode only. Connect the account for notifications only. Slack and Telegram only: &#x60;GET /v1/connect/{platform}&#x60; returns 400 for any other platform, and other platforms&#39; own connect endpoints ignore it.  The account is free, receives Zernio notifications, and cannot publish. To publish with it, connect it again without &#x60;purpose&#x60;. Refused with 400 when the channel or chat is already connected for publishing: connect a separate one for notifications.  Adding another channel with &#x60;accountId&#x60; keeps the notifications-only setting of the account whose workspace token it reuses.
+func (r ConnectAPIListSlackChannelsRequest) Purpose(purpose string) ConnectAPIListSlackChannelsRequest {
+	r.purpose = &purpose
 	return r
 }
 
@@ -10183,6 +10210,9 @@ func (a *ConnectAPIService) ListSlackChannelsExecute(r ConnectAPIListSlackChanne
 	}
 	if r.scopes != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "scopes", r.scopes, "form", "")
+	}
+	if r.purpose != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "purpose", r.purpose, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
