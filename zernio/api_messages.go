@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.569.0
+API version: 1.570.0
 Contact: support@zernio.com
 */
 
@@ -3195,6 +3195,14 @@ Each such follow-up counts as a new conversation:
 - It uses the sender's 15-minute spacing and daily warm-up (`429 new_contact_limit`).
 
 Text must be shorter than 10,000 characters.
+
+### LINE replies
+
+A reply sent within about a minute of the customer's message uses LINE's free reply token. Later replies go out as push messages, which count toward the LINE Official Account's monthly message quota (set and billed by LINE).
+
+### WeChat 48-hour window
+
+WeChat only accepts replies within 48 hours of the customer's last message, and up to 5 messages in that window. Outside it the send is rejected; the window opens again when the customer writes.
 
 ### WhatsApp template messages
 

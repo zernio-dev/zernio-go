@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.569.0
+API version: 1.570.0
 Contact: support@zernio.com
 */
 
@@ -1633,6 +1633,159 @@ func (a *ConnectAPIService) ConnectDiscordChannelExecute(r ConnectAPIConnectDisc
 	return localVarHTTPResponse, nil
 }
 
+type ConnectAPIConnectLineCredentialsRequest struct {
+	ctx                           context.Context
+	ApiService                    *ConnectAPIService
+	connectLineCredentialsRequest *ConnectLineCredentialsRequest
+}
+
+func (r ConnectAPIConnectLineCredentialsRequest) ConnectLineCredentialsRequest(connectLineCredentialsRequest ConnectLineCredentialsRequest) ConnectAPIConnectLineCredentialsRequest {
+	r.connectLineCredentialsRequest = &connectLineCredentialsRequest
+	return r
+}
+
+func (r ConnectAPIConnectLineCredentialsRequest) Execute() (*ConnectLineCredentials200Response, *http.Response, error) {
+	return r.ApiService.ConnectLineCredentialsExecute(r)
+}
+
+/*
+ConnectLineCredentials Connect LINE Official Account
+
+Connect a LINE Official Account with the Channel ID and Channel secret of its Messaging API channel (LINE Official Account Manager > Settings > Messaging API, also shown in the LINE Developers Console under the channel's Basic settings).
+
+Zernio issues a channel access token, reads the bot's profile and sets the channel's webhook URL for you. A channel has one webhook URL, so if it already pointed somewhere else, that integration stops receiving events; the response names it in `webhook.previousUrl`.
+
+Two settings stay on the customer's side, in LINE Official Account Manager > Settings > Response settings. `nextSteps` in the response lists them:
+
+- Turn on Webhooks. Until it is on, LINE delivers nothing to Zernio.
+- Turn off auto-response and greeting messages.
+
+Reconnecting the same channel on the same profile updates the existing account.
+To get your userId for the state parameter, call GET /v1/users which includes a currentUserId field.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectLineCredentialsRequest
+*/
+func (a *ConnectAPIService) ConnectLineCredentials(ctx context.Context) ConnectAPIConnectLineCredentialsRequest {
+	return ConnectAPIConnectLineCredentialsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ConnectLineCredentials200Response
+func (a *ConnectAPIService) ConnectLineCredentialsExecute(r ConnectAPIConnectLineCredentialsRequest) (*ConnectLineCredentials200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectLineCredentials200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectLineCredentials")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/line/credentials"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectLineCredentialsRequest == nil {
+		return localVarReturnValue, nil, reportError("connectLineCredentialsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectLineCredentialsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIConnectOpenAIAdsCredentialsRequest struct {
 	ctx                                context.Context
 	ApiService                         *ConnectAPIService
@@ -2198,6 +2351,158 @@ func (a *ConnectAPIService) ConnectWebflowWithSiteTokenExecute(r ConnectAPIConne
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIConnectWechatCredentialsRequest struct {
+	ctx                             context.Context
+	ApiService                      *ConnectAPIService
+	connectWechatCredentialsRequest *ConnectWechatCredentialsRequest
+}
+
+func (r ConnectAPIConnectWechatCredentialsRequest) ConnectWechatCredentialsRequest(connectWechatCredentialsRequest ConnectWechatCredentialsRequest) ConnectAPIConnectWechatCredentialsRequest {
+	r.connectWechatCredentialsRequest = &connectWechatCredentialsRequest
+	return r
+}
+
+func (r ConnectAPIConnectWechatCredentialsRequest) Execute() (*ConnectWechatCredentials200Response, *http.Response, error) {
+	return r.ApiService.ConnectWechatCredentialsExecute(r)
+}
+
+/*
+ConnectWechatCredentials Connect WeChat Official Account
+
+Connect a verified WeChat Official Account (Service Account) with its AppID and AppSecret (Weixin Official Accounts Platform > Settings and Development > Basic Configuration).
+
+Before calling this, add every IP from GET /v1/connect/wechat/ip-whitelist to the account's API IP whitelist on the same page. WeChat refuses calls from any other IP, and this endpoint then returns 400 with code `wechat_ip_not_whitelisted`.
+
+The response carries a Server URL, a Token and an EncodingAESKey. Paste them into Server Configuration on the same page, choose Safe mode for message encryption, and enable the configuration. Until then WeChat delivers nothing to Zernio.
+
+Enabling Server Configuration turns off the auto-replies and menus set in the WeChat dashboard.
+
+Reconnecting the same AppID on the same profile keeps the existing Token and EncodingAESKey, so nothing has to be pasted again.
+To get your userId for the state parameter, call GET /v1/users which includes a currentUserId field.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectWechatCredentialsRequest
+*/
+func (a *ConnectAPIService) ConnectWechatCredentials(ctx context.Context) ConnectAPIConnectWechatCredentialsRequest {
+	return ConnectAPIConnectWechatCredentialsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ConnectWechatCredentials200Response
+func (a *ConnectAPIService) ConnectWechatCredentialsExecute(r ConnectAPIConnectWechatCredentialsRequest) (*ConnectWechatCredentials200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectWechatCredentials200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectWechatCredentials")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/wechat/credentials"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectWechatCredentialsRequest == nil {
+		return localVarReturnValue, nil, reportError("connectWechatCredentialsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectWechatCredentialsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7177,6 +7482,138 @@ func (a *ConnectAPIService) GetWebflowConnectUrlExecute(r ConnectAPIGetWebflowCo
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIGetWechatIpWhitelistRequest struct {
+	ctx        context.Context
+	ApiService *ConnectAPIService
+}
+
+func (r ConnectAPIGetWechatIpWhitelistRequest) Execute() (*GetWechatIpWhitelist200Response, *http.Response, error) {
+	return r.ApiService.GetWechatIpWhitelistExecute(r)
+}
+
+/*
+GetWechatIpWhitelist Get WeChat IP whitelist
+
+The IPs Zernio calls WeChat from. Add all of them to the Official Account's API IP whitelist before calling POST /v1/connect/wechat/credentials.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIGetWechatIpWhitelistRequest
+*/
+func (a *ConnectAPIService) GetWechatIpWhitelist(ctx context.Context) ConnectAPIGetWechatIpWhitelistRequest {
+	return ConnectAPIGetWechatIpWhitelistRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWechatIpWhitelist200Response
+func (a *ConnectAPIService) GetWechatIpWhitelistExecute(r ConnectAPIGetWechatIpWhitelistRequest) (*GetWechatIpWhitelist200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWechatIpWhitelist200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetWechatIpWhitelist")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/wechat/ip-whitelist"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v InlineObject2
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
