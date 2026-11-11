@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.576.3
+API version: 1.577.0
 Contact: support@zernio.com
 */
 
@@ -27,7 +27,8 @@ type GetBalance200Response struct {
 	// Balance billing only (absent otherwise). What pay-per-use can still spend: availableCents plus promoCents, minus usage not yet posted. At 0 or below, new pay-per-use answers 402 `insufficient_balance`.
 	SpendableCents *int32 `json:"spendableCents,omitempty"`
 	// Balance billing only (absent otherwise). Promotional and support credit Zernio added to your balance. Pay-per-use spends it before availableCents. It is never paid out to payees and is not part of availableCents.
-	PromoCents *int32 `json:"promoCents,omitempty"`
+	PromoCents *int32                     `json:"promoCents,omitempty"`
+	Held       *GetBalance200ResponseHeld `json:"held,omitempty"`
 	// Always 0. The balance no longer pays creators, so none of it is locked from them.
 	// Deprecated
 	PayoutLockedCents *int32 `json:"payoutLockedCents,omitempty"`
@@ -189,6 +190,38 @@ func (o *GetBalance200Response) HasPromoCents() bool {
 // SetPromoCents gets a reference to the given int32 and assigns it to the PromoCents field.
 func (o *GetBalance200Response) SetPromoCents(v int32) {
 	o.PromoCents = &v
+}
+
+// GetHeld returns the Held field value if set, zero value otherwise.
+func (o *GetBalance200Response) GetHeld() GetBalance200ResponseHeld {
+	if o == nil || IsNil(o.Held) {
+		var ret GetBalance200ResponseHeld
+		return ret
+	}
+	return *o.Held
+}
+
+// GetHeldOk returns a tuple with the Held field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetBalance200Response) GetHeldOk() (*GetBalance200ResponseHeld, bool) {
+	if o == nil || IsNil(o.Held) {
+		return nil, false
+	}
+	return o.Held, true
+}
+
+// HasHeld returns a boolean if a field has been set.
+func (o *GetBalance200Response) HasHeld() bool {
+	if o != nil && !IsNil(o.Held) {
+		return true
+	}
+
+	return false
+}
+
+// SetHeld gets a reference to the given GetBalance200ResponseHeld and assigns it to the Held field.
+func (o *GetBalance200Response) SetHeld(v GetBalance200ResponseHeld) {
+	o.Held = &v
 }
 
 // GetPayoutLockedCents returns the PayoutLockedCents field value if set, zero value otherwise.
@@ -474,6 +507,9 @@ func (o GetBalance200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PromoCents) {
 		toSerialize["promoCents"] = o.PromoCents
+	}
+	if !IsNil(o.Held) {
+		toSerialize["held"] = o.Held
 	}
 	if !IsNil(o.PayoutLockedCents) {
 		toSerialize["payoutLockedCents"] = o.PayoutLockedCents
