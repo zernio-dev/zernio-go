@@ -81,11 +81,13 @@ func main() {
 | `client.AccountsAPI.GetInstagramFollowStatus(ctx)` | Check whether an Instagram user follows the account |
 | `client.LinkedInMentionsAPI.GetLinkedInMentions(ctx)` | Resolve LinkedIn mention |
 | `client.AccountsAPI.GetSlackSettings(ctx)` | Get Slack account settings |
+| `client.AccountsAPI.GetStripeSettings(ctx)` | Get Stripe account settings |
 | `client.AccountsAPI.GetTikTokCreatorInfo(ctx)` | Get TikTok creator info |
 | `client.AccountsAPI.UpdateAccount(ctx)` | Update account |
 | `client.AccountsAPI.UpdateBlueskySettings(ctx)` | Update Bluesky account settings |
 | `client.AccountsAPI.UpdateHubSpotSettings(ctx)` | Update HubSpot account settings |
 | `client.AccountsAPI.UpdateSlackSettings(ctx)` | Update Slack account settings |
+| `client.AccountsAPI.UpdateStripeSettings(ctx)` | Update Stripe account settings |
 | `client.AccountsAPI.DeleteAccount(ctx)` | Disconnect account |
 | `client.GMBReviewsAPI.DeleteGoogleBusinessReviewReply(ctx)` | Delete a review reply |
 | `client.GMBReviewsAPI.BatchGetGoogleBusinessReviews(ctx)` | Batch get reviews |

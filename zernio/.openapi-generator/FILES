@@ -1605,6 +1605,7 @@ model_get_sms_registration_200_response_campaign_content.go
 model_get_sms_usage_200_response.go
 model_get_sms_usage_200_response_groups_inner.go
 model_get_sms_usage_200_response_totals.go
+model_get_stripe_settings_200_response.go
 model_get_subreddit_rules_200_response.go
 model_get_subreddit_rules_200_response_rules_inner.go
 model_get_telegram_commands_200_response.go
@@ -2834,6 +2835,7 @@ model_stored_event.go
 model_stored_event_ad.go
 model_stored_event_click_ids.go
 model_stored_event_utm.go
+model_stripe_settings.go
 model_submit_creator_draft_201_response.go
 model_submit_creator_draft_request.go
 model_submit_creator_post_201_response.go
@@ -3118,6 +3120,8 @@ model_update_sequence_200_response.go
 model_update_sequence_200_response_sequence.go
 model_update_sequence_request.go
 model_update_slack_settings_request.go
+model_update_stripe_settings_200_response.go
+model_update_stripe_settings_request.go
 model_update_tracking_tag_request.go
 model_update_value_rule_set_200_response.go
 model_update_value_rule_set_request.go
