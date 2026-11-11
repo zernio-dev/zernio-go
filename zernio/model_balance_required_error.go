@@ -48,6 +48,8 @@ type BalanceRequiredError struct {
 	Details *ErrorResponseDetails `json:"details,omitempty"`
 	// Dashboard link to Billing that opens the Add funds drawer (the add-card drawer first when there is no card). Send the user there, then retry.
 	FundingUrl string `json:"funding_url"`
+	// Only when an item debited later (a phone number's first month, all numbers of the order) is refused: what the balance must hold, in cents.
+	RequiredCents *int32 `json:"required_cents,omitempty"`
 }
 
 type _BalanceRequiredError BalanceRequiredError
@@ -510,6 +512,38 @@ func (o *BalanceRequiredError) SetFundingUrl(v string) {
 	o.FundingUrl = v
 }
 
+// GetRequiredCents returns the RequiredCents field value if set, zero value otherwise.
+func (o *BalanceRequiredError) GetRequiredCents() int32 {
+	if o == nil || IsNil(o.RequiredCents) {
+		var ret int32
+		return ret
+	}
+	return *o.RequiredCents
+}
+
+// GetRequiredCentsOk returns a tuple with the RequiredCents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BalanceRequiredError) GetRequiredCentsOk() (*int32, bool) {
+	if o == nil || IsNil(o.RequiredCents) {
+		return nil, false
+	}
+	return o.RequiredCents, true
+}
+
+// HasRequiredCents returns a boolean if a field has been set.
+func (o *BalanceRequiredError) HasRequiredCents() bool {
+	if o != nil && !IsNil(o.RequiredCents) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequiredCents gets a reference to the given int32 and assigns it to the RequiredCents field.
+func (o *BalanceRequiredError) SetRequiredCents(v int32) {
+	o.RequiredCents = &v
+}
+
 func (o BalanceRequiredError) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -560,6 +594,9 @@ func (o BalanceRequiredError) ToMap() (map[string]interface{}, error) {
 		toSerialize["details"] = o.Details
 	}
 	toSerialize["funding_url"] = o.FundingUrl
+	if !IsNil(o.RequiredCents) {
+		toSerialize["required_cents"] = o.RequiredCents
+	}
 	return toSerialize, nil
 }
 
