@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.576.0
+API version: 1.576.1
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the AutomationAlert type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AutomationAlert{}
 
-// AutomationAlert Turns matches into alerts: the ad rule acts only after `confirmChecks` matching checks in a row, keeps the alert open while `hold` holds and marks it critical when `critical` holds.
+// AutomationAlert Turns matches into alerts: the ad rule acts only after `confirmChecks` matching checks in a row, keeps the alert open while `hold` holds and marks it critical while `critical` holds.
 type AutomationAlert struct {
 	ConfirmChecks *int32            `json:"confirmChecks,omitempty"`
 	Hold          *AdRuleConditions `json:"hold,omitempty"`

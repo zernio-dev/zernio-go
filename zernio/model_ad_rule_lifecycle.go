@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.576.0
+API version: 1.576.1
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the AdRuleLifecycle type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdRuleLifecycle{}
 
-// AdRuleLifecycle Turns matches into alerts. An object acts and notifies only after `confirmChecks` matching runs in a row; its alert stays open while it matches or `hold` holds, turns critical when `critical` holds, and resolves on its own. Cooldown and caps still decide repeat actions.
+// AdRuleLifecycle Turns matches into alerts. An object acts and notifies only after `confirmChecks` matching runs in a row; its alert stays open while it matches or `hold` holds, and resolves on its own (a day after the object stops delivering). Cooldown and caps still decide repeat actions.  The alert is critical while `critical` holds and goes back to warning when it stops, with no webhook. `escalated` is sent once per alert.
 type AdRuleLifecycle struct {
 	// Matching runs in a row before acting. Defaults to 1.
 	ConfirmChecks *int32 `json:"confirmChecks,omitempty"`
