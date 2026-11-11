@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.567.0
+API version: 1.568.0
 Contact: support@zernio.com
 */
 
@@ -4719,6 +4719,7 @@ type ConversionsAPIListEventsRequest struct {
 	from       *time.Time
 	to         *time.Time
 	eventName  *string
+	source     *string
 	cursor     *string
 }
 
@@ -4747,6 +4748,12 @@ func (r ConversionsAPIListEventsRequest) To(to time.Time) ConversionsAPIListEven
 // Only events with this name, such as &#x60;Purchase&#x60;.
 func (r ConversionsAPIListEventsRequest) EventName(eventName string) ConversionsAPIListEventsRequest {
 	r.eventName = &eventName
+	return r
+}
+
+// Only events from this source, such as &#x60;stripe&#x60; for the payments of a connected Stripe account.
+func (r ConversionsAPIListEventsRequest) Source(source string) ConversionsAPIListEventsRequest {
+	r.source = &source
 	return r
 }
 
@@ -4820,6 +4827,9 @@ func (a *ConversionsAPIService) ListEventsExecute(r ConversionsAPIListEventsRequ
 	}
 	if r.eventName != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "eventName", r.eventName, "form", "")
+	}
+	if r.source != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "source", r.source, "form", "")
 	}
 	if r.cursor != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
