@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.602.0
+API version: 1.602.1
 Contact: support@zernio.com
 */
 
@@ -288,6 +288,8 @@ func (r PostsAPICreatePostRequest) Execute() (*CreatePost200Response, *http.Resp
 CreatePost Create post
 
 Create a post, and optionally publish it in the same request. A post published immediately (`publishNow: true`) comes back with `platformPostUrl` in the response.
+
+On prepaid-balance billing, X posts are paid from the balance ($0.015 per post, $0.20 with a link). At a $0 balance, publishing to X now returns 402 `insufficient_balance` with `funding_url`, and a post saved for later waits for funds (202).
 
 ## Optional content
 
