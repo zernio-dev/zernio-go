@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.597.0
+API version: 1.598.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ var _ MappedNullable = &CampaignParticipantPayout{}
 type CampaignParticipantPayout struct {
 	// `not_started`: no payout account yet. `onboarding`: setup started or under review. `ready`: payouts enabled. `restricted`: Stripe needs more information before paying out.
 	Status string `json:"status"`
+	// ISO 3166-1 alpha-2 country of the payout account, null before setup starts. Zernio pays out only to the US, Canada, the UK, the EEA, Switzerland and Gibraltar; pay creators elsewhere yourself and record it with `recordOnly: true`.
+	Country NullableString `json:"country,omitempty"`
 }
 
 type _CampaignParticipantPayout CampaignParticipantPayout
@@ -70,6 +72,49 @@ func (o *CampaignParticipantPayout) SetStatus(v string) {
 	o.Status = v
 }
 
+// GetCountry returns the Country field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CampaignParticipantPayout) GetCountry() string {
+	if o == nil || IsNil(o.Country.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Country.Get()
+}
+
+// GetCountryOk returns a tuple with the Country field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CampaignParticipantPayout) GetCountryOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Country.Get(), o.Country.IsSet()
+}
+
+// HasCountry returns a boolean if a field has been set.
+func (o *CampaignParticipantPayout) HasCountry() bool {
+	if o != nil && o.Country.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCountry gets a reference to the given NullableString and assigns it to the Country field.
+func (o *CampaignParticipantPayout) SetCountry(v string) {
+	o.Country.Set(&v)
+}
+
+// SetCountryNil sets the value for Country to be an explicit nil
+func (o *CampaignParticipantPayout) SetCountryNil() {
+	o.Country.Set(nil)
+}
+
+// UnsetCountry ensures that no value is present for Country, not even an explicit nil
+func (o *CampaignParticipantPayout) UnsetCountry() {
+	o.Country.Unset()
+}
+
 func (o CampaignParticipantPayout) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -81,6 +126,9 @@ func (o CampaignParticipantPayout) MarshalJSON() ([]byte, error) {
 func (o CampaignParticipantPayout) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["status"] = o.Status
+	if o.Country.IsSet() {
+		toSerialize["country"] = o.Country.Get()
+	}
 	return toSerialize, nil
 }
 
