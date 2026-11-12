@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.596.1
+API version: 1.597.0
 Contact: support@zernio.com
 */
 
@@ -11493,7 +11493,7 @@ func (r WebhookEventsAPIOnNotificationSentRequest) Execute() (*http.Response, er
 /*
 OnNotificationSent Notification sent event
 
-Built for agents. One event for every notification we would email the account owner: a scheduled post failed to publish (`type: post_failed`), or a connected account was disconnected (`type: account_disconnected`).
+Built for agents. One event for every notification we would email the account owner: a scheduled post failed to publish (`type: post_failed`), a connected account was disconnected (`type: account_disconnected`), or a removed team member's recently used API key was handed to the owner (`type: api_key_handed_over`).
 
 It carries the email's `subject` and `text`, references to the post or account, and the `actions` that resolve it, so an agent subscribes to one event and handles every notification the same way.
 
@@ -11505,10 +11505,11 @@ Subscribe to `notification.sent` when an agent or automation reads the alert and
 
 Once for each such notification, in near real time, regardless of the user's email toggles, and even when the owner has no email address or the email is held back by the sender's limits. It fires alongside `post.failed` and `account.disconnected`, which stay as they are.
 
-The user's notification channel (Slack or Telegram) follows the email toggles, so it only receives the alerts whose toggle is on.
+The user's notification channel (Slack or Telegram) follows the email toggles, so it only receives the alerts whose toggle is on. The exception is `api_key_handed_over` (category `securityAlerts`), which has no toggle and is always delivered.
 
 - `post_failed`: once the failure is final (a permanent error, or a temporary one on its last retry), once per publish attempt that failed, for scheduled posts only (not "post now"). `refs.platforms` lists every platform that failed in that attempt.
 - `account_disconnected`: every time an account is disconnected, never for creator-profile accounts. `reason` says why.
+- `api_key_handed_over`: once per API key, when a departing team member's key used in the last 7 days moves to the workspace owner. It stops working within 24 hours: create a new key and switch to it. `refs.apiKey` carries the key id, preview and expiry.
 
 ### Payload notes
 

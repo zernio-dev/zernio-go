@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.596.1
+API version: 1.597.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,7 @@ type WebhookPayloadNotificationSentNotificationRefs struct {
 	// Every platform of the post that failed in this notification.
 	Platforms []WebhookPayloadNotificationSentNotificationRefsPlatformsInner `json:"platforms,omitempty"`
 	Account   *WebhookPayloadNotificationSentNotificationRefsAccount         `json:"account,omitempty"`
+	ApiKey    *WebhookPayloadNotificationSentNotificationRefsApiKey          `json:"apiKey,omitempty"`
 }
 
 // NewWebhookPayloadNotificationSentNotificationRefs instantiates a new WebhookPayloadNotificationSentNotificationRefs object
@@ -139,6 +140,38 @@ func (o *WebhookPayloadNotificationSentNotificationRefs) SetAccount(v WebhookPay
 	o.Account = &v
 }
 
+// GetApiKey returns the ApiKey field value if set, zero value otherwise.
+func (o *WebhookPayloadNotificationSentNotificationRefs) GetApiKey() WebhookPayloadNotificationSentNotificationRefsApiKey {
+	if o == nil || IsNil(o.ApiKey) {
+		var ret WebhookPayloadNotificationSentNotificationRefsApiKey
+		return ret
+	}
+	return *o.ApiKey
+}
+
+// GetApiKeyOk returns a tuple with the ApiKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadNotificationSentNotificationRefs) GetApiKeyOk() (*WebhookPayloadNotificationSentNotificationRefsApiKey, bool) {
+	if o == nil || IsNil(o.ApiKey) {
+		return nil, false
+	}
+	return o.ApiKey, true
+}
+
+// HasApiKey returns a boolean if a field has been set.
+func (o *WebhookPayloadNotificationSentNotificationRefs) HasApiKey() bool {
+	if o != nil && !IsNil(o.ApiKey) {
+		return true
+	}
+
+	return false
+}
+
+// SetApiKey gets a reference to the given WebhookPayloadNotificationSentNotificationRefsApiKey and assigns it to the ApiKey field.
+func (o *WebhookPayloadNotificationSentNotificationRefs) SetApiKey(v WebhookPayloadNotificationSentNotificationRefsApiKey) {
+	o.ApiKey = &v
+}
+
 func (o WebhookPayloadNotificationSentNotificationRefs) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -157,6 +190,9 @@ func (o WebhookPayloadNotificationSentNotificationRefs) ToMap() (map[string]inte
 	}
 	if !IsNil(o.Account) {
 		toSerialize["account"] = o.Account
+	}
+	if !IsNil(o.ApiKey) {
+		toSerialize["apiKey"] = o.ApiKey
 	}
 	return toSerialize, nil
 }
