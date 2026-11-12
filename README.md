@@ -222,6 +222,7 @@ func main() {
 |--------|-------------|
 | `client.ConnectAPI.ListFacebookPages(ctx)` | List Facebook pages |
 | `client.ConnectAPI.ListGoogleAnalyticsProperties(ctx)` | List Google Analytics properties for a pending connect |
+| `client.ConnectAPI.ListGoogleBusinessCategories(ctx)` | List Google Business Profile categories |
 | `client.ConnectAPI.ListGoogleBusinessLocations(ctx)` | List Google Business Profile locations |
 | `client.ConnectAPI.ListInstagramPages(ctx)` | List Pages with a linked Instagram account |
 | `client.ConnectAPI.ListLinkedInOrganizations(ctx)` | List LinkedIn orgs |
@@ -232,6 +233,7 @@ func main() {
 | `client.ConnectAPI.ListSlackChannels(ctx)` | List Slack channels for the channel picker |
 | `client.ConnectAPI.ListSnapchatProfiles(ctx)` | List Snapchat profiles |
 | `client.ConnectAPI.ListWhatsAppPhoneNumbers(ctx)` | List numbers for selection |
+| `client.ConnectAPI.CreateGoogleBusinessLocation(ctx)` | Create Google Business Profile location |
 | `client.ConnectAPI.CreateGoogleOrgConnection(ctx)` | Start a Google Workspace organization connection |
 | `client.ConnectAPI.CreateMicrosoftOrgConnection(ctx)` | Start a Microsoft 365 organization connection |
 | `client.ConnectAPI.CreateOAuthApp(ctx)` | Add an OAuth app |
@@ -298,6 +300,7 @@ func main() {
 | `client.ConnectAPI.HandleOAuthCallback(ctx)` | Complete OAuth callback |
 | `client.ConnectAPI.InitiateTelegramConnect(ctx)` | Connect Telegram directly |
 | `client.ConnectAPI.ResyncPageWebhookSubscription(ctx)` | Re-subscribe an account to Zernio's webhooks |
+| `client.ConnectAPI.SearchGoogleBusinessLocations(ctx)` | Search existing Google listings |
 | `client.ConnectAPI.SelectFacebookPage(ctx)` | Select Facebook page |
 | `client.ConnectAPI.SelectGoogleAnalyticsProperty(ctx)` | Connect the chosen Google Analytics property |
 | `client.ConnectAPI.SelectGoogleBusinessLocation(ctx)` | Select Google Business Profile location |

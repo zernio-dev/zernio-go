@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.590.2
+API version: 1.593.0
 Contact: support@zernio.com
 */
 
@@ -24,12 +24,14 @@ var _ MappedNullable = &SelectGoogleBusinessLocationRequest{}
 type SelectGoogleBusinessLocationRequest struct {
 	// Profile ID from your connection flow
 	ProfileId string `json:"profileId"`
-	// The Google Business Profile location ID selected by the user. Send this or locations, not both.
+	// The Google Business Profile location ID selected by the user. Send this or locations, not both. Omit both to connect with no location (`needsLocation: true`), allowed only when the connect used allowNoLocation=true, the sign-in listed no locations and it is not a reconnect.
 	LocationId *string `json:"locationId,omitempty"`
 	// Several locations to connect from one sign-in, each as its own account. A single location behaves exactly like locationId.  The sign-in is used once for the whole batch and handed back only if none connected. With two or more distinct locations, the response lists `accounts` and `failed` instead of `account`, and the request is refused with 400 on a reconnect.
 	Locations []SelectGoogleBusinessLocationRequestLocationsInner `json:"locations,omitempty"`
 	// Optional but recommended. The Google Business Profile Account resource name (\"accounts/123\") that owns the selected location (returned per-location by GET /v1/connect/googlebusiness/locations). When provided, the location is resolved directly instead of by enumerating the account, which is required for accounts that own many locations. Omit only for small accounts.
 	AccountId *string `json:"accountId,omitempty"`
+	// Only when connecting with no location. The Google Business Profile Account resource name (\"accounts/123\") to attach. Defaults to the sign-in's personal account, else its first account. Must be one of the accounts the sign-in lists, otherwise 400.
+	GoogleAccountId *string `json:"googleAccountId,omitempty"`
 	// Token from the OAuth callback redirect (pendingDataToken query param). Tokens and profile data are retrieved server-side from this token.
 	PendingDataToken string `json:"pendingDataToken"`
 	// Optional custom redirect URL to return to after selection
@@ -177,6 +179,38 @@ func (o *SelectGoogleBusinessLocationRequest) SetAccountId(v string) {
 	o.AccountId = &v
 }
 
+// GetGoogleAccountId returns the GoogleAccountId field value if set, zero value otherwise.
+func (o *SelectGoogleBusinessLocationRequest) GetGoogleAccountId() string {
+	if o == nil || IsNil(o.GoogleAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.GoogleAccountId
+}
+
+// GetGoogleAccountIdOk returns a tuple with the GoogleAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectGoogleBusinessLocationRequest) GetGoogleAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.GoogleAccountId) {
+		return nil, false
+	}
+	return o.GoogleAccountId, true
+}
+
+// HasGoogleAccountId returns a boolean if a field has been set.
+func (o *SelectGoogleBusinessLocationRequest) HasGoogleAccountId() bool {
+	if o != nil && !IsNil(o.GoogleAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetGoogleAccountId gets a reference to the given string and assigns it to the GoogleAccountId field.
+func (o *SelectGoogleBusinessLocationRequest) SetGoogleAccountId(v string) {
+	o.GoogleAccountId = &v
+}
+
 // GetPendingDataToken returns the PendingDataToken field value
 func (o *SelectGoogleBusinessLocationRequest) GetPendingDataToken() string {
 	if o == nil {
@@ -252,6 +286,9 @@ func (o SelectGoogleBusinessLocationRequest) ToMap() (map[string]interface{}, er
 	}
 	if !IsNil(o.AccountId) {
 		toSerialize["accountId"] = o.AccountId
+	}
+	if !IsNil(o.GoogleAccountId) {
+		toSerialize["googleAccountId"] = o.GoogleAccountId
 	}
 	toSerialize["pendingDataToken"] = o.PendingDataToken
 	if !IsNil(o.RedirectUrl) {

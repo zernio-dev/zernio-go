@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.590.2
+API version: 1.593.0
 Contact: support@zernio.com
 */
 
@@ -26,10 +26,12 @@ type SelectGoogleBusinessLocation200ResponseAccount struct {
 	Username    *string `json:"username,omitempty"`
 	DisplayName *string `json:"displayName,omitempty"`
 	IsActive    *bool   `json:"isActive,omitempty"`
-	// Human-readable location display name, NOT a resource name. Do not use it to build API paths.
-	SelectedLocationName *string `json:"selectedLocationName,omitempty"`
-	// Bare Google Business Profile location id. Combine with the Google Business Profile account id as accounts/{gbpAccountId}/locations/{selectedLocationId} to form the location resource names that gmb-reviews/batch expects in locationNames.
-	SelectedLocationId *string `json:"selectedLocationId,omitempty"`
+	// Human-readable location display name, NOT a resource name. Do not use it to build API paths. Null when connected with no location.
+	SelectedLocationName NullableString `json:"selectedLocationName,omitempty"`
+	// Bare Google Business Profile location id. Combine with the Google Business Profile account id as accounts/{gbpAccountId}/locations/{selectedLocationId} to form the location resource names that gmb-reviews/batch expects in locationNames. Null when connected with no location.
+	SelectedLocationId NullableString `json:"selectedLocationId,omitempty"`
+	// Present and true when the account was connected with no location (allowNoLocation=true). Create one with POST /v1/accounts/{accountId}/gmb-locations before using the location endpoints.
+	NeedsLocation *bool `json:"needsLocation,omitempty"`
 }
 
 // NewSelectGoogleBusinessLocation200ResponseAccount instantiates a new SelectGoogleBusinessLocation200ResponseAccount object
@@ -209,68 +211,122 @@ func (o *SelectGoogleBusinessLocation200ResponseAccount) SetIsActive(v bool) {
 	o.IsActive = &v
 }
 
-// GetSelectedLocationName returns the SelectedLocationName field value if set, zero value otherwise.
+// GetSelectedLocationName returns the SelectedLocationName field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SelectGoogleBusinessLocation200ResponseAccount) GetSelectedLocationName() string {
-	if o == nil || IsNil(o.SelectedLocationName) {
+	if o == nil || IsNil(o.SelectedLocationName.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.SelectedLocationName
+	return *o.SelectedLocationName.Get()
 }
 
 // GetSelectedLocationNameOk returns a tuple with the SelectedLocationName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SelectGoogleBusinessLocation200ResponseAccount) GetSelectedLocationNameOk() (*string, bool) {
-	if o == nil || IsNil(o.SelectedLocationName) {
+	if o == nil {
 		return nil, false
 	}
-	return o.SelectedLocationName, true
+	return o.SelectedLocationName.Get(), o.SelectedLocationName.IsSet()
 }
 
 // HasSelectedLocationName returns a boolean if a field has been set.
 func (o *SelectGoogleBusinessLocation200ResponseAccount) HasSelectedLocationName() bool {
-	if o != nil && !IsNil(o.SelectedLocationName) {
+	if o != nil && o.SelectedLocationName.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSelectedLocationName gets a reference to the given string and assigns it to the SelectedLocationName field.
+// SetSelectedLocationName gets a reference to the given NullableString and assigns it to the SelectedLocationName field.
 func (o *SelectGoogleBusinessLocation200ResponseAccount) SetSelectedLocationName(v string) {
-	o.SelectedLocationName = &v
+	o.SelectedLocationName.Set(&v)
 }
 
-// GetSelectedLocationId returns the SelectedLocationId field value if set, zero value otherwise.
+// SetSelectedLocationNameNil sets the value for SelectedLocationName to be an explicit nil
+func (o *SelectGoogleBusinessLocation200ResponseAccount) SetSelectedLocationNameNil() {
+	o.SelectedLocationName.Set(nil)
+}
+
+// UnsetSelectedLocationName ensures that no value is present for SelectedLocationName, not even an explicit nil
+func (o *SelectGoogleBusinessLocation200ResponseAccount) UnsetSelectedLocationName() {
+	o.SelectedLocationName.Unset()
+}
+
+// GetSelectedLocationId returns the SelectedLocationId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SelectGoogleBusinessLocation200ResponseAccount) GetSelectedLocationId() string {
-	if o == nil || IsNil(o.SelectedLocationId) {
+	if o == nil || IsNil(o.SelectedLocationId.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.SelectedLocationId
+	return *o.SelectedLocationId.Get()
 }
 
 // GetSelectedLocationIdOk returns a tuple with the SelectedLocationId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SelectGoogleBusinessLocation200ResponseAccount) GetSelectedLocationIdOk() (*string, bool) {
-	if o == nil || IsNil(o.SelectedLocationId) {
+	if o == nil {
 		return nil, false
 	}
-	return o.SelectedLocationId, true
+	return o.SelectedLocationId.Get(), o.SelectedLocationId.IsSet()
 }
 
 // HasSelectedLocationId returns a boolean if a field has been set.
 func (o *SelectGoogleBusinessLocation200ResponseAccount) HasSelectedLocationId() bool {
-	if o != nil && !IsNil(o.SelectedLocationId) {
+	if o != nil && o.SelectedLocationId.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSelectedLocationId gets a reference to the given string and assigns it to the SelectedLocationId field.
+// SetSelectedLocationId gets a reference to the given NullableString and assigns it to the SelectedLocationId field.
 func (o *SelectGoogleBusinessLocation200ResponseAccount) SetSelectedLocationId(v string) {
-	o.SelectedLocationId = &v
+	o.SelectedLocationId.Set(&v)
+}
+
+// SetSelectedLocationIdNil sets the value for SelectedLocationId to be an explicit nil
+func (o *SelectGoogleBusinessLocation200ResponseAccount) SetSelectedLocationIdNil() {
+	o.SelectedLocationId.Set(nil)
+}
+
+// UnsetSelectedLocationId ensures that no value is present for SelectedLocationId, not even an explicit nil
+func (o *SelectGoogleBusinessLocation200ResponseAccount) UnsetSelectedLocationId() {
+	o.SelectedLocationId.Unset()
+}
+
+// GetNeedsLocation returns the NeedsLocation field value if set, zero value otherwise.
+func (o *SelectGoogleBusinessLocation200ResponseAccount) GetNeedsLocation() bool {
+	if o == nil || IsNil(o.NeedsLocation) {
+		var ret bool
+		return ret
+	}
+	return *o.NeedsLocation
+}
+
+// GetNeedsLocationOk returns a tuple with the NeedsLocation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectGoogleBusinessLocation200ResponseAccount) GetNeedsLocationOk() (*bool, bool) {
+	if o == nil || IsNil(o.NeedsLocation) {
+		return nil, false
+	}
+	return o.NeedsLocation, true
+}
+
+// HasNeedsLocation returns a boolean if a field has been set.
+func (o *SelectGoogleBusinessLocation200ResponseAccount) HasNeedsLocation() bool {
+	if o != nil && !IsNil(o.NeedsLocation) {
+		return true
+	}
+
+	return false
+}
+
+// SetNeedsLocation gets a reference to the given bool and assigns it to the NeedsLocation field.
+func (o *SelectGoogleBusinessLocation200ResponseAccount) SetNeedsLocation(v bool) {
+	o.NeedsLocation = &v
 }
 
 func (o SelectGoogleBusinessLocation200ResponseAccount) MarshalJSON() ([]byte, error) {
@@ -298,11 +354,14 @@ func (o SelectGoogleBusinessLocation200ResponseAccount) ToMap() (map[string]inte
 	if !IsNil(o.IsActive) {
 		toSerialize["isActive"] = o.IsActive
 	}
-	if !IsNil(o.SelectedLocationName) {
-		toSerialize["selectedLocationName"] = o.SelectedLocationName
+	if o.SelectedLocationName.IsSet() {
+		toSerialize["selectedLocationName"] = o.SelectedLocationName.Get()
 	}
-	if !IsNil(o.SelectedLocationId) {
-		toSerialize["selectedLocationId"] = o.SelectedLocationId
+	if o.SelectedLocationId.IsSet() {
+		toSerialize["selectedLocationId"] = o.SelectedLocationId.Get()
+	}
+	if !IsNil(o.NeedsLocation) {
+		toSerialize["needsLocation"] = o.NeedsLocation
 	}
 	return toSerialize, nil
 }

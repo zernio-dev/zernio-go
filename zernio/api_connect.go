@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.590.2
+API version: 1.593.0
 Contact: support@zernio.com
 */
 
@@ -3091,6 +3091,197 @@ func (a *ConnectAPIService) ConnectWordPressWithApplicationPasswordExecute(r Con
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPICreateGoogleBusinessLocationRequest struct {
+	ctx                                 context.Context
+	ApiService                          *ConnectAPIService
+	accountId                           string
+	createGoogleBusinessLocationRequest *CreateGoogleBusinessLocationRequest
+	idempotencyKey                      *string
+}
+
+func (r ConnectAPICreateGoogleBusinessLocationRequest) CreateGoogleBusinessLocationRequest(createGoogleBusinessLocationRequest CreateGoogleBusinessLocationRequest) ConnectAPICreateGoogleBusinessLocationRequest {
+	r.createGoogleBusinessLocationRequest = &createGoogleBusinessLocationRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r ConnectAPICreateGoogleBusinessLocationRequest) IdempotencyKey(idempotencyKey string) ConnectAPICreateGoogleBusinessLocationRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
+}
+
+func (r ConnectAPICreateGoogleBusinessLocationRequest) Execute() (*CreateGoogleBusinessLocation200Response, *http.Response, error) {
+	return r.ApiService.CreateGoogleBusinessLocationExecute(r)
+}
+
+/*
+CreateGoogleBusinessLocation Create Google Business Profile location
+
+Creates a Google Business Profile listing under the Google account of this Zernio account and attaches it to this account, so verification, details, posts and reviews work on it right away.
+
+Only for an account with no location yet (connected with `allowNoLocation`). If the account already has a location, the request is rejected with 409 and nothing is created.
+
+Search first with `POST /v1/accounts/{accountId}/gmb-locations/search` to avoid duplicating an existing listing, and pick `primaryCategory` from `GET /v1/accounts/{accountId}/gmb-categories`.
+
+Required by Google: `title`, `languageCode` (immutable once set) and `primaryCategory`. At least one of `storefrontAddress` or `serviceArea` is required. When `storefrontAddress` is absent, at least one of `phone` or `websiteUri` is required. Both rules are checked before Google is called and a violation returns 400 naming the field.
+
+Set `validateOnly` to check the request with Google without creating anything: the response carries the would-be `location` and nothing is attached.
+
+A new listing is not on Google Maps until it is verified. `voiceOfMerchantState.hasVoiceOfMerchant` is `false` after creation; start verification with the `gmb-verifications` endpoints. `voiceOfMerchantState` is `null` if Google could not return it, and the listing was still created.
+
+If Google creates the listing but it cannot be attached, the error message names the created `locations/<id>`; attach it with `PUT /v1/accounts/{accountId}/gmb-locations`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId
+	@return ConnectAPICreateGoogleBusinessLocationRequest
+*/
+func (a *ConnectAPIService) CreateGoogleBusinessLocation(ctx context.Context, accountId string) ConnectAPICreateGoogleBusinessLocationRequest {
+	return ConnectAPICreateGoogleBusinessLocationRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateGoogleBusinessLocation200Response
+func (a *ConnectAPIService) CreateGoogleBusinessLocationExecute(r ConnectAPICreateGoogleBusinessLocationRequest) (*CreateGoogleBusinessLocation200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateGoogleBusinessLocation200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.CreateGoogleBusinessLocation")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gmb-locations"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createGoogleBusinessLocationRequest == nil {
+		return localVarReturnValue, nil, reportError("createGoogleBusinessLocationRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.createGoogleBusinessLocationRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v InlineObject2
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPICreateGoogleOrgConnectionRequest struct {
 	ctx                              context.Context
 	ApiService                       *ConnectAPIService
@@ -4403,6 +4594,7 @@ type ConnectAPIGetConnectUrlRequest struct {
 	expectedPlatformUserId *string
 	expectedUsername       *string
 	forceReauth            *bool
+	allowNoLocation        *bool
 	redirectUrl            *string
 	scopes                 *string
 	loginHint              *string
@@ -4458,6 +4650,12 @@ func (r ConnectAPIGetConnectUrlRequest) ExpectedUsername(expectedUsername string
 // Instagram Login only (the default loginMethod); ignored elsewhere. Makes Instagram show its login page and ask for the credentials of the account to connect, even when another Instagram account is logged in on the device or app. Also hides the Facebook login option on that page.  Use it when the person connecting manages several Instagram accounts on one phone: otherwise Instagram logs in, and converts to a professional account, whichever account is active, before any consent screen. Pair it with expectedUsername to also refuse a wrong account at the end.
 func (r ConnectAPIGetConnectUrlRequest) ForceReauth(forceReauth bool) ConnectAPIGetConnectUrlRequest {
 	r.forceReauth = &forceReauth
+	return r
+}
+
+// Google Business only (&#x60;platform&#x3D;googlebusiness&#x60;); any other platform answers 400. Lets a Google account with no Business Profile location finish the connect instead of ending with &#x60;error&#x3D;no_google_locations&#x60;.  The selection step (&#x60;step&#x3D;select_location&#x60;, or the hosted page) then lists no locations. Call &#x60;POST /v1/connect/googlebusiness/select-location&#x60; without &#x60;locationId&#x60; or &#x60;locations&#x60; to connect the account with no location (&#x60;needsLocation: true&#x60;).  Without it, a sign-in that lists no location still ends with &#x60;no_google_locations&#x60;. The marker travels in the redirect_url we hand you, so pass that URL back unchanged in headless mode.
+func (r ConnectAPIGetConnectUrlRequest) AllowNoLocation(allowNoLocation bool) ConnectAPIGetConnectUrlRequest {
+	r.allowNoLocation = &allowNoLocation
 	return r
 }
 
@@ -4633,6 +4831,13 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "forceReauth", defaultValue, "form", "")
 		r.forceReauth = &defaultValue
+	}
+	if r.allowNoLocation != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "allowNoLocation", r.allowNoLocation, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "allowNoLocation", defaultValue, "form", "")
+		r.allowNoLocation = &defaultValue
 	}
 	if r.redirectUrl != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
@@ -9022,6 +9227,189 @@ func (a *ConnectAPIService) ListGoogleAnalyticsPropertiesExecute(r ConnectAPILis
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIListGoogleBusinessCategoriesRequest struct {
+	ctx          context.Context
+	ApiService   *ConnectAPIService
+	accountId    string
+	regionCode   *string
+	languageCode *string
+	query        *string
+	pageToken    *string
+}
+
+// CLDR region code the categories are relevant for (e.g. \&quot;US\&quot;, \&quot;ES\&quot;).
+func (r ConnectAPIListGoogleBusinessCategoriesRequest) RegionCode(regionCode string) ConnectAPIListGoogleBusinessCategoriesRequest {
+	r.regionCode = &regionCode
+	return r
+}
+
+// BCP-47 language code the category names are returned in (e.g. \&quot;en\&quot;, \&quot;es\&quot;).
+func (r ConnectAPIListGoogleBusinessCategoriesRequest) LanguageCode(languageCode string) ConnectAPIListGoogleBusinessCategoriesRequest {
+	r.languageCode = &languageCode
+	return r
+}
+
+// Prefix of the localized category display name.
+func (r ConnectAPIListGoogleBusinessCategoriesRequest) Query(query string) ConnectAPIListGoogleBusinessCategoriesRequest {
+	r.query = &query
+	return r
+}
+
+// Pagination token from a previous response&#39;s nextPageToken field.
+func (r ConnectAPIListGoogleBusinessCategoriesRequest) PageToken(pageToken string) ConnectAPIListGoogleBusinessCategoriesRequest {
+	r.pageToken = &pageToken
+	return r
+}
+
+func (r ConnectAPIListGoogleBusinessCategoriesRequest) Execute() (*ListGoogleBusinessCategories200Response, *http.Response, error) {
+	return r.ApiService.ListGoogleBusinessCategoriesExecute(r)
+}
+
+/*
+ListGoogleBusinessCategories List Google Business Profile categories
+
+Lists the business categories Google accepts for a region, localized to `languageCode`.
+Use the returned `name` (e.g. `categories/gcid:afghani_restaurant`) as the primary category when creating or updating a location.
+
+Not location-scoped: works for a Google Business Profile account that has no location yet.
+
+`query` matches only the START of the display name in `languageCode` (`Restaurante` returns `Restaurante afgano`, but `afgano` returns nothing). Results are paginated with `nextPageToken`, 100 per page.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The Zernio account ID (from /v1/accounts)
+	@return ConnectAPIListGoogleBusinessCategoriesRequest
+*/
+func (a *ConnectAPIService) ListGoogleBusinessCategories(ctx context.Context, accountId string) ConnectAPIListGoogleBusinessCategoriesRequest {
+	return ConnectAPIListGoogleBusinessCategoriesRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListGoogleBusinessCategories200Response
+func (a *ConnectAPIService) ListGoogleBusinessCategoriesExecute(r ConnectAPIListGoogleBusinessCategoriesRequest) (*ListGoogleBusinessCategories200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListGoogleBusinessCategories200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ListGoogleBusinessCategories")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gmb-categories"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.regionCode == nil {
+		return localVarReturnValue, nil, reportError("regionCode is required and must be specified")
+	}
+	if r.languageCode == nil {
+		return localVarReturnValue, nil, reportError("languageCode is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "regionCode", r.regionCode, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "languageCode", r.languageCode, "form", "")
+	if r.query != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "query", r.query, "form", "")
+	}
+	if r.pageToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageToken", r.pageToken, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIListGoogleBusinessLocationsRequest struct {
 	ctx              context.Context
 	ApiService       *ConnectAPIService
@@ -10713,6 +11101,159 @@ func (a *ConnectAPIService) ResyncPageWebhookSubscriptionExecute(r ConnectAPIRes
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPISearchGoogleBusinessLocationsRequest struct {
+	ctx                                  context.Context
+	ApiService                           *ConnectAPIService
+	accountId                            string
+	searchGoogleBusinessLocationsRequest *SearchGoogleBusinessLocationsRequest
+}
+
+func (r ConnectAPISearchGoogleBusinessLocationsRequest) SearchGoogleBusinessLocationsRequest(searchGoogleBusinessLocationsRequest SearchGoogleBusinessLocationsRequest) ConnectAPISearchGoogleBusinessLocationsRequest {
+	r.searchGoogleBusinessLocationsRequest = &searchGoogleBusinessLocationsRequest
+	return r
+}
+
+func (r ConnectAPISearchGoogleBusinessLocationsRequest) Execute() (*SearchGoogleBusinessLocations200Response, *http.Response, error) {
+	return r.ApiService.SearchGoogleBusinessLocationsExecute(r)
+}
+
+/*
+SearchGoogleBusinessLocations Search existing Google listings
+
+Searches Google Maps for listings that match a business name or a partial location, so you can check whether the business already exists before creating a new listing.
+
+Not location-scoped: works for a Google Business Profile account that has no location yet.
+
+Send exactly one of `query` (free text) or `location` (a partial location with at least `title`). Google returns at most 10 matches and does not paginate.
+
+`requestAdminRightsUri` is present only when the listing is already claimed; send the business owner there to request admin rights instead of creating a duplicate.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The Zernio account ID (from /v1/accounts)
+	@return ConnectAPISearchGoogleBusinessLocationsRequest
+*/
+func (a *ConnectAPIService) SearchGoogleBusinessLocations(ctx context.Context, accountId string) ConnectAPISearchGoogleBusinessLocationsRequest {
+	return ConnectAPISearchGoogleBusinessLocationsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SearchGoogleBusinessLocations200Response
+func (a *ConnectAPIService) SearchGoogleBusinessLocationsExecute(r ConnectAPISearchGoogleBusinessLocationsRequest) (*SearchGoogleBusinessLocations200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SearchGoogleBusinessLocations200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.SearchGoogleBusinessLocations")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gmb-locations/search"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.searchGoogleBusinessLocationsRequest == nil {
+		return localVarReturnValue, nil, reportError("searchGoogleBusinessLocationsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.searchGoogleBusinessLocationsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
