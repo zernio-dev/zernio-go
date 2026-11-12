@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.595.0
+API version: 1.595.1
 Contact: support@zernio.com
 */
 
@@ -29,6 +29,8 @@ type GetAllAccountsHealth200ResponseAccountsInner struct {
 	Status            *string `json:"status,omitempty"`
 	CanPost           *bool   `json:"canPost,omitempty"`
 	CanFetchAnalytics *bool   `json:"canFetchAnalytics,omitempty"`
+	// Whether analytics is in scope for this account at all (the platform offers analytics and it was requested at connect). False means canFetchAnalytics is not a problem to fix; true with canFetchAnalytics false means analytics needs a reconnect.
+	AnalyticsSupported *bool `json:"analyticsSupported,omitempty"`
 	// Present when the account connected with `scopes` or through your own OAuth app: each permission area the platform splits, as granted, missing or not_requested. An area never requested does not make the account unhealthy.
 	ScopeAreas     map[string]string `json:"scopeAreas,omitempty"`
 	TokenValid     *bool             `json:"tokenValid,omitempty"`
@@ -321,6 +323,38 @@ func (o *GetAllAccountsHealth200ResponseAccountsInner) HasCanFetchAnalytics() bo
 // SetCanFetchAnalytics gets a reference to the given bool and assigns it to the CanFetchAnalytics field.
 func (o *GetAllAccountsHealth200ResponseAccountsInner) SetCanFetchAnalytics(v bool) {
 	o.CanFetchAnalytics = &v
+}
+
+// GetAnalyticsSupported returns the AnalyticsSupported field value if set, zero value otherwise.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetAnalyticsSupported() bool {
+	if o == nil || IsNil(o.AnalyticsSupported) {
+		var ret bool
+		return ret
+	}
+	return *o.AnalyticsSupported
+}
+
+// GetAnalyticsSupportedOk returns a tuple with the AnalyticsSupported field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetAnalyticsSupportedOk() (*bool, bool) {
+	if o == nil || IsNil(o.AnalyticsSupported) {
+		return nil, false
+	}
+	return o.AnalyticsSupported, true
+}
+
+// HasAnalyticsSupported returns a boolean if a field has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) HasAnalyticsSupported() bool {
+	if o != nil && !IsNil(o.AnalyticsSupported) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnalyticsSupported gets a reference to the given bool and assigns it to the AnalyticsSupported field.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) SetAnalyticsSupported(v bool) {
+	o.AnalyticsSupported = &v
 }
 
 // GetScopeAreas returns the ScopeAreas field value if set, zero value otherwise.
@@ -784,6 +818,9 @@ func (o GetAllAccountsHealth200ResponseAccountsInner) ToMap() (map[string]interf
 	}
 	if !IsNil(o.CanFetchAnalytics) {
 		toSerialize["canFetchAnalytics"] = o.CanFetchAnalytics
+	}
+	if !IsNil(o.AnalyticsSupported) {
+		toSerialize["analyticsSupported"] = o.AnalyticsSupported
 	}
 	if !IsNil(o.ScopeAreas) {
 		toSerialize["scopeAreas"] = o.ScopeAreas
