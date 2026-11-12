@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.594.0
+API version: 1.595.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type GetEventsOverview200Response struct {
 	// Each source that stored an event in the last 30 days, most recent first.
 	Sources []GetEventsOverview200ResponseSourcesInner `json:"sources,omitempty"`
 	Website *GetEventsOverview200ResponseWebsite       `json:"website,omitempty"`
+	// Each tracking site of the profile with its activity. Hit counts are approximate distinct counts without bots.
+	Sites []GetEventsOverview200ResponseSitesInner `json:"sites,omitempty"`
 }
 
 // NewGetEventsOverview200Response instantiates a new GetEventsOverview200Response object
@@ -173,6 +175,38 @@ func (o *GetEventsOverview200Response) SetWebsite(v GetEventsOverview200Response
 	o.Website = &v
 }
 
+// GetSites returns the Sites field value if set, zero value otherwise.
+func (o *GetEventsOverview200Response) GetSites() []GetEventsOverview200ResponseSitesInner {
+	if o == nil || IsNil(o.Sites) {
+		var ret []GetEventsOverview200ResponseSitesInner
+		return ret
+	}
+	return o.Sites
+}
+
+// GetSitesOk returns a tuple with the Sites field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverview200Response) GetSitesOk() ([]GetEventsOverview200ResponseSitesInner, bool) {
+	if o == nil || IsNil(o.Sites) {
+		return nil, false
+	}
+	return o.Sites, true
+}
+
+// HasSites returns a boolean if a field has been set.
+func (o *GetEventsOverview200Response) HasSites() bool {
+	if o != nil && !IsNil(o.Sites) {
+		return true
+	}
+
+	return false
+}
+
+// SetSites gets a reference to the given []GetEventsOverview200ResponseSitesInner and assigns it to the Sites field.
+func (o *GetEventsOverview200Response) SetSites(v []GetEventsOverview200ResponseSitesInner) {
+	o.Sites = v
+}
+
 func (o GetEventsOverview200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -194,6 +228,9 @@ func (o GetEventsOverview200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Website) {
 		toSerialize["website"] = o.Website
+	}
+	if !IsNil(o.Sites) {
+		toSerialize["sites"] = o.Sites
 	}
 	return toSerialize, nil
 }
