@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.589.0
+API version: 1.590.0
 Contact: support@zernio.com
 */
 
@@ -1074,6 +1074,7 @@ type PostsAPIListPostsRequest struct {
 	offset        *int32
 	cursor        *string
 	fields        *string
+	view          *string
 	updatedSince  *time.Time
 	source        *string
 	status        *string
@@ -1118,6 +1119,12 @@ func (r PostsAPIListPostsRequest) Cursor(cursor string) PostsAPIListPostsRequest
 // Comma-separated list of post fields to return. Each post then carries &#x60;_id&#x60; plus only these fields, which makes large pages much cheaper: leave out &#x60;platforms&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60; or &#x60;metadata&#x60; when you do not need them.  Accepted: &#x60;userId&#x60;, &#x60;title&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60;, &#x60;platforms&#x60;, &#x60;scheduledFor&#x60;, &#x60;timezone&#x60;, &#x60;status&#x60;, &#x60;tags&#x60;, &#x60;hashtags&#x60;, &#x60;mentions&#x60;, &#x60;visibility&#x60;, &#x60;metadata&#x60;, &#x60;recycling&#x60;, &#x60;recycledFromPostId&#x60;, &#x60;queuedFromProfile&#x60;, &#x60;queueId&#x60;, &#x60;createdAt&#x60;, &#x60;updatedAt&#x60;.  An unknown field returns 400 naming it. &#x60;fields&#x3D;_id&#x60; returns ids only. Omit it (or send it empty) for the full post. Not available with &#x60;source&#x3D;external&#x60;.
 func (r PostsAPIListPostsRequest) Fields(fields string) PostsAPIListPostsRequest {
 	r.fields = &fields
+	return r
+}
+
+// &#x60;full&#x60; returns the whole post. &#x60;summary&#x60; returns only what an agent needs to read a page of posts:  - Post: &#x60;_id&#x60;, &#x60;title&#x60;, &#x60;content&#x60;, &#x60;status&#x60;, &#x60;scheduledFor&#x60;, &#x60;timezone&#x60;, &#x60;tags&#x60;, &#x60;createdAt&#x60;, &#x60;updatedAt&#x60;, and &#x60;contentNotRetained&#x60; when set. - Each platform: &#x60;platform&#x60;, &#x60;status&#x60;, &#x60;accountId&#x60; (the id), &#x60;username&#x60;, &#x60;scheduledFor&#x60;, &#x60;publishedAt&#x60;, &#x60;platformPostId&#x60;, &#x60;platformPostUrl&#x60;, &#x60;errorMessage&#x60;, &#x60;errorCategory&#x60;. - Left out: the author (&#x60;userId&#x60;), &#x60;mediaItems&#x60;, &#x60;metadata&#x60;, &#x60;recycling&#x60;, and each platform&#39;s custom content, custom media and &#x60;platformSpecificData&#x60;. Null values are left out too.  Works with both sources. Send either &#x60;fields&#x60; or &#x60;view&#x3D;summary&#x60;: both together return 400.
+func (r PostsAPIListPostsRequest) View(view string) PostsAPIListPostsRequest {
+	r.view = &view
 	return r
 }
 
@@ -1273,6 +1280,13 @@ func (a *PostsAPIService) ListPostsExecute(r PostsAPIListPostsRequest) (*PostsLi
 	}
 	if r.fields != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "fields", r.fields, "form", "")
+	}
+	if r.view != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", r.view, "form", "")
+	} else {
+		var defaultValue string = "full"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", defaultValue, "form", "")
+		r.view = &defaultValue
 	}
 	if r.updatedSince != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "updatedSince", r.updatedSince, "form", "")

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.589.0
+API version: 1.590.0
 Contact: support@zernio.com
 */
 
@@ -29,6 +29,8 @@ type ListInboxComments200ResponseDataInner struct {
 	Content *string `json:"content,omitempty"`
 	// Post media thumbnail. On ad rows this is the ad creative thumbnail.
 	Picture NullableString `json:"picture,omitempty"`
+	// Only with view=summary, and only when `content` was cut to 280 characters.
+	ContentTruncated *bool `json:"contentTruncated,omitempty"`
 	// Public URL of the post. On ad rows: the Facebook dark-post URL (facebook placement) or the IG media permalink (instagram placement); may be null when unknown.
 	Permalink    NullableString `json:"permalink,omitempty"`
 	CreatedTime  *time.Time     `json:"createdTime,omitempty"`
@@ -265,6 +267,38 @@ func (o *ListInboxComments200ResponseDataInner) SetPictureNil() {
 // UnsetPicture ensures that no value is present for Picture, not even an explicit nil
 func (o *ListInboxComments200ResponseDataInner) UnsetPicture() {
 	o.Picture.Unset()
+}
+
+// GetContentTruncated returns the ContentTruncated field value if set, zero value otherwise.
+func (o *ListInboxComments200ResponseDataInner) GetContentTruncated() bool {
+	if o == nil || IsNil(o.ContentTruncated) {
+		var ret bool
+		return ret
+	}
+	return *o.ContentTruncated
+}
+
+// GetContentTruncatedOk returns a tuple with the ContentTruncated field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxComments200ResponseDataInner) GetContentTruncatedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContentTruncated) {
+		return nil, false
+	}
+	return o.ContentTruncated, true
+}
+
+// HasContentTruncated returns a boolean if a field has been set.
+func (o *ListInboxComments200ResponseDataInner) HasContentTruncated() bool {
+	if o != nil && !IsNil(o.ContentTruncated) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentTruncated gets a reference to the given bool and assigns it to the ContentTruncated field.
+func (o *ListInboxComments200ResponseDataInner) SetContentTruncated(v bool) {
+	o.ContentTruncated = &v
 }
 
 // GetPermalink returns the Permalink field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -615,6 +649,9 @@ func (o ListInboxComments200ResponseDataInner) ToMap() (map[string]interface{}, 
 	}
 	if o.Picture.IsSet() {
 		toSerialize["picture"] = o.Picture.Get()
+	}
+	if !IsNil(o.ContentTruncated) {
+		toSerialize["contentTruncated"] = o.ContentTruncated
 	}
 	if o.Permalink.IsSet() {
 		toSerialize["permalink"] = o.Permalink.Get()

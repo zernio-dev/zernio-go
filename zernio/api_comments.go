@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.589.0
+API version: 1.590.0
 Contact: support@zernio.com
 */
 
@@ -332,6 +332,7 @@ type CommentsAPIGetInboxPostCommentsRequest struct {
 	limit      *int32
 	cursor     *string
 	commentId  *string
+	view       *string
 }
 
 func (r CommentsAPIGetInboxPostCommentsRequest) AccountId(accountId string) CommentsAPIGetInboxPostCommentsRequest {
@@ -360,6 +361,12 @@ func (r CommentsAPIGetInboxPostCommentsRequest) Cursor(cursor string) CommentsAP
 // (Facebook, Instagram, Reddit and TikTok) Get replies to a specific comment. On Facebook and Instagram, the requested comment is returned in the top-level &#x60;comment&#x60; field and comments[] holds its replies.
 func (r CommentsAPIGetInboxPostCommentsRequest) CommentId(commentId string) CommentsAPIGetInboxPostCommentsRequest {
 	r.commentId = &commentId
+	return r
+}
+
+// &#x60;full&#x60; returns every comment as before. &#x60;summary&#x60; is a lighter page for agents and large polls:  - Each comment leaves out &#x60;from.picture&#x60;, &#x60;url&#x60;, &#x60;platform&#x60; and every flag that is false. - At most 3 nested replies per comment. A comment with more replies than it carries has &#x60;repliesHasMore: true&#x60;: fetch the rest with &#x60;commentId&#x60; (Facebook, Instagram, Reddit, TikTok) or with view&#x3D;full. - &#x60;post&#x60; leaves out &#x60;thumbnailUrl&#x60; and &#x60;mediaUrl&#x60;.
+func (r CommentsAPIGetInboxPostCommentsRequest) View(view string) CommentsAPIGetInboxPostCommentsRequest {
+	r.view = &view
 	return r
 }
 
@@ -463,6 +470,13 @@ func (a *CommentsAPIService) GetInboxPostCommentsExecute(r CommentsAPIGetInboxPo
 	}
 	if r.commentId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "commentId", r.commentId, "form", "")
+	}
+	if r.view != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", r.view, "form", "")
+	} else {
+		var defaultValue string = "full"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", defaultValue, "form", "")
+		r.view = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1002,6 +1016,7 @@ type CommentsAPIListInboxCommentsRequest struct {
 	sortBy      *string
 	sortOrder   *string
 	limit       *int32
+	view        *string
 	cursor      *string
 	accountId   *string
 }
@@ -1044,6 +1059,12 @@ func (r CommentsAPIListInboxCommentsRequest) SortOrder(sortOrder string) Comment
 
 func (r CommentsAPIListInboxCommentsRequest) Limit(limit int32) CommentsAPIListInboxCommentsRequest {
 	r.limit = &limit
+	return r
+}
+
+// full returns every post as before. summary leaves out &#x60;picture&#x60; and cuts &#x60;content&#x60; to 280 characters, marking a cut caption with &#x60;contentTruncated: true&#x60;.
+func (r CommentsAPIListInboxCommentsRequest) View(view string) CommentsAPIListInboxCommentsRequest {
+	r.view = &view
 	return r
 }
 
@@ -1170,6 +1191,13 @@ func (a *CommentsAPIService) ListInboxCommentsExecute(r CommentsAPIListInboxComm
 		var defaultValue int32 = 50
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
 		r.limit = &defaultValue
+	}
+	if r.view != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", r.view, "form", "")
+	} else {
+		var defaultValue string = "full"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", defaultValue, "form", "")
+		r.view = &defaultValue
 	}
 	if r.cursor != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")

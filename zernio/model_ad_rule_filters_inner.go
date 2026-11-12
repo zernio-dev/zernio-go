@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.589.0
+API version: 1.590.0
 Contact: support@zernio.com
 */
 
@@ -20,6 +20,7 @@ import (
 // AdRuleFiltersInner - struct for AdRuleFiltersInner
 type AdRuleFiltersInner struct {
 	BudgetLevel     *BudgetLevel
+	ChannelType     *ChannelType
 	DaysLive        *DaysLive
 	DaysSinceChange *DaysSinceChange
 	Ids             *Ids
@@ -30,6 +31,13 @@ type AdRuleFiltersInner struct {
 func BudgetLevelAsAdRuleFiltersInner(v *BudgetLevel) AdRuleFiltersInner {
 	return AdRuleFiltersInner{
 		BudgetLevel: v,
+	}
+}
+
+// ChannelTypeAsAdRuleFiltersInner is a convenience function that returns ChannelType wrapped in AdRuleFiltersInner
+func ChannelTypeAsAdRuleFiltersInner(v *ChannelType) AdRuleFiltersInner {
+	return AdRuleFiltersInner{
+		ChannelType: v,
 	}
 }
 
@@ -80,6 +88,23 @@ func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 		}
 	} else {
 		dst.BudgetLevel = nil
+	}
+
+	// try to unmarshal data into ChannelType
+	err = newStrictDecoder(data).Decode(&dst.ChannelType)
+	if err == nil {
+		jsonChannelType, _ := json.Marshal(dst.ChannelType)
+		if string(jsonChannelType) == "{}" { // empty struct
+			dst.ChannelType = nil
+		} else {
+			if err = validator.Validate(dst.ChannelType); err != nil {
+				dst.ChannelType = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.ChannelType = nil
 	}
 
 	// try to unmarshal data into DaysLive
@@ -153,6 +178,7 @@ func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.BudgetLevel = nil
+		dst.ChannelType = nil
 		dst.DaysLive = nil
 		dst.DaysSinceChange = nil
 		dst.Ids = nil
@@ -170,6 +196,10 @@ func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 func (src AdRuleFiltersInner) MarshalJSON() ([]byte, error) {
 	if src.BudgetLevel != nil {
 		return json.Marshal(&src.BudgetLevel)
+	}
+
+	if src.ChannelType != nil {
+		return json.Marshal(&src.ChannelType)
 	}
 
 	if src.DaysLive != nil {
@@ -200,6 +230,10 @@ func (obj *AdRuleFiltersInner) GetActualInstance() interface{} {
 		return obj.BudgetLevel
 	}
 
+	if obj.ChannelType != nil {
+		return obj.ChannelType
+	}
+
 	if obj.DaysLive != nil {
 		return obj.DaysLive
 	}
@@ -224,6 +258,10 @@ func (obj *AdRuleFiltersInner) GetActualInstance() interface{} {
 func (obj AdRuleFiltersInner) GetActualInstanceValue() interface{} {
 	if obj.BudgetLevel != nil {
 		return *obj.BudgetLevel
+	}
+
+	if obj.ChannelType != nil {
+		return *obj.ChannelType
 	}
 
 	if obj.DaysLive != nil {

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.589.0
+API version: 1.590.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,7 @@ type AutomationAdFilter struct {
 	AutomationAdFilterOneOf2 *AutomationAdFilterOneOf2
 	AutomationAdFilterOneOf3 *AutomationAdFilterOneOf3
 	AutomationAdFilterOneOf4 *AutomationAdFilterOneOf4
+	AutomationAdFilterOneOf5 *AutomationAdFilterOneOf5
 }
 
 // AutomationAdFilterOneOfAsAutomationAdFilter is a convenience function that returns AutomationAdFilterOneOf wrapped in AutomationAdFilter
@@ -58,6 +59,13 @@ func AutomationAdFilterOneOf3AsAutomationAdFilter(v *AutomationAdFilterOneOf3) A
 func AutomationAdFilterOneOf4AsAutomationAdFilter(v *AutomationAdFilterOneOf4) AutomationAdFilter {
 	return AutomationAdFilter{
 		AutomationAdFilterOneOf4: v,
+	}
+}
+
+// AutomationAdFilterOneOf5AsAutomationAdFilter is a convenience function that returns AutomationAdFilterOneOf5 wrapped in AutomationAdFilter
+func AutomationAdFilterOneOf5AsAutomationAdFilter(v *AutomationAdFilterOneOf5) AutomationAdFilter {
+	return AutomationAdFilter{
+		AutomationAdFilterOneOf5: v,
 	}
 }
 
@@ -150,6 +158,23 @@ func (dst *AutomationAdFilter) UnmarshalJSON(data []byte) error {
 		dst.AutomationAdFilterOneOf4 = nil
 	}
 
+	// try to unmarshal data into AutomationAdFilterOneOf5
+	err = newStrictDecoder(data).Decode(&dst.AutomationAdFilterOneOf5)
+	if err == nil {
+		jsonAutomationAdFilterOneOf5, _ := json.Marshal(dst.AutomationAdFilterOneOf5)
+		if string(jsonAutomationAdFilterOneOf5) == "{}" { // empty struct
+			dst.AutomationAdFilterOneOf5 = nil
+		} else {
+			if err = validator.Validate(dst.AutomationAdFilterOneOf5); err != nil {
+				dst.AutomationAdFilterOneOf5 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AutomationAdFilterOneOf5 = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.AutomationAdFilterOneOf = nil
@@ -157,6 +182,7 @@ func (dst *AutomationAdFilter) UnmarshalJSON(data []byte) error {
 		dst.AutomationAdFilterOneOf2 = nil
 		dst.AutomationAdFilterOneOf3 = nil
 		dst.AutomationAdFilterOneOf4 = nil
+		dst.AutomationAdFilterOneOf5 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(AutomationAdFilter)")
 	} else if match == 1 {
@@ -188,6 +214,10 @@ func (src AutomationAdFilter) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AutomationAdFilterOneOf4)
 	}
 
+	if src.AutomationAdFilterOneOf5 != nil {
+		return json.Marshal(&src.AutomationAdFilterOneOf5)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -216,6 +246,10 @@ func (obj *AutomationAdFilter) GetActualInstance() interface{} {
 		return obj.AutomationAdFilterOneOf4
 	}
 
+	if obj.AutomationAdFilterOneOf5 != nil {
+		return obj.AutomationAdFilterOneOf5
+	}
+
 	// all schemas are nil
 	return nil
 }
@@ -240,6 +274,10 @@ func (obj AutomationAdFilter) GetActualInstanceValue() interface{} {
 
 	if obj.AutomationAdFilterOneOf4 != nil {
 		return *obj.AutomationAdFilterOneOf4
+	}
+
+	if obj.AutomationAdFilterOneOf5 != nil {
+		return *obj.AutomationAdFilterOneOf5
 	}
 
 	// all schemas are nil
