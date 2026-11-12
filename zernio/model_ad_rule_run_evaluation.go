@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.587.0
+API version: 1.588.0
 Contact: support@zernio.com
 */
 
@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the AdRuleRunEvaluation type satisfies the MappedNullable interface at compile time
@@ -20,14 +21,16 @@ var _ MappedNullable = &AdRuleRunEvaluation{}
 
 // AdRuleRunEvaluation The matched objects with their condition values, and what each action did.
 type AdRuleRunEvaluation struct {
-	Rule            *AdRuleRunEvaluationRule          `json:"rule,omitempty"`
-	Today           *string                           `json:"today,omitempty"`
-	Timezone        *string                           `json:"timezone,omitempty"`
-	TimezoneAssumed *bool                             `json:"timezoneAssumed,omitempty"`
-	Currency        NullableString                    `json:"currency,omitempty"`
-	Matched         []AdRuleObjectEvaluation          `json:"matched,omitempty"`
-	Actions         []AdRuleRunEvaluationActionsInner `json:"actions,omitempty"`
-	Notification    *AdRuleRunEvaluationNotification  `json:"notification,omitempty"`
+	Rule            *AdRuleRunEvaluationRule `json:"rule,omitempty"`
+	Today           *string                  `json:"today,omitempty"`
+	Timezone        *string                  `json:"timezone,omitempty"`
+	TimezoneAssumed *bool                    `json:"timezoneAssumed,omitempty"`
+	Currency        NullableString           `json:"currency,omitempty"`
+	// Where the run's hourly windows ended. Absent on runs recorded before November 2026.
+	HourlyThrough NullableTime                      `json:"hourlyThrough,omitempty"`
+	Matched       []AdRuleObjectEvaluation          `json:"matched,omitempty"`
+	Actions       []AdRuleRunEvaluationActionsInner `json:"actions,omitempty"`
+	Notification  *AdRuleRunEvaluationNotification  `json:"notification,omitempty"`
 }
 
 // NewAdRuleRunEvaluation instantiates a new AdRuleRunEvaluation object
@@ -218,6 +221,49 @@ func (o *AdRuleRunEvaluation) UnsetCurrency() {
 	o.Currency.Unset()
 }
 
+// GetHourlyThrough returns the HourlyThrough field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdRuleRunEvaluation) GetHourlyThrough() time.Time {
+	if o == nil || IsNil(o.HourlyThrough.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.HourlyThrough.Get()
+}
+
+// GetHourlyThroughOk returns a tuple with the HourlyThrough field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleRunEvaluation) GetHourlyThroughOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.HourlyThrough.Get(), o.HourlyThrough.IsSet()
+}
+
+// HasHourlyThrough returns a boolean if a field has been set.
+func (o *AdRuleRunEvaluation) HasHourlyThrough() bool {
+	if o != nil && o.HourlyThrough.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetHourlyThrough gets a reference to the given NullableTime and assigns it to the HourlyThrough field.
+func (o *AdRuleRunEvaluation) SetHourlyThrough(v time.Time) {
+	o.HourlyThrough.Set(&v)
+}
+
+// SetHourlyThroughNil sets the value for HourlyThrough to be an explicit nil
+func (o *AdRuleRunEvaluation) SetHourlyThroughNil() {
+	o.HourlyThrough.Set(nil)
+}
+
+// UnsetHourlyThrough ensures that no value is present for HourlyThrough, not even an explicit nil
+func (o *AdRuleRunEvaluation) UnsetHourlyThrough() {
+	o.HourlyThrough.Unset()
+}
+
 // GetMatched returns the Matched field value if set, zero value otherwise.
 func (o *AdRuleRunEvaluation) GetMatched() []AdRuleObjectEvaluation {
 	if o == nil || IsNil(o.Matched) {
@@ -338,6 +384,9 @@ func (o AdRuleRunEvaluation) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Currency.IsSet() {
 		toSerialize["currency"] = o.Currency.Get()
+	}
+	if o.HourlyThrough.IsSet() {
+		toSerialize["hourlyThrough"] = o.HourlyThrough.Get()
 	}
 	if !IsNil(o.Matched) {
 		toSerialize["matched"] = o.Matched

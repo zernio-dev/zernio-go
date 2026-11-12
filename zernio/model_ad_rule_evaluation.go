@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.587.0
+API version: 1.588.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,8 @@ type AdRuleEvaluation struct {
 	// True when the ad account has no known timezone and UTC was assumed.
 	TimezoneAssumed bool           `json:"timezoneAssumed"`
 	Currency        NullableString `json:"currency"`
+	// Where the hourly windows (`last_complete_hour`, `last_3h`, `today_so_far`) ended: the end of the latest hour a sync has settled. Null when the rule has none or they could not be read.
+	HourlyThrough NullableTime `json:"hourlyThrough,omitempty"`
 	// How many objects meet every condition.
 	Matched int32 `json:"matched"`
 	// Every delivering campaign or ad set in scope (for an `activate` rule, the rule-paused ones it may reactivate).
@@ -187,6 +189,49 @@ func (o *AdRuleEvaluation) SetCurrency(v string) {
 	o.Currency.Set(&v)
 }
 
+// GetHourlyThrough returns the HourlyThrough field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdRuleEvaluation) GetHourlyThrough() time.Time {
+	if o == nil || IsNil(o.HourlyThrough.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.HourlyThrough.Get()
+}
+
+// GetHourlyThroughOk returns a tuple with the HourlyThrough field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleEvaluation) GetHourlyThroughOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.HourlyThrough.Get(), o.HourlyThrough.IsSet()
+}
+
+// HasHourlyThrough returns a boolean if a field has been set.
+func (o *AdRuleEvaluation) HasHourlyThrough() bool {
+	if o != nil && o.HourlyThrough.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetHourlyThrough gets a reference to the given NullableTime and assigns it to the HourlyThrough field.
+func (o *AdRuleEvaluation) SetHourlyThrough(v time.Time) {
+	o.HourlyThrough.Set(&v)
+}
+
+// SetHourlyThroughNil sets the value for HourlyThrough to be an explicit nil
+func (o *AdRuleEvaluation) SetHourlyThroughNil() {
+	o.HourlyThrough.Set(nil)
+}
+
+// UnsetHourlyThrough ensures that no value is present for HourlyThrough, not even an explicit nil
+func (o *AdRuleEvaluation) UnsetHourlyThrough() {
+	o.HourlyThrough.Unset()
+}
+
 // GetMatched returns the Matched field value
 func (o *AdRuleEvaluation) GetMatched() int32 {
 	if o == nil {
@@ -283,6 +328,9 @@ func (o AdRuleEvaluation) ToMap() (map[string]interface{}, error) {
 	toSerialize["timezone"] = o.Timezone
 	toSerialize["timezoneAssumed"] = o.TimezoneAssumed
 	toSerialize["currency"] = o.Currency.Get()
+	if o.HourlyThrough.IsSet() {
+		toSerialize["hourlyThrough"] = o.HourlyThrough.Get()
+	}
 	toSerialize["matched"] = o.Matched
 	toSerialize["objects"] = o.Objects
 	if o.Groups != nil {
