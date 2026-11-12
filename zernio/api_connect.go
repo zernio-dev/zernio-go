@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.599.0
+API version: 1.599.1
 Contact: support@zernio.com
 */
 
@@ -4770,6 +4770,10 @@ On a legacy plan limited to N profiles, a new account is refused with 403 `platf
 Every connection now goes through the TikTok for Business app.
 
 An authorization that leaves out a permission the connected account needs changes nothing at all and comes back as `missing_tiktok_permissions`. Connect again and accept every permission on TikTok's screen.
+
+### X (Twitter)
+
+On prepaid-balance billing, connecting X is free, but every X API call is paid from the balance (a post is $0.015, or $0.20 with a link). At a $0 balance, POST /v1/posts to X returns 402 `insufficient_balance` with `funding_url`: fund the balance before the first post.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param platform Social media platform to connect. `snapchat` is a closed beta with no public release date: it returns 403 `PLATFORM_BETA_RESTRICTED` until the account is approved.
