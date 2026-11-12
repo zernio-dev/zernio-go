@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.595.1
+API version: 1.596.0
 Contact: support@zernio.com
 */
 
@@ -6578,6 +6578,117 @@ func (a *WebhookEventsAPIService) OnCampaignSampleShippedExecute(r WebhookEvents
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadCampaignSample
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignStatusChangedRequest struct {
+	ctx                                 context.Context
+	ApiService                          *WebhookEventsAPIService
+	webhookPayloadCampaignStatusChanged *WebhookPayloadCampaignStatusChanged
+}
+
+func (r WebhookEventsAPIOnCampaignStatusChangedRequest) WebhookPayloadCampaignStatusChanged(webhookPayloadCampaignStatusChanged WebhookPayloadCampaignStatusChanged) WebhookEventsAPIOnCampaignStatusChangedRequest {
+	r.webhookPayloadCampaignStatusChanged = &webhookPayloadCampaignStatusChanged
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignStatusChangedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignStatusChangedExecute(r)
+}
+
+/*
+OnCampaignStatusChanged Campaign status changed event
+
+A campaign Zernio already tracked changed its platform status or, on Google, the reasons behind it.
+
+### When it fires
+
+Fires when the ads sync reads a tracked campaign with a different status than it stored, up to one sync interval late. Covers every ad network.
+
+### Status values
+
+On Google, `status` is the campaign's `primary_status` (`ELIGIBLE`, `LIMITED`, `NOT_ELIGIBLE`, `PAUSED`, ...) and `reasons` its sorted `primary_status_reasons`, so a campaign turning budget limited fires. Elsewhere `status` is the campaign's own platform status (Meta `effective_status`) and `reasons` is empty.
+
+### When it does not fire
+
+A campaign seen for the first time, or the same change from the same previous status again within an hour (a retried sync). A change made through Zernio, such as a pause, fires on the next sync, once the sync reads it from the platform.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignStatusChangedRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignStatusChanged(ctx context.Context) WebhookEventsAPIOnCampaignStatusChangedRequest {
+	return WebhookEventsAPIOnCampaignStatusChangedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignStatusChangedExecute(r WebhookEventsAPIOnCampaignStatusChangedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignStatusChanged")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign.status_changed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignStatusChanged == nil {
+		return nil, reportError("webhookPayloadCampaignStatusChanged is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignStatusChanged
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

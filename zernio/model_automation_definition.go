@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.595.1
+API version: 1.596.0
 Contact: support@zernio.com
 */
 
@@ -17,7 +17,7 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// AutomationDefinition - An automation of one of three kinds, told apart by its shape:  - **Ad rule**: a `schedule` trigger over campaigns, ad sets or ads, with metric `conditions` and ad `steps`. - **Event**: a Zernio event in `trigger.type`, narrowed by `trigger.filter`, with notify steps. - **Scheduled**: a `schedule` trigger over `subjects.each: post`, narrowed by `filter`, with notify and boost steps.
+// AutomationDefinition - An automation of one of three kinds, told apart by its shape:  - **Ad rule**: a `schedule` trigger over campaigns, ad sets or ads, with metric `conditions` and ad `steps`. - **Event**: a Zernio event in `trigger.type`, narrowed by `trigger.filter`, with notify steps, or none to only record each matching event as a check. - **Scheduled**: a `schedule` trigger over `subjects.each: post`, narrowed by `filter`, with notify and boost steps.
 type AutomationDefinition struct {
 	AdRuleAutomationDefinition    *AdRuleAutomationDefinition
 	EventAutomationDefinition     *EventAutomationDefinition

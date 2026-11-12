@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.595.1
+API version: 1.596.0
 Contact: support@zernio.com
 */
 
@@ -31,9 +31,11 @@ type EventAutomationCheck struct {
 	Event        NullableString              `json:"event"`
 	EventId      NullableString              `json:"eventId"`
 	Subject      EventAutomationCheckSubject `json:"subject"`
-	Filter       []AutomationFactResult      `json:"filter"`
-	Actions      []AutomationRunResult       `json:"actions"`
-	Error        NullableString              `json:"error"`
+	// The event's facts as the trigger read them, keyed by fact name. Recorded only for an automation with no steps (one that only records each event).  Null for an automation with steps, whose filter results show the facts it compared, and on checks recorded before facts were kept. Content facts are null for a team that keeps no content.
+	Facts   map[string]interface{} `json:"facts"`
+	Filter  []AutomationFactResult `json:"filter"`
+	Actions []AutomationRunResult  `json:"actions"`
+	Error   NullableString         `json:"error"`
 }
 
 type _EventAutomationCheck EventAutomationCheck
@@ -42,7 +44,7 @@ type _EventAutomationCheck EventAutomationCheck
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEventAutomationCheck(id string, automationId string, checkedAt time.Time, outcome string, evaluated int32, event NullableString, eventId NullableString, subject EventAutomationCheckSubject, filter []AutomationFactResult, actions []AutomationRunResult, error_ NullableString) *EventAutomationCheck {
+func NewEventAutomationCheck(id string, automationId string, checkedAt time.Time, outcome string, evaluated int32, event NullableString, eventId NullableString, subject EventAutomationCheckSubject, facts map[string]interface{}, filter []AutomationFactResult, actions []AutomationRunResult, error_ NullableString) *EventAutomationCheck {
 	this := EventAutomationCheck{}
 	this.Id = id
 	this.AutomationId = automationId
@@ -52,6 +54,7 @@ func NewEventAutomationCheck(id string, automationId string, checkedAt time.Time
 	this.Event = event
 	this.EventId = eventId
 	this.Subject = subject
+	this.Facts = facts
 	this.Filter = filter
 	this.Actions = actions
 	this.Error = error_
@@ -262,6 +265,32 @@ func (o *EventAutomationCheck) SetSubject(v EventAutomationCheckSubject) {
 	o.Subject = v
 }
 
+// GetFacts returns the Facts field value
+// If the value is explicit nil, the zero value for map[string]interface{} will be returned
+func (o *EventAutomationCheck) GetFacts() map[string]interface{} {
+	if o == nil {
+		var ret map[string]interface{}
+		return ret
+	}
+
+	return o.Facts
+}
+
+// GetFactsOk returns a tuple with the Facts field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EventAutomationCheck) GetFactsOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Facts) {
+		return map[string]interface{}{}, false
+	}
+	return o.Facts, true
+}
+
+// SetFacts sets field value
+func (o *EventAutomationCheck) SetFacts(v map[string]interface{}) {
+	o.Facts = v
+}
+
 // GetFilter returns the Filter field value
 func (o *EventAutomationCheck) GetFilter() []AutomationFactResult {
 	if o == nil {
@@ -354,6 +383,9 @@ func (o EventAutomationCheck) ToMap() (map[string]interface{}, error) {
 	toSerialize["event"] = o.Event.Get()
 	toSerialize["eventId"] = o.EventId.Get()
 	toSerialize["subject"] = o.Subject
+	if o.Facts != nil {
+		toSerialize["facts"] = o.Facts
+	}
 	toSerialize["filter"] = o.Filter
 	toSerialize["actions"] = o.Actions
 	toSerialize["error"] = o.Error.Get()
@@ -373,6 +405,7 @@ func (o *EventAutomationCheck) UnmarshalJSON(data []byte) (err error) {
 		"event",
 		"eventId",
 		"subject",
+		"facts",
 		"filter",
 		"actions",
 		"error",

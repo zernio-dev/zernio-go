@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.595.1
+API version: 1.596.0
 Contact: support@zernio.com
 */
 
@@ -26,10 +26,11 @@ type AutomationOneOf1 struct {
 	Name    string                 `json:"name"`
 	Status  string                 `json:"status"`
 	Trigger AutomationEventTrigger `json:"trigger"`
-	Steps   []AutomationNotifyStep `json:"steps"`
-	Limits  *AutomationEventLimits `json:"limits,omitempty"`
-	Id      string                 `json:"id"`
-	Kind    string                 `json:"kind"`
+	// May be empty: an automation with no steps only records each event it matches as a check with outcome `triggered` and no action. `limits.cooldown` and `limits.maxChangesPerDay` count actions, so they do nothing for it.
+	Steps  []AutomationNotifyStep `json:"steps"`
+	Limits *AutomationEventLimits `json:"limits,omitempty"`
+	Id     string                 `json:"id"`
+	Kind   string                 `json:"kind"`
 	// Send it back as `If-Match` when editing, so an edit made after someone else saved is refused.
 	Version string `json:"version"`
 	// Null until an ad rule first checks. Always null for event and scheduled automations; their checks list when they ran.
