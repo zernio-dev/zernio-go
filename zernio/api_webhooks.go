@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.596.0
+API version: 1.596.1
 Contact: support@zernio.com
 */
 
@@ -378,6 +378,8 @@ GetWebhookLogs List webhook delivery logs
 
 Retrieve recorded webhook delivery attempts for the authenticated user, most recent first.
 
+A profile-scoped API key, or a team member limited to specific profiles, gets 403.
+
 Logs are retained for 30 days. Supports filtering by status, event type, webhook ID, and event ID, plus offset-based pagination.
 
 ### Restricted keys
@@ -538,7 +540,7 @@ func (r WebhooksAPIGetWebhookSettingsRequest) Execute() (*GetWebhookSettings200R
 /*
 GetWebhookSettings List webhooks
 
-Retrieve all configured webhooks for the authenticated user. Supports up to 50 webhooks per user.
+Retrieve all configured webhooks for the authenticated user. Supports up to 50 webhooks per user. A profile-scoped API key, or a team member limited to specific profiles, gets 403.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhooksAPIGetWebhookSettingsRequest
@@ -678,6 +680,8 @@ Only deliveries inside the 30-day log retention window can be replayed; past tha
 the payload is gone and the request fails with a 422. Replays run the same
 resource-group checks as live delivery, against both the key's groups and the
 subscription's `disabledResourceGroups`.
+
+A profile-scoped API key, or a team member limited to specific profiles, gets 403.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhooksAPIRedeliverWebhookEventRequest
@@ -821,6 +825,8 @@ func (r WebhooksAPITestWebhookRequest) Execute() (*UnpublishPost200Response, *ht
 TestWebhook Send test webhook
 
 Send a test webhook to verify your endpoint is configured correctly. The test payload includes event: "webhook.test" to distinguish it from real events.
+
+A profile-scoped API key, or a team member limited to specific profiles, gets 403.
 
 ### Sample payload for a specific event
 
