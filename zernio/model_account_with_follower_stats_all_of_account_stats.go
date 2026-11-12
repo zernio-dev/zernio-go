@@ -18,10 +18,12 @@ import (
 // checks if the AccountWithFollowerStatsAllOfAccountStats type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AccountWithFollowerStatsAllOfAccountStats{}
 
-// AccountWithFollowerStatsAllOfAccountStats Platform-specific account stats from the latest daily snapshot. Fields vary by platform. Only present if metadata has been captured.
+// AccountWithFollowerStatsAllOfAccountStats Platform-specific account counters from the latest daily snapshot. Each platform reports its own subset of the keys below, and no other key is returned. Absent when the platform reports none of them.
 type AccountWithFollowerStatsAllOfAccountStats struct {
-	// Number of accounts being followed
+	// Number of accounts being followed (TikTok, X, Pinterest, Bluesky)
 	FollowingCount *float32 `json:"followingCount,omitempty"`
+	// Number of accounts being followed (Instagram)
+	FollowsCount *float32 `json:"followsCount,omitempty"`
 	// Total media posts (Instagram)
 	MediaCount *float32 `json:"mediaCount,omitempty"`
 	// Total videos (YouTube, TikTok)
@@ -36,8 +38,8 @@ type AccountWithFollowerStatsAllOfAccountStats struct {
 	TotalViews *float32 `json:"totalViews,omitempty"`
 	// Total likes received (TikTok)
 	LikesCount *float32 `json:"likesCount,omitempty"`
-	// Monthly profile views (Pinterest)
-	MonthlyViews *float32 `json:"monthlyViews,omitempty"`
+	// Monthly profile views (Pinterest). null when Pinterest reports no window
+	MonthlyViews NullableFloat32 `json:"monthlyViews,omitempty"`
 	// Lists the user appears on (X)
 	ListedCount *float32 `json:"listedCount,omitempty"`
 	// Total boards (Pinterest)
@@ -91,6 +93,38 @@ func (o *AccountWithFollowerStatsAllOfAccountStats) HasFollowingCount() bool {
 // SetFollowingCount gets a reference to the given float32 and assigns it to the FollowingCount field.
 func (o *AccountWithFollowerStatsAllOfAccountStats) SetFollowingCount(v float32) {
 	o.FollowingCount = &v
+}
+
+// GetFollowsCount returns the FollowsCount field value if set, zero value otherwise.
+func (o *AccountWithFollowerStatsAllOfAccountStats) GetFollowsCount() float32 {
+	if o == nil || IsNil(o.FollowsCount) {
+		var ret float32
+		return ret
+	}
+	return *o.FollowsCount
+}
+
+// GetFollowsCountOk returns a tuple with the FollowsCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AccountWithFollowerStatsAllOfAccountStats) GetFollowsCountOk() (*float32, bool) {
+	if o == nil || IsNil(o.FollowsCount) {
+		return nil, false
+	}
+	return o.FollowsCount, true
+}
+
+// HasFollowsCount returns a boolean if a field has been set.
+func (o *AccountWithFollowerStatsAllOfAccountStats) HasFollowsCount() bool {
+	if o != nil && !IsNil(o.FollowsCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetFollowsCount gets a reference to the given float32 and assigns it to the FollowsCount field.
+func (o *AccountWithFollowerStatsAllOfAccountStats) SetFollowsCount(v float32) {
+	o.FollowsCount = &v
 }
 
 // GetMediaCount returns the MediaCount field value if set, zero value otherwise.
@@ -317,36 +351,47 @@ func (o *AccountWithFollowerStatsAllOfAccountStats) SetLikesCount(v float32) {
 	o.LikesCount = &v
 }
 
-// GetMonthlyViews returns the MonthlyViews field value if set, zero value otherwise.
+// GetMonthlyViews returns the MonthlyViews field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AccountWithFollowerStatsAllOfAccountStats) GetMonthlyViews() float32 {
-	if o == nil || IsNil(o.MonthlyViews) {
+	if o == nil || IsNil(o.MonthlyViews.Get()) {
 		var ret float32
 		return ret
 	}
-	return *o.MonthlyViews
+	return *o.MonthlyViews.Get()
 }
 
 // GetMonthlyViewsOk returns a tuple with the MonthlyViews field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AccountWithFollowerStatsAllOfAccountStats) GetMonthlyViewsOk() (*float32, bool) {
-	if o == nil || IsNil(o.MonthlyViews) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MonthlyViews, true
+	return o.MonthlyViews.Get(), o.MonthlyViews.IsSet()
 }
 
 // HasMonthlyViews returns a boolean if a field has been set.
 func (o *AccountWithFollowerStatsAllOfAccountStats) HasMonthlyViews() bool {
-	if o != nil && !IsNil(o.MonthlyViews) {
+	if o != nil && o.MonthlyViews.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMonthlyViews gets a reference to the given float32 and assigns it to the MonthlyViews field.
+// SetMonthlyViews gets a reference to the given NullableFloat32 and assigns it to the MonthlyViews field.
 func (o *AccountWithFollowerStatsAllOfAccountStats) SetMonthlyViews(v float32) {
-	o.MonthlyViews = &v
+	o.MonthlyViews.Set(&v)
+}
+
+// SetMonthlyViewsNil sets the value for MonthlyViews to be an explicit nil
+func (o *AccountWithFollowerStatsAllOfAccountStats) SetMonthlyViewsNil() {
+	o.MonthlyViews.Set(nil)
+}
+
+// UnsetMonthlyViews ensures that no value is present for MonthlyViews, not even an explicit nil
+func (o *AccountWithFollowerStatsAllOfAccountStats) UnsetMonthlyViews() {
+	o.MonthlyViews.Unset()
 }
 
 // GetListedCount returns the ListedCount field value if set, zero value otherwise.
@@ -426,6 +471,9 @@ func (o AccountWithFollowerStatsAllOfAccountStats) ToMap() (map[string]interface
 	if !IsNil(o.FollowingCount) {
 		toSerialize["followingCount"] = o.FollowingCount
 	}
+	if !IsNil(o.FollowsCount) {
+		toSerialize["followsCount"] = o.FollowsCount
+	}
 	if !IsNil(o.MediaCount) {
 		toSerialize["mediaCount"] = o.MediaCount
 	}
@@ -447,8 +495,8 @@ func (o AccountWithFollowerStatsAllOfAccountStats) ToMap() (map[string]interface
 	if !IsNil(o.LikesCount) {
 		toSerialize["likesCount"] = o.LikesCount
 	}
-	if !IsNil(o.MonthlyViews) {
-		toSerialize["monthlyViews"] = o.MonthlyViews
+	if o.MonthlyViews.IsSet() {
+		toSerialize["monthlyViews"] = o.MonthlyViews.Get()
 	}
 	if !IsNil(o.ListedCount) {
 		toSerialize["listedCount"] = o.ListedCount
