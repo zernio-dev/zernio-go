@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.585.0
+API version: 1.586.0
 Contact: support@zernio.com
 */
 
@@ -4856,15 +4856,17 @@ func (a *ConversionsAPIService) ListEventDestinationsExecute(r ConversionsAPILis
 }
 
 type ConversionsAPIListEventsRequest struct {
-	ctx        context.Context
-	ApiService *ConversionsAPIService
-	profileId  *string
-	limit      *int32
-	from       *time.Time
-	to         *time.Time
-	eventName  *string
-	source     *string
-	cursor     *string
+	ctx            context.Context
+	ApiService     *ConversionsAPIService
+	profileId      *string
+	limit          *int32
+	from           *time.Time
+	to             *time.Time
+	eventName      *string
+	source         *string
+	platform       *string
+	deliveryStatus *string
+	cursor         *string
 }
 
 func (r ConversionsAPIListEventsRequest) ProfileId(profileId string) ConversionsAPIListEventsRequest {
@@ -4898,6 +4900,18 @@ func (r ConversionsAPIListEventsRequest) EventName(eventName string) Conversions
 // Only events from this source, such as &#x60;stripe&#x60; for the payments of a connected Stripe account.
 func (r ConversionsAPIListEventsRequest) Source(source string) ConversionsAPIListEventsRequest {
 	r.source = &source
+	return r
+}
+
+// Only events sent to this ad platform, such as &#x60;metaads&#x60; or &#x60;googleads&#x60;.
+func (r ConversionsAPIListEventsRequest) Platform(platform string) ConversionsAPIListEventsRequest {
+	r.platform = &platform
+	return r
+}
+
+// Only events whose latest send to a destination (of &#x60;platform&#x60;, when given) was accepted (&#x60;sent&#x60;) or was not (&#x60;failed&#x60;: failed or still retrying).
+func (r ConversionsAPIListEventsRequest) DeliveryStatus(deliveryStatus string) ConversionsAPIListEventsRequest {
+	r.deliveryStatus = &deliveryStatus
 	return r
 }
 
@@ -4974,6 +4988,12 @@ func (a *ConversionsAPIService) ListEventsExecute(r ConversionsAPIListEventsRequ
 	}
 	if r.source != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "source", r.source, "form", "")
+	}
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.deliveryStatus != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "deliveryStatus", r.deliveryStatus, "form", "")
 	}
 	if r.cursor != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
