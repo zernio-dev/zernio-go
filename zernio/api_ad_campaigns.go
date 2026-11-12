@@ -4728,6 +4728,7 @@ type AdCampaignsAPIGetAdTreeRequest struct {
 	dailyLevel    *string
 	compare       *string
 	results       *bool
+	depth         *string
 }
 
 // Page number (1-based)
@@ -4852,6 +4853,12 @@ func (r AdCampaignsAPIGetAdTreeRequest) Compare(compare string) AdCampaignsAPIGe
 // Set to &#x60;true&#x60; to add your own results (see [Campaign results](/guides/campaign-results)): every campaign gains &#x60;results&#x60;, the values you sent for the range plus each formula they allow, and the response gains &#x60;resultMetrics&#x60; to label them.
 func (r AdCampaignsAPIGetAdTreeRequest) Results(results bool) AdCampaignsAPIGetAdTreeRequest {
 	r.results = &results
+	return r
+}
+
+// How deep the tree goes. Metrics always roll up over every ad, whatever the depth.  - &#x60;ad&#x60; (default): campaigns, their ad sets and each ad set&#39;s ads. - &#x60;adset&#x60;: campaigns and ad sets; every &#x60;ads[]&#x60; is empty and &#x60;adCount&#x60; still counts the ads. - &#x60;campaign&#x60;: campaigns only; every &#x60;adSets[]&#x60; is empty and &#x60;adSetCount&#x60; / &#x60;adCount&#x60; still count them.
+func (r AdCampaignsAPIGetAdTreeRequest) Depth(depth string) AdCampaignsAPIGetAdTreeRequest {
+	r.depth = &depth
 	return r
 }
 
@@ -5006,6 +5013,13 @@ func (a *AdCampaignsAPIService) GetAdTreeExecute(r AdCampaignsAPIGetAdTreeReques
 	}
 	if r.results != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "results", r.results, "form", "")
+	}
+	if r.depth != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "depth", r.depth, "form", "")
+	} else {
+		var defaultValue string = "ad"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "depth", defaultValue, "form", "")
+		r.depth = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -7133,6 +7147,7 @@ type AdCampaignsAPIListAdSetsRequest struct {
 	page        *int32
 	limit       *int32
 	live        *bool
+	view        *string
 }
 
 // Account ID
@@ -7183,6 +7198,12 @@ func (r AdCampaignsAPIListAdSetsRequest) Limit(limit int32) AdCampaignsAPIListAd
 // Read the on/off switches live from the platform instead of returning synced values. See \&quot;Status freshness\&quot; in the operation description.  - The fresh values are stored (later reads return them too), and the response carries &#x60;statusReadAt&#x60;, the time of the read. - At most 20 platform objects are read per request. - Where a read fails (credentials, platform error, no reader on that platform), stored values come back with &#x60;statusReadAt: null&#x60;.  **On GET /v1/ads/{adId} for a TikTok ad** the creative is read live too: ad text, call to action, landing page, video, format and identity, returned over the stored creative and never stored. See \&quot;Status freshness\&quot; in GET /v1/ads/{adId}.  **On X** the budget is read live too:  - GET /v1/ads/{adId}: &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches). - Ad set and campaign listings: &#x60;budget&#x60; is what that line item or campaign holds now (returned, not stored). A row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
 func (r AdCampaignsAPIListAdSetsRequest) Live(live bool) AdCampaignsAPIListAdSetsRequest {
 	r.live = &live
+	return r
+}
+
+// &#x60;full&#x60; returns every field. &#x60;summary&#x60; leaves &#x60;targeting&#x60; out of each ad set, which is most of a row&#39;s size; read one ad set&#39;s targeting with &#x60;adSetId&#x60; and &#x60;view&#x3D;full&#x60;.
+func (r AdCampaignsAPIListAdSetsRequest) View(view string) AdCampaignsAPIListAdSetsRequest {
+	r.view = &view
 	return r
 }
 
@@ -7312,6 +7333,13 @@ func (a *AdCampaignsAPIService) ListAdSetsExecute(r AdCampaignsAPIListAdSetsRequ
 		parameterAddToHeaderOrQuery(localVarQueryParams, "live", defaultValue, "form", "")
 		r.live = &defaultValue
 	}
+	if r.view != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", r.view, "form", "")
+	} else {
+		var defaultValue string = "full"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", defaultValue, "form", "")
+		r.view = &defaultValue
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -7407,6 +7435,7 @@ type AdCampaignsAPIListAdsRequest struct {
 	effectiveInstagramMediaId *string
 	fromDate                  *string
 	toDate                    *string
+	view                      *string
 }
 
 // Page number (1-based)
@@ -7499,6 +7528,12 @@ func (r AdCampaignsAPIListAdsRequest) FromDate(fromDate string) AdCampaignsAPILi
 // End of metrics date range (YYYY-MM-DD). Defaults to today. Max 730-day range.
 func (r AdCampaignsAPIListAdsRequest) ToDate(toDate string) AdCampaignsAPIListAdsRequest {
 	r.toDate = &toDate
+	return r
+}
+
+// &#x60;full&#x60; (default) returns every field. &#x60;summary&#x60; is about 80% smaller per ad and keeps only:  - &#x60;_id&#x60;, &#x60;name&#x60;, &#x60;platform&#x60;, &#x60;status&#x60;, &#x60;platformStatus&#x60;, &#x60;servingStatuses&#x60; (left out when empty), &#x60;configuredStatus&#x60;, &#x60;reviewStatus&#x60;, &#x60;rejectionReason&#x60;, &#x60;goal&#x60;. - The platform ids, &#x60;accountId&#x60;, &#x60;profileId&#x60;, &#x60;campaignName&#x60;, &#x60;adSetName&#x60;, &#x60;budget&#x60;, &#x60;currency&#x60;, &#x60;isExternal&#x60;, &#x60;creativeType&#x60;, &#x60;platformCreatedAt&#x60;, &#x60;createdAt&#x60;. - &#x60;postId&#x60; as the post id, not the expanded post. - &#x60;creative&#x60; with only &#x60;headline&#x60;, &#x60;body&#x60; (cut to 200 characters), &#x60;linkUrl&#x60;, &#x60;callToAction&#x60; and &#x60;effectiveObjectStoryId&#x60;. - &#x60;metrics&#x60; without &#x60;costPerAction&#x60; and without any metric that is 0: an absent metric means 0.  Read one ad with &#x60;platformAdId&#x60; and &#x60;view&#x3D;full&#x60; for the rest.
+func (r AdCampaignsAPIListAdsRequest) View(view string) AdCampaignsAPIListAdsRequest {
+	r.view = &view
 	return r
 }
 
@@ -7621,6 +7656,13 @@ func (a *AdCampaignsAPIService) ListAdsExecute(r AdCampaignsAPIListAdsRequest) (
 	}
 	if r.toDate != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
+	if r.view != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", r.view, "form", "")
+	} else {
+		var defaultValue string = "full"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", defaultValue, "form", "")
+		r.view = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
