@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.583.0
+API version: 1.584.0
 Contact: support@zernio.com
 */
 
@@ -30,8 +30,10 @@ type ForwardingRule struct {
 	// Event names forwarded to this destination; null forwards every event.
 	EventNames []string `json:"eventNames,omitempty"`
 	// Event sources forwarded to this destination; null forwards events from every source.
-	Sources   []string   `json:"sources,omitempty"`
-	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	Sources []string `json:"sources,omitempty"`
+	// Only when an `apiSecret` was saved by this request. Google Analytics never confirms a Measurement Protocol API secret, so it is `false` there: the first events in GA4 Realtime prove the secret is right.
+	ApiSecretVerified *bool      `json:"apiSecretVerified,omitempty"`
+	CreatedAt         *time.Time `json:"createdAt,omitempty"`
 }
 
 // NewForwardingRule instantiates a new ForwardingRule object
@@ -245,6 +247,38 @@ func (o *ForwardingRule) SetSources(v []string) {
 	o.Sources = v
 }
 
+// GetApiSecretVerified returns the ApiSecretVerified field value if set, zero value otherwise.
+func (o *ForwardingRule) GetApiSecretVerified() bool {
+	if o == nil || IsNil(o.ApiSecretVerified) {
+		var ret bool
+		return ret
+	}
+	return *o.ApiSecretVerified
+}
+
+// GetApiSecretVerifiedOk returns a tuple with the ApiSecretVerified field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ForwardingRule) GetApiSecretVerifiedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ApiSecretVerified) {
+		return nil, false
+	}
+	return o.ApiSecretVerified, true
+}
+
+// HasApiSecretVerified returns a boolean if a field has been set.
+func (o *ForwardingRule) HasApiSecretVerified() bool {
+	if o != nil && !IsNil(o.ApiSecretVerified) {
+		return true
+	}
+
+	return false
+}
+
+// SetApiSecretVerified gets a reference to the given bool and assigns it to the ApiSecretVerified field.
+func (o *ForwardingRule) SetApiSecretVerified(v bool) {
+	o.ApiSecretVerified = &v
+}
+
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
 func (o *ForwardingRule) GetCreatedAt() time.Time {
 	if o == nil || IsNil(o.CreatedAt) {
@@ -304,6 +338,9 @@ func (o ForwardingRule) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Sources != nil {
 		toSerialize["sources"] = o.Sources
+	}
+	if !IsNil(o.ApiSecretVerified) {
+		toSerialize["apiSecretVerified"] = o.ApiSecretVerified
 	}
 	if !IsNil(o.CreatedAt) {
 		toSerialize["createdAt"] = o.CreatedAt

@@ -920,6 +920,7 @@ func main() {
 | `client.ConversionsAPI.UpdateConversionAction(ctx)` | Update a conversion action's settings |
 | `client.ConversionsAPI.UpdateConversionDestination(ctx)` | Update a conversion destination |
 | `client.ConversionsAPI.UpdateCustomConversionGoal(ctx)` | Update a custom conversion goal |
+| `client.ConversionsAPI.UpdateForwardingRule(ctx)` | Change a forwarding rule's API secret |
 | `client.ConversionsAPI.DeleteAdConversionDestination(ctx)` | Delete a conversion destination |
 | `client.ConversionsAPI.DeleteConversionDestination(ctx)` | Delete a conversion destination |
 | `client.ConversionsAPI.DeleteEventDestination(ctx)` | Remove an event destination |

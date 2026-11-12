@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.583.0
+API version: 1.584.0
 Contact: support@zernio.com
 */
 
@@ -24,11 +24,13 @@ type CreateForwardingRuleRequest struct {
 	ProfileId string `json:"profileId"`
 	// Connected ads account ID that owns the destination.
 	AccountId string `json:"accountId"`
-	// The platform destination: a pixel, a conversion action or a conversion rule.
+	// The platform destination: a pixel, a conversion action, a conversion rule, or a GA4 web stream measurement id (`G-…`).
 	DestinationId string   `json:"destinationId"`
 	EventNames    []string `json:"eventNames,omitempty"`
 	// Forward only events from these sources, such as only `web` for a tracked website. Leave it out to forward events from every source.
-	Sources              []string `json:"sources,omitempty"`
+	Sources []string `json:"sources,omitempty"`
+	// Google Analytics destinations only, and required for them: the data stream's Measurement Protocol API secret, from GA4 Admin › Data streams › Measurement Protocol API secrets. Checked with one hit to Google's validation server (which cannot confirm the secret itself), stored encrypted and never returned. Change it later with `PATCH /v1/events/forwarding-rules/{ruleId}`.
+	ApiSecret            *string `json:"apiSecret,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -190,6 +192,38 @@ func (o *CreateForwardingRuleRequest) SetSources(v []string) {
 	o.Sources = v
 }
 
+// GetApiSecret returns the ApiSecret field value if set, zero value otherwise.
+func (o *CreateForwardingRuleRequest) GetApiSecret() string {
+	if o == nil || IsNil(o.ApiSecret) {
+		var ret string
+		return ret
+	}
+	return *o.ApiSecret
+}
+
+// GetApiSecretOk returns a tuple with the ApiSecret field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateForwardingRuleRequest) GetApiSecretOk() (*string, bool) {
+	if o == nil || IsNil(o.ApiSecret) {
+		return nil, false
+	}
+	return o.ApiSecret, true
+}
+
+// HasApiSecret returns a boolean if a field has been set.
+func (o *CreateForwardingRuleRequest) HasApiSecret() bool {
+	if o != nil && !IsNil(o.ApiSecret) {
+		return true
+	}
+
+	return false
+}
+
+// SetApiSecret gets a reference to the given string and assigns it to the ApiSecret field.
+func (o *CreateForwardingRuleRequest) SetApiSecret(v string) {
+	o.ApiSecret = &v
+}
+
 func (o CreateForwardingRuleRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -208,6 +242,9 @@ func (o CreateForwardingRuleRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Sources) {
 		toSerialize["sources"] = o.Sources
+	}
+	if !IsNil(o.ApiSecret) {
+		toSerialize["apiSecret"] = o.ApiSecret
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -259,6 +296,7 @@ func (o *CreateForwardingRuleRequest) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "destinationId")
 		delete(additionalProperties, "eventNames")
 		delete(additionalProperties, "sources")
+		delete(additionalProperties, "apiSecret")
 		o.AdditionalProperties = additionalProperties
 	}
 
