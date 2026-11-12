@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.590.1
+API version: 1.590.2
 Contact: support@zernio.com
 */
 
@@ -29,7 +29,7 @@ type CampaignResultMetric struct {
 	Currency NullableString `json:"currency"`
 	// Null for a number you send. For a computed metric, the formula over `spend`, `impressions`, `clicks`, `conversions`, `purchase_value` and the metrics you send, e.g. `spend / revenue * 100`.
 	Formula NullableString `json:"formula"`
-	// One of the formulas every team has (`cac_percent`, `cost_per_sale`, `cost_per_qualified_lead`, `lead_to_sale`). Setting the same key replaces it for your team.
+	// One of the formulas every team has (`cac_percent`, `cost_per_sale`, `cost_per_qualified_lead`, `lead_to_sale`, `qualified_rate`). Setting the same key replaces it for your team.
 	BuiltIn bool `json:"builtIn"`
 }
 
