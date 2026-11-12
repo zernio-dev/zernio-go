@@ -188,6 +188,7 @@ type AnalyticsAPIGetAnalyticsRequest struct {
 	sortBy     *string
 	order      *string
 	tags       *string
+	view       *string
 }
 
 // Returns analytics for a single post. Accepts Zernio Post IDs, External Post IDs and the platform&#39;s native post ID. Zernio IDs are auto-resolved to External Post analytics.
@@ -259,6 +260,12 @@ func (r AnalyticsAPIGetAnalyticsRequest) Order(order string) AnalyticsAPIGetAnal
 // Comma-separated tags (at most 20). Lists only posts created through Zernio that carry every listed tag, matched exactly and case-sensitively. Up to 200 published posts can match within the date range; more returns 400 asking to narrow fromDate and toDate. Ignored when postId is set.
 func (r AnalyticsAPIGetAnalyticsRequest) Tags(tags string) AnalyticsAPIGetAnalyticsRequest {
 	r.tags = &tags
+	return r
+}
+
+// full returns the listing as before. summary leaves out the accounts list, each platform entry&#39;s copy of analytics, the impressionSources, audienceTypes, audienceCountries and retentionCurve maps, and mediaItems (thumbnailUrl stays). Ignored when postId is set.
+func (r AnalyticsAPIGetAnalyticsRequest) View(view string) AnalyticsAPIGetAnalyticsRequest {
+	r.view = &view
 	return r
 }
 
@@ -384,6 +391,13 @@ func (a *AnalyticsAPIService) GetAnalyticsExecute(r AnalyticsAPIGetAnalyticsRequ
 	}
 	if r.tags != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	if r.view != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", r.view, "form", "")
+	} else {
+		var defaultValue string = "full"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "view", defaultValue, "form", "")
+		r.view = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
