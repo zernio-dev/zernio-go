@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.600.0
+API version: 1.601.0
 Contact: support@zernio.com
 */
 
@@ -23,14 +23,15 @@ var _ MappedNullable = &EventAutomationCheck{}
 
 // EventAutomationCheck One event that reached an event automation.
 type EventAutomationCheck struct {
-	Id           string                      `json:"id"`
-	AutomationId string                      `json:"automationId"`
-	CheckedAt    time.Time                   `json:"checkedAt"`
-	Outcome      string                      `json:"outcome"`
-	Evaluated    int32                       `json:"evaluated"`
-	Event        NullableString              `json:"event"`
-	EventId      NullableString              `json:"eventId"`
-	Subject      EventAutomationCheckSubject `json:"subject"`
+	Id           string    `json:"id"`
+	AutomationId string    `json:"automationId"`
+	CheckedAt    time.Time `json:"checkedAt"`
+	// `paused`: the team used its free automation runs with no payment method on file, so the check did not run. `error` says why.
+	Outcome   string                      `json:"outcome"`
+	Evaluated int32                       `json:"evaluated"`
+	Event     NullableString              `json:"event"`
+	EventId   NullableString              `json:"eventId"`
+	Subject   EventAutomationCheckSubject `json:"subject"`
 	// The event's facts as the trigger read them, keyed by fact name. Recorded only for an automation with no steps (one that only records each event).  Null for an automation with steps, whose filter results show the facts it compared, and on checks recorded before facts were kept. Content facts are null for a team that keeps no content.
 	Facts   map[string]interface{} `json:"facts"`
 	Filter  []AutomationFactResult `json:"filter"`
