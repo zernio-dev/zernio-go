@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.578.0
+API version: 1.579.0
 Contact: support@zernio.com
 */
 
@@ -62,7 +62,7 @@ type CommerceOrder struct {
 	FeeLines []CommerceOrderChargeLine `json:"feeLines,omitempty"`
 	// Order tax by rate, line items and shipping together.
 	TaxLines     []CommerceTaxLine                `json:"taxLines,omitempty"`
-	Refunds      []CommerceOrderRefundsInner      `json:"refunds,omitempty"`
+	Refunds      []CommerceOrderRefund            `json:"refunds,omitempty"`
 	Fulfillments []CommerceOrderFulfillmentsInner `json:"fulfillments,omitempty"`
 	// Platform-only fields. Null when the platform has none.
 	PlatformData map[string]interface{} `json:"platformData,omitempty"`
@@ -1198,9 +1198,9 @@ func (o *CommerceOrder) SetTaxLines(v []CommerceTaxLine) {
 }
 
 // GetRefunds returns the Refunds field value if set, zero value otherwise.
-func (o *CommerceOrder) GetRefunds() []CommerceOrderRefundsInner {
+func (o *CommerceOrder) GetRefunds() []CommerceOrderRefund {
 	if o == nil || IsNil(o.Refunds) {
-		var ret []CommerceOrderRefundsInner
+		var ret []CommerceOrderRefund
 		return ret
 	}
 	return o.Refunds
@@ -1208,7 +1208,7 @@ func (o *CommerceOrder) GetRefunds() []CommerceOrderRefundsInner {
 
 // GetRefundsOk returns a tuple with the Refunds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CommerceOrder) GetRefundsOk() ([]CommerceOrderRefundsInner, bool) {
+func (o *CommerceOrder) GetRefundsOk() ([]CommerceOrderRefund, bool) {
 	if o == nil || IsNil(o.Refunds) {
 		return nil, false
 	}
@@ -1224,8 +1224,8 @@ func (o *CommerceOrder) HasRefunds() bool {
 	return false
 }
 
-// SetRefunds gets a reference to the given []CommerceOrderRefundsInner and assigns it to the Refunds field.
-func (o *CommerceOrder) SetRefunds(v []CommerceOrderRefundsInner) {
+// SetRefunds gets a reference to the given []CommerceOrderRefund and assigns it to the Refunds field.
+func (o *CommerceOrder) SetRefunds(v []CommerceOrderRefund) {
 	o.Refunds = v
 }
 

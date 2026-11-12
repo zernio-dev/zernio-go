@@ -785,6 +785,7 @@ func main() {
 | `client.CommerceAPI.ListCommerceChannels(ctx)` | List sales channels |
 | `client.CommerceAPI.ListCommerceCollectionMetafields(ctx)` | List collection metafields |
 | `client.CommerceAPI.ListCommerceCollections(ctx)` | List collections |
+| `client.CommerceAPI.ListCommerceCustomers(ctx)` | List customers |
 | `client.CommerceAPI.ListCommerceDiscounts(ctx)` | List discounts |
 | `client.CommerceAPI.ListCommerceInventory(ctx)` | Get a product's stock |
 | `client.CommerceAPI.ListCommerceLocations(ctx)` | List locations |
@@ -808,8 +809,10 @@ func main() {
 | `client.CommerceAPI.CreateCommerceProductOptions(ctx)` | Add options |
 | `client.CommerceAPI.CreateCommerceProductVariants(ctx)` | Add variants |
 | `client.CommerceAPI.CreateCommerceRedirect(ctx)` | Create a URL redirect |
+| `client.CommerceAPI.CreateCommerceRefund(ctx)` | Refund an order |
 | `client.CommerceAPI.GetCommerceCatalogSync(ctx)` | Get a catalog sync |
 | `client.CommerceAPI.GetCommerceCollection(ctx)` | Get a collection |
+| `client.CommerceAPI.GetCommerceCustomer(ctx)` | Get a customer |
 | `client.CommerceAPI.GetCommerceDiscount(ctx)` | Get a discount |
 | `client.CommerceAPI.GetCommerceMenu(ctx)` | Get a navigation menu |
 | `client.CommerceAPI.GetCommerceMetaobject(ctx)` | Get a metaobject |
@@ -841,6 +844,7 @@ func main() {
 | `client.CommerceAPI.AddCommerceDiscountCodes(ctx)` | Add codes to a discount |
 | `client.CommerceAPI.AddCommerceMarketingEngagement(ctx)` | Report daily engagement |
 | `client.CommerceAPI.AddCommerceProductImages(ctx)` | Add images |
+| `client.CommerceAPI.CancelCommerceOrder(ctx)` | Cancel an order |
 | `client.CommerceAPI.ChangeCommerceCollectionChannels(ctx)` | Publish or unpublish a collection |
 | `client.CommerceAPI.ChangeCommerceCollectionProducts(ctx)` | Add or remove products in a collection |
 | `client.CommerceAPI.ChangeCommerceInventory(ctx)` | Set or adjust stock |
