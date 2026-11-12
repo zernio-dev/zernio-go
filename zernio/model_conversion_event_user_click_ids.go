@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.579.0
+API version: 1.581.0
 Contact: support@zernio.com
 */
 
@@ -38,6 +38,12 @@ type ConversionEventUserClickIds struct {
 	RdtCid *string `json:"rdt_cid,omitempty"`
 	// Reddit Pixel browser id (the `_rdt_uuid` first-party cookie). Sent to Reddit as `user.uuid`, not hashed.
 	RdtUuid *string `json:"rdt_uuid,omitempty"`
+	// Axon (AppLovin) click id (the `aleid` URL param Axon adds to ad clicks, kept by its pixel in the `_axeid` cookie). Sent to Axon as `user_data.aleid`, not hashed.
+	Aleid *string `json:"aleid,omitempty"`
+	// Axon (AppLovin) attribution token (the `alart` URL param, `_axart` cookie). Sent to Axon as `user_data.alart`, not hashed.
+	Alart *string `json:"alart,omitempty"`
+	// Axon Pixel browser id (the `_axwrt` cookie). Sent to Axon as `user_data.axwrt`, not hashed.
+	Axwrt *string `json:"axwrt,omitempty"`
 }
 
 // NewConversionEventUserClickIds instantiates a new ConversionEventUserClickIds object
@@ -345,6 +351,102 @@ func (o *ConversionEventUserClickIds) SetRdtUuid(v string) {
 	o.RdtUuid = &v
 }
 
+// GetAleid returns the Aleid field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetAleid() string {
+	if o == nil || IsNil(o.Aleid) {
+		var ret string
+		return ret
+	}
+	return *o.Aleid
+}
+
+// GetAleidOk returns a tuple with the Aleid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetAleidOk() (*string, bool) {
+	if o == nil || IsNil(o.Aleid) {
+		return nil, false
+	}
+	return o.Aleid, true
+}
+
+// HasAleid returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasAleid() bool {
+	if o != nil && !IsNil(o.Aleid) {
+		return true
+	}
+
+	return false
+}
+
+// SetAleid gets a reference to the given string and assigns it to the Aleid field.
+func (o *ConversionEventUserClickIds) SetAleid(v string) {
+	o.Aleid = &v
+}
+
+// GetAlart returns the Alart field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetAlart() string {
+	if o == nil || IsNil(o.Alart) {
+		var ret string
+		return ret
+	}
+	return *o.Alart
+}
+
+// GetAlartOk returns a tuple with the Alart field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetAlartOk() (*string, bool) {
+	if o == nil || IsNil(o.Alart) {
+		return nil, false
+	}
+	return o.Alart, true
+}
+
+// HasAlart returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasAlart() bool {
+	if o != nil && !IsNil(o.Alart) {
+		return true
+	}
+
+	return false
+}
+
+// SetAlart gets a reference to the given string and assigns it to the Alart field.
+func (o *ConversionEventUserClickIds) SetAlart(v string) {
+	o.Alart = &v
+}
+
+// GetAxwrt returns the Axwrt field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetAxwrt() string {
+	if o == nil || IsNil(o.Axwrt) {
+		var ret string
+		return ret
+	}
+	return *o.Axwrt
+}
+
+// GetAxwrtOk returns a tuple with the Axwrt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetAxwrtOk() (*string, bool) {
+	if o == nil || IsNil(o.Axwrt) {
+		return nil, false
+	}
+	return o.Axwrt, true
+}
+
+// HasAxwrt returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasAxwrt() bool {
+	if o != nil && !IsNil(o.Axwrt) {
+		return true
+	}
+
+	return false
+}
+
+// SetAxwrt gets a reference to the given string and assigns it to the Axwrt field.
+func (o *ConversionEventUserClickIds) SetAxwrt(v string) {
+	o.Axwrt = &v
+}
+
 func (o ConversionEventUserClickIds) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -381,6 +483,15 @@ func (o ConversionEventUserClickIds) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RdtUuid) {
 		toSerialize["rdt_uuid"] = o.RdtUuid
+	}
+	if !IsNil(o.Aleid) {
+		toSerialize["aleid"] = o.Aleid
+	}
+	if !IsNil(o.Alart) {
+		toSerialize["alart"] = o.Alart
+	}
+	if !IsNil(o.Axwrt) {
+		toSerialize["axwrt"] = o.Axwrt
 	}
 	return toSerialize, nil
 }
