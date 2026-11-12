@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.584.0
+API version: 1.585.0
 Contact: support@zernio.com
 */
 
@@ -54,6 +54,9 @@ const (
 	COMMERCECAPABILITY_ORDERS_REFUND          CommerceCapability = "orders.refund"
 	COMMERCECAPABILITY_ORDERS_CANCEL          CommerceCapability = "orders.cancel"
 	COMMERCECAPABILITY_CUSTOMERS_READ         CommerceCapability = "customers.read"
+	COMMERCECAPABILITY_ORDERS_EDIT            CommerceCapability = "orders.edit"
+	COMMERCECAPABILITY_DRAFT_ORDERS_READ      CommerceCapability = "draft_orders.read"
+	COMMERCECAPABILITY_DRAFT_ORDERS_WRITE     CommerceCapability = "draft_orders.write"
 )
 
 // All allowed values of CommerceCapability enum
@@ -91,6 +94,9 @@ var AllowedCommerceCapabilityEnumValues = []CommerceCapability{
 	"orders.refund",
 	"orders.cancel",
 	"customers.read",
+	"orders.edit",
+	"draft_orders.read",
+	"draft_orders.write",
 }
 
 func (v *CommerceCapability) UnmarshalJSON(src []byte) error {

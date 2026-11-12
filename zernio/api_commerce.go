@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.584.0
+API version: 1.585.0
 Contact: support@zernio.com
 */
 
@@ -1808,6 +1808,151 @@ func (a *CommerceAPIService) CreateCommerceDiscountExecute(r CommerceAPICreateCo
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type CommerceAPICreateCommerceDraftOrderRequest struct {
+	ctx                             context.Context
+	ApiService                      *CommerceAPIService
+	createCommerceDraftOrderRequest *CreateCommerceDraftOrderRequest
+	idempotencyKey                  *string
+}
+
+func (r CommerceAPICreateCommerceDraftOrderRequest) CreateCommerceDraftOrderRequest(createCommerceDraftOrderRequest CreateCommerceDraftOrderRequest) CommerceAPICreateCommerceDraftOrderRequest {
+	r.createCommerceDraftOrderRequest = &createCommerceDraftOrderRequest
+	return r
+}
+
+// A retry with the same key returns the first draft instead of creating another.
+func (r CommerceAPICreateCommerceDraftOrderRequest) IdempotencyKey(idempotencyKey string) CommerceAPICreateCommerceDraftOrderRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
+}
+
+func (r CommerceAPICreateCommerceDraftOrderRequest) Execute() (*CreateCommerceDraftOrder201Response, *http.Response, error) {
+	return r.ApiService.CreateCommerceDraftOrderExecute(r)
+}
+
+/*
+CreateCommerceDraftOrder Create a draft order
+
+Creates a draft order for a customer, for a replacement, a phone order or a custom quote. Needs draft_orders.write.
+
+Send the buyer its checkout link with the invoice endpoint; the draft becomes an order once they pay. Amounts in the response are in the currency the buyer pays in; custom prices you send are in the store currency.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return CommerceAPICreateCommerceDraftOrderRequest
+*/
+func (a *CommerceAPIService) CreateCommerceDraftOrder(ctx context.Context) CommerceAPICreateCommerceDraftOrderRequest {
+	return CommerceAPICreateCommerceDraftOrderRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateCommerceDraftOrder201Response
+func (a *CommerceAPIService) CreateCommerceDraftOrderExecute(r CommerceAPICreateCommerceDraftOrderRequest) (*CreateCommerceDraftOrder201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateCommerceDraftOrder201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.CreateCommerceDraftOrder")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/commerce/draft-orders"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createCommerceDraftOrderRequest == nil {
+		return localVarReturnValue, nil, reportError("createCommerceDraftOrderRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.createCommerceDraftOrderRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type CommerceAPICreateCommerceMenuRequest struct {
 	ctx                       context.Context
 	ApiService                *CommerceAPIService
@@ -2015,6 +2160,157 @@ func (a *CommerceAPIService) CreateCommerceMetaobjectExecute(r CommerceAPICreate
 	}
 	// body params
 	localVarPostBody = r.createCommerceMetaobjectRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type CommerceAPICreateCommerceOrderEditRequest struct {
+	ctx                            context.Context
+	ApiService                     *CommerceAPIService
+	orderId                        string
+	createCommerceOrderEditRequest *CreateCommerceOrderEditRequest
+	idempotencyKey                 *string
+}
+
+func (r CommerceAPICreateCommerceOrderEditRequest) CreateCommerceOrderEditRequest(createCommerceOrderEditRequest CreateCommerceOrderEditRequest) CommerceAPICreateCommerceOrderEditRequest {
+	r.createCommerceOrderEditRequest = &createCommerceOrderEditRequest
+	return r
+}
+
+// Required unless validateOnly is true.
+func (r CommerceAPICreateCommerceOrderEditRequest) IdempotencyKey(idempotencyKey string) CommerceAPICreateCommerceOrderEditRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
+}
+
+func (r CommerceAPICreateCommerceOrderEditRequest) Execute() (*CreateCommerceOrderEdit200Response, *http.Response, error) {
+	return r.ApiService.CreateCommerceOrderEditExecute(r)
+}
+
+/*
+CreateCommerceOrderEdit Edit an order
+
+Adds products to an order and changes or removes its lines. Needs orders.edit.
+
+- Preview first with `validateOnly: true`: it returns the new totals and what the buyer would owe, and changes nothing.
+- A real edit needs an `Idempotency-Key` header (a UUID per edit): a retry with the same key never applies it twice.
+- When the edit raises the total, the buyer owes `outstanding`; `notifyCustomer` emails them the change. When it lowers it, refund the difference with the refunds endpoint.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param orderId Platform-native order id.
+	@return CommerceAPICreateCommerceOrderEditRequest
+*/
+func (a *CommerceAPIService) CreateCommerceOrderEdit(ctx context.Context, orderId string) CommerceAPICreateCommerceOrderEditRequest {
+	return CommerceAPICreateCommerceOrderEditRequest{
+		ApiService: a,
+		ctx:        ctx,
+		orderId:    orderId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateCommerceOrderEdit200Response
+func (a *CommerceAPIService) CreateCommerceOrderEditExecute(r CommerceAPICreateCommerceOrderEditRequest) (*CreateCommerceOrderEdit200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateCommerceOrderEdit200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.CreateCommerceOrderEdit")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/commerce/orders/{orderId}/edits"
+	localVarPath = strings.Replace(localVarPath, "{"+"orderId"+"}", url.PathEscape(parameterValueToString(r.orderId, "orderId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createCommerceOrderEditRequest == nil {
+		return localVarReturnValue, nil, reportError("createCommerceOrderEditRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.createCommerceOrderEditRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -5316,6 +5612,143 @@ func (a *CommerceAPIService) GetCommerceDiscountExecute(r CommerceAPIGetCommerce
 
 	localVarPath := localBasePath + "/v1/commerce/discounts/{discountId}"
 	localVarPath = strings.Replace(localVarPath, "{"+"discountId"+"}", url.PathEscape(parameterValueToString(r.discountId, "discountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type CommerceAPIGetCommerceDraftOrderRequest struct {
+	ctx          context.Context
+	ApiService   *CommerceAPIService
+	draftOrderId string
+	accountId    *string
+}
+
+// Connected store SocialAccount id.
+func (r CommerceAPIGetCommerceDraftOrderRequest) AccountId(accountId string) CommerceAPIGetCommerceDraftOrderRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r CommerceAPIGetCommerceDraftOrderRequest) Execute() (*CreateCommerceDraftOrder201Response, *http.Response, error) {
+	return r.ApiService.GetCommerceDraftOrderExecute(r)
+}
+
+/*
+GetCommerceDraftOrder Get a draft order
+
+One draft order with its status, checkout link and, once paid, the order it became. Needs draft_orders.read.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param draftOrderId Platform-native draft order id.
+	@return CommerceAPIGetCommerceDraftOrderRequest
+*/
+func (a *CommerceAPIService) GetCommerceDraftOrder(ctx context.Context, draftOrderId string) CommerceAPIGetCommerceDraftOrderRequest {
+	return CommerceAPIGetCommerceDraftOrderRequest{
+		ApiService:   a,
+		ctx:          ctx,
+		draftOrderId: draftOrderId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateCommerceDraftOrder201Response
+func (a *CommerceAPIService) GetCommerceDraftOrderExecute(r CommerceAPIGetCommerceDraftOrderRequest) (*CreateCommerceDraftOrder201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateCommerceDraftOrder201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.GetCommerceDraftOrder")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/commerce/draft-orders/{draftOrderId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"draftOrderId"+"}", url.PathEscape(parameterValueToString(r.draftOrderId, "draftOrderId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9485,6 +9918,143 @@ func (a *CommerceAPIService) RunCommerceCatalogSyncExecute(r CommerceAPIRunComme
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type CommerceAPISendCommerceDraftOrderInvoiceRequest struct {
+	ctx                                  context.Context
+	ApiService                           *CommerceAPIService
+	draftOrderId                         string
+	sendCommerceDraftOrderInvoiceRequest *SendCommerceDraftOrderInvoiceRequest
+}
+
+func (r CommerceAPISendCommerceDraftOrderInvoiceRequest) SendCommerceDraftOrderInvoiceRequest(sendCommerceDraftOrderInvoiceRequest SendCommerceDraftOrderInvoiceRequest) CommerceAPISendCommerceDraftOrderInvoiceRequest {
+	r.sendCommerceDraftOrderInvoiceRequest = &sendCommerceDraftOrderInvoiceRequest
+	return r
+}
+
+func (r CommerceAPISendCommerceDraftOrderInvoiceRequest) Execute() (*CreateCommerceDraftOrder201Response, *http.Response, error) {
+	return r.ApiService.SendCommerceDraftOrderInvoiceExecute(r)
+}
+
+/*
+SendCommerceDraftOrderInvoice Send a draft order invoice
+
+Emails the buyer the draft's checkout link. The draft becomes an order when they pay. Needs draft_orders.write.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param draftOrderId Platform-native draft order id.
+	@return CommerceAPISendCommerceDraftOrderInvoiceRequest
+*/
+func (a *CommerceAPIService) SendCommerceDraftOrderInvoice(ctx context.Context, draftOrderId string) CommerceAPISendCommerceDraftOrderInvoiceRequest {
+	return CommerceAPISendCommerceDraftOrderInvoiceRequest{
+		ApiService:   a,
+		ctx:          ctx,
+		draftOrderId: draftOrderId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateCommerceDraftOrder201Response
+func (a *CommerceAPIService) SendCommerceDraftOrderInvoiceExecute(r CommerceAPISendCommerceDraftOrderInvoiceRequest) (*CreateCommerceDraftOrder201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateCommerceDraftOrder201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.SendCommerceDraftOrderInvoice")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/commerce/draft-orders/{draftOrderId}/invoice"
+	localVarPath = strings.Replace(localVarPath, "{"+"draftOrderId"+"}", url.PathEscape(parameterValueToString(r.draftOrderId, "draftOrderId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.sendCommerceDraftOrderInvoiceRequest == nil {
+		return localVarReturnValue, nil, reportError("sendCommerceDraftOrderInvoiceRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.sendCommerceDraftOrderInvoiceRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
