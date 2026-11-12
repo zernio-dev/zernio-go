@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.581.0
+API version: 1.583.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type GetEventsOverview200ResponsePlatformsInner struct {
 	AccountName *string `json:"accountName,omitempty"`
 	// The destination (pixel, dataset or conversion action) id.
 	DestinationName *string `json:"destinationName,omitempty"`
+	// The destination (pixel, dataset or conversion action) id, the same as the forwarding rule's destinationId.
+	DestinationId *string `json:"destinationId,omitempty"`
 	// Events the platform accepted today.
 	SentToday *int32 `json:"sentToday,omitempty"`
 	// Events that failed for good today.
@@ -184,6 +186,38 @@ func (o *GetEventsOverview200ResponsePlatformsInner) HasDestinationName() bool {
 // SetDestinationName gets a reference to the given string and assigns it to the DestinationName field.
 func (o *GetEventsOverview200ResponsePlatformsInner) SetDestinationName(v string) {
 	o.DestinationName = &v
+}
+
+// GetDestinationId returns the DestinationId field value if set, zero value otherwise.
+func (o *GetEventsOverview200ResponsePlatformsInner) GetDestinationId() string {
+	if o == nil || IsNil(o.DestinationId) {
+		var ret string
+		return ret
+	}
+	return *o.DestinationId
+}
+
+// GetDestinationIdOk returns a tuple with the DestinationId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverview200ResponsePlatformsInner) GetDestinationIdOk() (*string, bool) {
+	if o == nil || IsNil(o.DestinationId) {
+		return nil, false
+	}
+	return o.DestinationId, true
+}
+
+// HasDestinationId returns a boolean if a field has been set.
+func (o *GetEventsOverview200ResponsePlatformsInner) HasDestinationId() bool {
+	if o != nil && !IsNil(o.DestinationId) {
+		return true
+	}
+
+	return false
+}
+
+// SetDestinationId gets a reference to the given string and assigns it to the DestinationId field.
+func (o *GetEventsOverview200ResponsePlatformsInner) SetDestinationId(v string) {
+	o.DestinationId = &v
 }
 
 // GetSentToday returns the SentToday field value if set, zero value otherwise.
@@ -443,6 +477,9 @@ func (o GetEventsOverview200ResponsePlatformsInner) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.DestinationName) {
 		toSerialize["destinationName"] = o.DestinationName
+	}
+	if !IsNil(o.DestinationId) {
+		toSerialize["destinationId"] = o.DestinationId
 	}
 	if !IsNil(o.SentToday) {
 		toSerialize["sentToday"] = o.SentToday
