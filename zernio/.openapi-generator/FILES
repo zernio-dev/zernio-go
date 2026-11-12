@@ -311,6 +311,7 @@ model_automation_ad_filter_one_of.go
 model_automation_ad_filter_one_of_1.go
 model_automation_ad_filter_one_of_2.go
 model_automation_ad_filter_one_of_3.go
+model_automation_ad_filter_one_of_4.go
 model_automation_alert.go
 model_automation_approval.go
 model_automation_approval_change.go
@@ -1081,6 +1082,7 @@ model_cursor_pagination.go
 model_custom_conversion.go
 model_custom_conversion_result.go
 model_days_live.go
+model_days_since_change.go
 model_deactivate_sms_registration_200_response.go
 model_declare_email_send_as_200_response.go
 model_declare_email_send_as_request.go

@@ -19,10 +19,11 @@ import (
 
 // AdRuleFiltersInner - struct for AdRuleFiltersInner
 type AdRuleFiltersInner struct {
-	BudgetLevel *BudgetLevel
-	DaysLive    *DaysLive
-	Ids         *Ids
-	NameOrGoal  *NameOrGoal
+	BudgetLevel     *BudgetLevel
+	DaysLive        *DaysLive
+	DaysSinceChange *DaysSinceChange
+	Ids             *Ids
+	NameOrGoal      *NameOrGoal
 }
 
 // BudgetLevelAsAdRuleFiltersInner is a convenience function that returns BudgetLevel wrapped in AdRuleFiltersInner
@@ -36,6 +37,13 @@ func BudgetLevelAsAdRuleFiltersInner(v *BudgetLevel) AdRuleFiltersInner {
 func DaysLiveAsAdRuleFiltersInner(v *DaysLive) AdRuleFiltersInner {
 	return AdRuleFiltersInner{
 		DaysLive: v,
+	}
+}
+
+// DaysSinceChangeAsAdRuleFiltersInner is a convenience function that returns DaysSinceChange wrapped in AdRuleFiltersInner
+func DaysSinceChangeAsAdRuleFiltersInner(v *DaysSinceChange) AdRuleFiltersInner {
+	return AdRuleFiltersInner{
+		DaysSinceChange: v,
 	}
 }
 
@@ -91,6 +99,23 @@ func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 		dst.DaysLive = nil
 	}
 
+	// try to unmarshal data into DaysSinceChange
+	err = newStrictDecoder(data).Decode(&dst.DaysSinceChange)
+	if err == nil {
+		jsonDaysSinceChange, _ := json.Marshal(dst.DaysSinceChange)
+		if string(jsonDaysSinceChange) == "{}" { // empty struct
+			dst.DaysSinceChange = nil
+		} else {
+			if err = validator.Validate(dst.DaysSinceChange); err != nil {
+				dst.DaysSinceChange = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.DaysSinceChange = nil
+	}
+
 	// try to unmarshal data into Ids
 	err = newStrictDecoder(data).Decode(&dst.Ids)
 	if err == nil {
@@ -129,6 +154,7 @@ func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 		// reset to nil
 		dst.BudgetLevel = nil
 		dst.DaysLive = nil
+		dst.DaysSinceChange = nil
 		dst.Ids = nil
 		dst.NameOrGoal = nil
 
@@ -148,6 +174,10 @@ func (src AdRuleFiltersInner) MarshalJSON() ([]byte, error) {
 
 	if src.DaysLive != nil {
 		return json.Marshal(&src.DaysLive)
+	}
+
+	if src.DaysSinceChange != nil {
+		return json.Marshal(&src.DaysSinceChange)
 	}
 
 	if src.Ids != nil {
@@ -174,6 +204,10 @@ func (obj *AdRuleFiltersInner) GetActualInstance() interface{} {
 		return obj.DaysLive
 	}
 
+	if obj.DaysSinceChange != nil {
+		return obj.DaysSinceChange
+	}
+
 	if obj.Ids != nil {
 		return obj.Ids
 	}
@@ -194,6 +228,10 @@ func (obj AdRuleFiltersInner) GetActualInstanceValue() interface{} {
 
 	if obj.DaysLive != nil {
 		return *obj.DaysLive
+	}
+
+	if obj.DaysSinceChange != nil {
+		return *obj.DaysSinceChange
 	}
 
 	if obj.Ids != nil {

@@ -20,11 +20,12 @@ import (
 // checks if the AutomationAdFilterOneOf3 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AutomationAdFilterOneOf3{}
 
-// AutomationAdFilterOneOf3 Where the budget sits: on the campaign (Meta CBO, every Google campaign) or on each ad set.
+// AutomationAdFilterOneOf3 Days since the campaign's budget, bidding, status or goal last changed, from the platform's change history. Campaign rules on Meta and Google only.
 type AutomationAdFilterOneOf3 struct {
-	Field string `json:"field"`
-	Op    string `json:"op"`
-	Value string `json:"value"`
+	Field  string `json:"field"`
+	Change string `json:"change"`
+	Op     string `json:"op"`
+	Value  int32  `json:"value"`
 }
 
 type _AutomationAdFilterOneOf3 AutomationAdFilterOneOf3
@@ -33,9 +34,10 @@ type _AutomationAdFilterOneOf3 AutomationAdFilterOneOf3
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAutomationAdFilterOneOf3(field string, op string, value string) *AutomationAdFilterOneOf3 {
+func NewAutomationAdFilterOneOf3(field string, change string, op string, value int32) *AutomationAdFilterOneOf3 {
 	this := AutomationAdFilterOneOf3{}
 	this.Field = field
+	this.Change = change
 	this.Op = op
 	this.Value = value
 	return &this
@@ -73,6 +75,30 @@ func (o *AutomationAdFilterOneOf3) SetField(v string) {
 	o.Field = v
 }
 
+// GetChange returns the Change field value
+func (o *AutomationAdFilterOneOf3) GetChange() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Change
+}
+
+// GetChangeOk returns a tuple with the Change field value
+// and a boolean to check if the value has been set.
+func (o *AutomationAdFilterOneOf3) GetChangeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Change, true
+}
+
+// SetChange sets field value
+func (o *AutomationAdFilterOneOf3) SetChange(v string) {
+	o.Change = v
+}
+
 // GetOp returns the Op field value
 func (o *AutomationAdFilterOneOf3) GetOp() string {
 	if o == nil {
@@ -98,9 +124,9 @@ func (o *AutomationAdFilterOneOf3) SetOp(v string) {
 }
 
 // GetValue returns the Value field value
-func (o *AutomationAdFilterOneOf3) GetValue() string {
+func (o *AutomationAdFilterOneOf3) GetValue() int32 {
 	if o == nil {
-		var ret string
+		var ret int32
 		return ret
 	}
 
@@ -109,7 +135,7 @@ func (o *AutomationAdFilterOneOf3) GetValue() string {
 
 // GetValueOk returns a tuple with the Value field value
 // and a boolean to check if the value has been set.
-func (o *AutomationAdFilterOneOf3) GetValueOk() (*string, bool) {
+func (o *AutomationAdFilterOneOf3) GetValueOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -117,7 +143,7 @@ func (o *AutomationAdFilterOneOf3) GetValueOk() (*string, bool) {
 }
 
 // SetValue sets field value
-func (o *AutomationAdFilterOneOf3) SetValue(v string) {
+func (o *AutomationAdFilterOneOf3) SetValue(v int32) {
 	o.Value = v
 }
 
@@ -132,6 +158,7 @@ func (o AutomationAdFilterOneOf3) MarshalJSON() ([]byte, error) {
 func (o AutomationAdFilterOneOf3) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["field"] = o.Field
+	toSerialize["change"] = o.Change
 	toSerialize["op"] = o.Op
 	toSerialize["value"] = o.Value
 	return toSerialize, nil
@@ -143,6 +170,7 @@ func (o *AutomationAdFilterOneOf3) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"field",
+		"change",
 		"op",
 		"value",
 	}
