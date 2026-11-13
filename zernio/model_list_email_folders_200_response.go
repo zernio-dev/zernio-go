@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.603.1
+API version: 1.604.0
 Contact: support@zernio.com
 */
 
@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the ListEmailFolders200Response type satisfies the MappedNullable interface at compile time
@@ -21,6 +22,10 @@ var _ MappedNullable = &ListEmailFolders200Response{}
 // ListEmailFolders200Response struct for ListEmailFolders200Response
 type ListEmailFolders200Response struct {
 	Data []EmailFolder `json:"data,omitempty"`
+	// Always true when present. Present only when the provider did not answer and `data` is the last folder list Zernio read for the same account within the past 24 hours (`unreadCount` and `totalCount` may be out of date).
+	Stale *bool `json:"stale,omitempty"`
+	// When a stale list was read from the provider. Present only with `stale`.
+	AsOf *time.Time `json:"asOf,omitempty"`
 }
 
 // NewListEmailFolders200Response instantiates a new ListEmailFolders200Response object
@@ -72,6 +77,70 @@ func (o *ListEmailFolders200Response) SetData(v []EmailFolder) {
 	o.Data = v
 }
 
+// GetStale returns the Stale field value if set, zero value otherwise.
+func (o *ListEmailFolders200Response) GetStale() bool {
+	if o == nil || IsNil(o.Stale) {
+		var ret bool
+		return ret
+	}
+	return *o.Stale
+}
+
+// GetStaleOk returns a tuple with the Stale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListEmailFolders200Response) GetStaleOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stale) {
+		return nil, false
+	}
+	return o.Stale, true
+}
+
+// HasStale returns a boolean if a field has been set.
+func (o *ListEmailFolders200Response) HasStale() bool {
+	if o != nil && !IsNil(o.Stale) {
+		return true
+	}
+
+	return false
+}
+
+// SetStale gets a reference to the given bool and assigns it to the Stale field.
+func (o *ListEmailFolders200Response) SetStale(v bool) {
+	o.Stale = &v
+}
+
+// GetAsOf returns the AsOf field value if set, zero value otherwise.
+func (o *ListEmailFolders200Response) GetAsOf() time.Time {
+	if o == nil || IsNil(o.AsOf) {
+		var ret time.Time
+		return ret
+	}
+	return *o.AsOf
+}
+
+// GetAsOfOk returns a tuple with the AsOf field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListEmailFolders200Response) GetAsOfOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.AsOf) {
+		return nil, false
+	}
+	return o.AsOf, true
+}
+
+// HasAsOf returns a boolean if a field has been set.
+func (o *ListEmailFolders200Response) HasAsOf() bool {
+	if o != nil && !IsNil(o.AsOf) {
+		return true
+	}
+
+	return false
+}
+
+// SetAsOf gets a reference to the given time.Time and assigns it to the AsOf field.
+func (o *ListEmailFolders200Response) SetAsOf(v time.Time) {
+	o.AsOf = &v
+}
+
 func (o ListEmailFolders200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -84,6 +153,12 @@ func (o ListEmailFolders200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Data) {
 		toSerialize["data"] = o.Data
+	}
+	if !IsNil(o.Stale) {
+		toSerialize["stale"] = o.Stale
+	}
+	if !IsNil(o.AsOf) {
+		toSerialize["asOf"] = o.AsOf
 	}
 	return toSerialize, nil
 }
