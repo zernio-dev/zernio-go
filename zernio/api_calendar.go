@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.606.0
+API version: 1.607.0
 Contact: support@zernio.com
 */
 
@@ -1153,7 +1153,13 @@ Recurring series are expanded into their occurrences inside the window by defaul
 
 Events that overlap the window edges are included. `title` and `location` are substring matches applied to the fetched page.
 
-When the provider does not answer, the last list read for the same account and query within the past hour is returned with `stale: true`, `asOf` and an `X-Zernio-Stale-As-Of` header instead of a 502.
+When the provider does not answer, the last list read for the same account and query within the past six hours is returned with `stale: true`, `asOf` and an `X-Zernio-Stale-As-Of` header instead of a 502.
+
+When there is no such list and the window is wider than 31 days, Zernio reads once more with the window cut to one day back and two weeks ahead of now (inside `from` and `to`). It returns that with `partial: true`, `coveredFrom`, `coveredTo` and a `pagination.nextCursor` for the rest.
+
+Send the same request with that `cursor` until `nextCursor` is null. Each call returns a slice of up to 90 days, future first, then the past.
+
+Slices are not sorted against each other, and an event on a slice edge can appear twice, so merge by `id`. The extra fields are absent on a normal read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CalendarAPIListCalendarEventsRequest

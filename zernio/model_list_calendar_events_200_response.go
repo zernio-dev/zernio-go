@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.606.0
+API version: 1.607.0
 Contact: support@zernio.com
 */
 
@@ -23,10 +23,16 @@ var _ MappedNullable = &ListCalendarEvents200Response{}
 type ListCalendarEvents200Response struct {
 	Data       []CalendarEvent   `json:"data,omitempty"`
 	Pagination *CursorPagination `json:"pagination,omitempty"`
-	// Always true when present. Present only when the provider did not answer and this is the last list Zernio read for the same account and query within the past hour.
+	// Always true when present. Present only when the provider did not answer and this is the last list Zernio read for the same account and query within the past six hours.
 	Stale *bool `json:"stale,omitempty"`
 	// When a stale list was read from the provider. Present only with `stale`.
 	AsOf *time.Time `json:"asOf,omitempty"`
+	// Always true when present. This response is one slice of the requested window because the provider did not answer for the whole of it. Follow `pagination.nextCursor` until it is null. Present only on a degraded read.
+	Partial *bool `json:"partial,omitempty"`
+	// Start of the part of the window this slice covers. Present only with `partial`.
+	CoveredFrom *time.Time `json:"coveredFrom,omitempty"`
+	// End of the part of the window this slice covers. Present only with `partial`.
+	CoveredTo *time.Time `json:"coveredTo,omitempty"`
 }
 
 // NewListCalendarEvents200Response instantiates a new ListCalendarEvents200Response object
@@ -174,6 +180,102 @@ func (o *ListCalendarEvents200Response) SetAsOf(v time.Time) {
 	o.AsOf = &v
 }
 
+// GetPartial returns the Partial field value if set, zero value otherwise.
+func (o *ListCalendarEvents200Response) GetPartial() bool {
+	if o == nil || IsNil(o.Partial) {
+		var ret bool
+		return ret
+	}
+	return *o.Partial
+}
+
+// GetPartialOk returns a tuple with the Partial field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCalendarEvents200Response) GetPartialOk() (*bool, bool) {
+	if o == nil || IsNil(o.Partial) {
+		return nil, false
+	}
+	return o.Partial, true
+}
+
+// HasPartial returns a boolean if a field has been set.
+func (o *ListCalendarEvents200Response) HasPartial() bool {
+	if o != nil && !IsNil(o.Partial) {
+		return true
+	}
+
+	return false
+}
+
+// SetPartial gets a reference to the given bool and assigns it to the Partial field.
+func (o *ListCalendarEvents200Response) SetPartial(v bool) {
+	o.Partial = &v
+}
+
+// GetCoveredFrom returns the CoveredFrom field value if set, zero value otherwise.
+func (o *ListCalendarEvents200Response) GetCoveredFrom() time.Time {
+	if o == nil || IsNil(o.CoveredFrom) {
+		var ret time.Time
+		return ret
+	}
+	return *o.CoveredFrom
+}
+
+// GetCoveredFromOk returns a tuple with the CoveredFrom field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCalendarEvents200Response) GetCoveredFromOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.CoveredFrom) {
+		return nil, false
+	}
+	return o.CoveredFrom, true
+}
+
+// HasCoveredFrom returns a boolean if a field has been set.
+func (o *ListCalendarEvents200Response) HasCoveredFrom() bool {
+	if o != nil && !IsNil(o.CoveredFrom) {
+		return true
+	}
+
+	return false
+}
+
+// SetCoveredFrom gets a reference to the given time.Time and assigns it to the CoveredFrom field.
+func (o *ListCalendarEvents200Response) SetCoveredFrom(v time.Time) {
+	o.CoveredFrom = &v
+}
+
+// GetCoveredTo returns the CoveredTo field value if set, zero value otherwise.
+func (o *ListCalendarEvents200Response) GetCoveredTo() time.Time {
+	if o == nil || IsNil(o.CoveredTo) {
+		var ret time.Time
+		return ret
+	}
+	return *o.CoveredTo
+}
+
+// GetCoveredToOk returns a tuple with the CoveredTo field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCalendarEvents200Response) GetCoveredToOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.CoveredTo) {
+		return nil, false
+	}
+	return o.CoveredTo, true
+}
+
+// HasCoveredTo returns a boolean if a field has been set.
+func (o *ListCalendarEvents200Response) HasCoveredTo() bool {
+	if o != nil && !IsNil(o.CoveredTo) {
+		return true
+	}
+
+	return false
+}
+
+// SetCoveredTo gets a reference to the given time.Time and assigns it to the CoveredTo field.
+func (o *ListCalendarEvents200Response) SetCoveredTo(v time.Time) {
+	o.CoveredTo = &v
+}
+
 func (o ListCalendarEvents200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -195,6 +297,15 @@ func (o ListCalendarEvents200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AsOf) {
 		toSerialize["asOf"] = o.AsOf
+	}
+	if !IsNil(o.Partial) {
+		toSerialize["partial"] = o.Partial
+	}
+	if !IsNil(o.CoveredFrom) {
+		toSerialize["coveredFrom"] = o.CoveredFrom
+	}
+	if !IsNil(o.CoveredTo) {
+		toSerialize["coveredTo"] = o.CoveredTo
 	}
 	return toSerialize, nil
 }
