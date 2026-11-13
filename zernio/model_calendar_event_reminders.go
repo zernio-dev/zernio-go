@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.605.0
+API version: 1.606.0
 Contact: support@zernio.com
 */
 
@@ -20,8 +20,8 @@ var _ MappedNullable = &CalendarEventReminders{}
 
 // CalendarEventReminders struct for CalendarEventReminders
 type CalendarEventReminders struct {
-	UseDefault *bool                                        `json:"useDefault,omitempty"`
-	Overrides  []CalendarEventFieldsRemindersOverridesInner `json:"overrides,omitempty"`
+	UseDefault *bool                                  `json:"useDefault,omitempty"`
+	Overrides  []CalendarEventRemindersOverridesInner `json:"overrides,omitempty"`
 }
 
 // NewCalendarEventReminders instantiates a new CalendarEventReminders object
@@ -74,9 +74,9 @@ func (o *CalendarEventReminders) SetUseDefault(v bool) {
 }
 
 // GetOverrides returns the Overrides field value if set, zero value otherwise.
-func (o *CalendarEventReminders) GetOverrides() []CalendarEventFieldsRemindersOverridesInner {
+func (o *CalendarEventReminders) GetOverrides() []CalendarEventRemindersOverridesInner {
 	if o == nil || IsNil(o.Overrides) {
-		var ret []CalendarEventFieldsRemindersOverridesInner
+		var ret []CalendarEventRemindersOverridesInner
 		return ret
 	}
 	return o.Overrides
@@ -84,7 +84,7 @@ func (o *CalendarEventReminders) GetOverrides() []CalendarEventFieldsRemindersOv
 
 // GetOverridesOk returns a tuple with the Overrides field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CalendarEventReminders) GetOverridesOk() ([]CalendarEventFieldsRemindersOverridesInner, bool) {
+func (o *CalendarEventReminders) GetOverridesOk() ([]CalendarEventRemindersOverridesInner, bool) {
 	if o == nil || IsNil(o.Overrides) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *CalendarEventReminders) HasOverrides() bool {
 	return false
 }
 
-// SetOverrides gets a reference to the given []CalendarEventFieldsRemindersOverridesInner and assigns it to the Overrides field.
-func (o *CalendarEventReminders) SetOverrides(v []CalendarEventFieldsRemindersOverridesInner) {
+// SetOverrides gets a reference to the given []CalendarEventRemindersOverridesInner and assigns it to the Overrides field.
+func (o *CalendarEventReminders) SetOverrides(v []CalendarEventRemindersOverridesInner) {
 	o.Overrides = v
 }
 

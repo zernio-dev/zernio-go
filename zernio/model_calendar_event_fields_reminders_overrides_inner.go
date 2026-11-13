@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.605.0
+API version: 1.606.0
 Contact: support@zernio.com
 */
 
@@ -12,7 +12,9 @@ Contact: support@zernio.com
 package zernio
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the CalendarEventFieldsRemindersOverridesInner type satisfies the MappedNullable interface at compile time
@@ -20,15 +22,23 @@ var _ MappedNullable = &CalendarEventFieldsRemindersOverridesInner{}
 
 // CalendarEventFieldsRemindersOverridesInner struct for CalendarEventFieldsRemindersOverridesInner
 type CalendarEventFieldsRemindersOverridesInner struct {
-	Minutes *int32 `json:"minutes,omitempty"`
+	// `popup` shows a notification in the calendar app. `email` mails the calendar owner (Google only).
+	Method *string `json:"method,omitempty"`
+	// Minutes before the start.
+	Minutes int32 `json:"minutes"`
 }
+
+type _CalendarEventFieldsRemindersOverridesInner CalendarEventFieldsRemindersOverridesInner
 
 // NewCalendarEventFieldsRemindersOverridesInner instantiates a new CalendarEventFieldsRemindersOverridesInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCalendarEventFieldsRemindersOverridesInner() *CalendarEventFieldsRemindersOverridesInner {
+func NewCalendarEventFieldsRemindersOverridesInner(minutes int32) *CalendarEventFieldsRemindersOverridesInner {
 	this := CalendarEventFieldsRemindersOverridesInner{}
+	var method string = "popup"
+	this.Method = &method
+	this.Minutes = minutes
 	return &this
 }
 
@@ -37,39 +47,65 @@ func NewCalendarEventFieldsRemindersOverridesInner() *CalendarEventFieldsReminde
 // but it doesn't guarantee that properties required by API are set
 func NewCalendarEventFieldsRemindersOverridesInnerWithDefaults() *CalendarEventFieldsRemindersOverridesInner {
 	this := CalendarEventFieldsRemindersOverridesInner{}
+	var method string = "popup"
+	this.Method = &method
 	return &this
 }
 
-// GetMinutes returns the Minutes field value if set, zero value otherwise.
-func (o *CalendarEventFieldsRemindersOverridesInner) GetMinutes() int32 {
-	if o == nil || IsNil(o.Minutes) {
-		var ret int32
+// GetMethod returns the Method field value if set, zero value otherwise.
+func (o *CalendarEventFieldsRemindersOverridesInner) GetMethod() string {
+	if o == nil || IsNil(o.Method) {
+		var ret string
 		return ret
 	}
-	return *o.Minutes
+	return *o.Method
 }
 
-// GetMinutesOk returns a tuple with the Minutes field value if set, nil otherwise
+// GetMethodOk returns a tuple with the Method field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CalendarEventFieldsRemindersOverridesInner) GetMinutesOk() (*int32, bool) {
-	if o == nil || IsNil(o.Minutes) {
+func (o *CalendarEventFieldsRemindersOverridesInner) GetMethodOk() (*string, bool) {
+	if o == nil || IsNil(o.Method) {
 		return nil, false
 	}
-	return o.Minutes, true
+	return o.Method, true
 }
 
-// HasMinutes returns a boolean if a field has been set.
-func (o *CalendarEventFieldsRemindersOverridesInner) HasMinutes() bool {
-	if o != nil && !IsNil(o.Minutes) {
+// HasMethod returns a boolean if a field has been set.
+func (o *CalendarEventFieldsRemindersOverridesInner) HasMethod() bool {
+	if o != nil && !IsNil(o.Method) {
 		return true
 	}
 
 	return false
 }
 
-// SetMinutes gets a reference to the given int32 and assigns it to the Minutes field.
+// SetMethod gets a reference to the given string and assigns it to the Method field.
+func (o *CalendarEventFieldsRemindersOverridesInner) SetMethod(v string) {
+	o.Method = &v
+}
+
+// GetMinutes returns the Minutes field value
+func (o *CalendarEventFieldsRemindersOverridesInner) GetMinutes() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.Minutes
+}
+
+// GetMinutesOk returns a tuple with the Minutes field value
+// and a boolean to check if the value has been set.
+func (o *CalendarEventFieldsRemindersOverridesInner) GetMinutesOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Minutes, true
+}
+
+// SetMinutes sets field value
 func (o *CalendarEventFieldsRemindersOverridesInner) SetMinutes(v int32) {
-	o.Minutes = &v
+	o.Minutes = v
 }
 
 func (o CalendarEventFieldsRemindersOverridesInner) MarshalJSON() ([]byte, error) {
@@ -82,10 +118,48 @@ func (o CalendarEventFieldsRemindersOverridesInner) MarshalJSON() ([]byte, error
 
 func (o CalendarEventFieldsRemindersOverridesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Minutes) {
-		toSerialize["minutes"] = o.Minutes
+	if !IsNil(o.Method) {
+		toSerialize["method"] = o.Method
 	}
+	toSerialize["minutes"] = o.Minutes
 	return toSerialize, nil
+}
+
+func (o *CalendarEventFieldsRemindersOverridesInner) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"minutes",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varCalendarEventFieldsRemindersOverridesInner := _CalendarEventFieldsRemindersOverridesInner{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varCalendarEventFieldsRemindersOverridesInner)
+
+	if err != nil {
+		return err
+	}
+
+	*o = CalendarEventFieldsRemindersOverridesInner(varCalendarEventFieldsRemindersOverridesInner)
+
+	return err
 }
 
 type NullableCalendarEventFieldsRemindersOverridesInner struct {
