@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.607.0
+API version: 1.607.1
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,7 @@ type ListAdSets200ResponseAdSetsInner struct {
 	AdSetName       NullableString `json:"adSetName,omitempty"`
 	// Stored ad set status (active, paused, pending_review, rejected, completed, cancelled, error), as last synced. The `status` filter matches it.
 	Status NullableString `json:"status,omitempty"`
-	// Raw platform ad set status. On TikTok the ad group's own switch `operation_status` (ENABLE / DISABLE), independent of its campaign. On Meta and Reddit the ad set's `effective_status` (e.g. CAMPAIGN_PAUSED).
+	// Raw platform ad set status. On TikTok the ad group's own switch `operation_status` (ENABLE / DISABLE), independent of its campaign. On Meta the ad set's `effective_status` (e.g. CAMPAIGN_PAUSED). On Reddit the ad group's own switch `configured_status` (ACTIVE / PAUSED / ARCHIVED).
 	PlatformAdSetStatus NullableString `json:"platformAdSetStatus,omitempty"`
 	PlatformCampaignId  NullableString `json:"platformCampaignId,omitempty"`
 	PlatformAdAccountId *string        `json:"platformAdAccountId,omitempty"`
