@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.604.0
+API version: 1.605.0
 Contact: support@zernio.com
 */
 
@@ -21,6 +21,7 @@ var _ MappedNullable = &EmailCapabilities{}
 // EmailCapabilities On Google, Microsoft and IMAP accounts with email access: what this mailbox provider can do, so you can branch before calling.
 type EmailCapabilities struct {
 	Sync          *EmailCapabilitiesSync          `json:"sync,omitempty"`
+	SentItems     *EmailCapabilitiesSync          `json:"sentItems,omitempty"`
 	Drafts        *EmailCapabilitiesDrafts        `json:"drafts,omitempty"`
 	Forward       *EmailCapabilitiesForward       `json:"forward,omitempty"`
 	SendAs        *EmailCapabilitiesSendAs        `json:"sendAs,omitempty"`
@@ -78,6 +79,38 @@ func (o *EmailCapabilities) HasSync() bool {
 // SetSync gets a reference to the given EmailCapabilitiesSync and assigns it to the Sync field.
 func (o *EmailCapabilities) SetSync(v EmailCapabilitiesSync) {
 	o.Sync = &v
+}
+
+// GetSentItems returns the SentItems field value if set, zero value otherwise.
+func (o *EmailCapabilities) GetSentItems() EmailCapabilitiesSync {
+	if o == nil || IsNil(o.SentItems) {
+		var ret EmailCapabilitiesSync
+		return ret
+	}
+	return *o.SentItems
+}
+
+// GetSentItemsOk returns a tuple with the SentItems field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailCapabilities) GetSentItemsOk() (*EmailCapabilitiesSync, bool) {
+	if o == nil || IsNil(o.SentItems) {
+		return nil, false
+	}
+	return o.SentItems, true
+}
+
+// HasSentItems returns a boolean if a field has been set.
+func (o *EmailCapabilities) HasSentItems() bool {
+	if o != nil && !IsNil(o.SentItems) {
+		return true
+	}
+
+	return false
+}
+
+// SetSentItems gets a reference to the given EmailCapabilitiesSync and assigns it to the SentItems field.
+func (o *EmailCapabilities) SetSentItems(v EmailCapabilitiesSync) {
+	o.SentItems = &v
 }
 
 // GetDrafts returns the Drafts field value if set, zero value otherwise.
@@ -348,6 +381,9 @@ func (o EmailCapabilities) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Sync) {
 		toSerialize["sync"] = o.Sync
+	}
+	if !IsNil(o.SentItems) {
+		toSerialize["sentItems"] = o.SentItems
 	}
 	if !IsNil(o.Drafts) {
 		toSerialize["drafts"] = o.Drafts

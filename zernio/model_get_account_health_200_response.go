@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.604.0
+API version: 1.605.0
 Contact: support@zernio.com
 */
 
@@ -27,9 +27,11 @@ type GetAccountHealth200Response struct {
 	IntegrationLane *string                             `json:"integrationLane,omitempty"`
 	SendCap         *GetAccountHealth200ResponseSendCap `json:"sendCap,omitempty"`
 	// Google and Microsoft only: state of the provider change-notification subscriptions behind `message.received` and `calendar.event.*`. `pending` means a granted area has no live subscription yet (retried every 6 hours), `failed` that renewals keep failing (reconnect the account).
-	Push        *string `json:"push,omitempty"`
-	Username    *string `json:"username,omitempty"`
-	DisplayName *string `json:"displayName,omitempty"`
+	Push *string `json:"push,omitempty"`
+	// Microsoft only: how mail sent from the user's own mail client reaches `message.sent`. `poll` while Microsoft will not give Zernio a working Sent Items subscription for this mailbox (read every 5 minutes), `push` otherwise.
+	SentItemsSync *string `json:"sentItemsSync,omitempty"`
+	Username      *string `json:"username,omitempty"`
+	DisplayName   *string `json:"displayName,omitempty"`
 	// Overall health status
 	Status      *string                                 `json:"status,omitempty"`
 	TokenStatus *GetAccountHealth200ResponseTokenStatus `json:"tokenStatus,omitempty"`
@@ -228,6 +230,38 @@ func (o *GetAccountHealth200Response) HasPush() bool {
 // SetPush gets a reference to the given string and assigns it to the Push field.
 func (o *GetAccountHealth200Response) SetPush(v string) {
 	o.Push = &v
+}
+
+// GetSentItemsSync returns the SentItemsSync field value if set, zero value otherwise.
+func (o *GetAccountHealth200Response) GetSentItemsSync() string {
+	if o == nil || IsNil(o.SentItemsSync) {
+		var ret string
+		return ret
+	}
+	return *o.SentItemsSync
+}
+
+// GetSentItemsSyncOk returns a tuple with the SentItemsSync field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200Response) GetSentItemsSyncOk() (*string, bool) {
+	if o == nil || IsNil(o.SentItemsSync) {
+		return nil, false
+	}
+	return o.SentItemsSync, true
+}
+
+// HasSentItemsSync returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasSentItemsSync() bool {
+	if o != nil && !IsNil(o.SentItemsSync) {
+		return true
+	}
+
+	return false
+}
+
+// SetSentItemsSync gets a reference to the given string and assigns it to the SentItemsSync field.
+func (o *GetAccountHealth200Response) SetSentItemsSync(v string) {
+	o.SentItemsSync = &v
 }
 
 // GetUsername returns the Username field value if set, zero value otherwise.
@@ -778,6 +812,9 @@ func (o GetAccountHealth200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Push) {
 		toSerialize["push"] = o.Push
+	}
+	if !IsNil(o.SentItemsSync) {
+		toSerialize["sentItemsSync"] = o.SentItemsSync
 	}
 	if !IsNil(o.Username) {
 		toSerialize["username"] = o.Username
