@@ -569,6 +569,7 @@ func main() {
 | `client.AdRulesAPI.ListAdRules(ctx)` | List ad rules |
 | `client.AdRulesAPI.CreateAdRule(ctx)` | Create an ad rule |
 | `client.AdRulesAPI.GetAdRule(ctx)` | Get an ad rule |
+| `client.AdRulesAPI.GetAdRuleHourlyWindows(ctx)` | Check whether an ad account has hourly windows |
 | `client.AdRulesAPI.UpdateAdRule(ctx)` | Update an ad rule |
 | `client.AdRulesAPI.DeleteAdRule(ctx)` | Delete an ad rule |
 | `client.AdRulesAPI.PreviewAdRule(ctx)` | Preview an ad rule |
