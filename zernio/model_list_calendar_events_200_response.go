@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.602.1
+API version: 1.603.0
 Contact: support@zernio.com
 */
 
@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the ListCalendarEvents200Response type satisfies the MappedNullable interface at compile time
@@ -22,6 +23,10 @@ var _ MappedNullable = &ListCalendarEvents200Response{}
 type ListCalendarEvents200Response struct {
 	Data       []CalendarEvent   `json:"data,omitempty"`
 	Pagination *CursorPagination `json:"pagination,omitempty"`
+	// Always true when present. Present only when the provider did not answer and this is the last list Zernio read for the same account and query within the past hour.
+	Stale *bool `json:"stale,omitempty"`
+	// When a stale list was read from the provider. Present only with `stale`.
+	AsOf *time.Time `json:"asOf,omitempty"`
 }
 
 // NewListCalendarEvents200Response instantiates a new ListCalendarEvents200Response object
@@ -105,6 +110,70 @@ func (o *ListCalendarEvents200Response) SetPagination(v CursorPagination) {
 	o.Pagination = &v
 }
 
+// GetStale returns the Stale field value if set, zero value otherwise.
+func (o *ListCalendarEvents200Response) GetStale() bool {
+	if o == nil || IsNil(o.Stale) {
+		var ret bool
+		return ret
+	}
+	return *o.Stale
+}
+
+// GetStaleOk returns a tuple with the Stale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCalendarEvents200Response) GetStaleOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stale) {
+		return nil, false
+	}
+	return o.Stale, true
+}
+
+// HasStale returns a boolean if a field has been set.
+func (o *ListCalendarEvents200Response) HasStale() bool {
+	if o != nil && !IsNil(o.Stale) {
+		return true
+	}
+
+	return false
+}
+
+// SetStale gets a reference to the given bool and assigns it to the Stale field.
+func (o *ListCalendarEvents200Response) SetStale(v bool) {
+	o.Stale = &v
+}
+
+// GetAsOf returns the AsOf field value if set, zero value otherwise.
+func (o *ListCalendarEvents200Response) GetAsOf() time.Time {
+	if o == nil || IsNil(o.AsOf) {
+		var ret time.Time
+		return ret
+	}
+	return *o.AsOf
+}
+
+// GetAsOfOk returns a tuple with the AsOf field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCalendarEvents200Response) GetAsOfOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.AsOf) {
+		return nil, false
+	}
+	return o.AsOf, true
+}
+
+// HasAsOf returns a boolean if a field has been set.
+func (o *ListCalendarEvents200Response) HasAsOf() bool {
+	if o != nil && !IsNil(o.AsOf) {
+		return true
+	}
+
+	return false
+}
+
+// SetAsOf gets a reference to the given time.Time and assigns it to the AsOf field.
+func (o *ListCalendarEvents200Response) SetAsOf(v time.Time) {
+	o.AsOf = &v
+}
+
 func (o ListCalendarEvents200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +189,12 @@ func (o ListCalendarEvents200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Pagination) {
 		toSerialize["pagination"] = o.Pagination
+	}
+	if !IsNil(o.Stale) {
+		toSerialize["stale"] = o.Stale
+	}
+	if !IsNil(o.AsOf) {
+		toSerialize["asOf"] = o.AsOf
 	}
 	return toSerialize, nil
 }
