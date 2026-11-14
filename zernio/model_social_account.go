@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.609.0
+API version: 1.609.1
 Contact: support@zernio.com
 */
 
@@ -35,7 +35,7 @@ type SocialAccount struct {
 	ScopeAreas []string `json:"scopeAreas,omitempty"`
 	// The id of your own OAuth app this account connected through (see /v1/connect/oauth-apps); null when it uses Zernio's app.
 	OauthAppId NullableString `json:"oauthAppId,omitempty"`
-	// TikTok accounts only. The account type TikTok reported when the account was connected.  - `personal`: cannot use TikTok direct messages through the API (TikTok limits Business Messaging to Business Accounts). Skip the inbox for them and tell the user to switch to a Business Account in the TikTok app, then reconnect. - `business`: the prerequisite, not a guarantee. Messaging also needs the messaging scopes granted and TikTok's regional availability. - `unknown`: accounts connected before this was captured, or whose grant left out the account-type scope.
+	// TikTok accounts only. The account type TikTok reported when the account was connected.  - `personal`: TikTok reported a personal account. TikTok limits Business Messaging to Business Accounts, so sends usually fail with 400 `PLATFORM_LIMITATION`; the send still goes to TikTok, which decides. The fix is switching to a Business Account in the TikTok app, then reconnecting. - `business`: the prerequisite, not a guarantee. Messaging also needs the messaging scopes granted and TikTok's regional availability. - `unknown`: accounts connected before this was captured, or whose grant left out the account-type scope.
 	TiktokAccountType *string `json:"tiktokAccountType,omitempty"`
 	// URL to the account's profile picture on the platform. May be null if the platform does not provide one.
 	ProfilePicture NullableString `json:"profilePicture,omitempty"`
