@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.609.1
+API version: 1.610.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,10 @@ type SendEvents200ResponseDestinationsInner struct {
 	Error *string `json:"error,omitempty"`
 	// The destination failed for now (platform error, timeout, rate limit) and the send is queued for retries; its outcome shows on GET /v1/events/{eventId}.
 	Retrying *bool `json:"retrying,omitempty"`
+	// The platform trace ID of the send (Meta `fbtrace_id`, Google `requestId`, TikTok `request_id`), to quote to the platform support. Absent when the platform returns none.
+	TraceId *string `json:"traceId,omitempty"`
+	// Meta's `messages` (warnings about the events it accepted), each distinct one once, at most 20. Absent when the platform sent none.
+	PlatformMessages []string `json:"platformMessages,omitempty"`
 }
 
 // NewSendEvents200ResponseDestinationsInner instantiates a new SendEvents200ResponseDestinationsInner object
@@ -306,6 +310,70 @@ func (o *SendEvents200ResponseDestinationsInner) SetRetrying(v bool) {
 	o.Retrying = &v
 }
 
+// GetTraceId returns the TraceId field value if set, zero value otherwise.
+func (o *SendEvents200ResponseDestinationsInner) GetTraceId() string {
+	if o == nil || IsNil(o.TraceId) {
+		var ret string
+		return ret
+	}
+	return *o.TraceId
+}
+
+// GetTraceIdOk returns a tuple with the TraceId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEvents200ResponseDestinationsInner) GetTraceIdOk() (*string, bool) {
+	if o == nil || IsNil(o.TraceId) {
+		return nil, false
+	}
+	return o.TraceId, true
+}
+
+// HasTraceId returns a boolean if a field has been set.
+func (o *SendEvents200ResponseDestinationsInner) HasTraceId() bool {
+	if o != nil && !IsNil(o.TraceId) {
+		return true
+	}
+
+	return false
+}
+
+// SetTraceId gets a reference to the given string and assigns it to the TraceId field.
+func (o *SendEvents200ResponseDestinationsInner) SetTraceId(v string) {
+	o.TraceId = &v
+}
+
+// GetPlatformMessages returns the PlatformMessages field value if set, zero value otherwise.
+func (o *SendEvents200ResponseDestinationsInner) GetPlatformMessages() []string {
+	if o == nil || IsNil(o.PlatformMessages) {
+		var ret []string
+		return ret
+	}
+	return o.PlatformMessages
+}
+
+// GetPlatformMessagesOk returns a tuple with the PlatformMessages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEvents200ResponseDestinationsInner) GetPlatformMessagesOk() ([]string, bool) {
+	if o == nil || IsNil(o.PlatformMessages) {
+		return nil, false
+	}
+	return o.PlatformMessages, true
+}
+
+// HasPlatformMessages returns a boolean if a field has been set.
+func (o *SendEvents200ResponseDestinationsInner) HasPlatformMessages() bool {
+	if o != nil && !IsNil(o.PlatformMessages) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformMessages gets a reference to the given []string and assigns it to the PlatformMessages field.
+func (o *SendEvents200ResponseDestinationsInner) SetPlatformMessages(v []string) {
+	o.PlatformMessages = v
+}
+
 func (o SendEvents200ResponseDestinationsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -339,6 +407,12 @@ func (o SendEvents200ResponseDestinationsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Retrying) {
 		toSerialize["retrying"] = o.Retrying
+	}
+	if !IsNil(o.TraceId) {
+		toSerialize["traceId"] = o.TraceId
+	}
+	if !IsNil(o.PlatformMessages) {
+		toSerialize["platformMessages"] = o.PlatformMessages
 	}
 	return toSerialize, nil
 }

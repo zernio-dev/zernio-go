@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.609.1
+API version: 1.610.0
 Contact: support@zernio.com
 */
 
@@ -29,6 +29,8 @@ type SendWhatsAppConversion200Response struct {
 	Failures []SendConversions200ResponseFailuresInner `json:"failures,omitempty"`
 	// Meta `fbtrace_id` for debugging. Surface in support tickets.
 	TraceId *string `json:"traceId,omitempty"`
+	// Meta's `messages` (warnings about the events it accepted), each distinct one once, at most 20. Absent when Meta sent none.
+	PlatformMessages []string `json:"platformMessages,omitempty"`
 	// The test code sent to Meta, or `null` when the request carried none.
 	TestCode NullableString `json:"testCode,omitempty"`
 }
@@ -210,6 +212,38 @@ func (o *SendWhatsAppConversion200Response) SetTraceId(v string) {
 	o.TraceId = &v
 }
 
+// GetPlatformMessages returns the PlatformMessages field value if set, zero value otherwise.
+func (o *SendWhatsAppConversion200Response) GetPlatformMessages() []string {
+	if o == nil || IsNil(o.PlatformMessages) {
+		var ret []string
+		return ret
+	}
+	return o.PlatformMessages
+}
+
+// GetPlatformMessagesOk returns a tuple with the PlatformMessages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendWhatsAppConversion200Response) GetPlatformMessagesOk() ([]string, bool) {
+	if o == nil || IsNil(o.PlatformMessages) {
+		return nil, false
+	}
+	return o.PlatformMessages, true
+}
+
+// HasPlatformMessages returns a boolean if a field has been set.
+func (o *SendWhatsAppConversion200Response) HasPlatformMessages() bool {
+	if o != nil && !IsNil(o.PlatformMessages) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformMessages gets a reference to the given []string and assigns it to the PlatformMessages field.
+func (o *SendWhatsAppConversion200Response) SetPlatformMessages(v []string) {
+	o.PlatformMessages = v
+}
+
 // GetTestCode returns the TestCode field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SendWhatsAppConversion200Response) GetTestCode() string {
 	if o == nil || IsNil(o.TestCode.Get()) {
@@ -277,6 +311,9 @@ func (o SendWhatsAppConversion200Response) ToMap() (map[string]interface{}, erro
 	}
 	if !IsNil(o.TraceId) {
 		toSerialize["traceId"] = o.TraceId
+	}
+	if !IsNil(o.PlatformMessages) {
+		toSerialize["platformMessages"] = o.PlatformMessages
 	}
 	if o.TestCode.IsSet() {
 		toSerialize["testCode"] = o.TestCode.Get()
