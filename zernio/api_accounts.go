@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.610.0
+API version: 1.611.0
 Contact: support@zernio.com
 */
 
@@ -186,6 +186,16 @@ The OAuth token can be perfectly valid while Meta refuses to serve the phone-num
 - When the Meta link is dead, `platformConnection.status` is `disconnected` and the overall `status` is `error`.
 - When Meta reports that the number's inbound message webhook does not reach Zernio, or subscribing the number's WhatsApp Business Account to Zernio's webhooks failed at connect, `platformConnection.inboundWebhookSubscribed` is `false`, an entry is added to `issues`, and the overall `status` is at least `warning`.
 - When `platformConnection.phoneStatus` is anything other than `CONNECTED`, an entry is added to `issues` and the overall `status` is at least `warning`; `BANNED` makes it `error`. `disconnectReason` stays null, since reconnecting does not lift a Meta status.
+
+### LINE
+
+The response also includes `lineWebhook`, a live read of the channel's webhook settings at LINE. It is one LINE call per request, given up after a few seconds, and skipped while the account is inactive or needs reconnecting.
+
+If LINE rejects the channel credentials during that read, the account is flagged for reconnection and the overall `status` is `error`.
+
+- `active: false` means Webhooks are turned off in LINE Official Account Manager, so LINE sends nothing to Zernio. An entry is added to `issues` with the fix (Settings > Response settings > Webhooks) and the overall `status` is at least `warning`.
+- `destination` is `other` when the channel's webhook URL points at another integration, `another_zernio_account` when the same channel is connected to another Zernio account that now receives its events, and `missing` when none is set. Each adds an entry to `issues` and makes the overall `status` at least `warning`.
+- Both are `null` when LINE could not be read; nothing is added to `issues` then.
 
 ### Standalone ads connections (`googleads`, `redditads`, `microsoftads`)
 

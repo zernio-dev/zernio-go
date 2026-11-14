@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.610.0
+API version: 1.611.0
 Contact: support@zernio.com
 */
 
@@ -24,8 +24,10 @@ type ConnectLineCredentials200ResponseWebhook struct {
 	Url *string `json:"url,omitempty"`
 	// Whether LINE accepted the webhook URL. When false, paste `url` into the LINE Developers Console > Messaging API > Webhook URL yourself.
 	Configured *bool `json:"configured,omitempty"`
-	// Whether LINE's webhook test call reached Zernio.
+	// Whether LINE's webhook test call reached Zernio. It does not show whether Webhooks is turned on; read `active` for that.
 	TestSucceeded *bool `json:"testSucceeded,omitempty"`
+	// Whether Webhooks (LINE Developers Console: Use webhook) is turned on for the channel, read after Zernio set its URL.  `false` means LINE sends no events until the account owner turns it on in LINE Official Account Manager > Settings > Response settings. `null` when LINE did not answer the read, and always when `configured` is `false`.
+	Active NullableBool `json:"active,omitempty"`
 	// What LINE answered when the setup or the test did not succeed.
 	Detail *string `json:"detail,omitempty"`
 	// Present when the channel pointed at another webhook URL before this connect. LINE allows one webhook URL per channel, so that URL stopped receiving events once Zernio set its own; `nextSteps` says so too.
@@ -145,6 +147,49 @@ func (o *ConnectLineCredentials200ResponseWebhook) SetTestSucceeded(v bool) {
 	o.TestSucceeded = &v
 }
 
+// GetActive returns the Active field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ConnectLineCredentials200ResponseWebhook) GetActive() bool {
+	if o == nil || IsNil(o.Active.Get()) {
+		var ret bool
+		return ret
+	}
+	return *o.Active.Get()
+}
+
+// GetActiveOk returns a tuple with the Active field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ConnectLineCredentials200ResponseWebhook) GetActiveOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Active.Get(), o.Active.IsSet()
+}
+
+// HasActive returns a boolean if a field has been set.
+func (o *ConnectLineCredentials200ResponseWebhook) HasActive() bool {
+	if o != nil && o.Active.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetActive gets a reference to the given NullableBool and assigns it to the Active field.
+func (o *ConnectLineCredentials200ResponseWebhook) SetActive(v bool) {
+	o.Active.Set(&v)
+}
+
+// SetActiveNil sets the value for Active to be an explicit nil
+func (o *ConnectLineCredentials200ResponseWebhook) SetActiveNil() {
+	o.Active.Set(nil)
+}
+
+// UnsetActive ensures that no value is present for Active, not even an explicit nil
+func (o *ConnectLineCredentials200ResponseWebhook) UnsetActive() {
+	o.Active.Unset()
+}
+
 // GetDetail returns the Detail field value if set, zero value otherwise.
 func (o *ConnectLineCredentials200ResponseWebhook) GetDetail() string {
 	if o == nil || IsNil(o.Detail) {
@@ -227,6 +272,9 @@ func (o ConnectLineCredentials200ResponseWebhook) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.TestSucceeded) {
 		toSerialize["testSucceeded"] = o.TestSucceeded
+	}
+	if o.Active.IsSet() {
+		toSerialize["active"] = o.Active.Get()
 	}
 	if !IsNil(o.Detail) {
 		toSerialize["detail"] = o.Detail

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.610.0
+API version: 1.611.0
 Contact: support@zernio.com
 */
 
@@ -1657,8 +1657,9 @@ Zernio issues a channel access token, reads the bot's profile and sets the chann
 
 Two settings stay on the customer's side, in LINE Official Account Manager > Settings > Response settings. `nextSteps` in the response lists them:
 
-- Turn on Webhooks. Until it is on, LINE delivers nothing to Zernio.
-- Turn off auto-response and greeting messages.
+  - Turn on Webhooks. Until it is on, LINE delivers nothing to Zernio. LINE's API cannot turn it on, so Zernio reads it back as `webhook.active`.
+    When it is `false`, `message` and the first entry of `nextSteps` say to turn it on. `GET /v1/accounts/{accountId}/health` keeps reporting it after connect.
+  - Turn off auto-response and greeting messages.
 
 Reconnecting the same channel on the same profile updates the existing account.
 To get your userId for the state parameter, call GET /v1/users which includes a currentUserId field.
