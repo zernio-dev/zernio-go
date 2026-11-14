@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.611.0
+API version: 1.611.1
 Contact: support@zernio.com
 */
 
@@ -34,17 +34,17 @@ type ListInboxMentions200ResponseDataInner struct {
 	CommentId       NullableString `json:"commentId,omitempty"`
 	AccountId       *string        `json:"accountId,omitempty"`
 	AccountUsername *string        `json:"accountUsername,omitempty"`
-	// Text that mentioned you: the post text on LinkedIn, the caption or comment text on Instagram, the post or comment text on Facebook. Empty until it has been read.
+	// Text that mentioned you: the post text on LinkedIn, the caption or comment text on Instagram, the post or comment text on Facebook. Empty until it has been read. Stays empty when Meta refuses to serve the source, for example a comment on media Meta does not treat as organic.
 	Content NullableString `json:"content,omitempty"`
 	// True when this team does not retain content, so the content fields of this row are null. Identifiers and metadata stay.
 	ContentNotRetained *bool `json:"contentNotRetained,omitempty"`
 	// URL to the source post on LinkedIn. Null on Instagram and Facebook.
 	Permalink NullableString `json:"permalink,omitempty"`
-	// LinkedIn URN of the person who mentioned you, the Instagram-scoped ID of the commenter on an Instagram comment mention, or the ID of the Facebook user or Page that mentioned your Page when Meta sends it.
+	// LinkedIn URN of the person who mentioned you, or the ID of the Facebook user or Page that mentioned your Page when Meta sends it. Always null on Instagram: comment mentions carry no commenter, and caption mentions expose the media owner only through authorUsername.
 	AuthorUrn NullableString `json:"authorUrn,omitempty"`
 	// Display name of the author, resolved from authorUrn on LinkedIn (null when LinkedIn does not allow resolving the profile) and taken from the webhook on Facebook.
 	AuthorName NullableString `json:"authorName,omitempty"`
-	// LinkedIn vanity name of the author (the slug in their profile URL), or the Instagram username of the commenter or media owner.
+	// LinkedIn vanity name of the author (the slug in their profile URL), or the Instagram username of the media owner on a caption mention once its caption has been read. Null on Instagram comment mentions.
 	AuthorUsername NullableString `json:"authorUsername,omitempty"`
 	// Profile picture URL of the author. LinkedIn CDN URLs expire after some time, so fetch promptly rather than storing long-term.
 	AuthorPicture NullableString `json:"authorPicture,omitempty"`
