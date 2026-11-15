@@ -980,6 +980,7 @@ model_create_shared_budget_201_response.go
 model_create_shared_budget_request.go
 model_create_sip_trunk_201_response.go
 model_create_sip_trunk_request.go
+model_create_sms_opt_out_200_response.go
 model_create_sms_sender_id_200_response.go
 model_create_sms_sender_id_request.go
 model_create_standalone_ad_200_response.go
@@ -1145,6 +1146,7 @@ model_delete_inbox_review_reply_200_response.go
 model_delete_o_auth_app_200_response.go
 model_delete_org_connection_200_response.go
 model_delete_org_connection_200_response_data.go
+model_delete_sms_opt_out_200_response.go
 model_delete_sms_sender_id_200_response.go
 model_delete_test_lead_200_response.go
 model_delete_tracking_tag_event_200_response.go
@@ -2875,6 +2877,7 @@ model_share_sms_registration_request.go
 model_shared_ad_account.go
 model_ship_campaign_sample_request.go
 model_slack_platform_data.go
+model_sms_opt_out_request.go
 model_sms_registration_review_request.go
 model_sms_registration_review_request_points_inner.go
 model_snapchat_platform_data.go

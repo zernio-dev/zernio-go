@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.613.0
+API version: 1.614.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type ListSmsOptOuts200ResponseOptOutsInner struct {
 	Keyword NullableString `json:"keyword,omitempty"`
 	// Which of your numbers the recipient opted out from.
 	From NullableString `json:"from,omitempty"`
+	// `inbound_stop` when the recipient texted an opt-out keyword, `api` when recorded with `POST /v1/sms/opt-outs`. Null when unknown.
+	Source NullableString `json:"source,omitempty"`
 }
 
 // NewListSmsOptOuts200ResponseOptOutsInner instantiates a new ListSmsOptOuts200ResponseOptOutsInner object
@@ -207,6 +209,49 @@ func (o *ListSmsOptOuts200ResponseOptOutsInner) UnsetFrom() {
 	o.From.Unset()
 }
 
+// GetSource returns the Source field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListSmsOptOuts200ResponseOptOutsInner) GetSource() string {
+	if o == nil || IsNil(o.Source.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Source.Get()
+}
+
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListSmsOptOuts200ResponseOptOutsInner) GetSourceOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Source.Get(), o.Source.IsSet()
+}
+
+// HasSource returns a boolean if a field has been set.
+func (o *ListSmsOptOuts200ResponseOptOutsInner) HasSource() bool {
+	if o != nil && o.Source.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSource gets a reference to the given NullableString and assigns it to the Source field.
+func (o *ListSmsOptOuts200ResponseOptOutsInner) SetSource(v string) {
+	o.Source.Set(&v)
+}
+
+// SetSourceNil sets the value for Source to be an explicit nil
+func (o *ListSmsOptOuts200ResponseOptOutsInner) SetSourceNil() {
+	o.Source.Set(nil)
+}
+
+// UnsetSource ensures that no value is present for Source, not even an explicit nil
+func (o *ListSmsOptOuts200ResponseOptOutsInner) UnsetSource() {
+	o.Source.Unset()
+}
+
 func (o ListSmsOptOuts200ResponseOptOutsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -228,6 +273,9 @@ func (o ListSmsOptOuts200ResponseOptOutsInner) ToMap() (map[string]interface{}, 
 	}
 	if o.From.IsSet() {
 		toSerialize["from"] = o.From.Get()
+	}
+	if o.Source.IsSet() {
+		toSerialize["source"] = o.Source.Get()
 	}
 	return toSerialize, nil
 }
