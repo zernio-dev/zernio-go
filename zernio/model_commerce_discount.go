@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.611.3
+API version: 1.612.0
 Contact: support@zernio.com
 */
 
@@ -35,13 +35,15 @@ type CommerceDiscount struct {
 	Minimum         *CommerceDiscountMinimum      `json:"minimum,omitempty"`
 	UsageLimit      NullableInt32                 `json:"usageLimit,omitempty"`
 	OncePerCustomer *bool                         `json:"oncePerCustomer,omitempty"`
-	UsageCount      *int32                        `json:"usageCount,omitempty"`
-	StartsAt        *time.Time                    `json:"startsAt,omitempty"`
-	EndsAt          NullableTime                  `json:"endsAt,omitempty"`
-	Status          *string                       `json:"status,omitempty"`
-	PlatformStatus  *string                       `json:"platformStatus,omitempty"`
-	Summary         *string                       `json:"summary,omitempty"`
-	PlatformData    map[string]interface{}        `json:"platformData,omitempty"`
+	// True when only the customers chosen at creation (customerIds) can use the code.
+	LimitedToCustomers *bool                  `json:"limitedToCustomers,omitempty"`
+	UsageCount         *int32                 `json:"usageCount,omitempty"`
+	StartsAt           *time.Time             `json:"startsAt,omitempty"`
+	EndsAt             NullableTime           `json:"endsAt,omitempty"`
+	Status             *string                `json:"status,omitempty"`
+	PlatformStatus     *string                `json:"platformStatus,omitempty"`
+	Summary            *string                `json:"summary,omitempty"`
+	PlatformData       map[string]interface{} `json:"platformData,omitempty"`
 }
 
 // NewCommerceDiscount instantiates a new CommerceDiscount object
@@ -510,6 +512,38 @@ func (o *CommerceDiscount) SetOncePerCustomer(v bool) {
 	o.OncePerCustomer = &v
 }
 
+// GetLimitedToCustomers returns the LimitedToCustomers field value if set, zero value otherwise.
+func (o *CommerceDiscount) GetLimitedToCustomers() bool {
+	if o == nil || IsNil(o.LimitedToCustomers) {
+		var ret bool
+		return ret
+	}
+	return *o.LimitedToCustomers
+}
+
+// GetLimitedToCustomersOk returns a tuple with the LimitedToCustomers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CommerceDiscount) GetLimitedToCustomersOk() (*bool, bool) {
+	if o == nil || IsNil(o.LimitedToCustomers) {
+		return nil, false
+	}
+	return o.LimitedToCustomers, true
+}
+
+// HasLimitedToCustomers returns a boolean if a field has been set.
+func (o *CommerceDiscount) HasLimitedToCustomers() bool {
+	if o != nil && !IsNil(o.LimitedToCustomers) {
+		return true
+	}
+
+	return false
+}
+
+// SetLimitedToCustomers gets a reference to the given bool and assigns it to the LimitedToCustomers field.
+func (o *CommerceDiscount) SetLimitedToCustomers(v bool) {
+	o.LimitedToCustomers = &v
+}
+
 // GetUsageCount returns the UsageCount field value if set, zero value otherwise.
 func (o *CommerceDiscount) GetUsageCount() int32 {
 	if o == nil || IsNil(o.UsageCount) {
@@ -794,6 +828,9 @@ func (o CommerceDiscount) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.OncePerCustomer) {
 		toSerialize["oncePerCustomer"] = o.OncePerCustomer
+	}
+	if !IsNil(o.LimitedToCustomers) {
+		toSerialize["limitedToCustomers"] = o.LimitedToCustomers
 	}
 	if !IsNil(o.UsageCount) {
 		toSerialize["usageCount"] = o.UsageCount

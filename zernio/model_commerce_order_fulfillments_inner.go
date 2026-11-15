@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.611.3
+API version: 1.612.0
 Contact: support@zernio.com
 */
 
@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the CommerceOrderFulfillmentsInner type satisfies the MappedNullable interface at compile time
@@ -20,9 +21,18 @@ var _ MappedNullable = &CommerceOrderFulfillmentsInner{}
 
 // CommerceOrderFulfillmentsInner struct for CommerceOrderFulfillmentsInner
 type CommerceOrderFulfillmentsInner struct {
+	// The shipment (fulfillment) id. Entries of one shipment with several tracking numbers share it.
+	Id             *string        `json:"id,omitempty"`
 	CarrierName    NullableString `json:"carrierName,omitempty"`
 	TrackingNumber NullableString `json:"trackingNumber,omitempty"`
 	TrackingUrl    NullableString `json:"trackingUrl,omitempty"`
+	// Where the shipment is. pending means no carrier scan yet. Null when the platform has no delivery tracking for it. Shopify only knows it when the carrier sends tracking events.
+	DeliveryStatus NullableString `json:"deliveryStatus,omitempty"`
+	// The platform's raw value, e.g. Shopify ATTEMPTED_DELIVERY.
+	PlatformDeliveryStatus NullableString `json:"platformDeliveryStatus,omitempty"`
+	EstimatedDeliveryAt    NullableTime   `json:"estimatedDeliveryAt,omitempty"`
+	InTransitAt            NullableTime   `json:"inTransitAt,omitempty"`
+	DeliveredAt            NullableTime   `json:"deliveredAt,omitempty"`
 }
 
 // NewCommerceOrderFulfillmentsInner instantiates a new CommerceOrderFulfillmentsInner object
@@ -40,6 +50,38 @@ func NewCommerceOrderFulfillmentsInner() *CommerceOrderFulfillmentsInner {
 func NewCommerceOrderFulfillmentsInnerWithDefaults() *CommerceOrderFulfillmentsInner {
 	this := CommerceOrderFulfillmentsInner{}
 	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *CommerceOrderFulfillmentsInner) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CommerceOrderFulfillmentsInner) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *CommerceOrderFulfillmentsInner) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *CommerceOrderFulfillmentsInner) SetId(v string) {
+	o.Id = &v
 }
 
 // GetCarrierName returns the CarrierName field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -171,6 +213,221 @@ func (o *CommerceOrderFulfillmentsInner) UnsetTrackingUrl() {
 	o.TrackingUrl.Unset()
 }
 
+// GetDeliveryStatus returns the DeliveryStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CommerceOrderFulfillmentsInner) GetDeliveryStatus() string {
+	if o == nil || IsNil(o.DeliveryStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.DeliveryStatus.Get()
+}
+
+// GetDeliveryStatusOk returns a tuple with the DeliveryStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CommerceOrderFulfillmentsInner) GetDeliveryStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DeliveryStatus.Get(), o.DeliveryStatus.IsSet()
+}
+
+// HasDeliveryStatus returns a boolean if a field has been set.
+func (o *CommerceOrderFulfillmentsInner) HasDeliveryStatus() bool {
+	if o != nil && o.DeliveryStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDeliveryStatus gets a reference to the given NullableString and assigns it to the DeliveryStatus field.
+func (o *CommerceOrderFulfillmentsInner) SetDeliveryStatus(v string) {
+	o.DeliveryStatus.Set(&v)
+}
+
+// SetDeliveryStatusNil sets the value for DeliveryStatus to be an explicit nil
+func (o *CommerceOrderFulfillmentsInner) SetDeliveryStatusNil() {
+	o.DeliveryStatus.Set(nil)
+}
+
+// UnsetDeliveryStatus ensures that no value is present for DeliveryStatus, not even an explicit nil
+func (o *CommerceOrderFulfillmentsInner) UnsetDeliveryStatus() {
+	o.DeliveryStatus.Unset()
+}
+
+// GetPlatformDeliveryStatus returns the PlatformDeliveryStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CommerceOrderFulfillmentsInner) GetPlatformDeliveryStatus() string {
+	if o == nil || IsNil(o.PlatformDeliveryStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformDeliveryStatus.Get()
+}
+
+// GetPlatformDeliveryStatusOk returns a tuple with the PlatformDeliveryStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CommerceOrderFulfillmentsInner) GetPlatformDeliveryStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PlatformDeliveryStatus.Get(), o.PlatformDeliveryStatus.IsSet()
+}
+
+// HasPlatformDeliveryStatus returns a boolean if a field has been set.
+func (o *CommerceOrderFulfillmentsInner) HasPlatformDeliveryStatus() bool {
+	if o != nil && o.PlatformDeliveryStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformDeliveryStatus gets a reference to the given NullableString and assigns it to the PlatformDeliveryStatus field.
+func (o *CommerceOrderFulfillmentsInner) SetPlatformDeliveryStatus(v string) {
+	o.PlatformDeliveryStatus.Set(&v)
+}
+
+// SetPlatformDeliveryStatusNil sets the value for PlatformDeliveryStatus to be an explicit nil
+func (o *CommerceOrderFulfillmentsInner) SetPlatformDeliveryStatusNil() {
+	o.PlatformDeliveryStatus.Set(nil)
+}
+
+// UnsetPlatformDeliveryStatus ensures that no value is present for PlatformDeliveryStatus, not even an explicit nil
+func (o *CommerceOrderFulfillmentsInner) UnsetPlatformDeliveryStatus() {
+	o.PlatformDeliveryStatus.Unset()
+}
+
+// GetEstimatedDeliveryAt returns the EstimatedDeliveryAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CommerceOrderFulfillmentsInner) GetEstimatedDeliveryAt() time.Time {
+	if o == nil || IsNil(o.EstimatedDeliveryAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.EstimatedDeliveryAt.Get()
+}
+
+// GetEstimatedDeliveryAtOk returns a tuple with the EstimatedDeliveryAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CommerceOrderFulfillmentsInner) GetEstimatedDeliveryAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.EstimatedDeliveryAt.Get(), o.EstimatedDeliveryAt.IsSet()
+}
+
+// HasEstimatedDeliveryAt returns a boolean if a field has been set.
+func (o *CommerceOrderFulfillmentsInner) HasEstimatedDeliveryAt() bool {
+	if o != nil && o.EstimatedDeliveryAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEstimatedDeliveryAt gets a reference to the given NullableTime and assigns it to the EstimatedDeliveryAt field.
+func (o *CommerceOrderFulfillmentsInner) SetEstimatedDeliveryAt(v time.Time) {
+	o.EstimatedDeliveryAt.Set(&v)
+}
+
+// SetEstimatedDeliveryAtNil sets the value for EstimatedDeliveryAt to be an explicit nil
+func (o *CommerceOrderFulfillmentsInner) SetEstimatedDeliveryAtNil() {
+	o.EstimatedDeliveryAt.Set(nil)
+}
+
+// UnsetEstimatedDeliveryAt ensures that no value is present for EstimatedDeliveryAt, not even an explicit nil
+func (o *CommerceOrderFulfillmentsInner) UnsetEstimatedDeliveryAt() {
+	o.EstimatedDeliveryAt.Unset()
+}
+
+// GetInTransitAt returns the InTransitAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CommerceOrderFulfillmentsInner) GetInTransitAt() time.Time {
+	if o == nil || IsNil(o.InTransitAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.InTransitAt.Get()
+}
+
+// GetInTransitAtOk returns a tuple with the InTransitAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CommerceOrderFulfillmentsInner) GetInTransitAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.InTransitAt.Get(), o.InTransitAt.IsSet()
+}
+
+// HasInTransitAt returns a boolean if a field has been set.
+func (o *CommerceOrderFulfillmentsInner) HasInTransitAt() bool {
+	if o != nil && o.InTransitAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetInTransitAt gets a reference to the given NullableTime and assigns it to the InTransitAt field.
+func (o *CommerceOrderFulfillmentsInner) SetInTransitAt(v time.Time) {
+	o.InTransitAt.Set(&v)
+}
+
+// SetInTransitAtNil sets the value for InTransitAt to be an explicit nil
+func (o *CommerceOrderFulfillmentsInner) SetInTransitAtNil() {
+	o.InTransitAt.Set(nil)
+}
+
+// UnsetInTransitAt ensures that no value is present for InTransitAt, not even an explicit nil
+func (o *CommerceOrderFulfillmentsInner) UnsetInTransitAt() {
+	o.InTransitAt.Unset()
+}
+
+// GetDeliveredAt returns the DeliveredAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CommerceOrderFulfillmentsInner) GetDeliveredAt() time.Time {
+	if o == nil || IsNil(o.DeliveredAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.DeliveredAt.Get()
+}
+
+// GetDeliveredAtOk returns a tuple with the DeliveredAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CommerceOrderFulfillmentsInner) GetDeliveredAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DeliveredAt.Get(), o.DeliveredAt.IsSet()
+}
+
+// HasDeliveredAt returns a boolean if a field has been set.
+func (o *CommerceOrderFulfillmentsInner) HasDeliveredAt() bool {
+	if o != nil && o.DeliveredAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDeliveredAt gets a reference to the given NullableTime and assigns it to the DeliveredAt field.
+func (o *CommerceOrderFulfillmentsInner) SetDeliveredAt(v time.Time) {
+	o.DeliveredAt.Set(&v)
+}
+
+// SetDeliveredAtNil sets the value for DeliveredAt to be an explicit nil
+func (o *CommerceOrderFulfillmentsInner) SetDeliveredAtNil() {
+	o.DeliveredAt.Set(nil)
+}
+
+// UnsetDeliveredAt ensures that no value is present for DeliveredAt, not even an explicit nil
+func (o *CommerceOrderFulfillmentsInner) UnsetDeliveredAt() {
+	o.DeliveredAt.Unset()
+}
+
 func (o CommerceOrderFulfillmentsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -181,6 +438,9 @@ func (o CommerceOrderFulfillmentsInner) MarshalJSON() ([]byte, error) {
 
 func (o CommerceOrderFulfillmentsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
+	}
 	if o.CarrierName.IsSet() {
 		toSerialize["carrierName"] = o.CarrierName.Get()
 	}
@@ -189,6 +449,21 @@ func (o CommerceOrderFulfillmentsInner) ToMap() (map[string]interface{}, error) 
 	}
 	if o.TrackingUrl.IsSet() {
 		toSerialize["trackingUrl"] = o.TrackingUrl.Get()
+	}
+	if o.DeliveryStatus.IsSet() {
+		toSerialize["deliveryStatus"] = o.DeliveryStatus.Get()
+	}
+	if o.PlatformDeliveryStatus.IsSet() {
+		toSerialize["platformDeliveryStatus"] = o.PlatformDeliveryStatus.Get()
+	}
+	if o.EstimatedDeliveryAt.IsSet() {
+		toSerialize["estimatedDeliveryAt"] = o.EstimatedDeliveryAt.Get()
+	}
+	if o.InTransitAt.IsSet() {
+		toSerialize["inTransitAt"] = o.InTransitAt.Get()
+	}
+	if o.DeliveredAt.IsSet() {
+		toSerialize["deliveredAt"] = o.DeliveredAt.Get()
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.611.3
+API version: 1.612.0
 Contact: support@zernio.com
 */
 
@@ -47,6 +47,8 @@ type CreateCommerceDiscountRequest struct {
 	EndsAt        NullableTime `json:"endsAt,omitempty"`
 	ProductIds    []string     `json:"productIds,omitempty"`
 	CollectionIds []string     `json:"collectionIds,omitempty"`
+	// Only these customers can use the code (`customer.id` on an order, or `id` from the customers endpoints). Code discounts on Shopify only; WooCommerce answers 400.
+	CustomerIds []string `json:"customerIds,omitempty"`
 }
 
 type _CreateCommerceDiscountRequest CreateCommerceDiscountRequest
@@ -596,6 +598,38 @@ func (o *CreateCommerceDiscountRequest) SetCollectionIds(v []string) {
 	o.CollectionIds = v
 }
 
+// GetCustomerIds returns the CustomerIds field value if set, zero value otherwise.
+func (o *CreateCommerceDiscountRequest) GetCustomerIds() []string {
+	if o == nil || IsNil(o.CustomerIds) {
+		var ret []string
+		return ret
+	}
+	return o.CustomerIds
+}
+
+// GetCustomerIdsOk returns a tuple with the CustomerIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommerceDiscountRequest) GetCustomerIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.CustomerIds) {
+		return nil, false
+	}
+	return o.CustomerIds, true
+}
+
+// HasCustomerIds returns a boolean if a field has been set.
+func (o *CreateCommerceDiscountRequest) HasCustomerIds() bool {
+	if o != nil && !IsNil(o.CustomerIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomerIds gets a reference to the given []string and assigns it to the CustomerIds field.
+func (o *CreateCommerceDiscountRequest) SetCustomerIds(v []string) {
+	o.CustomerIds = v
+}
+
 func (o CreateCommerceDiscountRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -645,6 +679,9 @@ func (o CreateCommerceDiscountRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CollectionIds) {
 		toSerialize["collectionIds"] = o.CollectionIds
+	}
+	if !IsNil(o.CustomerIds) {
+		toSerialize["customerIds"] = o.CustomerIds
 	}
 	return toSerialize, nil
 }
