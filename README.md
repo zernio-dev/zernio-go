@@ -1478,6 +1478,7 @@ func main() {
 | `client.VoiceAPI.ListVoiceCalls(ctx)` | List phone calls |
 | `client.VoiceAPI.CreateSipTrunk(ctx)` | Create a SIP trunk |
 | `client.VoiceAPI.CreateVoiceCall(ctx)` | Place an outbound phone call |
+| `client.VoiceAPI.CreateVoiceWebInboundSession(ctx)` | Register a browser to receive calls |
 | `client.VoiceAPI.CreateVoiceWebSession(ctx)` | Mint a browser softphone session |
 | `client.VoiceAPI.GetSipTrunk(ctx)` | Get a SIP trunk |
 | `client.VoiceAPI.GetVoiceCall(ctx)` | Get a phone call |

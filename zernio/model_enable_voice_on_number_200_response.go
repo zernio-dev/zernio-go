@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.614.0
+API version: 1.615.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,7 @@ type EnableVoiceOnNumber200Response struct {
 	Enabled               *bool                                              `json:"enabled,omitempty"`
 	PhoneNumber           *string                                            `json:"phoneNumber,omitempty"`
 	PstnForwardTo         NullableString                                     `json:"pstnForwardTo,omitempty"`
+	RingInBrowser         *bool                                              `json:"ringInBrowser,omitempty"`
 	RecordingEnabled      *bool                                              `json:"recordingEnabled,omitempty"`
 	TranscriptionEnabled  *bool                                              `json:"transcriptionEnabled,omitempty"`
 	TranscriptionLanguage *string                                            `json:"transcriptionLanguage,omitempty"`
@@ -160,6 +161,38 @@ func (o *EnableVoiceOnNumber200Response) SetPstnForwardToNil() {
 // UnsetPstnForwardTo ensures that no value is present for PstnForwardTo, not even an explicit nil
 func (o *EnableVoiceOnNumber200Response) UnsetPstnForwardTo() {
 	o.PstnForwardTo.Unset()
+}
+
+// GetRingInBrowser returns the RingInBrowser field value if set, zero value otherwise.
+func (o *EnableVoiceOnNumber200Response) GetRingInBrowser() bool {
+	if o == nil || IsNil(o.RingInBrowser) {
+		var ret bool
+		return ret
+	}
+	return *o.RingInBrowser
+}
+
+// GetRingInBrowserOk returns a tuple with the RingInBrowser field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EnableVoiceOnNumber200Response) GetRingInBrowserOk() (*bool, bool) {
+	if o == nil || IsNil(o.RingInBrowser) {
+		return nil, false
+	}
+	return o.RingInBrowser, true
+}
+
+// HasRingInBrowser returns a boolean if a field has been set.
+func (o *EnableVoiceOnNumber200Response) HasRingInBrowser() bool {
+	if o != nil && !IsNil(o.RingInBrowser) {
+		return true
+	}
+
+	return false
+}
+
+// SetRingInBrowser gets a reference to the given bool and assigns it to the RingInBrowser field.
+func (o *EnableVoiceOnNumber200Response) SetRingInBrowser(v bool) {
+	o.RingInBrowser = &v
 }
 
 // GetRecordingEnabled returns the RecordingEnabled field value if set, zero value otherwise.
@@ -629,6 +662,9 @@ func (o EnableVoiceOnNumber200Response) ToMap() (map[string]interface{}, error) 
 	}
 	if o.PstnForwardTo.IsSet() {
 		toSerialize["pstnForwardTo"] = o.PstnForwardTo.Get()
+	}
+	if !IsNil(o.RingInBrowser) {
+		toSerialize["ringInBrowser"] = o.RingInBrowser
 	}
 	if !IsNil(o.RecordingEnabled) {
 		toSerialize["recordingEnabled"] = o.RecordingEnabled

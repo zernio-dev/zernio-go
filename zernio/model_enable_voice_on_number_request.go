@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.614.0
+API version: 1.615.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,9 @@ var _ MappedNullable = &EnableVoiceOnNumberRequest{}
 // EnableVoiceOnNumberRequest struct for EnableVoiceOnNumberRequest
 type EnableVoiceOnNumberRequest struct {
 	// tel:+E164, sip:..., or wss://... destination for inbound calls. Empty string clears the forward (outbound-only); omitted preserves the current one.
-	ForwardTo             *string `json:"forwardTo,omitempty"`
+	ForwardTo *string `json:"forwardTo,omitempty"`
+	// Ring the owner's open Zernio dashboard tabs first (registered via POST /v1/voice/calls/web/inbound). Unanswered after 20 seconds, declined, or with no tab open, the call takes the forward destination, else voicemail. Superseded by an active IVR.
+	RingInBrowser         *bool   `json:"ringInBrowser,omitempty"`
 	RecordingEnabled      *bool   `json:"recordingEnabled,omitempty"`
 	TranscriptionEnabled  *bool   `json:"transcriptionEnabled,omitempty"`
 	TranscriptionLanguage *string `json:"transcriptionLanguage,omitempty"`
@@ -91,6 +93,38 @@ func (o *EnableVoiceOnNumberRequest) HasForwardTo() bool {
 // SetForwardTo gets a reference to the given string and assigns it to the ForwardTo field.
 func (o *EnableVoiceOnNumberRequest) SetForwardTo(v string) {
 	o.ForwardTo = &v
+}
+
+// GetRingInBrowser returns the RingInBrowser field value if set, zero value otherwise.
+func (o *EnableVoiceOnNumberRequest) GetRingInBrowser() bool {
+	if o == nil || IsNil(o.RingInBrowser) {
+		var ret bool
+		return ret
+	}
+	return *o.RingInBrowser
+}
+
+// GetRingInBrowserOk returns a tuple with the RingInBrowser field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EnableVoiceOnNumberRequest) GetRingInBrowserOk() (*bool, bool) {
+	if o == nil || IsNil(o.RingInBrowser) {
+		return nil, false
+	}
+	return o.RingInBrowser, true
+}
+
+// HasRingInBrowser returns a boolean if a field has been set.
+func (o *EnableVoiceOnNumberRequest) HasRingInBrowser() bool {
+	if o != nil && !IsNil(o.RingInBrowser) {
+		return true
+	}
+
+	return false
+}
+
+// SetRingInBrowser gets a reference to the given bool and assigns it to the RingInBrowser field.
+func (o *EnableVoiceOnNumberRequest) SetRingInBrowser(v bool) {
+	o.RingInBrowser = &v
 }
 
 // GetRecordingEnabled returns the RecordingEnabled field value if set, zero value otherwise.
@@ -521,6 +555,9 @@ func (o EnableVoiceOnNumberRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.ForwardTo) {
 		toSerialize["forwardTo"] = o.ForwardTo
+	}
+	if !IsNil(o.RingInBrowser) {
+		toSerialize["ringInBrowser"] = o.RingInBrowser
 	}
 	if !IsNil(o.RecordingEnabled) {
 		toSerialize["recordingEnabled"] = o.RecordingEnabled

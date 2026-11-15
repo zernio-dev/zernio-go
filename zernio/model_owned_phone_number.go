@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.614.0
+API version: 1.615.0
 Contact: support@zernio.com
 */
 
@@ -105,8 +105,10 @@ type OwnedPhoneNumber struct {
 	CallIconCountries      []string   `json:"callIconCountries,omitempty"`
 	ForwardCallerId        *string    `json:"forwardCallerId,omitempty"`
 	// Whether Calls (PSTN voice) is on.
-	PstnVoiceEnabled      *bool                                              `json:"pstnVoiceEnabled,omitempty"`
-	PstnForwardTo         *string                                            `json:"pstnForwardTo,omitempty"`
+	PstnVoiceEnabled *bool   `json:"pstnVoiceEnabled,omitempty"`
+	PstnForwardTo    *string `json:"pstnForwardTo,omitempty"`
+	// Inbound calls ring the owner's open dashboard tabs first, then take the forward or voicemail.
+	RingInBrowser         *bool                                              `json:"ringInBrowser,omitempty"`
 	VoicemailEnabled      *bool                                              `json:"voicemailEnabled,omitempty"`
 	VoicemailGreeting     *string                                            `json:"voicemailGreeting,omitempty"`
 	BusinessHoursEnabled  *bool                                              `json:"businessHoursEnabled,omitempty"`
@@ -2112,6 +2114,38 @@ func (o *OwnedPhoneNumber) SetPstnForwardTo(v string) {
 	o.PstnForwardTo = &v
 }
 
+// GetRingInBrowser returns the RingInBrowser field value if set, zero value otherwise.
+func (o *OwnedPhoneNumber) GetRingInBrowser() bool {
+	if o == nil || IsNil(o.RingInBrowser) {
+		var ret bool
+		return ret
+	}
+	return *o.RingInBrowser
+}
+
+// GetRingInBrowserOk returns a tuple with the RingInBrowser field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OwnedPhoneNumber) GetRingInBrowserOk() (*bool, bool) {
+	if o == nil || IsNil(o.RingInBrowser) {
+		return nil, false
+	}
+	return o.RingInBrowser, true
+}
+
+// HasRingInBrowser returns a boolean if a field has been set.
+func (o *OwnedPhoneNumber) HasRingInBrowser() bool {
+	if o != nil && !IsNil(o.RingInBrowser) {
+		return true
+	}
+
+	return false
+}
+
+// SetRingInBrowser gets a reference to the given bool and assigns it to the RingInBrowser field.
+func (o *OwnedPhoneNumber) SetRingInBrowser(v bool) {
+	o.RingInBrowser = &v
+}
+
 // GetVoicemailEnabled returns the VoicemailEnabled field value if set, zero value otherwise.
 func (o *OwnedPhoneNumber) GetVoicemailEnabled() bool {
 	if o == nil || IsNil(o.VoicemailEnabled) {
@@ -2583,6 +2617,9 @@ func (o OwnedPhoneNumber) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PstnForwardTo) {
 		toSerialize["pstnForwardTo"] = o.PstnForwardTo
+	}
+	if !IsNil(o.RingInBrowser) {
+		toSerialize["ringInBrowser"] = o.RingInBrowser
 	}
 	if !IsNil(o.VoicemailEnabled) {
 		toSerialize["voicemailEnabled"] = o.VoicemailEnabled
