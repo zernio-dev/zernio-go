@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.612.0
+API version: 1.612.1
 Contact: support@zernio.com
 */
 
@@ -1690,7 +1690,7 @@ GetVoiceCallEstimate Estimate call cost
 
 Pre-call cost estimate for a PSTN call: the carrier leg plus optional recording and transcription add-ons.
 
-It uses the same billing formula as the post-call invoice, so the quote and the final charge can't disagree.
+The per-minute figure is the most a minute can cost to that destination, so the final charge can be lower.
 
 The carrier figure follows the carrier's per-destination rate card: a call dialed from a number in the destination country uses the local mobile rate, and a `tel:` forward destination is quoted as a second carrier leg billed from the same number.
 
