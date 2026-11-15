@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.612.1
+API version: 1.612.2
 Contact: support@zernio.com
 */
 
@@ -10212,6 +10212,7 @@ type ConnectAPIListOrgConnectionsRequest struct {
 	profileId  *string
 }
 
+// Limit the list to one profile. Omit to list across every accessible profile.
 func (r ConnectAPIListOrgConnectionsRequest) ProfileId(profileId string) ConnectAPIListOrgConnectionsRequest {
 	r.profileId = &profileId
 	return r
@@ -10224,7 +10225,7 @@ func (r ConnectAPIListOrgConnectionsRequest) Execute() (*ListOrgConnections200Re
 /*
 ListOrgConnections List organization connections
 
-The Google Workspace and Microsoft 365 organization connections on a profile, newest first.
+The Google Workspace and Microsoft 365 organization connections, newest first. Pass `profileId` to list one profile; omit it to list every profile the API key can access (a profile-restricted key or team member only sees its own profiles).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConnectAPIListOrgConnectionsRequest
@@ -10257,11 +10258,10 @@ func (a *ConnectAPIService) ListOrgConnectionsExecute(r ConnectAPIListOrgConnect
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.profileId == nil {
-		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
