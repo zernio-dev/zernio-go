@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.612.2
+API version: 1.613.0
 Contact: support@zernio.com
 */
 
@@ -21,12 +21,12 @@ var _ MappedNullable = &GetEventsOverview200Response{}
 // GetEventsOverview200Response struct for GetEventsOverview200Response
 type GetEventsOverview200Response struct {
 	Today *GetEventsOverview200ResponseToday `json:"today,omitempty"`
-	// One entry per forwarding rule of the profile.
+	// One entry per forwarding rule of the profiles covered.
 	Platforms []GetEventsOverview200ResponsePlatformsInner `json:"platforms,omitempty"`
 	// Each source that stored an event in the last 30 days, most recent first.
 	Sources []GetEventsOverview200ResponseSourcesInner `json:"sources,omitempty"`
 	Website *GetEventsOverview200ResponseWebsite       `json:"website,omitempty"`
-	// Each tracking site of the profile with its activity. Hit counts are approximate distinct counts without bots.
+	// Each tracking site of the profiles covered, with its activity. Hit counts are approximate distinct counts without bots.
 	Sites []GetEventsOverview200ResponseSitesInner `json:"sites,omitempty"`
 }
 

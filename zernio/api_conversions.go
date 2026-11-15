@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.612.2
+API version: 1.613.0
 Contact: support@zernio.com
 */
 
@@ -3209,6 +3209,7 @@ type ConversionsAPIGetEventsOverviewRequest struct {
 	profileId  *string
 }
 
+// The profile to read. Omit to cover every profile you can access, summed across them.
 func (r ConversionsAPIGetEventsOverviewRequest) ProfileId(profileId string) ConversionsAPIGetEventsOverviewRequest {
 	r.profileId = &profileId
 	return r
@@ -3223,7 +3224,8 @@ GetEventsOverview Get today's tracking overview
 
 How a profile's conversion tracking is doing today (UTC day): events stored, how many reached the ad platforms,
 each forwarding rule's destination, each event source and, when the profile has a tracking site, the site's funnel.
-Requires the Ads add-on.
+
+Without `profileId` it covers every profile you can access, summed across them. Requires the Ads add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConversionsAPIGetEventsOverviewRequest
@@ -3256,11 +3258,10 @@ func (a *ConversionsAPIService) GetEventsOverviewExecute(r ConversionsAPIGetEven
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.profileId == nil {
-		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -4869,6 +4870,7 @@ type ConversionsAPIListEventsRequest struct {
 	cursor         *string
 }
 
+// The profile to list. Omit to cover every profile you can access.
 func (r ConversionsAPIListEventsRequest) ProfileId(profileId string) ConversionsAPIListEventsRequest {
 	r.profileId = &profileId
 	return r
@@ -4928,8 +4930,10 @@ func (r ConversionsAPIListEventsRequest) Execute() (*ListEvents200Response, *htt
 /*
 ListEvents List stored events
 
-Lists the conversion events stored for a profile by `POST /v1/events`, newest first. Personal data is never
-returned: `hasEmail`, `hasPhone` and `hasExternalId` only say whether the event carried that identifier.
+Lists the conversion events stored by `POST /v1/events`, newest first: for one profile, or for every profile you can
+access when `profileId` is omitted.
+
+Personal data is never returned: `hasEmail`, `hasPhone` and `hasExternalId` only say whether the event carried that identifier.
 Events sent with `testCode` are not stored, so they never appear here.
 
 Paginate with `cursor`: pass the `nextCursor` of the previous page until it comes back `null`.
@@ -4965,11 +4969,10 @@ func (a *ConversionsAPIService) ListEventsExecute(r ConversionsAPIListEventsRequ
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.profileId == nil {
-		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
 	} else {

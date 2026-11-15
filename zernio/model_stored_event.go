@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.612.2
+API version: 1.613.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &StoredEvent{}
 // StoredEvent struct for StoredEvent
 type StoredEvent struct {
 	EventId *string `json:"eventId,omitempty"`
+	// The profile the event was stored under.
+	ProfileId *string `json:"profileId,omitempty"`
 	// Where the event came from: `api`, `relay`, `web`, `shopify`, `woocommerce`, `hubspot`, `meta_leads`, `google_leads`, `linkedin_leads` or `tiktok_leads`.
 	Source       *string         `json:"source,omitempty"`
 	EventName    *string         `json:"eventName,omitempty"`
@@ -91,6 +93,38 @@ func (o *StoredEvent) HasEventId() bool {
 // SetEventId gets a reference to the given string and assigns it to the EventId field.
 func (o *StoredEvent) SetEventId(v string) {
 	o.EventId = &v
+}
+
+// GetProfileId returns the ProfileId field value if set, zero value otherwise.
+func (o *StoredEvent) GetProfileId() string {
+	if o == nil || IsNil(o.ProfileId) {
+		var ret string
+		return ret
+	}
+	return *o.ProfileId
+}
+
+// GetProfileIdOk returns a tuple with the ProfileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StoredEvent) GetProfileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ProfileId) {
+		return nil, false
+	}
+	return o.ProfileId, true
+}
+
+// HasProfileId returns a boolean if a field has been set.
+func (o *StoredEvent) HasProfileId() bool {
+	if o != nil && !IsNil(o.ProfileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileId gets a reference to the given string and assigns it to the ProfileId field.
+func (o *StoredEvent) SetProfileId(v string) {
+	o.ProfileId = &v
 }
 
 // GetSource returns the Source field value if set, zero value otherwise.
@@ -672,6 +706,9 @@ func (o StoredEvent) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.EventId) {
 		toSerialize["eventId"] = o.EventId
+	}
+	if !IsNil(o.ProfileId) {
+		toSerialize["profileId"] = o.ProfileId
 	}
 	if !IsNil(o.Source) {
 		toSerialize["source"] = o.Source

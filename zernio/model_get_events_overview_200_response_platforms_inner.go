@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.612.2
+API version: 1.613.0
 Contact: support@zernio.com
 */
 
@@ -21,6 +21,8 @@ var _ MappedNullable = &GetEventsOverview200ResponsePlatformsInner{}
 
 // GetEventsOverview200ResponsePlatformsInner struct for GetEventsOverview200ResponsePlatformsInner
 type GetEventsOverview200ResponsePlatformsInner struct {
+	// The profile the forwarding rule belongs to.
+	ProfileId *string `json:"profileId,omitempty"`
 	AccountId *string `json:"accountId,omitempty"`
 	// Ad platform, such as `metaads` or `googleads`.
 	Platform    *string `json:"platform,omitempty"`
@@ -58,6 +60,38 @@ func NewGetEventsOverview200ResponsePlatformsInner() *GetEventsOverview200Respon
 func NewGetEventsOverview200ResponsePlatformsInnerWithDefaults() *GetEventsOverview200ResponsePlatformsInner {
 	this := GetEventsOverview200ResponsePlatformsInner{}
 	return &this
+}
+
+// GetProfileId returns the ProfileId field value if set, zero value otherwise.
+func (o *GetEventsOverview200ResponsePlatformsInner) GetProfileId() string {
+	if o == nil || IsNil(o.ProfileId) {
+		var ret string
+		return ret
+	}
+	return *o.ProfileId
+}
+
+// GetProfileIdOk returns a tuple with the ProfileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverview200ResponsePlatformsInner) GetProfileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ProfileId) {
+		return nil, false
+	}
+	return o.ProfileId, true
+}
+
+// HasProfileId returns a boolean if a field has been set.
+func (o *GetEventsOverview200ResponsePlatformsInner) HasProfileId() bool {
+	if o != nil && !IsNil(o.ProfileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileId gets a reference to the given string and assigns it to the ProfileId field.
+func (o *GetEventsOverview200ResponsePlatformsInner) SetProfileId(v string) {
+	o.ProfileId = &v
 }
 
 // GetAccountId returns the AccountId field value if set, zero value otherwise.
@@ -466,6 +500,9 @@ func (o GetEventsOverview200ResponsePlatformsInner) MarshalJSON() ([]byte, error
 
 func (o GetEventsOverview200ResponsePlatformsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.ProfileId) {
+		toSerialize["profileId"] = o.ProfileId
+	}
 	if !IsNil(o.AccountId) {
 		toSerialize["accountId"] = o.AccountId
 	}
