@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.622.0
+API version: 1.623.0
 Contact: support@zernio.com
 */
 
@@ -21,9 +21,15 @@ var _ MappedNullable = &GetAccountHealth200ResponseSendCap{}
 
 // GetAccountHealth200ResponseSendCap Google and Microsoft only: today's outbound mail allowance for the mailbox.
 type GetAccountHealth200ResponseSendCap struct {
-	Limit    *int32     `json:"limit,omitempty"`
-	Used     *int32     `json:"used,omitempty"`
-	ResetsAt *time.Time `json:"resetsAt,omitempty"`
+	// Today's cap: the base cap, doubled after 14 days of sending with no spam signal.
+	Limit *int32 `json:"limit,omitempty"`
+	// The cap before doubling.
+	BaseLimit *int32 `json:"baseLimit,omitempty"`
+	Doubled   *bool  `json:"doubled,omitempty"`
+	// When the cap doubles if the mailbox sends every day from now on and raises no spam signal. Null once doubled, with a manual limit, and on IMAP.
+	DoublesAt NullableTime `json:"doublesAt,omitempty"`
+	Used      *int32       `json:"used,omitempty"`
+	ResetsAt  *time.Time   `json:"resetsAt,omitempty"`
 }
 
 // NewGetAccountHealth200ResponseSendCap instantiates a new GetAccountHealth200ResponseSendCap object
@@ -73,6 +79,113 @@ func (o *GetAccountHealth200ResponseSendCap) HasLimit() bool {
 // SetLimit gets a reference to the given int32 and assigns it to the Limit field.
 func (o *GetAccountHealth200ResponseSendCap) SetLimit(v int32) {
 	o.Limit = &v
+}
+
+// GetBaseLimit returns the BaseLimit field value if set, zero value otherwise.
+func (o *GetAccountHealth200ResponseSendCap) GetBaseLimit() int32 {
+	if o == nil || IsNil(o.BaseLimit) {
+		var ret int32
+		return ret
+	}
+	return *o.BaseLimit
+}
+
+// GetBaseLimitOk returns a tuple with the BaseLimit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200ResponseSendCap) GetBaseLimitOk() (*int32, bool) {
+	if o == nil || IsNil(o.BaseLimit) {
+		return nil, false
+	}
+	return o.BaseLimit, true
+}
+
+// HasBaseLimit returns a boolean if a field has been set.
+func (o *GetAccountHealth200ResponseSendCap) HasBaseLimit() bool {
+	if o != nil && !IsNil(o.BaseLimit) {
+		return true
+	}
+
+	return false
+}
+
+// SetBaseLimit gets a reference to the given int32 and assigns it to the BaseLimit field.
+func (o *GetAccountHealth200ResponseSendCap) SetBaseLimit(v int32) {
+	o.BaseLimit = &v
+}
+
+// GetDoubled returns the Doubled field value if set, zero value otherwise.
+func (o *GetAccountHealth200ResponseSendCap) GetDoubled() bool {
+	if o == nil || IsNil(o.Doubled) {
+		var ret bool
+		return ret
+	}
+	return *o.Doubled
+}
+
+// GetDoubledOk returns a tuple with the Doubled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200ResponseSendCap) GetDoubledOk() (*bool, bool) {
+	if o == nil || IsNil(o.Doubled) {
+		return nil, false
+	}
+	return o.Doubled, true
+}
+
+// HasDoubled returns a boolean if a field has been set.
+func (o *GetAccountHealth200ResponseSendCap) HasDoubled() bool {
+	if o != nil && !IsNil(o.Doubled) {
+		return true
+	}
+
+	return false
+}
+
+// SetDoubled gets a reference to the given bool and assigns it to the Doubled field.
+func (o *GetAccountHealth200ResponseSendCap) SetDoubled(v bool) {
+	o.Doubled = &v
+}
+
+// GetDoublesAt returns the DoublesAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAccountHealth200ResponseSendCap) GetDoublesAt() time.Time {
+	if o == nil || IsNil(o.DoublesAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.DoublesAt.Get()
+}
+
+// GetDoublesAtOk returns a tuple with the DoublesAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAccountHealth200ResponseSendCap) GetDoublesAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DoublesAt.Get(), o.DoublesAt.IsSet()
+}
+
+// HasDoublesAt returns a boolean if a field has been set.
+func (o *GetAccountHealth200ResponseSendCap) HasDoublesAt() bool {
+	if o != nil && o.DoublesAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDoublesAt gets a reference to the given NullableTime and assigns it to the DoublesAt field.
+func (o *GetAccountHealth200ResponseSendCap) SetDoublesAt(v time.Time) {
+	o.DoublesAt.Set(&v)
+}
+
+// SetDoublesAtNil sets the value for DoublesAt to be an explicit nil
+func (o *GetAccountHealth200ResponseSendCap) SetDoublesAtNil() {
+	o.DoublesAt.Set(nil)
+}
+
+// UnsetDoublesAt ensures that no value is present for DoublesAt, not even an explicit nil
+func (o *GetAccountHealth200ResponseSendCap) UnsetDoublesAt() {
+	o.DoublesAt.Unset()
 }
 
 // GetUsed returns the Used field value if set, zero value otherwise.
@@ -151,6 +264,15 @@ func (o GetAccountHealth200ResponseSendCap) ToMap() (map[string]interface{}, err
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Limit) {
 		toSerialize["limit"] = o.Limit
+	}
+	if !IsNil(o.BaseLimit) {
+		toSerialize["baseLimit"] = o.BaseLimit
+	}
+	if !IsNil(o.Doubled) {
+		toSerialize["doubled"] = o.Doubled
+	}
+	if o.DoublesAt.IsSet() {
+		toSerialize["doublesAt"] = o.DoublesAt.Get()
 	}
 	if !IsNil(o.Used) {
 		toSerialize["used"] = o.Used
