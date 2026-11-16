@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.629.0
+API version: 1.630.0
 Contact: support@zernio.com
 */
 
@@ -2180,6 +2180,8 @@ type VoiceAPIListVoiceCallsRequest struct {
 	number     *string
 	before     *time.Time
 	limit      *int32
+	profileId  *string
+	externalId *string
 }
 
 func (r VoiceAPIListVoiceCallsRequest) Status(status string) VoiceAPIListVoiceCallsRequest {
@@ -2208,6 +2210,18 @@ func (r VoiceAPIListVoiceCallsRequest) Limit(limit int32) VoiceAPIListVoiceCalls
 	return r
 }
 
+// Only calls of this profile. Mutually exclusive with &#x60;externalId&#x60;. 404 when the profile is not in your team or outside a scoped key&#39;s profiles.
+func (r VoiceAPIListVoiceCallsRequest) ProfileId(profileId string) VoiceAPIListVoiceCallsRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Same as &#x60;profileId&#x60;, naming the profile by the &#x60;externalId&#x60; you set on it. 404 when none of your visible profiles carries it; 400 when two of them do.
+func (r VoiceAPIListVoiceCallsRequest) ExternalId(externalId string) VoiceAPIListVoiceCallsRequest {
+	r.externalId = &externalId
+	return r
+}
+
 func (r VoiceAPIListVoiceCallsRequest) Execute() (*ListVoiceCalls200Response, *http.Response, error) {
 	return r.ApiService.ListVoiceCallsExecute(r)
 }
@@ -2219,6 +2233,13 @@ Your PSTN voice calls (inbound + outbound), newest first. Cursor
 pagination: pass the returned `nextCursor` as `before` for the next
 page. For a history that also includes WhatsApp calls, use
 `GET /v1/calls`.
+
+`profileId` or `externalId` lists one profile's calls: a call belongs
+to the profile of the account (number) it was placed on.
+
+A profile-scoped API key or member only ever lists its own profiles'
+calls, with or without a filter (since 1.630.0). Full-access keys and
+sessions list the whole team's.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return VoiceAPIListVoiceCallsRequest
@@ -2271,6 +2292,12 @@ func (a *VoiceAPIService) ListVoiceCallsExecute(r VoiceAPIListVoiceCallsRequest)
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
 		r.limit = &defaultValue
 	}
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	if r.externalId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "externalId", r.externalId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -2319,6 +2346,7 @@ func (a *VoiceAPIService) ListVoiceCallsExecute(r VoiceAPIListVoiceCallsRequest)
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

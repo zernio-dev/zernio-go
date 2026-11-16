@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.629.0
+API version: 1.630.0
 Contact: support@zernio.com
 */
 
@@ -17,17 +17,10 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// UsageMeteringScope - Present with `profileId` / `accountId`: echoes the group the payload was projected onto.
+// UsageMeteringScope - Present with `profileId` / `externalId` / `accountId`: echoes the group the payload was projected onto. A profile scope carries both ids.
 type UsageMeteringScope struct {
-	MoveAccountToProfileRequest *MoveAccountToProfileRequest
-	SendTypingIndicatorRequest  *SendTypingIndicatorRequest
-}
-
-// MoveAccountToProfileRequestAsUsageMeteringScope is a convenience function that returns MoveAccountToProfileRequest wrapped in UsageMeteringScope
-func MoveAccountToProfileRequestAsUsageMeteringScope(v *MoveAccountToProfileRequest) UsageMeteringScope {
-	return UsageMeteringScope{
-		MoveAccountToProfileRequest: v,
-	}
+	SendTypingIndicatorRequest *SendTypingIndicatorRequest
+	UsageProfileRef            *UsageProfileRef
 }
 
 // SendTypingIndicatorRequestAsUsageMeteringScope is a convenience function that returns SendTypingIndicatorRequest wrapped in UsageMeteringScope
@@ -37,27 +30,17 @@ func SendTypingIndicatorRequestAsUsageMeteringScope(v *SendTypingIndicatorReques
 	}
 }
 
+// UsageProfileRefAsUsageMeteringScope is a convenience function that returns UsageProfileRef wrapped in UsageMeteringScope
+func UsageProfileRefAsUsageMeteringScope(v *UsageProfileRef) UsageMeteringScope {
+	return UsageMeteringScope{
+		UsageProfileRef: v,
+	}
+}
+
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *UsageMeteringScope) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
-	// try to unmarshal data into MoveAccountToProfileRequest
-	err = newStrictDecoder(data).Decode(&dst.MoveAccountToProfileRequest)
-	if err == nil {
-		jsonMoveAccountToProfileRequest, _ := json.Marshal(dst.MoveAccountToProfileRequest)
-		if string(jsonMoveAccountToProfileRequest) == "{}" { // empty struct
-			dst.MoveAccountToProfileRequest = nil
-		} else {
-			if err = validator.Validate(dst.MoveAccountToProfileRequest); err != nil {
-				dst.MoveAccountToProfileRequest = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.MoveAccountToProfileRequest = nil
-	}
-
 	// try to unmarshal data into SendTypingIndicatorRequest
 	err = newStrictDecoder(data).Decode(&dst.SendTypingIndicatorRequest)
 	if err == nil {
@@ -75,10 +58,27 @@ func (dst *UsageMeteringScope) UnmarshalJSON(data []byte) error {
 		dst.SendTypingIndicatorRequest = nil
 	}
 
+	// try to unmarshal data into UsageProfileRef
+	err = newStrictDecoder(data).Decode(&dst.UsageProfileRef)
+	if err == nil {
+		jsonUsageProfileRef, _ := json.Marshal(dst.UsageProfileRef)
+		if string(jsonUsageProfileRef) == "{}" { // empty struct
+			dst.UsageProfileRef = nil
+		} else {
+			if err = validator.Validate(dst.UsageProfileRef); err != nil {
+				dst.UsageProfileRef = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.UsageProfileRef = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
-		dst.MoveAccountToProfileRequest = nil
 		dst.SendTypingIndicatorRequest = nil
+		dst.UsageProfileRef = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(UsageMeteringScope)")
 	} else if match == 1 {
@@ -90,12 +90,12 @@ func (dst *UsageMeteringScope) UnmarshalJSON(data []byte) error {
 
 // Marshal data from the first non-nil pointers in the struct to JSON
 func (src UsageMeteringScope) MarshalJSON() ([]byte, error) {
-	if src.MoveAccountToProfileRequest != nil {
-		return json.Marshal(&src.MoveAccountToProfileRequest)
-	}
-
 	if src.SendTypingIndicatorRequest != nil {
 		return json.Marshal(&src.SendTypingIndicatorRequest)
+	}
+
+	if src.UsageProfileRef != nil {
+		return json.Marshal(&src.UsageProfileRef)
 	}
 
 	return nil, nil // no data in oneOf schemas
@@ -106,12 +106,12 @@ func (obj *UsageMeteringScope) GetActualInstance() interface{} {
 	if obj == nil {
 		return nil
 	}
-	if obj.MoveAccountToProfileRequest != nil {
-		return obj.MoveAccountToProfileRequest
-	}
-
 	if obj.SendTypingIndicatorRequest != nil {
 		return obj.SendTypingIndicatorRequest
+	}
+
+	if obj.UsageProfileRef != nil {
+		return obj.UsageProfileRef
 	}
 
 	// all schemas are nil
@@ -120,12 +120,12 @@ func (obj *UsageMeteringScope) GetActualInstance() interface{} {
 
 // Get the actual instance value
 func (obj UsageMeteringScope) GetActualInstanceValue() interface{} {
-	if obj.MoveAccountToProfileRequest != nil {
-		return *obj.MoveAccountToProfileRequest
-	}
-
 	if obj.SendTypingIndicatorRequest != nil {
 		return *obj.SendTypingIndicatorRequest
+	}
+
+	if obj.UsageProfileRef != nil {
+		return *obj.UsageProfileRef
 	}
 
 	// all schemas are nil

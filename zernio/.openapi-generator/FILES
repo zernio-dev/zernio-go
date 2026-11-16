@@ -3295,7 +3295,10 @@ model_usage_metering_period.go
 model_usage_metering_scope.go
 model_usage_metering_tax.go
 model_usage_metering_totals.go
+model_usage_profile_ref.go
 model_usage_stats.go
+model_usage_stats_profiles_inner.go
+model_usage_stats_profiles_inner_all_of_usage.go
 model_usage_stats_spend.go
 model_usage_stats_usage.go
 model_usage_stats_usage_x_api_calls.go

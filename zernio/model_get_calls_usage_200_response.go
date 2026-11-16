@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.629.0
+API version: 1.630.0
 Contact: support@zernio.com
 */
 
@@ -21,9 +21,11 @@ var _ MappedNullable = &GetCallsUsage200Response{}
 
 // GetCallsUsage200Response struct for GetCallsUsage200Response
 type GetCallsUsage200Response struct {
-	Since   *time.Time                      `json:"since,omitempty"`
-	Until   *time.Time                      `json:"until,omitempty"`
-	GroupBy NullableString                  `json:"groupBy,omitempty"`
+	Since   *time.Time     `json:"since,omitempty"`
+	Until   *time.Time     `json:"until,omitempty"`
+	GroupBy NullableString `json:"groupBy,omitempty"`
+	// Present with `profileId` / `externalId`: the profile the figures are scoped to.
+	Profile *UsageProfileRef                `json:"profile,omitempty"`
 	Totals  *GetCallsUsage200ResponseTotals `json:"totals,omitempty"`
 	// Present (possibly empty) when `groupBy` is set.
 	Groups []GetCallsUsage200ResponseGroupsInner `json:"groups,omitempty"`
@@ -153,6 +155,38 @@ func (o *GetCallsUsage200Response) UnsetGroupBy() {
 	o.GroupBy.Unset()
 }
 
+// GetProfile returns the Profile field value if set, zero value otherwise.
+func (o *GetCallsUsage200Response) GetProfile() UsageProfileRef {
+	if o == nil || IsNil(o.Profile) {
+		var ret UsageProfileRef
+		return ret
+	}
+	return *o.Profile
+}
+
+// GetProfileOk returns a tuple with the Profile field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCallsUsage200Response) GetProfileOk() (*UsageProfileRef, bool) {
+	if o == nil || IsNil(o.Profile) {
+		return nil, false
+	}
+	return o.Profile, true
+}
+
+// HasProfile returns a boolean if a field has been set.
+func (o *GetCallsUsage200Response) HasProfile() bool {
+	if o != nil && !IsNil(o.Profile) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfile gets a reference to the given UsageProfileRef and assigns it to the Profile field.
+func (o *GetCallsUsage200Response) SetProfile(v UsageProfileRef) {
+	o.Profile = &v
+}
+
 // GetTotals returns the Totals field value if set, zero value otherwise.
 func (o *GetCallsUsage200Response) GetTotals() GetCallsUsage200ResponseTotals {
 	if o == nil || IsNil(o.Totals) {
@@ -235,6 +269,9 @@ func (o GetCallsUsage200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if o.GroupBy.IsSet() {
 		toSerialize["groupBy"] = o.GroupBy.Get()
+	}
+	if !IsNil(o.Profile) {
+		toSerialize["profile"] = o.Profile
 	}
 	if !IsNil(o.Totals) {
 		toSerialize["totals"] = o.Totals

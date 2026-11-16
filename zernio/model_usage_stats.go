@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.629.0
+API version: 1.630.0
 Contact: support@zernio.com
 */
 
@@ -38,7 +38,10 @@ type UsageStats struct {
 	AutoUpgradeEnabled *bool                        `json:"autoUpgradeEnabled,omitempty"`
 	Limits             *BillingSnapshotLegacyLimits `json:"limits,omitempty"`
 	Usage              *UsageStatsUsage             `json:"usage,omitempty"`
-	Spend              *UsageStatsSpend             `json:"spend,omitempty"`
+	// Profile-scoped API keys and members only, without a filter: one block per profile the caller can see, shaped like `profile`.
+	Profiles []UsageStatsProfilesInner `json:"profiles,omitempty"`
+	Profile  *UsageStatsProfilesInner  `json:"profile,omitempty"`
+	Spend    *UsageStatsSpend          `json:"spend,omitempty"`
 }
 
 // NewUsageStats instantiates a new UsageStats object
@@ -421,6 +424,70 @@ func (o *UsageStats) SetUsage(v UsageStatsUsage) {
 	o.Usage = &v
 }
 
+// GetProfiles returns the Profiles field value if set, zero value otherwise.
+func (o *UsageStats) GetProfiles() []UsageStatsProfilesInner {
+	if o == nil || IsNil(o.Profiles) {
+		var ret []UsageStatsProfilesInner
+		return ret
+	}
+	return o.Profiles
+}
+
+// GetProfilesOk returns a tuple with the Profiles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageStats) GetProfilesOk() ([]UsageStatsProfilesInner, bool) {
+	if o == nil || IsNil(o.Profiles) {
+		return nil, false
+	}
+	return o.Profiles, true
+}
+
+// HasProfiles returns a boolean if a field has been set.
+func (o *UsageStats) HasProfiles() bool {
+	if o != nil && !IsNil(o.Profiles) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfiles gets a reference to the given []UsageStatsProfilesInner and assigns it to the Profiles field.
+func (o *UsageStats) SetProfiles(v []UsageStatsProfilesInner) {
+	o.Profiles = v
+}
+
+// GetProfile returns the Profile field value if set, zero value otherwise.
+func (o *UsageStats) GetProfile() UsageStatsProfilesInner {
+	if o == nil || IsNil(o.Profile) {
+		var ret UsageStatsProfilesInner
+		return ret
+	}
+	return *o.Profile
+}
+
+// GetProfileOk returns a tuple with the Profile field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageStats) GetProfileOk() (*UsageStatsProfilesInner, bool) {
+	if o == nil || IsNil(o.Profile) {
+		return nil, false
+	}
+	return o.Profile, true
+}
+
+// HasProfile returns a boolean if a field has been set.
+func (o *UsageStats) HasProfile() bool {
+	if o != nil && !IsNil(o.Profile) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfile gets a reference to the given UsageStatsProfilesInner and assigns it to the Profile field.
+func (o *UsageStats) SetProfile(v UsageStatsProfilesInner) {
+	o.Profile = &v
+}
+
 // GetSpend returns the Spend field value if set, zero value otherwise.
 func (o *UsageStats) GetSpend() UsageStatsSpend {
 	if o == nil || IsNil(o.Spend) {
@@ -495,6 +562,12 @@ func (o UsageStats) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Usage) {
 		toSerialize["usage"] = o.Usage
+	}
+	if !IsNil(o.Profiles) {
+		toSerialize["profiles"] = o.Profiles
+	}
+	if !IsNil(o.Profile) {
+		toSerialize["profile"] = o.Profile
 	}
 	if !IsNil(o.Spend) {
 		toSerialize["spend"] = o.Spend

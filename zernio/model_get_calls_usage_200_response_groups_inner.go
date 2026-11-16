@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.629.0
+API version: 1.630.0
 Contact: support@zernio.com
 */
 
@@ -20,15 +20,19 @@ var _ MappedNullable = &GetCallsUsage200ResponseGroupsInner{}
 
 // GetCallsUsage200ResponseGroupsInner struct for GetCallsUsage200ResponseGroupsInner
 type GetCallsUsage200ResponseGroupsInner struct {
-	// The group key: a `YYYY-MM-DD` UTC day, one of your numbers, or a channel.
-	Key            *string  `json:"key,omitempty"`
-	Calls          *int32   `json:"calls,omitempty"`
-	Answered       *int32   `json:"answered,omitempty"`
-	Minutes        *float32 `json:"minutes,omitempty"`
-	BillableUSD    *float32 `json:"billableUSD,omitempty"`
-	MetaUSD        *float32 `json:"metaUSD,omitempty"`
-	BrandedCalls   *int32   `json:"brandedCalls,omitempty"`
-	BrandedCallUSD *float32 `json:"brandedCallUSD,omitempty"`
+	// The group key: a `YYYY-MM-DD` UTC day, one of your numbers, a channel, or a profile id.
+	Key *string `json:"key,omitempty"`
+	// With `groupBy=profile` only: the profile id (same as `key`).
+	ProfileId *string `json:"profileId,omitempty"`
+	// With `groupBy=profile` only: the externalId set on the profile, null when it has none.
+	ExternalId     NullableString `json:"externalId,omitempty"`
+	Calls          *int32         `json:"calls,omitempty"`
+	Answered       *int32         `json:"answered,omitempty"`
+	Minutes        *float32       `json:"minutes,omitempty"`
+	BillableUSD    *float32       `json:"billableUSD,omitempty"`
+	MetaUSD        *float32       `json:"metaUSD,omitempty"`
+	BrandedCalls   *int32         `json:"brandedCalls,omitempty"`
+	BrandedCallUSD *float32       `json:"brandedCallUSD,omitempty"`
 }
 
 // NewGetCallsUsage200ResponseGroupsInner instantiates a new GetCallsUsage200ResponseGroupsInner object
@@ -78,6 +82,81 @@ func (o *GetCallsUsage200ResponseGroupsInner) HasKey() bool {
 // SetKey gets a reference to the given string and assigns it to the Key field.
 func (o *GetCallsUsage200ResponseGroupsInner) SetKey(v string) {
 	o.Key = &v
+}
+
+// GetProfileId returns the ProfileId field value if set, zero value otherwise.
+func (o *GetCallsUsage200ResponseGroupsInner) GetProfileId() string {
+	if o == nil || IsNil(o.ProfileId) {
+		var ret string
+		return ret
+	}
+	return *o.ProfileId
+}
+
+// GetProfileIdOk returns a tuple with the ProfileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCallsUsage200ResponseGroupsInner) GetProfileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ProfileId) {
+		return nil, false
+	}
+	return o.ProfileId, true
+}
+
+// HasProfileId returns a boolean if a field has been set.
+func (o *GetCallsUsage200ResponseGroupsInner) HasProfileId() bool {
+	if o != nil && !IsNil(o.ProfileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileId gets a reference to the given string and assigns it to the ProfileId field.
+func (o *GetCallsUsage200ResponseGroupsInner) SetProfileId(v string) {
+	o.ProfileId = &v
+}
+
+// GetExternalId returns the ExternalId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetCallsUsage200ResponseGroupsInner) GetExternalId() string {
+	if o == nil || IsNil(o.ExternalId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ExternalId.Get()
+}
+
+// GetExternalIdOk returns a tuple with the ExternalId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetCallsUsage200ResponseGroupsInner) GetExternalIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ExternalId.Get(), o.ExternalId.IsSet()
+}
+
+// HasExternalId returns a boolean if a field has been set.
+func (o *GetCallsUsage200ResponseGroupsInner) HasExternalId() bool {
+	if o != nil && o.ExternalId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetExternalId gets a reference to the given NullableString and assigns it to the ExternalId field.
+func (o *GetCallsUsage200ResponseGroupsInner) SetExternalId(v string) {
+	o.ExternalId.Set(&v)
+}
+
+// SetExternalIdNil sets the value for ExternalId to be an explicit nil
+func (o *GetCallsUsage200ResponseGroupsInner) SetExternalIdNil() {
+	o.ExternalId.Set(nil)
+}
+
+// UnsetExternalId ensures that no value is present for ExternalId, not even an explicit nil
+func (o *GetCallsUsage200ResponseGroupsInner) UnsetExternalId() {
+	o.ExternalId.Unset()
 }
 
 // GetCalls returns the Calls field value if set, zero value otherwise.
@@ -316,6 +395,12 @@ func (o GetCallsUsage200ResponseGroupsInner) ToMap() (map[string]interface{}, er
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Key) {
 		toSerialize["key"] = o.Key
+	}
+	if !IsNil(o.ProfileId) {
+		toSerialize["profileId"] = o.ProfileId
+	}
+	if o.ExternalId.IsSet() {
+		toSerialize["externalId"] = o.ExternalId.Get()
 	}
 	if !IsNil(o.Calls) {
 		toSerialize["calls"] = o.Calls

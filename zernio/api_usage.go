@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.629.0
+API version: 1.630.0
 Contact: support@zernio.com
 */
 
@@ -160,6 +160,8 @@ type UsageAPIGetCallsUsageRequest struct {
 	channel    *string
 	number     *string
 	groupBy    *string
+	profileId  *string
+	externalId *string
 }
 
 // Start of the window (inclusive). Default 30 days before &#x60;until&#x60;.
@@ -190,6 +192,18 @@ func (r UsageAPIGetCallsUsageRequest) GroupBy(groupBy string) UsageAPIGetCallsUs
 	return r
 }
 
+// Scope to the calls of this profile. Mutually exclusive with &#x60;externalId&#x60;. 404 when the profile is not in your team or outside a scoped key&#39;s profiles.
+func (r UsageAPIGetCallsUsageRequest) ProfileId(profileId string) UsageAPIGetCallsUsageRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Same as &#x60;profileId&#x60;, naming the profile by the &#x60;externalId&#x60; you set on it. 404 when none of your visible profiles carries it; 400 when two of them do.
+func (r UsageAPIGetCallsUsageRequest) ExternalId(externalId string) UsageAPIGetCallsUsageRequest {
+	r.externalId = &externalId
+	return r
+}
+
 func (r UsageAPIGetCallsUsageRequest) Execute() (*GetCallsUsage200Response, *http.Response, error) {
 	return r.ApiService.GetCallsUsageExecute(r)
 }
@@ -207,8 +221,18 @@ agrees with the invoice: `billableUSD` is what Zernio bills;
 `metaUSD` is the WhatsApp per-minute charge Meta bills directly to
 your WABA (display only, never billed by Zernio).
 
-Optional `groupBy` returns a breakdown by UTC day, by your number, or
-by channel. Defaults to the last 30 days.
+Optional `groupBy` returns a breakdown by UTC day, by your number, by
+channel, or by profile. Defaults to the last 30 days.
+
+### Per profile
+
+A call belongs to the profile of the account (number) it was placed
+on.
+
+- `profileId` or `externalId` scopes every figure to one profile.
+- `groupBy=profile` returns one group per profile carrying its `profileId` and `externalId`.
+- Calls on numbers outside any of your profiles count in `totals` but in no group.
+- A profile-scoped API key or member only ever sees its own profiles' calls, with or without a filter (since 1.630.0), so `totals` and every group cover those profiles only. Full-access keys and sessions see the whole team.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return UsageAPIGetCallsUsageRequest
@@ -256,6 +280,12 @@ func (a *UsageAPIService) GetCallsUsageExecute(r UsageAPIGetCallsUsageRequest) (
 	}
 	if r.groupBy != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "groupBy", r.groupBy, "form", "")
+	}
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	if r.externalId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "externalId", r.externalId, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -305,6 +335,7 @@ func (a *UsageAPIService) GetCallsUsageExecute(r UsageAPIGetCallsUsageRequest) (
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -328,6 +359,8 @@ type UsageAPIGetSmsUsageRequest struct {
 	until      *time.Time
 	number     *string
 	groupBy    *string
+	profileId  *string
+	externalId *string
 }
 
 // Start of the window (inclusive). Default 30 days before &#x60;until&#x60;.
@@ -353,6 +386,18 @@ func (r UsageAPIGetSmsUsageRequest) GroupBy(groupBy string) UsageAPIGetSmsUsageR
 	return r
 }
 
+// Scope to the messages of this profile. Mutually exclusive with &#x60;externalId&#x60;. 404 when the profile is not in your team or outside a scoped key&#39;s profiles.
+func (r UsageAPIGetSmsUsageRequest) ProfileId(profileId string) UsageAPIGetSmsUsageRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Same as &#x60;profileId&#x60;, naming the profile by the &#x60;externalId&#x60; you set on it. 404 when none of your visible profiles carries it; 400 when two of them do.
+func (r UsageAPIGetSmsUsageRequest) ExternalId(externalId string) UsageAPIGetSmsUsageRequest {
+	r.externalId = &externalId
+	return r
+}
+
 func (r UsageAPIGetSmsUsageRequest) Execute() (*GetSmsUsage200Response, *http.Response, error) {
 	return r.ApiService.GetSmsUsageExecute(r)
 }
@@ -367,6 +412,15 @@ number. Defaults to the last 30 days.
 Volumes only, deliberately: SMS cost is carrier-rated asynchronously
 and billed to your invoice, so per-message cost is not available here.
 Calling usage (GET /v1/usage/calls) does include billable cost.
+
+### Per profile
+
+A message belongs to the profile of the SMS number it went through.
+
+- `profileId` or `externalId` scopes the counts to one profile. Combined with `number`, only that number's messages on that profile count.
+- `groupBy=profile` returns one group per profile carrying its `profileId` and `externalId`.
+- Alphanumeric sender IDs sit on no profile, so their messages count in `totals` but in no group.
+- A profile-scoped API key or member only ever sees its own profiles' messages, with or without a filter (since 1.630.0). Full-access keys and sessions see every number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return UsageAPIGetSmsUsageRequest
@@ -411,6 +465,12 @@ func (a *UsageAPIService) GetSmsUsageExecute(r UsageAPIGetSmsUsageRequest) (*Get
 	}
 	if r.groupBy != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "groupBy", r.groupBy, "form", "")
+	}
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	if r.externalId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "externalId", r.externalId, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -487,6 +547,7 @@ type UsageAPIGetUsageRequest struct {
 	granularity *string
 	groupBy     *string
 	profileId   *string
+	externalId  *string
 	accountId   *string
 }
 
@@ -526,13 +587,19 @@ func (r UsageAPIGetUsageRequest) GroupBy(groupBy string) UsageAPIGetUsageRequest
 	return r
 }
 
-// Metering mode (pair with &#x60;range&#x60;). Project the payload onto this profile&#39;s attributed share. Mutually exclusive with &#x60;accountId&#x60;, and &#x60;groupBy&#x60; (if given) must be &#x60;profile&#x60;; 404 when the profile is not in your team (or outside a scoped key&#39;s profiles).
+// Metering mode (pair with &#x60;range&#x60;). Project the payload onto this profile&#39;s attributed share. Mutually exclusive with &#x60;externalId&#x60; and &#x60;accountId&#x60;, and &#x60;groupBy&#x60; (if given) must be &#x60;profile&#x60;; 404 when the profile is not in your team (or outside a scoped key&#39;s profiles).
 func (r UsageAPIGetUsageRequest) ProfileId(profileId string) UsageAPIGetUsageRequest {
 	r.profileId = &profileId
 	return r
 }
 
-// Metering mode (pair with &#x60;range&#x60;). Project the payload onto this account&#39;s attributed share. Mutually exclusive with &#x60;profileId&#x60;, and &#x60;groupBy&#x60; (if given) must be &#x60;account&#x60;; 404 when the account is not visible to the caller.
+// Metering mode (pair with &#x60;range&#x60;). Same as &#x60;profileId&#x60;, naming the profile by the &#x60;externalId&#x60; you set on it. Ignored without metering params. 404 when none of your visible profiles carries it; 400 when two of them do (externalId is unique per user, not per team), then filter by &#x60;profileId&#x60;.
+func (r UsageAPIGetUsageRequest) ExternalId(externalId string) UsageAPIGetUsageRequest {
+	r.externalId = &externalId
+	return r
+}
+
+// Metering mode (pair with &#x60;range&#x60;). Project the payload onto this account&#39;s attributed share. Mutually exclusive with &#x60;profileId&#x60; and &#x60;externalId&#x60;, and &#x60;groupBy&#x60; (if given) must be &#x60;account&#x60;; 404 when the account is not visible to the caller.
 func (r UsageAPIGetUsageRequest) AccountId(accountId string) UsageAPIGetUsageRequest {
 	r.accountId = &accountId
 	return r
@@ -568,8 +635,13 @@ Usage-based accounts only: legacy Stripe accounts get `{ "supported": false, "da
 - `peaks`, `callUsage` and `tax` are then `null` (team-level facts).
 - Projected `days` spread the group's period share over each day (usage is attributed per period, not per day).
 - `profileId` / `accountId` on their own do not select metering mode: pair them with `range`.
+- `externalId` names the profile by the id you set on it (`POST /v1/profiles`), so you can bill a tenant without storing our profile id.
+
+With `groupBy=profile`, each group also carries `profileId` and `externalId`.
 
 Profile-scoped API keys and members only see their profiles' groups (`attribution.restricted: true`, with `totals` summing the visible groups). Credits, 10DLC fees and Verify are always unattributed.
+
+Since 1.630.0 a profile-scoped key or member never gets the team payload in metering mode: without `groupBy` or a filter, `days`, `totals` and `lineItems` are projected onto its visible profiles, `peaks`, `callUsage` and `tax` are `null`, and no `attribution` is returned. Full-access keys and sessions keep the team payload.
 
 ### Related endpoints
 
@@ -637,6 +709,9 @@ func (a *UsageAPIService) GetUsageExecute(r UsageAPIGetUsageRequest) (*GetUsage2
 	if r.profileId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
 	}
+	if r.externalId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "externalId", r.externalId, "form", "")
+	}
 	if r.accountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	}
@@ -690,17 +765,6 @@ func (a *UsageAPIService) GetUsageExecute(r UsageAPIGetUsageRequest) (*GetUsage2
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v GetYouTubeDailyViews400Response
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
 		if localVarHTTPResponse.StatusCode == 429 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -730,11 +794,25 @@ type UsageAPIGetUsageStatsRequest struct {
 	ctx        context.Context
 	ApiService *UsageAPIService
 	reconcile  *bool
+	profileId  *string
+	externalId *string
 }
 
 // For Stripe subscription users, &#x60;true&#x60; forces a subscription reconciliation pass even when cached plan data looks complete. Omit the parameter, or pass &#x60;false&#x60;, to use the default first-time-only reconciliation behavior. Invalid boolean values are rejected.
 func (r UsageAPIGetUsageStatsRequest) Reconcile(reconcile bool) UsageAPIGetUsageStatsRequest {
 	r.reconcile = &reconcile
+	return r
+}
+
+// Add the &#x60;profile&#x60; block for this profile. Mutually exclusive with &#x60;externalId&#x60;. 404 when the profile is not in your team or outside a scoped key&#39;s profiles.
+func (r UsageAPIGetUsageStatsRequest) ProfileId(profileId string) UsageAPIGetUsageStatsRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Same as &#x60;profileId&#x60;, naming the profile by the &#x60;externalId&#x60; you set on it. 404 when none of your visible profiles carries it; 400 when two of them do.
+func (r UsageAPIGetUsageStatsRequest) ExternalId(externalId string) UsageAPIGetUsageStatsRequest {
+	r.externalId = &externalId
 	return r
 }
 
@@ -762,6 +840,14 @@ The response shape depends on the account's `billingSystem`:
 - Usage-based billing users: `usage.connectedAccounts`, `usage.xApiCallsByOperation` (per-operation X API call counts; resolve keys via `GET /v1/billing/x-pricing`), plus a `spend` block with `currentPeriodCents`, `xSpendCents`, and `xSpendLimitCents`.
 
 The legacy `usage.xApiCalls` 3-tier aggregate is still emitted for back-compat. It excludes the $0.200 URL tier and any future tiers, so new clients should consume `xApiCallsByOperation` only.
+
+### Per profile
+
+`profileId` or `externalId` adds a `profile` block with the counters that are meaningful per profile (`usage.connectedAccounts`). Everything else (plan, limits, uploads, X usage, spend, payment state) stays team-level. These filters work on this path only: a bare `GET /v1/usage` ignores them.
+
+Since 1.630.0 a profile-scoped API key or member gets a `profiles` array with one block per profile it can see (or the single `profile` block when it filters), and `usage.connectedAccounts` / `usage.profiles` count only those profiles.
+
+Plan, billing and payment fields are unchanged. Full-access keys and sessions keep the team counts and get no `profiles` array.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return UsageAPIGetUsageStatsRequest
@@ -801,6 +887,12 @@ func (a *UsageAPIService) GetUsageStatsExecute(r UsageAPIGetUsageStatsRequest) (
 
 	if r.reconcile != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "reconcile", r.reconcile, "form", "")
+	}
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	if r.externalId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "externalId", r.externalId, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -843,17 +935,6 @@ func (a *UsageAPIService) GetUsageStatsExecute(r UsageAPIGetUsageStatsRequest) (
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
