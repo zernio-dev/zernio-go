@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.623.0
+API version: 1.624.0
 Contact: support@zernio.com
 */
 
@@ -47,8 +47,10 @@ type ConversionEventUser struct {
 	// Meta advanced matching (ge). 'f' or 'm'; hashed server-side. Meta only.
 	Gender *string `json:"gender,omitempty"`
 	// Meta lead ID from a Lead Ad submission, as a string. Required for Conversion Leads CRM events: send it with `actionSource: 'crm'` and `platformData: { event_source: 'crm', lead_event_source: '<CRM name>' }`. Forwarded unhashed to Meta's `user_data.lead_id`. Meta only.
-	LeadId   *string                      `json:"leadId,omitempty"`
-	ClickIds *ConversionEventUserClickIds `json:"clickIds,omitempty"`
+	LeadId *string `json:"leadId,omitempty"`
+	// The Zernio tag's visitor id, from the `_zid` cookie the tag sets on your site. Zernio adds the click ids and browser ids of that visit that the event lacks, before storing and forwarding it.  Without it, Zernio finds the visit by the `email`, `phone` or `externalId` the tag saw. Ids you send always win. Never sent to a platform. Read only by `POST /v1/events`, for a profile with a tracking site.
+	VisitorId *string                      `json:"visitorId,omitempty"`
+	ClickIds  *ConversionEventUserClickIds `json:"clickIds,omitempty"`
 }
 
 // NewConversionEventUser instantiates a new ConversionEventUser object
@@ -516,6 +518,38 @@ func (o *ConversionEventUser) SetLeadId(v string) {
 	o.LeadId = &v
 }
 
+// GetVisitorId returns the VisitorId field value if set, zero value otherwise.
+func (o *ConversionEventUser) GetVisitorId() string {
+	if o == nil || IsNil(o.VisitorId) {
+		var ret string
+		return ret
+	}
+	return *o.VisitorId
+}
+
+// GetVisitorIdOk returns a tuple with the VisitorId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUser) GetVisitorIdOk() (*string, bool) {
+	if o == nil || IsNil(o.VisitorId) {
+		return nil, false
+	}
+	return o.VisitorId, true
+}
+
+// HasVisitorId returns a boolean if a field has been set.
+func (o *ConversionEventUser) HasVisitorId() bool {
+	if o != nil && !IsNil(o.VisitorId) {
+		return true
+	}
+
+	return false
+}
+
+// SetVisitorId gets a reference to the given string and assigns it to the VisitorId field.
+func (o *ConversionEventUser) SetVisitorId(v string) {
+	o.VisitorId = &v
+}
+
 // GetClickIds returns the ClickIds field value if set, zero value otherwise.
 func (o *ConversionEventUser) GetClickIds() ConversionEventUserClickIds {
 	if o == nil || IsNil(o.ClickIds) {
@@ -599,6 +633,9 @@ func (o ConversionEventUser) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.LeadId) {
 		toSerialize["leadId"] = o.LeadId
+	}
+	if !IsNil(o.VisitorId) {
+		toSerialize["visitorId"] = o.VisitorId
 	}
 	if !IsNil(o.ClickIds) {
 		toSerialize["clickIds"] = o.ClickIds
