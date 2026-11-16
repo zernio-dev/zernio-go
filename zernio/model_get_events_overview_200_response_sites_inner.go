@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.619.0
+API version: 1.620.0
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,8 @@ type GetEventsOverview200ResponseSitesInner struct {
 	// Hits today.
 	HitsToday *int32 `json:"hitsToday,omitempty"`
 	// The last day in the past 7 with a hit. `null` when none.
-	LastActiveOn NullableString `json:"lastActiveOn,omitempty"`
+	LastActiveOn NullableString                                `json:"lastActiveOn,omitempty"`
+	Totals       *GetEventsOverview200ResponseSitesInnerTotals `json:"totals,omitempty"`
 }
 
 // NewGetEventsOverview200ResponseSitesInner instantiates a new GetEventsOverview200ResponseSitesInner object
@@ -185,6 +186,38 @@ func (o *GetEventsOverview200ResponseSitesInner) UnsetLastActiveOn() {
 	o.LastActiveOn.Unset()
 }
 
+// GetTotals returns the Totals field value if set, zero value otherwise.
+func (o *GetEventsOverview200ResponseSitesInner) GetTotals() GetEventsOverview200ResponseSitesInnerTotals {
+	if o == nil || IsNil(o.Totals) {
+		var ret GetEventsOverview200ResponseSitesInnerTotals
+		return ret
+	}
+	return *o.Totals
+}
+
+// GetTotalsOk returns a tuple with the Totals field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverview200ResponseSitesInner) GetTotalsOk() (*GetEventsOverview200ResponseSitesInnerTotals, bool) {
+	if o == nil || IsNil(o.Totals) {
+		return nil, false
+	}
+	return o.Totals, true
+}
+
+// HasTotals returns a boolean if a field has been set.
+func (o *GetEventsOverview200ResponseSitesInner) HasTotals() bool {
+	if o != nil && !IsNil(o.Totals) {
+		return true
+	}
+
+	return false
+}
+
+// SetTotals gets a reference to the given GetEventsOverview200ResponseSitesInnerTotals and assigns it to the Totals field.
+func (o *GetEventsOverview200ResponseSitesInner) SetTotals(v GetEventsOverview200ResponseSitesInnerTotals) {
+	o.Totals = &v
+}
+
 func (o GetEventsOverview200ResponseSitesInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -206,6 +239,9 @@ func (o GetEventsOverview200ResponseSitesInner) ToMap() (map[string]interface{},
 	}
 	if o.LastActiveOn.IsSet() {
 		toSerialize["lastActiveOn"] = o.LastActiveOn.Get()
+	}
+	if !IsNil(o.Totals) {
+		toSerialize["totals"] = o.Totals
 	}
 	return toSerialize, nil
 }

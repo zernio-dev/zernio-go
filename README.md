@@ -909,6 +909,7 @@ func main() {
 | `client.ConversionsAPI.ListConversionDestinations(ctx)` | List conversion destinations |
 | `client.ConversionsAPI.ListCustomConversionGoals(ctx)` | List custom conversion goals |
 | `client.ConversionsAPI.ListEventDestinations(ctx)` | List event destinations |
+| `client.ConversionsAPI.ListEventNames(ctx)` | List stored event names |
 | `client.ConversionsAPI.ListEvents(ctx)` | List stored events |
 | `client.ConversionsAPI.ListForwardingRules(ctx)` | List forwarding rules |
 | `client.ConversionsAPI.ListTrackingSites(ctx)` | List tracking sites |
@@ -927,6 +928,7 @@ func main() {
 | `client.ConversionsAPI.GetConversionsQuality(ctx)` | Get Event Match Quality |
 | `client.ConversionsAPI.GetEvent(ctx)` | Get one stored event and its deliveries |
 | `client.ConversionsAPI.GetEventsOverview(ctx)` | Get today's tracking overview |
+| `client.ConversionsAPI.GetEventsOverviewDaily(ctx)` | Get daily tracking figures |
 | `client.ConversionsAPI.GetTrackingSite(ctx)` | Get a tracking site |
 | `client.ConversionsAPI.UpdateAdConversionDestination(ctx)` | Update a conversion destination |
 | `client.ConversionsAPI.UpdateAdConversionGoals(ctx)` | Update account conversion goals |
