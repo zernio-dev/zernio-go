@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.620.0
+API version: 1.620.1
 Contact: support@zernio.com
 */
 
@@ -4122,8 +4122,8 @@ Lists where an ad account can receive conversion events (pixels, conversion acti
 
 Returns the list of pixels (Meta), conversion actions (Google),
 conversion rules (LinkedIn), pixels (OpenAI Ads, Reddit) or ad accounts
-(Pinterest) accessible to the connected ads account. Use the returned `id` as `destinationId` when
-posting to `POST /v1/ads/conversions`.
+(Pinterest) accessible to the connected ads account. Save the returned `id` as a destination with
+`POST /v1/events/destinations` (or pass it in `destinations` on `POST /v1/events`).
 
 For Google and LinkedIn, each destination's `type` reflects the
 conversion type (PURCHASE, LEAD, SIGN_UP, etc.), and the event type is
@@ -7099,9 +7099,11 @@ func (r ConversionsAPISendConversionsRequest) Execute() (*SendConversions200Resp
 }
 
 /*
-SendConversions Send conversion events
+SendConversions Send conversion events to one destination (legacy)
 
-Sends conversion events, such as purchases or leads, from your server to an ad platform so it can attribute and optimize ads.
+Legacy: use [`POST /v1/events`](/conversions/send-events) instead. It sends each event once to every saved destination, retries failures, stores the event and reports what each platform answered. This endpoint keeps working and is not being removed.
+
+Sends conversion events, such as purchases or leads, from your server to one ad platform destination so it can attribute and optimize ads.
 
 Relays one or more events to the target ad platform's native Conversions API. The platform is inferred from the provided `accountId`. Requires the Ads add-on.
 
@@ -7358,7 +7360,7 @@ func (r ConversionsAPISendEventsRequest) Execute() (*SendEvents200Response, *htt
 /*
 SendEvents Send events to every destination
 
-Sends conversion events once and forwards them to every ad platform destination saved for the profile (see `POST /v1/events/destinations`), or to the `destinations` given in the request. Requires the Ads add-on.
+The recommended way to send conversions. Sends conversion events once and forwards them to every ad platform destination saved for the profile (see `POST /v1/events/destinations`), or to the `destinations` given in the request. Requires the Ads add-on.
 
 ### Forwarding
 

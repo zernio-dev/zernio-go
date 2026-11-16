@@ -951,7 +951,7 @@ func main() {
 | `client.ConversionsAPI.RestateEvent(ctx)` | Change a stored event's value |
 | `client.ConversionsAPI.RetractEvent(ctx)` | Retract a stored event |
 | `client.ConversionsAPI.RotateTrackingSiteKey(ctx)` | Rotate a tracking site's key |
-| `client.ConversionsAPI.SendConversions(ctx)` | Send conversion events |
+| `client.ConversionsAPI.SendConversions(ctx)` | Send conversion events to one destination (legacy) |
 | `client.ConversionsAPI.SendEvents(ctx)` | Send events to every destination |
 
 ### Creator Campaigns
