@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.624.0
+API version: 1.625.0
 Contact: support@zernio.com
 */
 
@@ -4264,7 +4264,7 @@ func (r AdAccountsAPIGetAdsActivityLogRequest) AdAccountId(adAccountId string) A
 	return r
 }
 
-// Start of range (YYYY-MM-DD). Google: at most 29 days ago, the default.
+// Start of range (YYYY-MM-DD). Google: at most 28 days ago, the default.
 func (r AdAccountsAPIGetAdsActivityLogRequest) Since(since string) AdAccountsAPIGetAdsActivityLogRequest {
 	r.since = &since
 	return r
@@ -4307,7 +4307,7 @@ Shows who changed what in an ad account and when, as an audit log of edits to ca
 
 Reads the customer's `change_event` history, newest first. `adAccountId` is the numeric customer id.
 
-Google keeps 30 days of it, so `since` defaults to 29 days ago and an older `since` returns 400. `until` defaults to today.
+Google keeps 30 days of it, counted to the hour, so `since` defaults to 28 days ago on the account's clock, the oldest whole day always inside them, and an older `since` returns 400. `until` defaults to today.
 
 Each change is mapped onto the Meta row shape:
 

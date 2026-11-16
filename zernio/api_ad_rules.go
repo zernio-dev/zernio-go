@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.624.0
+API version: 1.625.0
 Contact: support@zernio.com
 */
 
@@ -535,7 +535,7 @@ GetAdRuleHourlyWindows Check whether an ad account has hourly windows
 
 Hourly windows (`last_complete_hour`, `last_3h`, `today_so_far`) read campaign totals hour by hour, which Zernio syncs only for some Meta and Google ad accounts.
 
-On an ad account without them, an hourly condition always reads as unknown and never matches. `hourlyWindows` says which case applies.
+A rule with an hourly condition is saved only on an ad account that has them: on any other, creating or editing it returns 400. `hourlyWindows` says which case applies.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdRulesAPIGetAdRuleHourlyWindowsRequest

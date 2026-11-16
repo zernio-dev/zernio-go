@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.624.0
+API version: 1.625.0
 Contact: support@zernio.com
 */
 
@@ -31,8 +31,10 @@ type ListAdRuleAlerts200ResponseAlertsInner struct {
 	ConsecutiveMatches int32          `json:"consecutiveMatches"`
 	OpenedAt           NullableTime   `json:"openedAt"`
 	LastMatchedAt      time.Time      `json:"lastMatchedAt"`
-	ResolvedAt         NullableTime   `json:"resolvedAt"`
-	ResolvedReason     NullableString `json:"resolvedReason"`
+	// When a run last evaluated the object of this alert. Older than the latest run means that run did not evaluate it.
+	LastEvaluatedAt time.Time      `json:"lastEvaluatedAt"`
+	ResolvedAt      NullableTime   `json:"resolvedAt"`
+	ResolvedReason  NullableString `json:"resolvedReason"`
 }
 
 type _ListAdRuleAlerts200ResponseAlertsInner ListAdRuleAlerts200ResponseAlertsInner
@@ -41,7 +43,7 @@ type _ListAdRuleAlerts200ResponseAlertsInner ListAdRuleAlerts200ResponseAlertsIn
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewListAdRuleAlerts200ResponseAlertsInner(id string, objectId string, state string, severity NullableString, consecutiveMatches int32, openedAt NullableTime, lastMatchedAt time.Time, resolvedAt NullableTime, resolvedReason NullableString) *ListAdRuleAlerts200ResponseAlertsInner {
+func NewListAdRuleAlerts200ResponseAlertsInner(id string, objectId string, state string, severity NullableString, consecutiveMatches int32, openedAt NullableTime, lastMatchedAt time.Time, lastEvaluatedAt time.Time, resolvedAt NullableTime, resolvedReason NullableString) *ListAdRuleAlerts200ResponseAlertsInner {
 	this := ListAdRuleAlerts200ResponseAlertsInner{}
 	this.Id = id
 	this.ObjectId = objectId
@@ -50,6 +52,7 @@ func NewListAdRuleAlerts200ResponseAlertsInner(id string, objectId string, state
 	this.ConsecutiveMatches = consecutiveMatches
 	this.OpenedAt = openedAt
 	this.LastMatchedAt = lastMatchedAt
+	this.LastEvaluatedAt = lastEvaluatedAt
 	this.ResolvedAt = resolvedAt
 	this.ResolvedReason = resolvedReason
 	return &this
@@ -235,6 +238,30 @@ func (o *ListAdRuleAlerts200ResponseAlertsInner) SetLastMatchedAt(v time.Time) {
 	o.LastMatchedAt = v
 }
 
+// GetLastEvaluatedAt returns the LastEvaluatedAt field value
+func (o *ListAdRuleAlerts200ResponseAlertsInner) GetLastEvaluatedAt() time.Time {
+	if o == nil {
+		var ret time.Time
+		return ret
+	}
+
+	return o.LastEvaluatedAt
+}
+
+// GetLastEvaluatedAtOk returns a tuple with the LastEvaluatedAt field value
+// and a boolean to check if the value has been set.
+func (o *ListAdRuleAlerts200ResponseAlertsInner) GetLastEvaluatedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.LastEvaluatedAt, true
+}
+
+// SetLastEvaluatedAt sets field value
+func (o *ListAdRuleAlerts200ResponseAlertsInner) SetLastEvaluatedAt(v time.Time) {
+	o.LastEvaluatedAt = v
+}
+
 // GetResolvedAt returns the ResolvedAt field value
 // If the value is explicit nil, the zero value for time.Time will be returned
 func (o *ListAdRuleAlerts200ResponseAlertsInner) GetResolvedAt() time.Time {
@@ -304,6 +331,7 @@ func (o ListAdRuleAlerts200ResponseAlertsInner) ToMap() (map[string]interface{},
 	toSerialize["consecutiveMatches"] = o.ConsecutiveMatches
 	toSerialize["openedAt"] = o.OpenedAt.Get()
 	toSerialize["lastMatchedAt"] = o.LastMatchedAt
+	toSerialize["lastEvaluatedAt"] = o.LastEvaluatedAt
 	toSerialize["resolvedAt"] = o.ResolvedAt.Get()
 	toSerialize["resolvedReason"] = o.ResolvedReason.Get()
 	return toSerialize, nil
@@ -321,6 +349,7 @@ func (o *ListAdRuleAlerts200ResponseAlertsInner) UnmarshalJSON(data []byte) (err
 		"consecutiveMatches",
 		"openedAt",
 		"lastMatchedAt",
+		"lastEvaluatedAt",
 		"resolvedAt",
 		"resolvedReason",
 	}
