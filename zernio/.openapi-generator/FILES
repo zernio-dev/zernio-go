@@ -168,6 +168,7 @@ model_ad_rule_level.go
 model_ad_rule_lifecycle.go
 model_ad_rule_object_evaluation.go
 model_ad_rule_object_evaluation_conditions_inner.go
+model_ad_rule_object_evaluation_readings_inner.go
 model_ad_rule_run.go
 model_ad_rule_run_evaluation.go
 model_ad_rule_run_evaluation_actions_inner.go

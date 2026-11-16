@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.626.0
+API version: 1.627.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,8 @@ type AdRuleObjectEvaluation struct {
 	// For a rule with groups: the group this campaign was judged in. `matched` and `conditions` are the group's.
 	Group      *string                                 `json:"group,omitempty"`
 	Conditions []AdRuleObjectEvaluationConditionsInner `json:"conditions"`
+	// On a matched object: spend, impressions and clicks over each window its conditions read, and the other search impression shares when a condition reads one. Left out where a condition already reads the value.
+	Readings []AdRuleObjectEvaluationReadingsInner `json:"readings,omitempty"`
 }
 
 type _AdRuleObjectEvaluation AdRuleObjectEvaluation
@@ -211,6 +213,38 @@ func (o *AdRuleObjectEvaluation) SetConditions(v []AdRuleObjectEvaluationConditi
 	o.Conditions = v
 }
 
+// GetReadings returns the Readings field value if set, zero value otherwise.
+func (o *AdRuleObjectEvaluation) GetReadings() []AdRuleObjectEvaluationReadingsInner {
+	if o == nil || IsNil(o.Readings) {
+		var ret []AdRuleObjectEvaluationReadingsInner
+		return ret
+	}
+	return o.Readings
+}
+
+// GetReadingsOk returns a tuple with the Readings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleObjectEvaluation) GetReadingsOk() ([]AdRuleObjectEvaluationReadingsInner, bool) {
+	if o == nil || IsNil(o.Readings) {
+		return nil, false
+	}
+	return o.Readings, true
+}
+
+// HasReadings returns a boolean if a field has been set.
+func (o *AdRuleObjectEvaluation) HasReadings() bool {
+	if o != nil && !IsNil(o.Readings) {
+		return true
+	}
+
+	return false
+}
+
+// SetReadings gets a reference to the given []AdRuleObjectEvaluationReadingsInner and assigns it to the Readings field.
+func (o *AdRuleObjectEvaluation) SetReadings(v []AdRuleObjectEvaluationReadingsInner) {
+	o.Readings = v
+}
+
 func (o AdRuleObjectEvaluation) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -229,6 +263,9 @@ func (o AdRuleObjectEvaluation) ToMap() (map[string]interface{}, error) {
 		toSerialize["group"] = o.Group
 	}
 	toSerialize["conditions"] = o.Conditions
+	if !IsNil(o.Readings) {
+		toSerialize["readings"] = o.Readings
+	}
 	return toSerialize, nil
 }
 
