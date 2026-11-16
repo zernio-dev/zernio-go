@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.617.0
+API version: 1.618.0
 Contact: support@zernio.com
 */
 
@@ -186,9 +186,10 @@ type CreateStandaloneAdRequest struct {
 	// Google only. Omitted, it is display on a new campaign, and the existing campaign's own type with `existingCampaignId` or `adSetId` (Search, Display or Demand Gen; other types return 422). Performance Max requires assetGroup and Demand Gen requires demandGen; both are always created PAUSED.
 	CampaignType *string `json:"campaignType,omitempty"`
 	// Google only (400 elsewhere). Set on the new campaign; a request that joins an existing campaign (`existingCampaignId` or `adSetId`) returns 400, change that campaign with PUT /v1/ads/campaigns/{campaignId}/targeting instead. `presence` reaches only people in or regularly in the targeted locations.
-	LocationTargetingType *GoogleLocationTargetingType `json:"locationTargetingType,omitempty"`
-	AssetGroup            *GooglePmaxAssetGroupInput   `json:"assetGroup,omitempty"`
-	DemandGen             *GoogleDemandGenInput        `json:"demandGen,omitempty"`
+	LocationTargetingType *GoogleLocationTargetingType             `json:"locationTargetingType,omitempty"`
+	AssetGroup            *GooglePmaxAssetGroupInput               `json:"assetGroup,omitempty"`
+	MerchantCenter        *CreateStandaloneAdRequestMerchantCenter `json:"merchantCenter,omitempty"`
+	DemandGen             *GoogleDemandGenInput                    `json:"demandGen,omitempty"`
 	// Google Search only. Keywords on the new ad group; entries are strings (BROAD) or { text, matchType }. Editable later via PUT /v1/ads/{adId} targeting.keywords.
 	Keywords []KeywordEntry `json:"keywords,omitempty"`
 	// Google Search only; other platforms return 400. Ad-group-level negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
@@ -3095,6 +3096,38 @@ func (o *CreateStandaloneAdRequest) SetAssetGroup(v GooglePmaxAssetGroupInput) {
 	o.AssetGroup = &v
 }
 
+// GetMerchantCenter returns the MerchantCenter field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetMerchantCenter() CreateStandaloneAdRequestMerchantCenter {
+	if o == nil || IsNil(o.MerchantCenter) {
+		var ret CreateStandaloneAdRequestMerchantCenter
+		return ret
+	}
+	return *o.MerchantCenter
+}
+
+// GetMerchantCenterOk returns a tuple with the MerchantCenter field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetMerchantCenterOk() (*CreateStandaloneAdRequestMerchantCenter, bool) {
+	if o == nil || IsNil(o.MerchantCenter) {
+		return nil, false
+	}
+	return o.MerchantCenter, true
+}
+
+// HasMerchantCenter returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasMerchantCenter() bool {
+	if o != nil && !IsNil(o.MerchantCenter) {
+		return true
+	}
+
+	return false
+}
+
+// SetMerchantCenter gets a reference to the given CreateStandaloneAdRequestMerchantCenter and assigns it to the MerchantCenter field.
+func (o *CreateStandaloneAdRequest) SetMerchantCenter(v CreateStandaloneAdRequestMerchantCenter) {
+	o.MerchantCenter = &v
+}
+
 // GetDemandGen returns the DemandGen field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetDemandGen() GoogleDemandGenInput {
 	if o == nil || IsNil(o.DemandGen) {
@@ -4429,6 +4462,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AssetGroup) {
 		toSerialize["assetGroup"] = o.AssetGroup
+	}
+	if !IsNil(o.MerchantCenter) {
+		toSerialize["merchantCenter"] = o.MerchantCenter
 	}
 	if !IsNil(o.DemandGen) {
 		toSerialize["demandGen"] = o.DemandGen
