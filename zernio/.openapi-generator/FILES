@@ -2501,6 +2501,10 @@ model_product_options_inner.go
 model_product_seo.go
 model_product_variant.go
 model_profile.go
+model_profile_call_limit.go
+model_profile_call_limits_response.go
+model_profile_call_limits_response_profile.go
+model_profile_call_limits_response_team.go
 model_profile_create_response.go
 model_profile_delete_response.go
 model_profile_get_response.go

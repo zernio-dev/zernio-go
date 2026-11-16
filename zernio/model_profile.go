@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.628.0
+API version: 1.629.0
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,13 @@ type Profile struct {
 	ContentRetention *string `json:"contentRetention,omitempty"`
 	// The mode that applies to this profile: `none` when the profile or the whole team uses zero content retention.
 	EffectiveContentRetention *string `json:"effectiveContentRetention,omitempty"`
-	IsDefault                 *bool   `json:"isDefault,omitempty"`
+	// Most outbound calls placed from this profile's numbers in any rolling hour. Null means only the team limits apply.
+	MaxOutboundCallsPerHour NullableInt32 `json:"maxOutboundCallsPerHour,omitempty"`
+	// Most billed spend, in USD, on outbound calls and calls forwarded to a phone from this profile's numbers in any rolling 24 hours. Null means only the team limits apply.
+	MaxDailyCallSpendUsd NullableFloat32 `json:"maxDailyCallSpendUsd,omitempty"`
+	// Most minutes of inbound calls forwarded to a phone from this profile's numbers in any rolling 24 hours. Null means only the team limits apply.
+	MaxForwardedMinutesPerDay NullableInt32 `json:"maxForwardedMinutesPerDay,omitempty"`
+	IsDefault                 *bool         `json:"isDefault,omitempty"`
 	// Only present when includeOverLimit=true. Indicates if this profile exceeds the plan limit.
 	IsOverLimit *bool `json:"isOverLimit,omitempty"`
 	// In the profile list. Connected accounts on the profile, including ones that need reconnecting; phone and SMS number internals and posting accounts hidden by an ads connect are not counted.
@@ -369,6 +375,135 @@ func (o *Profile) SetEffectiveContentRetention(v string) {
 	o.EffectiveContentRetention = &v
 }
 
+// GetMaxOutboundCallsPerHour returns the MaxOutboundCallsPerHour field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Profile) GetMaxOutboundCallsPerHour() int32 {
+	if o == nil || IsNil(o.MaxOutboundCallsPerHour.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxOutboundCallsPerHour.Get()
+}
+
+// GetMaxOutboundCallsPerHourOk returns a tuple with the MaxOutboundCallsPerHour field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Profile) GetMaxOutboundCallsPerHourOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaxOutboundCallsPerHour.Get(), o.MaxOutboundCallsPerHour.IsSet()
+}
+
+// HasMaxOutboundCallsPerHour returns a boolean if a field has been set.
+func (o *Profile) HasMaxOutboundCallsPerHour() bool {
+	if o != nil && o.MaxOutboundCallsPerHour.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxOutboundCallsPerHour gets a reference to the given NullableInt32 and assigns it to the MaxOutboundCallsPerHour field.
+func (o *Profile) SetMaxOutboundCallsPerHour(v int32) {
+	o.MaxOutboundCallsPerHour.Set(&v)
+}
+
+// SetMaxOutboundCallsPerHourNil sets the value for MaxOutboundCallsPerHour to be an explicit nil
+func (o *Profile) SetMaxOutboundCallsPerHourNil() {
+	o.MaxOutboundCallsPerHour.Set(nil)
+}
+
+// UnsetMaxOutboundCallsPerHour ensures that no value is present for MaxOutboundCallsPerHour, not even an explicit nil
+func (o *Profile) UnsetMaxOutboundCallsPerHour() {
+	o.MaxOutboundCallsPerHour.Unset()
+}
+
+// GetMaxDailyCallSpendUsd returns the MaxDailyCallSpendUsd field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Profile) GetMaxDailyCallSpendUsd() float32 {
+	if o == nil || IsNil(o.MaxDailyCallSpendUsd.Get()) {
+		var ret float32
+		return ret
+	}
+	return *o.MaxDailyCallSpendUsd.Get()
+}
+
+// GetMaxDailyCallSpendUsdOk returns a tuple with the MaxDailyCallSpendUsd field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Profile) GetMaxDailyCallSpendUsdOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaxDailyCallSpendUsd.Get(), o.MaxDailyCallSpendUsd.IsSet()
+}
+
+// HasMaxDailyCallSpendUsd returns a boolean if a field has been set.
+func (o *Profile) HasMaxDailyCallSpendUsd() bool {
+	if o != nil && o.MaxDailyCallSpendUsd.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxDailyCallSpendUsd gets a reference to the given NullableFloat32 and assigns it to the MaxDailyCallSpendUsd field.
+func (o *Profile) SetMaxDailyCallSpendUsd(v float32) {
+	o.MaxDailyCallSpendUsd.Set(&v)
+}
+
+// SetMaxDailyCallSpendUsdNil sets the value for MaxDailyCallSpendUsd to be an explicit nil
+func (o *Profile) SetMaxDailyCallSpendUsdNil() {
+	o.MaxDailyCallSpendUsd.Set(nil)
+}
+
+// UnsetMaxDailyCallSpendUsd ensures that no value is present for MaxDailyCallSpendUsd, not even an explicit nil
+func (o *Profile) UnsetMaxDailyCallSpendUsd() {
+	o.MaxDailyCallSpendUsd.Unset()
+}
+
+// GetMaxForwardedMinutesPerDay returns the MaxForwardedMinutesPerDay field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Profile) GetMaxForwardedMinutesPerDay() int32 {
+	if o == nil || IsNil(o.MaxForwardedMinutesPerDay.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxForwardedMinutesPerDay.Get()
+}
+
+// GetMaxForwardedMinutesPerDayOk returns a tuple with the MaxForwardedMinutesPerDay field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Profile) GetMaxForwardedMinutesPerDayOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaxForwardedMinutesPerDay.Get(), o.MaxForwardedMinutesPerDay.IsSet()
+}
+
+// HasMaxForwardedMinutesPerDay returns a boolean if a field has been set.
+func (o *Profile) HasMaxForwardedMinutesPerDay() bool {
+	if o != nil && o.MaxForwardedMinutesPerDay.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxForwardedMinutesPerDay gets a reference to the given NullableInt32 and assigns it to the MaxForwardedMinutesPerDay field.
+func (o *Profile) SetMaxForwardedMinutesPerDay(v int32) {
+	o.MaxForwardedMinutesPerDay.Set(&v)
+}
+
+// SetMaxForwardedMinutesPerDayNil sets the value for MaxForwardedMinutesPerDay to be an explicit nil
+func (o *Profile) SetMaxForwardedMinutesPerDayNil() {
+	o.MaxForwardedMinutesPerDay.Set(nil)
+}
+
+// UnsetMaxForwardedMinutesPerDay ensures that no value is present for MaxForwardedMinutesPerDay, not even an explicit nil
+func (o *Profile) UnsetMaxForwardedMinutesPerDay() {
+	o.MaxForwardedMinutesPerDay.Unset()
+}
+
 // GetIsDefault returns the IsDefault field value if set, zero value otherwise.
 func (o *Profile) GetIsDefault() bool {
 	if o == nil || IsNil(o.IsDefault) {
@@ -533,6 +668,15 @@ func (o Profile) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.EffectiveContentRetention) {
 		toSerialize["effectiveContentRetention"] = o.EffectiveContentRetention
+	}
+	if o.MaxOutboundCallsPerHour.IsSet() {
+		toSerialize["maxOutboundCallsPerHour"] = o.MaxOutboundCallsPerHour.Get()
+	}
+	if o.MaxDailyCallSpendUsd.IsSet() {
+		toSerialize["maxDailyCallSpendUsd"] = o.MaxDailyCallSpendUsd.Get()
+	}
+	if o.MaxForwardedMinutesPerDay.IsSet() {
+		toSerialize["maxForwardedMinutesPerDay"] = o.MaxForwardedMinutesPerDay.Get()
 	}
 	if !IsNil(o.IsDefault) {
 		toSerialize["isDefault"] = o.IsDefault

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.628.0
+API version: 1.629.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,12 @@ type CreateProfileRequest struct {
 	ExternalId *string `json:"externalId,omitempty"`
 	// Set `none` to create the profile with zero content retention, so nothing of its accounts is stored from the first sync. Only the team owner can, with a session or a full-access key; anyone else gets 403.
 	ContentRetention *string `json:"contentRetention,omitempty"`
+	// Caps outbound calls from this profile's numbers per rolling hour, inside the team limits. Omit for no profile cap.
+	MaxOutboundCallsPerHour *int32 `json:"maxOutboundCallsPerHour,omitempty"`
+	// Caps billed call spend (USD) from this profile's numbers per rolling 24 hours, inside the team limits. Omit for no profile cap.
+	MaxDailyCallSpendUsd *float32 `json:"maxDailyCallSpendUsd,omitempty"`
+	// Caps minutes forwarded to a phone from this profile's numbers per rolling 24 hours, inside the team limits. Omit for no profile cap.
+	MaxForwardedMinutesPerDay *int32 `json:"maxForwardedMinutesPerDay,omitempty"`
 }
 
 type _CreateProfileRequest CreateProfileRequest
@@ -237,6 +243,102 @@ func (o *CreateProfileRequest) SetContentRetention(v string) {
 	o.ContentRetention = &v
 }
 
+// GetMaxOutboundCallsPerHour returns the MaxOutboundCallsPerHour field value if set, zero value otherwise.
+func (o *CreateProfileRequest) GetMaxOutboundCallsPerHour() int32 {
+	if o == nil || IsNil(o.MaxOutboundCallsPerHour) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxOutboundCallsPerHour
+}
+
+// GetMaxOutboundCallsPerHourOk returns a tuple with the MaxOutboundCallsPerHour field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateProfileRequest) GetMaxOutboundCallsPerHourOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxOutboundCallsPerHour) {
+		return nil, false
+	}
+	return o.MaxOutboundCallsPerHour, true
+}
+
+// HasMaxOutboundCallsPerHour returns a boolean if a field has been set.
+func (o *CreateProfileRequest) HasMaxOutboundCallsPerHour() bool {
+	if o != nil && !IsNil(o.MaxOutboundCallsPerHour) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxOutboundCallsPerHour gets a reference to the given int32 and assigns it to the MaxOutboundCallsPerHour field.
+func (o *CreateProfileRequest) SetMaxOutboundCallsPerHour(v int32) {
+	o.MaxOutboundCallsPerHour = &v
+}
+
+// GetMaxDailyCallSpendUsd returns the MaxDailyCallSpendUsd field value if set, zero value otherwise.
+func (o *CreateProfileRequest) GetMaxDailyCallSpendUsd() float32 {
+	if o == nil || IsNil(o.MaxDailyCallSpendUsd) {
+		var ret float32
+		return ret
+	}
+	return *o.MaxDailyCallSpendUsd
+}
+
+// GetMaxDailyCallSpendUsdOk returns a tuple with the MaxDailyCallSpendUsd field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateProfileRequest) GetMaxDailyCallSpendUsdOk() (*float32, bool) {
+	if o == nil || IsNil(o.MaxDailyCallSpendUsd) {
+		return nil, false
+	}
+	return o.MaxDailyCallSpendUsd, true
+}
+
+// HasMaxDailyCallSpendUsd returns a boolean if a field has been set.
+func (o *CreateProfileRequest) HasMaxDailyCallSpendUsd() bool {
+	if o != nil && !IsNil(o.MaxDailyCallSpendUsd) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxDailyCallSpendUsd gets a reference to the given float32 and assigns it to the MaxDailyCallSpendUsd field.
+func (o *CreateProfileRequest) SetMaxDailyCallSpendUsd(v float32) {
+	o.MaxDailyCallSpendUsd = &v
+}
+
+// GetMaxForwardedMinutesPerDay returns the MaxForwardedMinutesPerDay field value if set, zero value otherwise.
+func (o *CreateProfileRequest) GetMaxForwardedMinutesPerDay() int32 {
+	if o == nil || IsNil(o.MaxForwardedMinutesPerDay) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxForwardedMinutesPerDay
+}
+
+// GetMaxForwardedMinutesPerDayOk returns a tuple with the MaxForwardedMinutesPerDay field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateProfileRequest) GetMaxForwardedMinutesPerDayOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxForwardedMinutesPerDay) {
+		return nil, false
+	}
+	return o.MaxForwardedMinutesPerDay, true
+}
+
+// HasMaxForwardedMinutesPerDay returns a boolean if a field has been set.
+func (o *CreateProfileRequest) HasMaxForwardedMinutesPerDay() bool {
+	if o != nil && !IsNil(o.MaxForwardedMinutesPerDay) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxForwardedMinutesPerDay gets a reference to the given int32 and assigns it to the MaxForwardedMinutesPerDay field.
+func (o *CreateProfileRequest) SetMaxForwardedMinutesPerDay(v int32) {
+	o.MaxForwardedMinutesPerDay = &v
+}
+
 func (o CreateProfileRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -262,6 +364,15 @@ func (o CreateProfileRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ContentRetention) {
 		toSerialize["contentRetention"] = o.ContentRetention
+	}
+	if !IsNil(o.MaxOutboundCallsPerHour) {
+		toSerialize["maxOutboundCallsPerHour"] = o.MaxOutboundCallsPerHour
+	}
+	if !IsNil(o.MaxDailyCallSpendUsd) {
+		toSerialize["maxDailyCallSpendUsd"] = o.MaxDailyCallSpendUsd
+	}
+	if !IsNil(o.MaxForwardedMinutesPerDay) {
+		toSerialize["maxForwardedMinutesPerDay"] = o.MaxForwardedMinutesPerDay
 	}
 	return toSerialize, nil
 }

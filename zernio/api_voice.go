@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.628.0
+API version: 1.629.0
 Contact: support@zernio.com
 */
 
@@ -364,6 +364,8 @@ Destinations can be your own AI voice agent (Vapi/Retell), a phone, or a SIP end
 The 200 response means the call is dialing. The lifecycle continues asynchronously: track it via `GET /v1/voice/calls/{id}` or the `call.*` webhooks.
 
 Calls are not capped by count. Each team runs at most 10 calls at once (outbound calls plus calls forwarded to a phone) and has a daily safety limit on calling spend over the last 24 hours.
+
+The profile of the calling number can set tighter limits of its own (`maxOutboundCallsPerHour`, `maxDailyCallSpendUsd` on the profile; see `GET /v1/profiles/{profileId}/limits`).
 
 Past a limit the call is refused with 429 `call_limit_reached`, and `details.limit` names it.
 

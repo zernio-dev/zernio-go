@@ -103,6 +103,7 @@ func main() {
 | `client.ProfilesAPI.ListProfiles(ctx)` | List profiles |
 | `client.ProfilesAPI.CreateProfile(ctx)` | Create profile |
 | `client.ProfilesAPI.GetProfile(ctx)` | Get profile |
+| `client.ProfilesAPI.GetProfileLimits(ctx)` | Get profile call limits |
 | `client.ProfilesAPI.UpdateProfile(ctx)` | Update profile |
 | `client.ProfilesAPI.DeleteProfile(ctx)` | Delete profile |
 
