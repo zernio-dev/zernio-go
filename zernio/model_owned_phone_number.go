@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.625.0
+API version: 1.626.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,9 @@ var _ MappedNullable = &OwnedPhoneNumber{}
 type OwnedPhoneNumber struct {
 	Id          *string `json:"_id,omitempty"`
 	PhoneNumber *string `json:"phoneNumber,omitempty"`
-	Country     *string `json:"country,omitempty"`
+	// The specific number you asked for at purchase (`phoneNumber` in the purchase body). Absent when you did not pick one. When it differs from `phoneNumber`, WhatsApp refused the picked number (it was likely registered on WhatsApp before), so a different number was issued.
+	RequestedPhoneNumber *string `json:"requestedPhoneNumber,omitempty"`
+	Country              *string `json:"country,omitempty"`
 	// For example local, mobile, national or toll_free.
 	NumberType *string                    `json:"numberType,omitempty"`
 	Status     *string                    `json:"status,omitempty"`
@@ -199,6 +201,38 @@ func (o *OwnedPhoneNumber) HasPhoneNumber() bool {
 // SetPhoneNumber gets a reference to the given string and assigns it to the PhoneNumber field.
 func (o *OwnedPhoneNumber) SetPhoneNumber(v string) {
 	o.PhoneNumber = &v
+}
+
+// GetRequestedPhoneNumber returns the RequestedPhoneNumber field value if set, zero value otherwise.
+func (o *OwnedPhoneNumber) GetRequestedPhoneNumber() string {
+	if o == nil || IsNil(o.RequestedPhoneNumber) {
+		var ret string
+		return ret
+	}
+	return *o.RequestedPhoneNumber
+}
+
+// GetRequestedPhoneNumberOk returns a tuple with the RequestedPhoneNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OwnedPhoneNumber) GetRequestedPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.RequestedPhoneNumber) {
+		return nil, false
+	}
+	return o.RequestedPhoneNumber, true
+}
+
+// HasRequestedPhoneNumber returns a boolean if a field has been set.
+func (o *OwnedPhoneNumber) HasRequestedPhoneNumber() bool {
+	if o != nil && !IsNil(o.RequestedPhoneNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequestedPhoneNumber gets a reference to the given string and assigns it to the RequestedPhoneNumber field.
+func (o *OwnedPhoneNumber) SetRequestedPhoneNumber(v string) {
+	o.RequestedPhoneNumber = &v
 }
 
 // GetCountry returns the Country field value if set, zero value otherwise.
@@ -2449,6 +2483,9 @@ func (o OwnedPhoneNumber) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PhoneNumber) {
 		toSerialize["phoneNumber"] = o.PhoneNumber
+	}
+	if !IsNil(o.RequestedPhoneNumber) {
+		toSerialize["requestedPhoneNumber"] = o.RequestedPhoneNumber
 	}
 	if !IsNil(o.Country) {
 		toSerialize["country"] = o.Country
