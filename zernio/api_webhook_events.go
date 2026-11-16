@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.620.1
+API version: 1.621.0
 Contact: support@zernio.com
 */
 
@@ -696,6 +696,113 @@ func (a *WebhookEventsAPIService) OnAccountPermissionsChangedExecute(r WebhookEv
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadAccountPermissionsChanged
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAccountPrivacyRequestRequest struct {
+	ctx                                 context.Context
+	ApiService                          *WebhookEventsAPIService
+	webhookPayloadAccountPrivacyRequest *WebhookPayloadAccountPrivacyRequest
+}
+
+func (r WebhookEventsAPIOnAccountPrivacyRequestRequest) WebhookPayloadAccountPrivacyRequest(webhookPayloadAccountPrivacyRequest WebhookPayloadAccountPrivacyRequest) WebhookEventsAPIOnAccountPrivacyRequestRequest {
+	r.webhookPayloadAccountPrivacyRequest = &webhookPayloadAccountPrivacyRequest
+	return r
+}
+
+func (r WebhookEventsAPIOnAccountPrivacyRequestRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAccountPrivacyRequestExecute(r)
+}
+
+/*
+OnAccountPrivacyRequest Store privacy request
+
+A Shopify merchant asked to export or erase customer data, or the shop's data after uninstalling the app. Shopify sends these to the installed app, which is Zernio's, so we pass them on to you.
+
+### What to do
+
+`privacyRequest.type` says which request it is. Export or erase your own copy of the data. Zernio handles its own copy.
+
+### Who receives it
+
+A customer request goes to every account connected to the shop when it arrives. `shop_redact` arrives 48 hours after the uninstall, when the account is already disconnected, and goes to the accounts that were connected to the shop.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAccountPrivacyRequestRequest
+*/
+func (a *WebhookEventsAPIService) OnAccountPrivacyRequest(ctx context.Context) WebhookEventsAPIOnAccountPrivacyRequestRequest {
+	return WebhookEventsAPIOnAccountPrivacyRequestRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAccountPrivacyRequestExecute(r WebhookEventsAPIOnAccountPrivacyRequestRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAccountPrivacyRequest")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/account.privacy_request"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAccountPrivacyRequest == nil {
+		return nil, reportError("webhookPayloadAccountPrivacyRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAccountPrivacyRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
