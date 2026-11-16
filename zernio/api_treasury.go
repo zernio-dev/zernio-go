@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.630.0
+API version: 1.630.1
 Contact: support@zernio.com
 */
 
@@ -2735,7 +2735,7 @@ A pay-per-use request that finds the balance at $0 runs the auto top-up first (w
 
 When this month's auto top-ups plus the next one would pass `monthlyLimitCents`, the card is not charged and you get one email that month. At $0, pay-per-use then answers 402 `usage_limit_reached`.
 
-- 400: a field is out of range, `toCents` is not more than $5 above `belowCents`, or, while auto top-up is on, `monthlyLimitCents` is lower than `toCents` (one top-up from $0 would pass it, so it could never charge). Omitted fields are checked with their stored values.
+- 400: a field is out of range, `toCents` is less than $5 above `belowCents`, or, while auto top-up is on, `monthlyLimitCents` is lower than `toCents` (one top-up from $0 would pass it, so it could never charge). Omitted fields are checked with their stored values.
 - 409 `balance_billing_required`: the account is not on the prepaid balance.
 
 Needs an owner, admin or billing admin, signed in or through a full-access key they created.
