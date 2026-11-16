@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.618.0
+API version: 1.619.0
 Contact: support@zernio.com
 */
 
@@ -24,8 +24,10 @@ var _ MappedNullable = &GooglePmaxAssetGroupAssetsInner{}
 type GooglePmaxAssetGroupAssetsInner struct {
 	ResourceName string `json:"resourceName"`
 	// Google asset role, such as HEADLINE or LOGO.
-	FieldType      string  `json:"fieldType"`
-	Status         string  `json:"status"`
+	FieldType string `json:"fieldType"`
+	Status    string `json:"status"`
+	// Who added the asset: ADVERTISER, or AUTOMATICALLY_CREATED when Google generated it. Empty when Google does not say.
+	Source         *string `json:"source,omitempty"`
 	Text           *string `json:"text,omitempty"`
 	ImageUrl       *string `json:"imageUrl,omitempty"`
 	YoutubeVideoId *string `json:"youtubeVideoId,omitempty"`
@@ -123,6 +125,38 @@ func (o *GooglePmaxAssetGroupAssetsInner) GetStatusOk() (*string, bool) {
 // SetStatus sets field value
 func (o *GooglePmaxAssetGroupAssetsInner) SetStatus(v string) {
 	o.Status = v
+}
+
+// GetSource returns the Source field value if set, zero value otherwise.
+func (o *GooglePmaxAssetGroupAssetsInner) GetSource() string {
+	if o == nil || IsNil(o.Source) {
+		var ret string
+		return ret
+	}
+	return *o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GooglePmaxAssetGroupAssetsInner) GetSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.Source) {
+		return nil, false
+	}
+	return o.Source, true
+}
+
+// HasSource returns a boolean if a field has been set.
+func (o *GooglePmaxAssetGroupAssetsInner) HasSource() bool {
+	if o != nil && !IsNil(o.Source) {
+		return true
+	}
+
+	return false
+}
+
+// SetSource gets a reference to the given string and assigns it to the Source field.
+func (o *GooglePmaxAssetGroupAssetsInner) SetSource(v string) {
+	o.Source = &v
 }
 
 // GetText returns the Text field value if set, zero value otherwise.
@@ -234,6 +268,9 @@ func (o GooglePmaxAssetGroupAssetsInner) ToMap() (map[string]interface{}, error)
 	toSerialize["resourceName"] = o.ResourceName
 	toSerialize["fieldType"] = o.FieldType
 	toSerialize["status"] = o.Status
+	if !IsNil(o.Source) {
+		toSerialize["source"] = o.Source
+	}
 	if !IsNil(o.Text) {
 		toSerialize["text"] = o.Text
 	}

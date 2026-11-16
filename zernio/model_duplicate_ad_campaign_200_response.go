@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.618.0
+API version: 1.619.0
 Contact: support@zernio.com
 */
 
@@ -22,9 +22,9 @@ var _ MappedNullable = &DuplicateAdCampaign200Response{}
 type DuplicateAdCampaign200Response struct {
 	// Platform ID of the new campaign
 	CopiedCampaignId *string `json:"copiedCampaignId,omitempty"`
-	// Meta only: source ad set ID to copied ad set ID. Empty when `deepCopy` is false.
+	// Meta: source ad set ID to copied ad set ID. Empty when `deepCopy` is false. Google: source asset group ID to copied asset group ID.
 	AdSetIdMap map[string]string `json:"adSetIdMap,omitempty"`
-	// Meta only: source ad ID to copied ad ID, across every copied ad set. Empty when `deepCopy` is false.
+	// Meta: source ad ID to copied ad ID, across every copied ad set. Empty when `deepCopy` is false. Google: the same map as `adSetIdMap`, since a Performance Max asset group is its ad.
 	AdIdMap map[string]string `json:"adIdMap,omitempty"`
 	// The copy exists on the platform in all three cases.  - `triggered`: an ads sync started and runs after this response, so the copy may not be readable through Zernio yet. - `skipped`: no sync started, so the copy appears on a later scheduled sync. - `failed`: the sync could not start. A sync that errors after the response is not reported here.
 	Discovery *string `json:"discovery,omitempty"`

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.618.0
+API version: 1.619.0
 Contact: support@zernio.com
 */
 
@@ -3277,6 +3277,7 @@ Ad sets, ads, creatives, and targeting are copied by default (`deepCopy: true`).
 - **Meta** copies one level at a time with Meta's `/copies` endpoint. See below.
 - **TikTok** has no native copy primitive. See below.
 - **LinkedIn** has no native copy primitive. See below.
+- **Google** copies Performance Max campaigns in one atomic request. See below.
 - Other platforms return 501 Not Implemented.
 
 ### Meta
@@ -3302,6 +3303,21 @@ Zernio walks the source CampaignGroup → Campaigns → Creatives and recreates 
 `statusOption: INHERITED_FROM_SOURCE` is evaluated **per entity**: any Group / Campaign / Creative whose source is `ACTIVE` gets its clone activated too.
 
 Duplicating an ACTIVE campaign with `INHERITED_FROM_SOURCE` starts a second front of spend the moment the clone activates. The safe default is `PAUSED`.
+
+### Google
+
+Performance Max campaigns only; any other Google campaign type returns 501 naming its channel. Zernio reads the campaign and recreates it in one atomic Google request, so a copy either exists whole or not at all.
+
+- The copy is always created paused. `statusOption` other than `PAUSED` and `deepCopy: false` return 400.
+- The name is `renamePrefix` + the source name + `renameSuffix`. With neither sent, the suffix defaults to ` (Copy)`. `NO_RENAME` returns 400 because Google campaign names are unique per account. Asset groups are renamed only under `DEEP_RENAME`.
+- `startTime` and `endTime` are whole days in the customer's timezone. Without `startTime` the copy starts when created. Without `endTime` the source's end date is kept.
+- Copied budget: a shared budget is reused, so the copy shares its spend; a daily budget is recreated.
+- Copied bidding: a portfolio strategy, Maximize conversions with its target CPA, or Maximize conversion value with its target ROAS.
+- Copied campaign settings: Merchant Center feed and vehicle listings, location, language, proximity and ad schedule criteria, negative keywords, negative keyword lists, sitelinks and other campaign assets, tracking template and URL parameters, geo target type and automated asset settings.
+- Copied asset groups: every asset group with its assets, listing tree, search themes and audience signals.
+- Assets Google created automatically are not copied; Google regenerates them.
+- Anything else returns 422 naming each setting that cannot be copied, and nothing is created: other bidding strategies or budget types, other campaign criteria or shared set types, brand guidelines, conversion goals set on the campaign, audiences scoped to an asset group, and listing trees that are not Shopping trees.
+- `adSetIdMap` and `adIdMap` both map each source asset group id to its copy.
 
 ### Sync
 
