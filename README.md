@@ -911,6 +911,7 @@ func main() {
 | `client.ConversionsAPI.ListEventDestinations(ctx)` | List event destinations |
 | `client.ConversionsAPI.ListEvents(ctx)` | List stored events |
 | `client.ConversionsAPI.ListForwardingRules(ctx)` | List forwarding rules |
+| `client.ConversionsAPI.ListTrackingSites(ctx)` | List tracking sites |
 | `client.ConversionsAPI.CreateAdConversionDestination(ctx)` | Create a conversion destination |
 | `client.ConversionsAPI.CreateAdCustomConversion(ctx)` | Create custom conversion |
 | `client.ConversionsAPI.CreateConversionAction(ctx)` | Create conversion action |
@@ -918,6 +919,7 @@ func main() {
 | `client.ConversionsAPI.CreateCustomConversionGoal(ctx)` | Create a custom conversion goal |
 | `client.ConversionsAPI.CreateEventDestination(ctx)` | Add an event destination |
 | `client.ConversionsAPI.CreateForwardingRule(ctx)` | Add a forwarding rule |
+| `client.ConversionsAPI.CreateTrackingSite(ctx)` | Turn on server-side tracking for a website |
 | `client.ConversionsAPI.GetAdConversionDestination(ctx)` | Get a conversion destination |
 | `client.ConversionsAPI.GetAdConversionMetrics(ctx)` | Get attribution metrics |
 | `client.ConversionsAPI.GetConversionDestination(ctx)` | Get a conversion destination |
@@ -925,16 +927,19 @@ func main() {
 | `client.ConversionsAPI.GetConversionsQuality(ctx)` | Get Event Match Quality |
 | `client.ConversionsAPI.GetEvent(ctx)` | Get one stored event and its deliveries |
 | `client.ConversionsAPI.GetEventsOverview(ctx)` | Get today's tracking overview |
+| `client.ConversionsAPI.GetTrackingSite(ctx)` | Get a tracking site |
 | `client.ConversionsAPI.UpdateAdConversionDestination(ctx)` | Update a conversion destination |
 | `client.ConversionsAPI.UpdateAdConversionGoals(ctx)` | Update account conversion goals |
 | `client.ConversionsAPI.UpdateConversionAction(ctx)` | Update a conversion action's settings |
 | `client.ConversionsAPI.UpdateConversionDestination(ctx)` | Update a conversion destination |
 | `client.ConversionsAPI.UpdateCustomConversionGoal(ctx)` | Update a custom conversion goal |
 | `client.ConversionsAPI.UpdateForwardingRule(ctx)` | Change a forwarding rule's API secret |
+| `client.ConversionsAPI.UpdateTrackingSite(ctx)` | Update a tracking site |
 | `client.ConversionsAPI.DeleteAdConversionDestination(ctx)` | Delete a conversion destination |
 | `client.ConversionsAPI.DeleteConversionDestination(ctx)` | Delete a conversion destination |
 | `client.ConversionsAPI.DeleteEventDestination(ctx)` | Remove an event destination |
 | `client.ConversionsAPI.DeleteForwardingRule(ctx)` | Remove a forwarding rule |
+| `client.ConversionsAPI.DeleteTrackingSite(ctx)` | Delete a tracking site |
 | `client.ConversionsAPI.AddAdConversionAssociations(ctx)` | Associate campaigns |
 | `client.ConversionsAPI.AddConversionAssociations(ctx)` | Associate campaigns |
 | `client.ConversionsAPI.AdjustConversions(ctx)` | Adjust uploaded conversions |
@@ -943,6 +948,7 @@ func main() {
 | `client.ConversionsAPI.RemoveCustomConversionGoal(ctx)` | Remove a custom conversion goal |
 | `client.ConversionsAPI.RestateEvent(ctx)` | Change a stored event's value |
 | `client.ConversionsAPI.RetractEvent(ctx)` | Retract a stored event |
+| `client.ConversionsAPI.RotateTrackingSiteKey(ctx)` | Rotate a tracking site's key |
 | `client.ConversionsAPI.SendConversions(ctx)` | Send conversion events |
 | `client.ConversionsAPI.SendEvents(ctx)` | Send events to every destination |
 
