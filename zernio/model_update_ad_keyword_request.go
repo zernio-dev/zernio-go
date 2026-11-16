@@ -12,9 +12,7 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the UpdateAdKeywordRequest type satisfies the MappedNullable interface at compile time
@@ -22,18 +20,17 @@ var _ MappedNullable = &UpdateAdKeywordRequest{}
 
 // UpdateAdKeywordRequest struct for UpdateAdKeywordRequest
 type UpdateAdKeywordRequest struct {
-	Status string `json:"status"`
+	Status *string `json:"status,omitempty"`
+	// Max CPC bid for this keyword, in the ad account currency. Takes effect only under Manual CPC bidding.
+	CpcBid *float32 `json:"cpcBid,omitempty"`
 }
-
-type _UpdateAdKeywordRequest UpdateAdKeywordRequest
 
 // NewUpdateAdKeywordRequest instantiates a new UpdateAdKeywordRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpdateAdKeywordRequest(status string) *UpdateAdKeywordRequest {
+func NewUpdateAdKeywordRequest() *UpdateAdKeywordRequest {
 	this := UpdateAdKeywordRequest{}
-	this.Status = status
 	return &this
 }
 
@@ -45,28 +42,68 @@ func NewUpdateAdKeywordRequestWithDefaults() *UpdateAdKeywordRequest {
 	return &this
 }
 
-// GetStatus returns the Status field value
+// GetStatus returns the Status field value if set, zero value otherwise.
 func (o *UpdateAdKeywordRequest) GetStatus() string {
-	if o == nil {
+	if o == nil || IsNil(o.Status) {
 		var ret string
 		return ret
 	}
-
-	return o.Status
+	return *o.Status
 }
 
-// GetStatusOk returns a tuple with the Status field value
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UpdateAdKeywordRequest) GetStatusOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Status) {
 		return nil, false
 	}
-	return &o.Status, true
+	return o.Status, true
 }
 
-// SetStatus sets field value
+// HasStatus returns a boolean if a field has been set.
+func (o *UpdateAdKeywordRequest) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
 func (o *UpdateAdKeywordRequest) SetStatus(v string) {
-	o.Status = v
+	o.Status = &v
+}
+
+// GetCpcBid returns the CpcBid field value if set, zero value otherwise.
+func (o *UpdateAdKeywordRequest) GetCpcBid() float32 {
+	if o == nil || IsNil(o.CpcBid) {
+		var ret float32
+		return ret
+	}
+	return *o.CpcBid
+}
+
+// GetCpcBidOk returns a tuple with the CpcBid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdKeywordRequest) GetCpcBidOk() (*float32, bool) {
+	if o == nil || IsNil(o.CpcBid) {
+		return nil, false
+	}
+	return o.CpcBid, true
+}
+
+// HasCpcBid returns a boolean if a field has been set.
+func (o *UpdateAdKeywordRequest) HasCpcBid() bool {
+	if o != nil && !IsNil(o.CpcBid) {
+		return true
+	}
+
+	return false
+}
+
+// SetCpcBid gets a reference to the given float32 and assigns it to the CpcBid field.
+func (o *UpdateAdKeywordRequest) SetCpcBid(v float32) {
+	o.CpcBid = &v
 }
 
 func (o UpdateAdKeywordRequest) MarshalJSON() ([]byte, error) {
@@ -79,45 +116,13 @@ func (o UpdateAdKeywordRequest) MarshalJSON() ([]byte, error) {
 
 func (o UpdateAdKeywordRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["status"] = o.Status
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.CpcBid) {
+		toSerialize["cpcBid"] = o.CpcBid
+	}
 	return toSerialize, nil
-}
-
-func (o *UpdateAdKeywordRequest) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"status",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varUpdateAdKeywordRequest := _UpdateAdKeywordRequest{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varUpdateAdKeywordRequest)
-
-	if err != nil {
-		return err
-	}
-
-	*o = UpdateAdKeywordRequest(varUpdateAdKeywordRequest)
-
-	return err
 }
 
 type NullableUpdateAdKeywordRequest struct {

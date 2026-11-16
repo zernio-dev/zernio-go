@@ -485,7 +485,7 @@ func main() {
 | `client.AdCampaignsAPI.UpdateAdCampaign(ctx)` | Update a campaign |
 | `client.AdCampaignsAPI.UpdateAdCampaignStatus(ctx)` | Pause or resume a campaign |
 | `client.AdCampaignsAPI.UpdateAdGroupAssets(ctx)` | Update ad-group assets |
-| `client.AdCampaignsAPI.UpdateAdKeyword(ctx)` | Pause or enable a Search keyword |
+| `client.AdCampaignsAPI.UpdateAdKeyword(ctx)` | Update a Search keyword |
 | `client.AdCampaignsAPI.UpdateAdSet(ctx)` | Update an ad set |
 | `client.AdCampaignsAPI.UpdateAdSetStatus(ctx)` | Pause or resume a single ad set |
 | `client.AdCampaignsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |

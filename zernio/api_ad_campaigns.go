@@ -11729,12 +11729,15 @@ func (r AdCampaignsAPIUpdateAdKeywordRequest) Execute() (*UpdateAdKeyword200Resp
 }
 
 /*
-UpdateAdKeyword Pause or enable a Search keyword
+UpdateAdKeyword Update a Search keyword
 
-Pauses or re-enables a single Google Search keyword.
+Pauses, re-enables or sets the bid of a single Google Search keyword. Send `status`, `cpcBid` or both.
 
-Changes `ad_group_criterion.status` for one keyword criterion (M.140).
-Negative keywords have no status on Google and cannot be paused or enabled.
+Changes `ad_group_criterion.status` (M.140) and `ad_group_criterion.cpc_bid_micros` for one keyword criterion.
+
+`cpcBid` is in the ad account currency and takes effect only under Manual CPC bidding. A keyword with no bid of its own reads back `cpcBid: null` and uses its ad group bid.
+
+Negative keywords have no status or bid on Google and cannot be paused, enabled or given a bid.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param keywordId Zernio keyword ID (`id`), or Google's native `{adSetId}~{platformCriterionId}` (the tail of `resourceName`, e.g. 1234567890~987654321). A bare criterion id is rejected because it is only unique within its ad group.
@@ -12256,14 +12259,14 @@ func (a *AdCampaignsAPIService) UpdateAdSetStatusExecute(r AdCampaignsAPIUpdateA
 }
 
 type AdCampaignsAPIUpdateAdStatusRequest struct {
-	ctx                    context.Context
-	ApiService             *AdCampaignsAPIService
-	adId                   string
-	updateAdKeywordRequest *UpdateAdKeywordRequest
+	ctx                   context.Context
+	ApiService            *AdCampaignsAPIService
+	adId                  string
+	updateAdStatusRequest *UpdateAdStatusRequest
 }
 
-func (r AdCampaignsAPIUpdateAdStatusRequest) UpdateAdKeywordRequest(updateAdKeywordRequest UpdateAdKeywordRequest) AdCampaignsAPIUpdateAdStatusRequest {
-	r.updateAdKeywordRequest = &updateAdKeywordRequest
+func (r AdCampaignsAPIUpdateAdStatusRequest) UpdateAdStatusRequest(updateAdStatusRequest UpdateAdStatusRequest) AdCampaignsAPIUpdateAdStatusRequest {
+	r.updateAdStatusRequest = &updateAdStatusRequest
 	return r
 }
 
@@ -12349,8 +12352,8 @@ func (a *AdCampaignsAPIService) UpdateAdStatusExecute(r AdCampaignsAPIUpdateAdSt
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.updateAdKeywordRequest == nil {
-		return localVarReturnValue, nil, reportError("updateAdKeywordRequest is required and must be specified")
+	if r.updateAdStatusRequest == nil {
+		return localVarReturnValue, nil, reportError("updateAdStatusRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -12371,7 +12374,7 @@ func (a *AdCampaignsAPIService) UpdateAdStatusExecute(r AdCampaignsAPIUpdateAdSt
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.updateAdKeywordRequest
+	localVarPostBody = r.updateAdStatusRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

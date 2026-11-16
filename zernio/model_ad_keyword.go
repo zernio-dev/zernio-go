@@ -45,6 +45,8 @@ type AdKeyword struct {
 	MatchType   *string        `json:"matchType,omitempty"`
 	Status      *string        `json:"status,omitempty"`
 	Negative    *bool          `json:"negative,omitempty"`
+	// Max CPC bid set on this keyword, in the ad account currency. Null when the keyword uses its ad group bid. Takes effect only under Manual CPC bidding.
+	CpcBid NullableFloat32 `json:"cpcBid,omitempty"`
 	// Deprecated, use `quality.score`. Google Quality Score, 1-10. Null when unrated.
 	QualityScore NullableInt32     `json:"qualityScore,omitempty"`
 	Quality      *AdKeywordQuality `json:"quality,omitempty"`
@@ -658,6 +660,49 @@ func (o *AdKeyword) SetNegative(v bool) {
 	o.Negative = &v
 }
 
+// GetCpcBid returns the CpcBid field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdKeyword) GetCpcBid() float32 {
+	if o == nil || IsNil(o.CpcBid.Get()) {
+		var ret float32
+		return ret
+	}
+	return *o.CpcBid.Get()
+}
+
+// GetCpcBidOk returns a tuple with the CpcBid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdKeyword) GetCpcBidOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CpcBid.Get(), o.CpcBid.IsSet()
+}
+
+// HasCpcBid returns a boolean if a field has been set.
+func (o *AdKeyword) HasCpcBid() bool {
+	if o != nil && o.CpcBid.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCpcBid gets a reference to the given NullableFloat32 and assigns it to the CpcBid field.
+func (o *AdKeyword) SetCpcBid(v float32) {
+	o.CpcBid.Set(&v)
+}
+
+// SetCpcBidNil sets the value for CpcBid to be an explicit nil
+func (o *AdKeyword) SetCpcBidNil() {
+	o.CpcBid.Set(nil)
+}
+
+// UnsetCpcBid ensures that no value is present for CpcBid, not even an explicit nil
+func (o *AdKeyword) UnsetCpcBid() {
+	o.CpcBid.Unset()
+}
+
 // GetQualityScore returns the QualityScore field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AdKeyword) GetQualityScore() int32 {
 	if o == nil || IsNil(o.QualityScore.Get()) {
@@ -868,6 +913,9 @@ func (o AdKeyword) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Negative) {
 		toSerialize["negative"] = o.Negative
+	}
+	if o.CpcBid.IsSet() {
+		toSerialize["cpcBid"] = o.CpcBid.Get()
 	}
 	if o.QualityScore.IsSet() {
 		toSerialize["qualityScore"] = o.QualityScore.Get()
