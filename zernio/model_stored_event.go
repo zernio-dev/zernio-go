@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.640.0
+API version: 1.641.0
 Contact: support@zernio.com
 */
 
@@ -39,11 +39,13 @@ type StoredEvent struct {
 	Zrn      NullableString       `json:"zrn,omitempty"`
 	ClickIds *StoredEventClickIds `json:"clickIds,omitempty"`
 	// Destinations the event was forwarded to.
-	DestinationsSent *int32         `json:"destinationsSent,omitempty"`
-	HasEmail         *bool          `json:"hasEmail,omitempty"`
-	HasPhone         *bool          `json:"hasPhone,omitempty"`
-	HasExternalId    *bool          `json:"hasExternalId,omitempty"`
-	Ad               *StoredEventAd `json:"ad,omitempty"`
+	DestinationsSent *int32 `json:"destinationsSent,omitempty"`
+	HasEmail         *bool  `json:"hasEmail,omitempty"`
+	HasPhone         *bool  `json:"hasPhone,omitempty"`
+	HasExternalId    *bool  `json:"hasExternalId,omitempty"`
+	// In a `GET /v1/events` page: the other copy of the same conversion, when a website tag (`web`) and a server send both stored it under different event ids (same event name, a shared identifier, at most 30 minutes apart). `null` otherwise, and always `null` from `GET /v1/events/{eventId}`.
+	PairedEventId NullableString `json:"pairedEventId,omitempty"`
+	Ad            *StoredEventAd `json:"ad,omitempty"`
 }
 
 // NewStoredEvent instantiates a new StoredEvent object
@@ -662,6 +664,49 @@ func (o *StoredEvent) SetHasExternalId(v bool) {
 	o.HasExternalId = &v
 }
 
+// GetPairedEventId returns the PairedEventId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *StoredEvent) GetPairedEventId() string {
+	if o == nil || IsNil(o.PairedEventId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PairedEventId.Get()
+}
+
+// GetPairedEventIdOk returns a tuple with the PairedEventId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *StoredEvent) GetPairedEventIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PairedEventId.Get(), o.PairedEventId.IsSet()
+}
+
+// HasPairedEventId returns a boolean if a field has been set.
+func (o *StoredEvent) HasPairedEventId() bool {
+	if o != nil && o.PairedEventId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPairedEventId gets a reference to the given NullableString and assigns it to the PairedEventId field.
+func (o *StoredEvent) SetPairedEventId(v string) {
+	o.PairedEventId.Set(&v)
+}
+
+// SetPairedEventIdNil sets the value for PairedEventId to be an explicit nil
+func (o *StoredEvent) SetPairedEventIdNil() {
+	o.PairedEventId.Set(nil)
+}
+
+// UnsetPairedEventId ensures that no value is present for PairedEventId, not even an explicit nil
+func (o *StoredEvent) UnsetPairedEventId() {
+	o.PairedEventId.Unset()
+}
+
 // GetAd returns the Ad field value if set, zero value otherwise.
 func (o *StoredEvent) GetAd() StoredEventAd {
 	if o == nil || IsNil(o.Ad) {
@@ -754,6 +799,9 @@ func (o StoredEvent) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.HasExternalId) {
 		toSerialize["hasExternalId"] = o.HasExternalId
+	}
+	if o.PairedEventId.IsSet() {
+		toSerialize["pairedEventId"] = o.PairedEventId.Get()
 	}
 	if !IsNil(o.Ad) {
 		toSerialize["ad"] = o.Ad

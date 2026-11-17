@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.640.0
+API version: 1.641.0
 Contact: support@zernio.com
 */
 
@@ -39,11 +39,13 @@ type ListEvents200ResponseEventsInner struct {
 	Zrn      *string              `json:"zrn,omitempty"`
 	ClickIds *StoredEventClickIds `json:"clickIds,omitempty"`
 	// Destinations the event was forwarded to.
-	DestinationsSent *int32         `json:"destinationsSent,omitempty"`
-	HasEmail         *bool          `json:"hasEmail,omitempty"`
-	HasPhone         *bool          `json:"hasPhone,omitempty"`
-	HasExternalId    *bool          `json:"hasExternalId,omitempty"`
-	Ad               *StoredEventAd `json:"ad,omitempty"`
+	DestinationsSent *int32 `json:"destinationsSent,omitempty"`
+	HasEmail         *bool  `json:"hasEmail,omitempty"`
+	HasPhone         *bool  `json:"hasPhone,omitempty"`
+	HasExternalId    *bool  `json:"hasExternalId,omitempty"`
+	// In a `GET /v1/events` page: the other copy of the same conversion, when a website tag (`web`) and a server send both stored it under different event ids (same event name, a shared identifier, at most 30 minutes apart). `null` otherwise, and always `null` from `GET /v1/events/{eventId}`.
+	PairedEventId *string        `json:"pairedEventId,omitempty"`
+	Ad            *StoredEventAd `json:"ad,omitempty"`
 	// Each destination the event was forwarded to, with its latest send status. The full detail is on GET /v1/events/{eventId}.
 	Deliveries []ListEvents200ResponseEventsInnerAllOfDeliveriesInner `json:"deliveries,omitempty"`
 }
@@ -609,6 +611,38 @@ func (o *ListEvents200ResponseEventsInner) SetHasExternalId(v bool) {
 	o.HasExternalId = &v
 }
 
+// GetPairedEventId returns the PairedEventId field value if set, zero value otherwise.
+func (o *ListEvents200ResponseEventsInner) GetPairedEventId() string {
+	if o == nil || IsNil(o.PairedEventId) {
+		var ret string
+		return ret
+	}
+	return *o.PairedEventId
+}
+
+// GetPairedEventIdOk returns a tuple with the PairedEventId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListEvents200ResponseEventsInner) GetPairedEventIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PairedEventId) {
+		return nil, false
+	}
+	return o.PairedEventId, true
+}
+
+// HasPairedEventId returns a boolean if a field has been set.
+func (o *ListEvents200ResponseEventsInner) HasPairedEventId() bool {
+	if o != nil && !IsNil(o.PairedEventId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPairedEventId gets a reference to the given string and assigns it to the PairedEventId field.
+func (o *ListEvents200ResponseEventsInner) SetPairedEventId(v string) {
+	o.PairedEventId = &v
+}
+
 // GetAd returns the Ad field value if set, zero value otherwise.
 func (o *ListEvents200ResponseEventsInner) GetAd() StoredEventAd {
 	if o == nil || IsNil(o.Ad) {
@@ -733,6 +767,9 @@ func (o ListEvents200ResponseEventsInner) ToMap() (map[string]interface{}, error
 	}
 	if !IsNil(o.HasExternalId) {
 		toSerialize["hasExternalId"] = o.HasExternalId
+	}
+	if !IsNil(o.PairedEventId) {
+		toSerialize["pairedEventId"] = o.PairedEventId
 	}
 	if !IsNil(o.Ad) {
 		toSerialize["ad"] = o.Ad
