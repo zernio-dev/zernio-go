@@ -22,10 +22,13 @@ var _ MappedNullable = &AdRuleObjectEvaluation{}
 
 // AdRuleObjectEvaluation struct for AdRuleObjectEvaluation
 type AdRuleObjectEvaluation struct {
-	// Platform ID of the campaign or ad set.
-	Id         string         `json:"id"`
+	// Platform ID of the campaign, ad set or ad. A keyword is `{adGroupId}~{criterionId}`, a search term `{adGroupId}~{term}`.
+	Id string `json:"id"`
+	// The object's name: the keyword text or the search term.
 	Name       string         `json:"name"`
 	CampaignId NullableString `json:"campaignId"`
+	// Absent on runs recorded before November 2026.
+	CampaignName NullableString `json:"campaignName,omitempty"`
 	// True when every condition holds.
 	Matched bool `json:"matched"`
 	// For a rule with groups: the group this campaign was judged in. `matched` and `conditions` are the group's.
@@ -131,6 +134,49 @@ func (o *AdRuleObjectEvaluation) GetCampaignIdOk() (*string, bool) {
 // SetCampaignId sets field value
 func (o *AdRuleObjectEvaluation) SetCampaignId(v string) {
 	o.CampaignId.Set(&v)
+}
+
+// GetCampaignName returns the CampaignName field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdRuleObjectEvaluation) GetCampaignName() string {
+	if o == nil || IsNil(o.CampaignName.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CampaignName.Get()
+}
+
+// GetCampaignNameOk returns a tuple with the CampaignName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdRuleObjectEvaluation) GetCampaignNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CampaignName.Get(), o.CampaignName.IsSet()
+}
+
+// HasCampaignName returns a boolean if a field has been set.
+func (o *AdRuleObjectEvaluation) HasCampaignName() bool {
+	if o != nil && o.CampaignName.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignName gets a reference to the given NullableString and assigns it to the CampaignName field.
+func (o *AdRuleObjectEvaluation) SetCampaignName(v string) {
+	o.CampaignName.Set(&v)
+}
+
+// SetCampaignNameNil sets the value for CampaignName to be an explicit nil
+func (o *AdRuleObjectEvaluation) SetCampaignNameNil() {
+	o.CampaignName.Set(nil)
+}
+
+// UnsetCampaignName ensures that no value is present for CampaignName, not even an explicit nil
+func (o *AdRuleObjectEvaluation) UnsetCampaignName() {
+	o.CampaignName.Unset()
 }
 
 // GetMatched returns the Matched field value
@@ -258,6 +304,9 @@ func (o AdRuleObjectEvaluation) ToMap() (map[string]interface{}, error) {
 	toSerialize["id"] = o.Id
 	toSerialize["name"] = o.Name
 	toSerialize["campaignId"] = o.CampaignId.Get()
+	if o.CampaignName.IsSet() {
+		toSerialize["campaignName"] = o.CampaignName.Get()
+	}
 	toSerialize["matched"] = o.Matched
 	if !IsNil(o.Group) {
 		toSerialize["group"] = o.Group

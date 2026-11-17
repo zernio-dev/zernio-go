@@ -25,7 +25,7 @@ type WebhookPayloadAdRuleTriggeredRule struct {
 	// Zernio ad rule ID.
 	Id   string `json:"id"`
 	Name string `json:"name"`
-	// Whether the rule evaluates campaigns, ad sets or ads.
+	// Whether the rule evaluates campaigns, ad sets, ads, Google keywords or Google search terms.
 	Level string `json:"level"`
 	// Platform-native ad account ID the rule watches.
 	PlatformAdAccountId string `json:"platformAdAccountId"`

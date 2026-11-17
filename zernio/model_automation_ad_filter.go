@@ -25,6 +25,9 @@ type AutomationAdFilter struct {
 	AutomationAdFilterOneOf3 *AutomationAdFilterOneOf3
 	AutomationAdFilterOneOf4 *AutomationAdFilterOneOf4
 	AutomationAdFilterOneOf5 *AutomationAdFilterOneOf5
+	AutomationAdFilterOneOf6 *AutomationAdFilterOneOf6
+	AutomationAdFilterOneOf7 *AutomationAdFilterOneOf7
+	AutomationAdFilterOneOf8 *AutomationAdFilterOneOf8
 }
 
 // AutomationAdFilterOneOfAsAutomationAdFilter is a convenience function that returns AutomationAdFilterOneOf wrapped in AutomationAdFilter
@@ -66,6 +69,27 @@ func AutomationAdFilterOneOf4AsAutomationAdFilter(v *AutomationAdFilterOneOf4) A
 func AutomationAdFilterOneOf5AsAutomationAdFilter(v *AutomationAdFilterOneOf5) AutomationAdFilter {
 	return AutomationAdFilter{
 		AutomationAdFilterOneOf5: v,
+	}
+}
+
+// AutomationAdFilterOneOf6AsAutomationAdFilter is a convenience function that returns AutomationAdFilterOneOf6 wrapped in AutomationAdFilter
+func AutomationAdFilterOneOf6AsAutomationAdFilter(v *AutomationAdFilterOneOf6) AutomationAdFilter {
+	return AutomationAdFilter{
+		AutomationAdFilterOneOf6: v,
+	}
+}
+
+// AutomationAdFilterOneOf7AsAutomationAdFilter is a convenience function that returns AutomationAdFilterOneOf7 wrapped in AutomationAdFilter
+func AutomationAdFilterOneOf7AsAutomationAdFilter(v *AutomationAdFilterOneOf7) AutomationAdFilter {
+	return AutomationAdFilter{
+		AutomationAdFilterOneOf7: v,
+	}
+}
+
+// AutomationAdFilterOneOf8AsAutomationAdFilter is a convenience function that returns AutomationAdFilterOneOf8 wrapped in AutomationAdFilter
+func AutomationAdFilterOneOf8AsAutomationAdFilter(v *AutomationAdFilterOneOf8) AutomationAdFilter {
+	return AutomationAdFilter{
+		AutomationAdFilterOneOf8: v,
 	}
 }
 
@@ -175,6 +199,57 @@ func (dst *AutomationAdFilter) UnmarshalJSON(data []byte) error {
 		dst.AutomationAdFilterOneOf5 = nil
 	}
 
+	// try to unmarshal data into AutomationAdFilterOneOf6
+	err = newStrictDecoder(data).Decode(&dst.AutomationAdFilterOneOf6)
+	if err == nil {
+		jsonAutomationAdFilterOneOf6, _ := json.Marshal(dst.AutomationAdFilterOneOf6)
+		if string(jsonAutomationAdFilterOneOf6) == "{}" { // empty struct
+			dst.AutomationAdFilterOneOf6 = nil
+		} else {
+			if err = validator.Validate(dst.AutomationAdFilterOneOf6); err != nil {
+				dst.AutomationAdFilterOneOf6 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AutomationAdFilterOneOf6 = nil
+	}
+
+	// try to unmarshal data into AutomationAdFilterOneOf7
+	err = newStrictDecoder(data).Decode(&dst.AutomationAdFilterOneOf7)
+	if err == nil {
+		jsonAutomationAdFilterOneOf7, _ := json.Marshal(dst.AutomationAdFilterOneOf7)
+		if string(jsonAutomationAdFilterOneOf7) == "{}" { // empty struct
+			dst.AutomationAdFilterOneOf7 = nil
+		} else {
+			if err = validator.Validate(dst.AutomationAdFilterOneOf7); err != nil {
+				dst.AutomationAdFilterOneOf7 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AutomationAdFilterOneOf7 = nil
+	}
+
+	// try to unmarshal data into AutomationAdFilterOneOf8
+	err = newStrictDecoder(data).Decode(&dst.AutomationAdFilterOneOf8)
+	if err == nil {
+		jsonAutomationAdFilterOneOf8, _ := json.Marshal(dst.AutomationAdFilterOneOf8)
+		if string(jsonAutomationAdFilterOneOf8) == "{}" { // empty struct
+			dst.AutomationAdFilterOneOf8 = nil
+		} else {
+			if err = validator.Validate(dst.AutomationAdFilterOneOf8); err != nil {
+				dst.AutomationAdFilterOneOf8 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AutomationAdFilterOneOf8 = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.AutomationAdFilterOneOf = nil
@@ -183,6 +258,9 @@ func (dst *AutomationAdFilter) UnmarshalJSON(data []byte) error {
 		dst.AutomationAdFilterOneOf3 = nil
 		dst.AutomationAdFilterOneOf4 = nil
 		dst.AutomationAdFilterOneOf5 = nil
+		dst.AutomationAdFilterOneOf6 = nil
+		dst.AutomationAdFilterOneOf7 = nil
+		dst.AutomationAdFilterOneOf8 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(AutomationAdFilter)")
 	} else if match == 1 {
@@ -218,6 +296,18 @@ func (src AutomationAdFilter) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AutomationAdFilterOneOf5)
 	}
 
+	if src.AutomationAdFilterOneOf6 != nil {
+		return json.Marshal(&src.AutomationAdFilterOneOf6)
+	}
+
+	if src.AutomationAdFilterOneOf7 != nil {
+		return json.Marshal(&src.AutomationAdFilterOneOf7)
+	}
+
+	if src.AutomationAdFilterOneOf8 != nil {
+		return json.Marshal(&src.AutomationAdFilterOneOf8)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -250,6 +340,18 @@ func (obj *AutomationAdFilter) GetActualInstance() interface{} {
 		return obj.AutomationAdFilterOneOf5
 	}
 
+	if obj.AutomationAdFilterOneOf6 != nil {
+		return obj.AutomationAdFilterOneOf6
+	}
+
+	if obj.AutomationAdFilterOneOf7 != nil {
+		return obj.AutomationAdFilterOneOf7
+	}
+
+	if obj.AutomationAdFilterOneOf8 != nil {
+		return obj.AutomationAdFilterOneOf8
+	}
+
 	// all schemas are nil
 	return nil
 }
@@ -278,6 +380,18 @@ func (obj AutomationAdFilter) GetActualInstanceValue() interface{} {
 
 	if obj.AutomationAdFilterOneOf5 != nil {
 		return *obj.AutomationAdFilterOneOf5
+	}
+
+	if obj.AutomationAdFilterOneOf6 != nil {
+		return *obj.AutomationAdFilterOneOf6
+	}
+
+	if obj.AutomationAdFilterOneOf7 != nil {
+		return *obj.AutomationAdFilterOneOf7
+	}
+
+	if obj.AutomationAdFilterOneOf8 != nil {
+		return *obj.AutomationAdFilterOneOf8
 	}
 
 	// all schemas are nil

@@ -19,12 +19,22 @@ import (
 
 // AdRuleFiltersInner - struct for AdRuleFiltersInner
 type AdRuleFiltersInner struct {
-	BudgetLevel     *BudgetLevel
-	ChannelType     *ChannelType
-	DaysLive        *DaysLive
-	DaysSinceChange *DaysSinceChange
-	Ids             *Ids
-	NameOrGoal      *NameOrGoal
+	BlockedByANegative *BlockedByANegative
+	BudgetLevel        *BudgetLevel
+	ChannelType        *ChannelType
+	DaysLive           *DaysLive
+	DaysSinceChange    *DaysSinceChange
+	Ids                *Ids
+	MatchType          *MatchType
+	NameOrGoal         *NameOrGoal
+	SearchTermStatus   *SearchTermStatus
+}
+
+// BlockedByANegativeAsAdRuleFiltersInner is a convenience function that returns BlockedByANegative wrapped in AdRuleFiltersInner
+func BlockedByANegativeAsAdRuleFiltersInner(v *BlockedByANegative) AdRuleFiltersInner {
+	return AdRuleFiltersInner{
+		BlockedByANegative: v,
+	}
 }
 
 // BudgetLevelAsAdRuleFiltersInner is a convenience function that returns BudgetLevel wrapped in AdRuleFiltersInner
@@ -62,6 +72,13 @@ func IdsAsAdRuleFiltersInner(v *Ids) AdRuleFiltersInner {
 	}
 }
 
+// MatchTypeAsAdRuleFiltersInner is a convenience function that returns MatchType wrapped in AdRuleFiltersInner
+func MatchTypeAsAdRuleFiltersInner(v *MatchType) AdRuleFiltersInner {
+	return AdRuleFiltersInner{
+		MatchType: v,
+	}
+}
+
 // NameOrGoalAsAdRuleFiltersInner is a convenience function that returns NameOrGoal wrapped in AdRuleFiltersInner
 func NameOrGoalAsAdRuleFiltersInner(v *NameOrGoal) AdRuleFiltersInner {
 	return AdRuleFiltersInner{
@@ -69,10 +86,34 @@ func NameOrGoalAsAdRuleFiltersInner(v *NameOrGoal) AdRuleFiltersInner {
 	}
 }
 
+// SearchTermStatusAsAdRuleFiltersInner is a convenience function that returns SearchTermStatus wrapped in AdRuleFiltersInner
+func SearchTermStatusAsAdRuleFiltersInner(v *SearchTermStatus) AdRuleFiltersInner {
+	return AdRuleFiltersInner{
+		SearchTermStatus: v,
+	}
+}
+
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
+	// try to unmarshal data into BlockedByANegative
+	err = newStrictDecoder(data).Decode(&dst.BlockedByANegative)
+	if err == nil {
+		jsonBlockedByANegative, _ := json.Marshal(dst.BlockedByANegative)
+		if string(jsonBlockedByANegative) == "{}" { // empty struct
+			dst.BlockedByANegative = nil
+		} else {
+			if err = validator.Validate(dst.BlockedByANegative); err != nil {
+				dst.BlockedByANegative = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.BlockedByANegative = nil
+	}
+
 	// try to unmarshal data into BudgetLevel
 	err = newStrictDecoder(data).Decode(&dst.BudgetLevel)
 	if err == nil {
@@ -158,6 +199,23 @@ func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 		dst.Ids = nil
 	}
 
+	// try to unmarshal data into MatchType
+	err = newStrictDecoder(data).Decode(&dst.MatchType)
+	if err == nil {
+		jsonMatchType, _ := json.Marshal(dst.MatchType)
+		if string(jsonMatchType) == "{}" { // empty struct
+			dst.MatchType = nil
+		} else {
+			if err = validator.Validate(dst.MatchType); err != nil {
+				dst.MatchType = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.MatchType = nil
+	}
+
 	// try to unmarshal data into NameOrGoal
 	err = newStrictDecoder(data).Decode(&dst.NameOrGoal)
 	if err == nil {
@@ -175,14 +233,34 @@ func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 		dst.NameOrGoal = nil
 	}
 
+	// try to unmarshal data into SearchTermStatus
+	err = newStrictDecoder(data).Decode(&dst.SearchTermStatus)
+	if err == nil {
+		jsonSearchTermStatus, _ := json.Marshal(dst.SearchTermStatus)
+		if string(jsonSearchTermStatus) == "{}" { // empty struct
+			dst.SearchTermStatus = nil
+		} else {
+			if err = validator.Validate(dst.SearchTermStatus); err != nil {
+				dst.SearchTermStatus = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.SearchTermStatus = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
+		dst.BlockedByANegative = nil
 		dst.BudgetLevel = nil
 		dst.ChannelType = nil
 		dst.DaysLive = nil
 		dst.DaysSinceChange = nil
 		dst.Ids = nil
+		dst.MatchType = nil
 		dst.NameOrGoal = nil
+		dst.SearchTermStatus = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(AdRuleFiltersInner)")
 	} else if match == 1 {
@@ -194,6 +272,10 @@ func (dst *AdRuleFiltersInner) UnmarshalJSON(data []byte) error {
 
 // Marshal data from the first non-nil pointers in the struct to JSON
 func (src AdRuleFiltersInner) MarshalJSON() ([]byte, error) {
+	if src.BlockedByANegative != nil {
+		return json.Marshal(&src.BlockedByANegative)
+	}
+
 	if src.BudgetLevel != nil {
 		return json.Marshal(&src.BudgetLevel)
 	}
@@ -214,8 +296,16 @@ func (src AdRuleFiltersInner) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.Ids)
 	}
 
+	if src.MatchType != nil {
+		return json.Marshal(&src.MatchType)
+	}
+
 	if src.NameOrGoal != nil {
 		return json.Marshal(&src.NameOrGoal)
+	}
+
+	if src.SearchTermStatus != nil {
+		return json.Marshal(&src.SearchTermStatus)
 	}
 
 	return nil, nil // no data in oneOf schemas
@@ -226,6 +316,10 @@ func (obj *AdRuleFiltersInner) GetActualInstance() interface{} {
 	if obj == nil {
 		return nil
 	}
+	if obj.BlockedByANegative != nil {
+		return obj.BlockedByANegative
+	}
+
 	if obj.BudgetLevel != nil {
 		return obj.BudgetLevel
 	}
@@ -246,8 +340,16 @@ func (obj *AdRuleFiltersInner) GetActualInstance() interface{} {
 		return obj.Ids
 	}
 
+	if obj.MatchType != nil {
+		return obj.MatchType
+	}
+
 	if obj.NameOrGoal != nil {
 		return obj.NameOrGoal
+	}
+
+	if obj.SearchTermStatus != nil {
+		return obj.SearchTermStatus
 	}
 
 	// all schemas are nil
@@ -256,6 +358,10 @@ func (obj *AdRuleFiltersInner) GetActualInstance() interface{} {
 
 // Get the actual instance value
 func (obj AdRuleFiltersInner) GetActualInstanceValue() interface{} {
+	if obj.BlockedByANegative != nil {
+		return *obj.BlockedByANegative
+	}
+
 	if obj.BudgetLevel != nil {
 		return *obj.BudgetLevel
 	}
@@ -276,8 +382,16 @@ func (obj AdRuleFiltersInner) GetActualInstanceValue() interface{} {
 		return *obj.Ids
 	}
 
+	if obj.MatchType != nil {
+		return *obj.MatchType
+	}
+
 	if obj.NameOrGoal != nil {
 		return *obj.NameOrGoal
+	}
+
+	if obj.SearchTermStatus != nil {
+		return *obj.SearchTermStatus
 	}
 
 	// all schemas are nil

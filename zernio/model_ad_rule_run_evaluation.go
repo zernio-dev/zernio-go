@@ -27,10 +27,13 @@ type AdRuleRunEvaluation struct {
 	TimezoneAssumed *bool                    `json:"timezoneAssumed,omitempty"`
 	Currency        NullableString           `json:"currency,omitempty"`
 	// Where the run's hourly windows ended. Absent on runs recorded before November 2026.
-	HourlyThrough NullableTime                      `json:"hourlyThrough,omitempty"`
-	Matched       []AdRuleObjectEvaluation          `json:"matched,omitempty"`
-	Actions       []AdRuleRunEvaluationActionsInner `json:"actions,omitempty"`
-	Notification  *AdRuleRunEvaluationNotification  `json:"notification,omitempty"`
+	HourlyThrough NullableTime `json:"hourlyThrough,omitempty"`
+	// The matched objects, at most 200. `matchedTotal` has the full count.
+	Matched []AdRuleObjectEvaluation `json:"matched,omitempty"`
+	// How many objects matched, including those past the 200 recorded. Absent on runs recorded before November 2026.
+	MatchedTotal *int32                            `json:"matchedTotal,omitempty"`
+	Actions      []AdRuleRunEvaluationActionsInner `json:"actions,omitempty"`
+	Notification *AdRuleRunEvaluationNotification  `json:"notification,omitempty"`
 }
 
 // NewAdRuleRunEvaluation instantiates a new AdRuleRunEvaluation object
@@ -296,6 +299,38 @@ func (o *AdRuleRunEvaluation) SetMatched(v []AdRuleObjectEvaluation) {
 	o.Matched = v
 }
 
+// GetMatchedTotal returns the MatchedTotal field value if set, zero value otherwise.
+func (o *AdRuleRunEvaluation) GetMatchedTotal() int32 {
+	if o == nil || IsNil(o.MatchedTotal) {
+		var ret int32
+		return ret
+	}
+	return *o.MatchedTotal
+}
+
+// GetMatchedTotalOk returns a tuple with the MatchedTotal field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleRunEvaluation) GetMatchedTotalOk() (*int32, bool) {
+	if o == nil || IsNil(o.MatchedTotal) {
+		return nil, false
+	}
+	return o.MatchedTotal, true
+}
+
+// HasMatchedTotal returns a boolean if a field has been set.
+func (o *AdRuleRunEvaluation) HasMatchedTotal() bool {
+	if o != nil && !IsNil(o.MatchedTotal) {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchedTotal gets a reference to the given int32 and assigns it to the MatchedTotal field.
+func (o *AdRuleRunEvaluation) SetMatchedTotal(v int32) {
+	o.MatchedTotal = &v
+}
+
 // GetActions returns the Actions field value if set, zero value otherwise.
 func (o *AdRuleRunEvaluation) GetActions() []AdRuleRunEvaluationActionsInner {
 	if o == nil || IsNil(o.Actions) {
@@ -390,6 +425,9 @@ func (o AdRuleRunEvaluation) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Matched) {
 		toSerialize["matched"] = o.Matched
+	}
+	if !IsNil(o.MatchedTotal) {
+		toSerialize["matchedTotal"] = o.MatchedTotal
 	}
 	if !IsNil(o.Actions) {
 		toSerialize["actions"] = o.Actions
