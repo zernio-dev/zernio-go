@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.647.1
+API version: 1.648.0
 Contact: support@zernio.com
 */
 
@@ -30,10 +30,11 @@ type ImapDiscovery struct {
 	Smtp       *ImapDiscoverySmtp `json:"smtp,omitempty"`
 	Auth       *ImapDiscoveryAuth `json:"auth,omitempty"`
 	// What to switch on at the provider first, such as IMAP access on GMX or Yandex.
-	Preflight         []ImapDiscoveryPreflightInner `json:"preflight,omitempty"`
-	ReconnectCause    NullableString                `json:"reconnectCause,omitempty"`
-	Reason            NullableString                `json:"reason,omitempty"`
-	UnsupportedReason NullableString                `json:"unsupportedReason,omitempty"`
+	Preflight      []ImapDiscoveryPreflightInner `json:"preflight,omitempty"`
+	ReconnectCause NullableString                `json:"reconnectCause,omitempty"`
+	Reason         NullableString                `json:"reason,omitempty"`
+	// proton_requires_bridge: Proton Mail only works through its local bridge. forwarding_only: the domain forwards mail (Cloudflare Email Routing) and stores none, so connect the mailbox it forwards to.
+	UnsupportedReason NullableString `json:"unsupportedReason,omitempty"`
 	// Google only: Gmail over IMAP with an app password, for accounts whose admin blocks Google sign-in for other apps.
 	AppPasswordFallback map[string]interface{} `json:"appPasswordFallback,omitempty"`
 }
