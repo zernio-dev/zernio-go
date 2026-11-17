@@ -2977,6 +2977,7 @@ model_tracking_site_custom_hostname.go
 model_tracking_site_custom_hostname_dns_record.go
 model_tracking_site_install.go
 model_tracking_site_period_totals.go
+model_tracking_site_proxy.go
 model_tracking_site_setup.go
 model_tracking_tag.go
 model_tracking_tag_diagnostic.go

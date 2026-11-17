@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.639.0
+API version: 1.640.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,7 @@ type TrackingSite struct {
 	SiteKey        *string                     `json:"siteKey,omitempty"`
 	Domains        []string                    `json:"domains,omitempty"`
 	CustomHostname *TrackingSiteCustomHostname `json:"customHostname,omitempty"`
+	Proxy          *TrackingSiteProxy          `json:"proxy,omitempty"`
 	ConsentMode    *TrackingSiteConsentMode    `json:"consentMode,omitempty"`
 	// One per setup step: `script` for the install, then one per ad account the site sends to, keyed by its platform and ids.
 	Checks    []TrackingSiteChecksInner `json:"checks,omitempty"`
@@ -345,6 +346,38 @@ func (o *TrackingSite) SetCustomHostname(v TrackingSiteCustomHostname) {
 	o.CustomHostname = &v
 }
 
+// GetProxy returns the Proxy field value if set, zero value otherwise.
+func (o *TrackingSite) GetProxy() TrackingSiteProxy {
+	if o == nil || IsNil(o.Proxy) {
+		var ret TrackingSiteProxy
+		return ret
+	}
+	return *o.Proxy
+}
+
+// GetProxyOk returns a tuple with the Proxy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingSite) GetProxyOk() (*TrackingSiteProxy, bool) {
+	if o == nil || IsNil(o.Proxy) {
+		return nil, false
+	}
+	return o.Proxy, true
+}
+
+// HasProxy returns a boolean if a field has been set.
+func (o *TrackingSite) HasProxy() bool {
+	if o != nil && !IsNil(o.Proxy) {
+		return true
+	}
+
+	return false
+}
+
+// SetProxy gets a reference to the given TrackingSiteProxy and assigns it to the Proxy field.
+func (o *TrackingSite) SetProxy(v TrackingSiteProxy) {
+	o.Proxy = &v
+}
+
 // GetConsentMode returns the ConsentMode field value if set, zero value otherwise.
 func (o *TrackingSite) GetConsentMode() TrackingSiteConsentMode {
 	if o == nil || IsNil(o.ConsentMode) {
@@ -541,6 +574,9 @@ func (o TrackingSite) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CustomHostname) {
 		toSerialize["customHostname"] = o.CustomHostname
+	}
+	if !IsNil(o.Proxy) {
+		toSerialize["proxy"] = o.Proxy
 	}
 	if !IsNil(o.ConsentMode) {
 		toSerialize["consentMode"] = o.ConsentMode

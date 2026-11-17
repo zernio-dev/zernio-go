@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.639.0
+API version: 1.640.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,9 @@ type UpdateTrackingSiteRequest struct {
 	Domains     []string                 `json:"domains,omitempty"`
 	ConsentMode *TrackingSiteConsentMode `json:"consentMode,omitempty"`
 	// A subdomain of one of the site's domains, never the domain itself. `null` removes it.
-	CustomHostname       NullableString `json:"customHostname,omitempty"`
+	CustomHostname NullableString `json:"customHostname,omitempty"`
+	// The path your server forwards to the collector, such as `/zt`. `null` removes it.
+	ProxyPath            NullableString `json:"proxyPath,omitempty" validate:"regexp=^\\/[A-Za-z0-9_-]{1,32}$"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -187,6 +189,49 @@ func (o *UpdateTrackingSiteRequest) UnsetCustomHostname() {
 	o.CustomHostname.Unset()
 }
 
+// GetProxyPath returns the ProxyPath field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateTrackingSiteRequest) GetProxyPath() string {
+	if o == nil || IsNil(o.ProxyPath.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ProxyPath.Get()
+}
+
+// GetProxyPathOk returns a tuple with the ProxyPath field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateTrackingSiteRequest) GetProxyPathOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ProxyPath.Get(), o.ProxyPath.IsSet()
+}
+
+// HasProxyPath returns a boolean if a field has been set.
+func (o *UpdateTrackingSiteRequest) HasProxyPath() bool {
+	if o != nil && o.ProxyPath.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetProxyPath gets a reference to the given NullableString and assigns it to the ProxyPath field.
+func (o *UpdateTrackingSiteRequest) SetProxyPath(v string) {
+	o.ProxyPath.Set(&v)
+}
+
+// SetProxyPathNil sets the value for ProxyPath to be an explicit nil
+func (o *UpdateTrackingSiteRequest) SetProxyPathNil() {
+	o.ProxyPath.Set(nil)
+}
+
+// UnsetProxyPath ensures that no value is present for ProxyPath, not even an explicit nil
+func (o *UpdateTrackingSiteRequest) UnsetProxyPath() {
+	o.ProxyPath.Unset()
+}
+
 func (o UpdateTrackingSiteRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -208,6 +253,9 @@ func (o UpdateTrackingSiteRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if o.CustomHostname.IsSet() {
 		toSerialize["customHostname"] = o.CustomHostname.Get()
+	}
+	if o.ProxyPath.IsSet() {
+		toSerialize["proxyPath"] = o.ProxyPath.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -235,6 +283,7 @@ func (o *UpdateTrackingSiteRequest) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "domains")
 		delete(additionalProperties, "consentMode")
 		delete(additionalProperties, "customHostname")
+		delete(additionalProperties, "proxyPath")
 		o.AdditionalProperties = additionalProperties
 	}
 
