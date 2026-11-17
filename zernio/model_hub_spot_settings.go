@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.645.0
+API version: 1.646.0
 Contact: support@zernio.com
 */
 
@@ -37,6 +37,9 @@ type HubSpotSettings struct {
 	LogMessages bool `json:"logMessages"`
 	// Whether Zernio keeps the delivery status (sent, delivered, read, played, failed) of logged outgoing messages up to date on their HubSpot timeline entries. Only applies while `logMessages` is on. Defaults to `true`.
 	LogDeliveryStatus bool `json:"logDeliveryStatus"`
+	// Values Zernio sets on contacts it creates, keyed by HubSpot internal property name, for properties the portal requires on create (for example `lifecyclestage: lead`). The contact's own name, email and phone win. Empty object when none.
+	ContactDefaults map[string]string        `json:"contactDefaults"`
+	SyncIssue       HubSpotSettingsSyncIssue `json:"syncIssue"`
 	// Whether Zernio sends closed-won deals as Purchase events to the profile's event destinations.
 	ReportDeals bool `json:"reportDeals"`
 	// Whether closed-won deals count as sales on the ad campaign that brought their contact, in campaign results and ad rules.
@@ -49,7 +52,7 @@ type _HubSpotSettings HubSpotSettings
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewHubSpotSettings(id string, platform string, hubId string, hubDomain NullableString, scopes []string, syncContacts bool, logMessages bool, logDeliveryStatus bool, reportDeals bool, useDealsAsResults bool) *HubSpotSettings {
+func NewHubSpotSettings(id string, platform string, hubId string, hubDomain NullableString, scopes []string, syncContacts bool, logMessages bool, logDeliveryStatus bool, contactDefaults map[string]string, syncIssue HubSpotSettingsSyncIssue, reportDeals bool, useDealsAsResults bool) *HubSpotSettings {
 	this := HubSpotSettings{}
 	this.Id = id
 	this.Platform = platform
@@ -59,6 +62,8 @@ func NewHubSpotSettings(id string, platform string, hubId string, hubDomain Null
 	this.SyncContacts = syncContacts
 	this.LogMessages = logMessages
 	this.LogDeliveryStatus = logDeliveryStatus
+	this.ContactDefaults = contactDefaults
+	this.SyncIssue = syncIssue
 	this.ReportDeals = reportDeals
 	this.UseDealsAsResults = useDealsAsResults
 	return &this
@@ -266,6 +271,54 @@ func (o *HubSpotSettings) SetLogDeliveryStatus(v bool) {
 	o.LogDeliveryStatus = v
 }
 
+// GetContactDefaults returns the ContactDefaults field value
+func (o *HubSpotSettings) GetContactDefaults() map[string]string {
+	if o == nil {
+		var ret map[string]string
+		return ret
+	}
+
+	return o.ContactDefaults
+}
+
+// GetContactDefaultsOk returns a tuple with the ContactDefaults field value
+// and a boolean to check if the value has been set.
+func (o *HubSpotSettings) GetContactDefaultsOk() (map[string]string, bool) {
+	if o == nil {
+		return map[string]string{}, false
+	}
+	return o.ContactDefaults, true
+}
+
+// SetContactDefaults sets field value
+func (o *HubSpotSettings) SetContactDefaults(v map[string]string) {
+	o.ContactDefaults = v
+}
+
+// GetSyncIssue returns the SyncIssue field value
+func (o *HubSpotSettings) GetSyncIssue() HubSpotSettingsSyncIssue {
+	if o == nil {
+		var ret HubSpotSettingsSyncIssue
+		return ret
+	}
+
+	return o.SyncIssue
+}
+
+// GetSyncIssueOk returns a tuple with the SyncIssue field value
+// and a boolean to check if the value has been set.
+func (o *HubSpotSettings) GetSyncIssueOk() (*HubSpotSettingsSyncIssue, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.SyncIssue, true
+}
+
+// SetSyncIssue sets field value
+func (o *HubSpotSettings) SetSyncIssue(v HubSpotSettingsSyncIssue) {
+	o.SyncIssue = v
+}
+
 // GetReportDeals returns the ReportDeals field value
 func (o *HubSpotSettings) GetReportDeals() bool {
 	if o == nil {
@@ -332,6 +385,8 @@ func (o HubSpotSettings) ToMap() (map[string]interface{}, error) {
 	toSerialize["syncContacts"] = o.SyncContacts
 	toSerialize["logMessages"] = o.LogMessages
 	toSerialize["logDeliveryStatus"] = o.LogDeliveryStatus
+	toSerialize["contactDefaults"] = o.ContactDefaults
+	toSerialize["syncIssue"] = o.SyncIssue
 	toSerialize["reportDeals"] = o.ReportDeals
 	toSerialize["useDealsAsResults"] = o.UseDealsAsResults
 	return toSerialize, nil
@@ -350,6 +405,8 @@ func (o *HubSpotSettings) UnmarshalJSON(data []byte) (err error) {
 		"syncContacts",
 		"logMessages",
 		"logDeliveryStatus",
+		"contactDefaults",
+		"syncIssue",
 		"reportDeals",
 		"useDealsAsResults",
 	}

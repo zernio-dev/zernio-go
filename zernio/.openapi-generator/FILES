@@ -1865,6 +1865,7 @@ model_hide_ad_comment_200_response.go
 model_hide_ad_comment_request.go
 model_hide_inbox_comment_200_response.go
 model_hub_spot_settings.go
+model_hub_spot_settings_sync_issue.go
 model_ids.go
 model_imap_connect_result.go
 model_imap_connect_result_account.go
