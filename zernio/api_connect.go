@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.630.3
+API version: 1.630.4
 Contact: support@zernio.com
 */
 
@@ -5115,7 +5115,7 @@ func (r ConnectAPIGetEmailConnectUrlRequest) Name(name string) ConnectAPIGetEmai
 	return r
 }
 
-// Opens the reconnect variant for an IMAP account: only the new password is asked for, and the accountId stays the same.
+// An IMAP, Google or Microsoft account on this profile to reconnect; its accountId stays the same. IMAP asks only for the new password. Google and Microsoft open that provider&#39;s sign-in with the address as the hint and the held areas asked again. Other platforms answer 400, unknown ids 404.
 func (r ConnectAPIGetEmailConnectUrlRequest) ReconnectAccountId(reconnectAccountId string) ConnectAPIGetEmailConnectUrlRequest {
 	r.reconnectAccountId = &reconnectAccountId
 	return r
