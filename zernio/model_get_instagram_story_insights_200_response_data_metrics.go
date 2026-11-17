@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.631.0
+API version: 1.632.0
 Contact: support@zernio.com
 */
 
@@ -43,6 +43,8 @@ type GetInstagramStoryInsights200ResponseDataMetrics struct {
 	Follows           int32 `json:"follows"`
 	Reposts           int32 `json:"reposts"`
 	TotalInteractions int32 `json:"totalInteractions"`
+	// Taps on links in the story (the link sticker). Facebook Login accounts only; always 0 for Instagram Login accounts. Taps on other stickers (mentions, hashtags, locations) are not reported by Meta.
+	LinkClicks int32 `json:"linkClicks"`
 }
 
 type _GetInstagramStoryInsights200ResponseDataMetrics GetInstagramStoryInsights200ResponseDataMetrics
@@ -51,7 +53,7 @@ type _GetInstagramStoryInsights200ResponseDataMetrics GetInstagramStoryInsights2
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetInstagramStoryInsights200ResponseDataMetrics(views int32, reach int32, replies int32, shares int32, navigation int32, tapsForward int32, tapsBack int32, exits int32, swipesForward int32, profileVisits int32, follows int32, reposts int32, totalInteractions int32) *GetInstagramStoryInsights200ResponseDataMetrics {
+func NewGetInstagramStoryInsights200ResponseDataMetrics(views int32, reach int32, replies int32, shares int32, navigation int32, tapsForward int32, tapsBack int32, exits int32, swipesForward int32, profileVisits int32, follows int32, reposts int32, totalInteractions int32, linkClicks int32) *GetInstagramStoryInsights200ResponseDataMetrics {
 	this := GetInstagramStoryInsights200ResponseDataMetrics{}
 	this.Views = views
 	this.Reach = reach
@@ -66,6 +68,7 @@ func NewGetInstagramStoryInsights200ResponseDataMetrics(views int32, reach int32
 	this.Follows = follows
 	this.Reposts = reposts
 	this.TotalInteractions = totalInteractions
+	this.LinkClicks = linkClicks
 	return &this
 }
 
@@ -389,6 +392,30 @@ func (o *GetInstagramStoryInsights200ResponseDataMetrics) SetTotalInteractions(v
 	o.TotalInteractions = v
 }
 
+// GetLinkClicks returns the LinkClicks field value
+func (o *GetInstagramStoryInsights200ResponseDataMetrics) GetLinkClicks() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.LinkClicks
+}
+
+// GetLinkClicksOk returns a tuple with the LinkClicks field value
+// and a boolean to check if the value has been set.
+func (o *GetInstagramStoryInsights200ResponseDataMetrics) GetLinkClicksOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.LinkClicks, true
+}
+
+// SetLinkClicks sets field value
+func (o *GetInstagramStoryInsights200ResponseDataMetrics) SetLinkClicks(v int32) {
+	o.LinkClicks = v
+}
+
 func (o GetInstagramStoryInsights200ResponseDataMetrics) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -412,6 +439,7 @@ func (o GetInstagramStoryInsights200ResponseDataMetrics) ToMap() (map[string]int
 	toSerialize["follows"] = o.Follows
 	toSerialize["reposts"] = o.Reposts
 	toSerialize["totalInteractions"] = o.TotalInteractions
+	toSerialize["linkClicks"] = o.LinkClicks
 	return toSerialize, nil
 }
 
@@ -433,6 +461,7 @@ func (o *GetInstagramStoryInsights200ResponseDataMetrics) UnmarshalJSON(data []b
 		"follows",
 		"reposts",
 		"totalInteractions",
+		"linkClicks",
 	}
 
 	allProperties := make(map[string]interface{})

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.631.0
+API version: 1.632.0
 Contact: support@zernio.com
 */
 
@@ -21,13 +21,15 @@ var _ MappedNullable = &ListInstagramStories200ResponseDataInnerMetrics{}
 
 // ListInstagramStories200ResponseDataInnerMetrics Only with `includeExpired=true`. Latest archived reading of the story (the final one once it expired), or null when none was taken yet.
 type ListInstagramStories200ResponseDataInnerMetrics struct {
-	Views         *int32       `json:"views,omitempty"`
-	Reach         *int32       `json:"reach,omitempty"`
-	Replies       *int32       `json:"replies,omitempty"`
-	Shares        *int32       `json:"shares,omitempty"`
-	Follows       *int32       `json:"follows,omitempty"`
-	ProfileVisits *int32       `json:"profileVisits,omitempty"`
-	LastUpdated   NullableTime `json:"lastUpdated,omitempty"`
+	Views         *int32 `json:"views,omitempty"`
+	Reach         *int32 `json:"reach,omitempty"`
+	Replies       *int32 `json:"replies,omitempty"`
+	Shares        *int32 `json:"shares,omitempty"`
+	Follows       *int32 `json:"follows,omitempty"`
+	ProfileVisits *int32 `json:"profileVisits,omitempty"`
+	// Taps on links in the story (the link sticker). Facebook Login accounts only; always 0 for Instagram Login accounts. Taps on other stickers (mentions, hashtags, locations) are not reported by Meta.
+	LinkClicks  *int32       `json:"linkClicks,omitempty"`
+	LastUpdated NullableTime `json:"lastUpdated,omitempty"`
 }
 
 // NewListInstagramStories200ResponseDataInnerMetrics instantiates a new ListInstagramStories200ResponseDataInnerMetrics object
@@ -239,6 +241,38 @@ func (o *ListInstagramStories200ResponseDataInnerMetrics) SetProfileVisits(v int
 	o.ProfileVisits = &v
 }
 
+// GetLinkClicks returns the LinkClicks field value if set, zero value otherwise.
+func (o *ListInstagramStories200ResponseDataInnerMetrics) GetLinkClicks() int32 {
+	if o == nil || IsNil(o.LinkClicks) {
+		var ret int32
+		return ret
+	}
+	return *o.LinkClicks
+}
+
+// GetLinkClicksOk returns a tuple with the LinkClicks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInstagramStories200ResponseDataInnerMetrics) GetLinkClicksOk() (*int32, bool) {
+	if o == nil || IsNil(o.LinkClicks) {
+		return nil, false
+	}
+	return o.LinkClicks, true
+}
+
+// HasLinkClicks returns a boolean if a field has been set.
+func (o *ListInstagramStories200ResponseDataInnerMetrics) HasLinkClicks() bool {
+	if o != nil && !IsNil(o.LinkClicks) {
+		return true
+	}
+
+	return false
+}
+
+// SetLinkClicks gets a reference to the given int32 and assigns it to the LinkClicks field.
+func (o *ListInstagramStories200ResponseDataInnerMetrics) SetLinkClicks(v int32) {
+	o.LinkClicks = &v
+}
+
 // GetLastUpdated returns the LastUpdated field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListInstagramStories200ResponseDataInnerMetrics) GetLastUpdated() time.Time {
 	if o == nil || IsNil(o.LastUpdated.Get()) {
@@ -309,6 +343,9 @@ func (o ListInstagramStories200ResponseDataInnerMetrics) ToMap() (map[string]int
 	}
 	if !IsNil(o.ProfileVisits) {
 		toSerialize["profileVisits"] = o.ProfileVisits
+	}
+	if !IsNil(o.LinkClicks) {
+		toSerialize["linkClicks"] = o.LinkClicks
 	}
 	if o.LastUpdated.IsSet() {
 		toSerialize["lastUpdated"] = o.LastUpdated.Get()
