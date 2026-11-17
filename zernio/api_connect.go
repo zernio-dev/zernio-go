@@ -9777,19 +9777,26 @@ func (a *ConnectAPIService) ListInstagramPagesExecute(r ConnectAPIListInstagramP
 type ConnectAPIListLinkedInOrganizationsRequest struct {
 	ctx        context.Context
 	ApiService *ConnectAPIService
-	tempToken  *string
 	orgIds     *string
-}
-
-// The temporary LinkedIn access token from the OAuth redirect
-func (r ConnectAPIListLinkedInOrganizationsRequest) TempToken(tempToken string) ConnectAPIListLinkedInOrganizationsRequest {
-	r.tempToken = &tempToken
-	return r
+	tempToken  *string
+	xTempToken *string
 }
 
 // Comma-separated list of organization IDs to fetch details for (max 100)
 func (r ConnectAPIListLinkedInOrganizationsRequest) OrgIds(orgIds string) ConnectAPIListLinkedInOrganizationsRequest {
 	r.orgIds = &orgIds
+	return r
+}
+
+// The temporary LinkedIn access token from the OAuth redirect. Required unless sent in the X-Temp-Token header.
+func (r ConnectAPIListLinkedInOrganizationsRequest) TempToken(tempToken string) ConnectAPIListLinkedInOrganizationsRequest {
+	r.tempToken = &tempToken
+	return r
+}
+
+// The OAuth user token, in place of the tempToken query parameter. Prefer it: a query string is written to request logs along the way.
+func (r ConnectAPIListLinkedInOrganizationsRequest) XTempToken(xTempToken string) ConnectAPIListLinkedInOrganizationsRequest {
+	r.xTempToken = &xTempToken
 	return r
 }
 
@@ -9833,14 +9840,13 @@ func (a *ConnectAPIService) ListLinkedInOrganizationsExecute(r ConnectAPIListLin
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.tempToken == nil {
-		return localVarReturnValue, nil, reportError("tempToken is required and must be specified")
-	}
 	if r.orgIds == nil {
 		return localVarReturnValue, nil, reportError("orgIds is required and must be specified")
 	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "tempToken", r.tempToken, "form", "")
+	if r.tempToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tempToken", r.tempToken, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "orgIds", r.orgIds, "form", "")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9858,6 +9864,9 @@ func (a *ConnectAPIService) ListLinkedInOrganizationsExecute(r ConnectAPIListLin
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.xTempToken != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Temp-Token", r.xTempToken, "simple", "")
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
