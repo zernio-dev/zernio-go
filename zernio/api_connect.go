@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.637.1
+API version: 1.638.0
 Contact: support@zernio.com
 */
 
@@ -6468,6 +6468,8 @@ This endpoint is used where the selection list is too large to fit in URL params
 - Pinterest boards
 
 The redirect carries a `pendingDataToken` instead of the full payload. The response includes the corresponding selection array (e.g. `boards` for Pinterest).
+
+For LinkedIn, add `pendingDataOnly=true` to your `redirect_url` to keep `tempToken`, `userProfile` and `organizations` out of the redirect: it then carries only `pendingDataToken`, and this endpoint returns `tempToken`, `refreshToken`, `userProfile` and `organizations` for POST /v1/connect/linkedin/select-organization. Other platforms ignore it.
 
 WhatsApp, Facebook and other platforms pass selection state directly via URL query params on the redirect (`profileId`, `tempToken`, `step`), and no pending record is created. So this endpoint will return 404 for those flows. Use the platform-specific selection endpoint instead (e.g. `/v1/connect/whatsapp/select-phone-number`).
 
