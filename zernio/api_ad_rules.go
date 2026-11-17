@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.641.0
+API version: 1.642.0
 Contact: support@zernio.com
 */
 
@@ -57,16 +57,23 @@ A rule can notify (the `ad_rule.triggered` webhook), and take at most one of:
 - `pause`
 - `activate`
 - `adjust_budget`
+- `adjust_bid`
+- `adjust_target`
+- `reallocate_budget`
+- `duplicate`
+- `edit_name`
 
 A keyword rule can notify and pause; a search term rule only notifies.
 
 ### Cooldown
 
-After acting on an object, the rule leaves that object alone for `cooldownMinutes`. A rule that pauses, activates or adjusts budgets needs a cooldown at least as long as its schedule.
+After acting on an object, the rule leaves that object alone for `cooldownMinutes`. A rule that changes ads (any action but `notify`) needs a cooldown at least as long as its schedule.
 
 ### How `activate` works
 
-`activate` only reactivates objects a rule paused, never ones you paused yourself, and only once the cooldown has passed since that pause.
+`activate` only reactivates objects a rule paused, never ones you paused yourself (unless `includeManuallyPaused` is true), and only once the cooldown has passed since that pause.
+
+A rule on set times (`schedule.times`) does not wait for the cooldown: it restarts only what a rule on set times paused, such as a morning restart after a night pause.
 
 If you reactivate and pause such an object yourself between two runs of a rule, Zernio cannot tell your pause from the rule's, and an `activate` rule may reactivate it.
 
@@ -665,6 +672,173 @@ func (a *AdRulesAPIService) GetAdRuleHourlyWindowsExecute(r AdRulesAPIGetAdRuleH
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdRulesAPIListAdAccountRuleAlertsRequest struct {
+	ctx         context.Context
+	ApiService  *AdRulesAPIService
+	accountId   *string
+	adAccountId *string
+	limit       *int32
+	cursor      *string
+}
+
+// The connected ads account the rules run on.
+func (r AdRulesAPIListAdAccountRuleAlertsRequest) AccountId(accountId string) AdRulesAPIListAdAccountRuleAlertsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// The platform ad account ID.
+func (r AdRulesAPIListAdAccountRuleAlertsRequest) AdAccountId(adAccountId string) AdRulesAPIListAdAccountRuleAlertsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdRulesAPIListAdAccountRuleAlertsRequest) Limit(limit int32) AdRulesAPIListAdAccountRuleAlertsRequest {
+	r.limit = &limit
+	return r
+}
+
+// &#x60;nextCursor&#x60; from the previous page.
+func (r AdRulesAPIListAdAccountRuleAlertsRequest) Cursor(cursor string) AdRulesAPIListAdAccountRuleAlertsRequest {
+	r.cursor = &cursor
+	return r
+}
+
+func (r AdRulesAPIListAdAccountRuleAlertsRequest) Execute() (*ListAdAccountRuleAlerts200Response, *http.Response, error) {
+	return r.ApiService.ListAdAccountRuleAlertsExecute(r)
+}
+
+/*
+ListAdAccountRuleAlerts List an ad account's open alerts
+
+The open alerts of every rule of one ad account, newest first, in one call: each alert names its rule in `ruleId`.
+Only `open` alerts are listed. For one rule's pending and resolved alerts, use `GET /v1/ads/rules/{ruleId}/alerts`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdRulesAPIListAdAccountRuleAlertsRequest
+*/
+func (a *AdRulesAPIService) ListAdAccountRuleAlerts(ctx context.Context) AdRulesAPIListAdAccountRuleAlertsRequest {
+	return AdRulesAPIListAdAccountRuleAlertsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListAdAccountRuleAlerts200Response
+func (a *AdRulesAPIService) ListAdAccountRuleAlertsExecute(r AdRulesAPIListAdAccountRuleAlertsRequest) (*ListAdAccountRuleAlerts200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListAdAccountRuleAlerts200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdRulesAPIService.ListAdAccountRuleAlerts")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/rules/alerts"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 50
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdRulesAPIListAdRuleActivityRequest struct {
 	ctx        context.Context
 	ApiService *AdRulesAPIService
@@ -723,8 +897,11 @@ func (r AdRulesAPIListAdRuleActivityRequest) Execute() (*ListAdRuleActivity200Re
 /*
 ListAdRuleActivity List every change ad rules made
 
-The permanent record of what your rules did: one entry per pause, reactivation or budget change (including skipped and failed attempts), newest first, across all rules of the profiles the key can reach.
-Entries stay after a rule is renamed or deleted; `ruleName` is the rule's name when it acted.
+What your rules did over the last 31 days, newest first, across all rules of the profiles the key can reach.
+
+There is one entry per change a rule made or tried: pause, reactivation, budget, bid or target change, copy or name tag. Skipped and failed attempts are included.
+
+Entries stay for those 31 days after a rule is renamed or deleted; `ruleName` is the rule's name when it acted.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdRulesAPIListAdRuleActivityRequest
@@ -1063,7 +1240,7 @@ func (r AdRulesAPIListAdRuleRunsRequest) Execute() (*ListAdRuleRuns200Response, 
 ListAdRuleRuns List an ad rule's runs
 
 Lists a rule's scheduled runs, newest first: what each run evaluated, matched and did.
-Runs that changed something (or tried to) are kept permanently, also after the rule is deleted; runs that changed nothing are dropped after about 31 days.
+A run that matched nothing or did not happen (`no_match`, `paused`) is kept 7 days, any other run 31 days.
 For every change across all rules, use `GET /v1/ads/rules/activity`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

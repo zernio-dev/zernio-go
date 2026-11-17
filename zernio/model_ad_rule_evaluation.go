@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.641.0
+API version: 1.642.0
 Contact: support@zernio.com
 */
 
@@ -35,7 +35,7 @@ type AdRuleEvaluation struct {
 	HourlyThrough NullableTime `json:"hourlyThrough,omitempty"`
 	// How many objects meet every condition.
 	Matched int32 `json:"matched"`
-	// Every delivering campaign or ad set in scope (for an `activate` rule, the rule-paused ones it may reactivate).
+	// Every delivering campaign, ad set or ad in scope, or every serving keyword and listed search term (for an `activate` rule, the rule-paused objects it may reactivate).
 	Objects []AdRuleObjectEvaluation `json:"objects"`
 	// Each group's totals, for a rule with groups. Null otherwise.
 	Groups []AdRuleEvaluationGroupsInner `json:"groups,omitempty"`

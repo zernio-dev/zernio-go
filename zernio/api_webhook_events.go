@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.641.0
+API version: 1.642.0
 Contact: support@zernio.com
 */
 
@@ -1519,7 +1519,7 @@ func (r WebhookEventsAPIOnAdRuleTriggeredRequest) Execute() (*http.Response, err
 /*
 OnAdRuleTriggered Ad rule triggered event
 
-A scheduled run of an ad rule with a `notify` action found campaigns or ad sets meeting every condition.
+A scheduled run of an ad rule with a `notify` action found campaigns, ad sets, ads, Google keywords or Google search terms meeting every condition.
 
 ### When it fires
 

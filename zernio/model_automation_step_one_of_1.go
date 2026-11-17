@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.641.0
+API version: 1.642.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the AutomationStepOneOf1 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AutomationStepOneOf1{}
 
-// AutomationStepOneOf1 Turns objects back on once their cooldown has passed.
+// AutomationStepOneOf1 Turns objects back on once their cooldown has passed. A rule on set `times` does not wait: it restarts only what a rule on set times paused.
 type AutomationStepOneOf1 struct {
 	Id   *string `json:"id,omitempty"`
 	Type string  `json:"type"`
