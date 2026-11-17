@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.635.0
+API version: 1.636.0
 Contact: support@zernio.com
 */
 
@@ -16,7 +16,7 @@ import (
 	"fmt"
 )
 
-// AdRuleLevel Whether the rule checks campaigns, ad sets, single ads, Google keywords or Google search terms. Each one is evaluated on its own.  `keyword` and `search_term` read Google Search, on Google Ads accounts only. A keyword's id is `<adGroupId>~<criterionId>`, as `PATCH /v1/ads/keywords/{keywordId}` takes it. A search term is one per ad group, its id `<adGroupId>~<term>`.  - They read a daily history Zernio fetches from Google. A day keeps its 50,000 rows that spent most. - Every daily window works, `today` included: today is refreshed at most once an hour. - A new rule's first runs load its days a few at a time, and fail until all are in. - Paused keywords are not judged. - Google lists only what showed at least once, so `impressions` takes `>` or `>=`, never `<` or `<=`.  They take `spend`, `impressions`, `clicks`, `conversions`, `ctr`, `cpc`, `cpm`, `cpa` and `roas` over whole days, no `usual`, `of`, `top` or `bottom`, and `compareTo` only as `campaign`. A keyword rule can `notify` or `pause`; a search term rule only notifies.
+// AdRuleLevel Whether the rule checks campaigns, ad sets, single ads, Google keywords or Google search terms. Each one is evaluated on its own.  `keyword` and `search_term` read Google Search, on Google Ads accounts only. A keyword's id is `<adGroupId>~<criterionId>`, as `PATCH /v1/ads/keywords/{keywordId}` takes it. A search term is one per ad group, its id `<adGroupId>~<term>`.  - They read a daily history Zernio fetches from Google. A day keeps its 50,000 rows that spent most. - Every daily window works, `today` included: today is refreshed at most once an hour. - A new rule's first runs load its days a few at a time, and fail until all are in. - A keyword rule judges every serving keyword, one with no traffic at zero. Paused keywords are not judged. - Google lists only search terms that showed at least once, so a search term rule takes `impressions` with `>` or `>=`, never `<` or `<=`.  They take `spend`, `impressions`, `clicks`, `conversions`, `ctr`, `cpc`, `cpm`, `cpa` and `roas` over whole days, no `usual`, `of`, `top` or `bottom`, and `compareTo` only as `campaign`. A keyword rule can `notify` or `pause`; a search term rule only notifies.
 type AdRuleLevel string
 
 // List of AdRuleLevel

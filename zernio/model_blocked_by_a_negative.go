@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.635.0
+API version: 1.636.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the BlockedByANegative type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &BlockedByANegative{}
 
-// BlockedByANegative Whether a negative keyword of the account now stops the search term: on its ad group, its campaign, or a shared list applied to its campaign. `false` leaves out terms you already excluded. Search term rules only.
+// BlockedByANegative Whether a negative keyword of the account now stops the keyword or search term: on its ad group, its campaign, or a shared list applied to its campaign. `false` leaves out terms you already excluded; `true` finds keywords your own negatives block.
 type BlockedByANegative struct {
 	Field string `json:"field"`
 	Op    string `json:"op"`
