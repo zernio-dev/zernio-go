@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.634.0
+API version: 1.635.0
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,8 @@ type AdRuleRun struct {
 	Id    string    `json:"id"`
 	RanAt time.Time `json:"ranAt"`
 	// Result of the rule run:  - `triggered`: the rule acted on at least one object (`error` is set if the webhook could not be sent afterwards). - `cooldown`: objects matched but all were in cooldown. - `daily_limit`: objects matched but the rule had used its `maxChangesPerDay`. - `paused`: the run did not happen: the team used its free automation runs with no payment method on file (see `error`). - `no_match`: nothing matched. - `failed`: the metrics could not be read, every action failed, or the webhook of a notify-only rule could not be sent (see `error`).
-	Outcome          string              `json:"outcome"`
+	Outcome string `json:"outcome"`
+	// Objects the rule judged. 0 means its campaigns and filters matched nothing that is running.
 	ObjectsEvaluated int32               `json:"objectsEvaluated"`
 	ActedObjectIds   []string            `json:"actedObjectIds"`
 	Evaluation       AdRuleRunEvaluation `json:"evaluation"`

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.634.0
+API version: 1.635.0
 Contact: support@zernio.com
 */
 
@@ -19,8 +19,10 @@ import (
 // checks if the AdRuleRunEvaluation type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdRuleRunEvaluation{}
 
-// AdRuleRunEvaluation The matched objects with their condition values, and what each action did.
+// AdRuleRunEvaluation The matched objects with their condition values, and what each action did. Null on a run that matched nothing, unless some objects could not be read.
 type AdRuleRunEvaluation struct {
+	// On a run that matched nothing: how many objects had a condition whose value could not be read, so they could not match. A campaign with under 3 of the 4 previous weeks of data has no `usual` yet.
+	UnreadObjects   *int32                   `json:"unreadObjects,omitempty"`
 	Rule            *AdRuleRunEvaluationRule `json:"rule,omitempty"`
 	Today           *string                  `json:"today,omitempty"`
 	Timezone        *string                  `json:"timezone,omitempty"`
@@ -51,6 +53,38 @@ func NewAdRuleRunEvaluation() *AdRuleRunEvaluation {
 func NewAdRuleRunEvaluationWithDefaults() *AdRuleRunEvaluation {
 	this := AdRuleRunEvaluation{}
 	return &this
+}
+
+// GetUnreadObjects returns the UnreadObjects field value if set, zero value otherwise.
+func (o *AdRuleRunEvaluation) GetUnreadObjects() int32 {
+	if o == nil || IsNil(o.UnreadObjects) {
+		var ret int32
+		return ret
+	}
+	return *o.UnreadObjects
+}
+
+// GetUnreadObjectsOk returns a tuple with the UnreadObjects field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdRuleRunEvaluation) GetUnreadObjectsOk() (*int32, bool) {
+	if o == nil || IsNil(o.UnreadObjects) {
+		return nil, false
+	}
+	return o.UnreadObjects, true
+}
+
+// HasUnreadObjects returns a boolean if a field has been set.
+func (o *AdRuleRunEvaluation) HasUnreadObjects() bool {
+	if o != nil && !IsNil(o.UnreadObjects) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnreadObjects gets a reference to the given int32 and assigns it to the UnreadObjects field.
+func (o *AdRuleRunEvaluation) SetUnreadObjects(v int32) {
+	o.UnreadObjects = &v
 }
 
 // GetRule returns the Rule field value if set, zero value otherwise.
@@ -405,6 +439,9 @@ func (o AdRuleRunEvaluation) MarshalJSON() ([]byte, error) {
 
 func (o AdRuleRunEvaluation) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.UnreadObjects) {
+		toSerialize["unreadObjects"] = o.UnreadObjects
+	}
 	if !IsNil(o.Rule) {
 		toSerialize["rule"] = o.Rule
 	}
