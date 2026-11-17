@@ -4743,6 +4743,7 @@ type ConnectAPIGetConnectUrlRequest struct {
 	purpose                *string
 	expectedPlatformUserId *string
 	expectedUsername       *string
+	expectedPhoneNumber    *string
 	forceReauth            *bool
 	allowNoLocation        *bool
 	redirectUrl            *string
@@ -4794,6 +4795,12 @@ func (r ConnectAPIGetConnectUrlRequest) ExpectedPlatformUserId(expectedPlatformU
 // Only connect if the authorized account&#39;s handle is this one (case-insensitive, a leading @ is ignored). Otherwise the flow ends with &#x60;error&#x3D;account_mismatch&#x60; and &#x60;error_message&#x60; naming the handle that was authorized, and nothing is written.  Same coverage and transport as expectedPlatformUserId; when both are sent, both must match. Use this on a first connection, where you hold the handle the user typed but no Zernio id yet.
 func (r ConnectAPIGetConnectUrlRequest) ExpectedUsername(expectedUsername string) ConnectAPIGetConnectUrlRequest {
 	r.expectedUsername = &expectedUsername
+	return r
+}
+
+// WhatsApp with &#x60;signup&#x3D;hosted&#x60; only; ignored on other flows. The number (E.164) the user must connect. If they pick a different number in Meta&#39;s popup, the hosted page ends with a 409 &#x60;NUMBER_MISMATCH&#x60; naming the number they picked, and nothing is saved.  Use it to reconnect a known number safely. For a number bought from Zernio, the hosted page already expects that number and this value is ignored.
+func (r ConnectAPIGetConnectUrlRequest) ExpectedPhoneNumber(expectedPhoneNumber string) ConnectAPIGetConnectUrlRequest {
+	r.expectedPhoneNumber = &expectedPhoneNumber
 	return r
 }
 
@@ -4976,6 +4983,9 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 	}
 	if r.expectedUsername != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "expectedUsername", r.expectedUsername, "form", "")
+	}
+	if r.expectedPhoneNumber != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "expectedPhoneNumber", r.expectedPhoneNumber, "form", "")
 	}
 	if r.forceReauth != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "forceReauth", r.forceReauth, "form", "")
