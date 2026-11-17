@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.643.0
+API version: 1.644.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type UpdateHubSpotSettingsRequest struct {
 	SyncContacts *bool `json:"syncContacts,omitempty"`
 	// Log inbound and outbound inbox messages on the contact's HubSpot timeline.
 	LogMessages *bool `json:"logMessages,omitempty"`
+	// Add the delivery status of each outgoing WhatsApp, SMS or RCS message to its timeline entry and update it as the message is delivered, read or fails. A failure shows the reason and its code. Only applies while `logMessages` is on.
+	LogDeliveryStatus *bool `json:"logDeliveryStatus,omitempty"`
 	// Send each deal that becomes closed won as a Purchase to the profile's event destinations, about once an hour. Requires the portal to have granted `crm.objects.deals.read`; otherwise 400. Deals closed before it was turned on are not sent.
 	ReportDeals *bool `json:"reportDeals,omitempty"`
 	// Count each closed-won deal as a sale with its amount on the ad campaign that brought its contact, in `GET /v1/ads/campaign-results` and ad rules. Requires `crm.objects.deals.read`; otherwise 400. Turning it on fills in the deals of the last 90 days, never sent to the ad platforms.
@@ -111,6 +113,38 @@ func (o *UpdateHubSpotSettingsRequest) SetLogMessages(v bool) {
 	o.LogMessages = &v
 }
 
+// GetLogDeliveryStatus returns the LogDeliveryStatus field value if set, zero value otherwise.
+func (o *UpdateHubSpotSettingsRequest) GetLogDeliveryStatus() bool {
+	if o == nil || IsNil(o.LogDeliveryStatus) {
+		var ret bool
+		return ret
+	}
+	return *o.LogDeliveryStatus
+}
+
+// GetLogDeliveryStatusOk returns a tuple with the LogDeliveryStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateHubSpotSettingsRequest) GetLogDeliveryStatusOk() (*bool, bool) {
+	if o == nil || IsNil(o.LogDeliveryStatus) {
+		return nil, false
+	}
+	return o.LogDeliveryStatus, true
+}
+
+// HasLogDeliveryStatus returns a boolean if a field has been set.
+func (o *UpdateHubSpotSettingsRequest) HasLogDeliveryStatus() bool {
+	if o != nil && !IsNil(o.LogDeliveryStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetLogDeliveryStatus gets a reference to the given bool and assigns it to the LogDeliveryStatus field.
+func (o *UpdateHubSpotSettingsRequest) SetLogDeliveryStatus(v bool) {
+	o.LogDeliveryStatus = &v
+}
+
 // GetReportDeals returns the ReportDeals field value if set, zero value otherwise.
 func (o *UpdateHubSpotSettingsRequest) GetReportDeals() bool {
 	if o == nil || IsNil(o.ReportDeals) {
@@ -190,6 +224,9 @@ func (o UpdateHubSpotSettingsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.LogMessages) {
 		toSerialize["logMessages"] = o.LogMessages
+	}
+	if !IsNil(o.LogDeliveryStatus) {
+		toSerialize["logDeliveryStatus"] = o.LogDeliveryStatus
 	}
 	if !IsNil(o.ReportDeals) {
 		toSerialize["reportDeals"] = o.ReportDeals
