@@ -80,12 +80,14 @@ func main() {
 | `client.AccountsAPI.GetHubSpotSettings(ctx)` | Get HubSpot account settings |
 | `client.AccountsAPI.GetInstagramFollowStatus(ctx)` | Check whether an Instagram user follows the account |
 | `client.LinkedInMentionsAPI.GetLinkedInMentions(ctx)` | Resolve LinkedIn mention |
+| `client.AccountsAPI.GetSalesforceSettings(ctx)` | Get Salesforce account settings |
 | `client.AccountsAPI.GetSlackSettings(ctx)` | Get Slack account settings |
 | `client.AccountsAPI.GetStripeSettings(ctx)` | Get Stripe account settings |
 | `client.AccountsAPI.GetTikTokCreatorInfo(ctx)` | Get TikTok creator info |
 | `client.AccountsAPI.UpdateAccount(ctx)` | Update account |
 | `client.AccountsAPI.UpdateBlueskySettings(ctx)` | Update Bluesky account settings |
 | `client.AccountsAPI.UpdateHubSpotSettings(ctx)` | Update HubSpot account settings |
+| `client.AccountsAPI.UpdateSalesforceSettings(ctx)` | Update Salesforce account settings |
 | `client.AccountsAPI.UpdateSlackSettings(ctx)` | Update Slack account settings |
 | `client.AccountsAPI.UpdateStripeSettings(ctx)` | Update Stripe account settings |
 | `client.AccountsAPI.DeleteAccount(ctx)` | Disconnect account |
@@ -257,6 +259,7 @@ func main() {
 | `client.ConnectAPI.GetPinterestBoards(ctx)` | List Pinterest boards |
 | `client.ConnectAPI.GetRedditFlairs(ctx)` | List subreddit flairs |
 | `client.ConnectAPI.GetRedditSubreddits(ctx)` | List Reddit subreddits |
+| `client.ConnectAPI.GetSalesforceConnectUrl(ctx)` | Get Salesforce OAuth connect URL |
 | `client.ConnectAPI.GetShopifyConnectUrl(ctx)` | Get Shopify OAuth connect URL |
 | `client.ConnectAPI.GetStripeConnectUrl(ctx)` | Get Stripe connect URL |
 | `client.ConnectAPI.GetSubredditRules(ctx)` | Get subreddit rules |

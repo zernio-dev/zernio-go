@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.644.0
+API version: 1.645.0
 Contact: support@zernio.com
 */
 
@@ -6928,6 +6928,204 @@ func (a *ConnectAPIService) GetRedditSubredditsExecute(r ConnectAPIGetRedditSubr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIGetSalesforceConnectUrlRequest struct {
+	ctx         context.Context
+	ApiService  *ConnectAPIService
+	profileId   *string
+	environment *string
+	redirectUrl *string
+}
+
+// Your Zernio profile ID (get from /v1/profiles).
+func (r ConnectAPIGetSalesforceConnectUrlRequest) ProfileId(profileId string) ConnectAPIGetSalesforceConnectUrlRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Sign in at login.salesforce.com (&#x60;production&#x60;, also Developer Edition orgs) or test.salesforce.com (&#x60;sandbox&#x60;).
+func (r ConnectAPIGetSalesforceConnectUrlRequest) Environment(environment string) ConnectAPIGetSalesforceConnectUrlRequest {
+	r.environment = &environment
+	return r
+}
+
+// Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme such as &#x60;myapp://callback&#x60;; relative and unsafe URLs return 400.
+func (r ConnectAPIGetSalesforceConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetSalesforceConnectUrlRequest {
+	r.redirectUrl = &redirectUrl
+	return r
+}
+
+func (r ConnectAPIGetSalesforceConnectUrlRequest) Execute() (*GetGoogleAnalyticsConnectUrl200Response, *http.Response, error) {
+	return r.ApiService.GetSalesforceConnectUrlExecute(r)
+}
+
+/*
+GetSalesforceConnectUrl Get Salesforce OAuth connect URL
+
+Initiates OAuth (authorization code with PKCE) for a Salesforce org. Salesforce is a connect-only CRM platform: inbox contacts are matched to Contacts and Leads, and each day of conversation is logged as a Task.
+
+The org must have the Zernio Salesforce package installed first: it carries the app Salesforce authorizes. Production orgs install it from `https://login.salesforce.com/packaging/installPackage.apexp?p0=04tfj000000llzZAAQ`, sandboxes from the same path on `test.salesforce.com`. Without it the redirect carries `error=salesforce_package_not_installed`.
+
+One Salesforce org can be connected per profile. Connecting a different org to a profile that already has one redirects with `error=salesforce_profile_has_org`.
+
+### Flow
+
+1. Redirect the user to `authUrl`.
+2. After authorization, Salesforce returns the browser to Zernio's internal callback.
+3. Zernio redirects to `redirect_url` (or the dashboard when omitted).
+
+On success the redirect carries `connected=salesforce`, `profileId`, `accountId` and `username`. On failure it carries `error`, `platform=salesforce` and `error_message`.
+
+Reconnecting the same org and profile updates the stored connection in place and keeps its settings.
+
+Requested scopes: `api`, `refresh_token`, `id`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIGetSalesforceConnectUrlRequest
+*/
+func (a *ConnectAPIService) GetSalesforceConnectUrl(ctx context.Context) ConnectAPIGetSalesforceConnectUrlRequest {
+	return ConnectAPIGetSalesforceConnectUrlRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetGoogleAnalyticsConnectUrl200Response
+func (a *ConnectAPIService) GetSalesforceConnectUrlExecute(r ConnectAPIGetSalesforceConnectUrlRequest) (*GetGoogleAnalyticsConnectUrl200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetGoogleAnalyticsConnectUrl200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetSalesforceConnectUrl")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/salesforce"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.profileId == nil {
+		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.environment != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "environment", r.environment, "form", "")
+	} else {
+		var defaultValue string = "production"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "environment", defaultValue, "form", "")
+		r.environment = &defaultValue
+	}
+	if r.redirectUrl != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
