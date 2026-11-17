@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.637.0
+API version: 1.637.1
 Contact: support@zernio.com
 */
 
@@ -998,7 +998,7 @@ func (r ConnectAPIConnectAdsRequest) AdAccountId(adAccountId string) ConnectAPIC
 	return r
 }
 
-// Scope ad sync to multiple platform ad accounts (same platform support and id shapes as &#x60;adAccountId&#x60;). Repeat the param (&#x60;?adAccountIds&#x3D;act_1&amp;adAccountIds&#x3D;act_2&#x60;) or comma-separate (&#x60;?adAccountIds&#x3D;act_1,act_2&#x60;).  - Persisted server-side; the latest call wins. De-scoped ad accounts have their synced ads, campaigns, ad sets and keywords removed. - On Meta only the scoped ad accounts get webhook subscriptions, including when the call starts a fresh OAuth. - On Meta, ad accounts left out of the scope are unsubscribed from Zernio&#39;s ad-account webhooks (unless another connection still holds them) and are no longer stored, so syncs do not add them back. &#x60;GET /v1/ads/accounts&#x60; lists them (&#x60;selected: false&#x60;) only with &#x60;live&#x3D;true&#x60;; passing them again reselects them. - On TikTok, advertisers left out of the scope are no longer synced or stored either, and are listed (&#x60;selected: false&#x60;) only with &#x60;live&#x3D;true&#x60;. - On TikTok, pixels, tracking tags, offline events, targeting search and Brand Identity default to the first selected advertiser. A TikTok Ads connection with no scope keeps every advertiser the login reaches, as before. - Omitting both &#x60;adAccountId&#x60; and &#x60;adAccountIds&#x60; keeps any previously persisted scope unchanged (no scope means every reachable ad account).
+// Scope ad sync to multiple platform ad accounts (same platform support and id shapes as &#x60;adAccountId&#x60;). Repeat the param (&#x60;?adAccountIds&#x3D;act_1&amp;adAccountIds&#x3D;act_2&#x60;) or comma-separate (&#x60;?adAccountIds&#x3D;act_1,act_2&#x60;).  - Persisted server-side; the latest call wins. De-scoped ad accounts have their synced ads, campaigns, ad sets and keywords removed. Where ad accounts are already split into one account each, the call only adds accounts for new ids and never removes one (disconnect that account instead). - On Meta only the scoped ad accounts get webhook subscriptions, including when the call starts a fresh OAuth. - On Meta, ad accounts left out of the scope are unsubscribed from Zernio&#39;s ad-account webhooks (unless another connection still holds them) and are no longer stored, so syncs do not add them back. &#x60;GET /v1/ads/accounts&#x60; lists them (&#x60;selected: false&#x60;) only with &#x60;live&#x3D;true&#x60;; passing them again reselects them. - On TikTok, advertisers left out of the scope are no longer synced or stored either, and are listed (&#x60;selected: false&#x60;) only with &#x60;live&#x3D;true&#x60;. - On TikTok, pixels, tracking tags, offline events, targeting search and Brand Identity default to the first selected advertiser. A TikTok Ads connection with no scope keeps every advertiser the login reaches, as before. - Omitting both &#x60;adAccountId&#x60; and &#x60;adAccountIds&#x60; keeps any previously persisted scope unchanged (no scope means every reachable ad account).
 func (r ConnectAPIConnectAdsRequest) AdAccountIds(adAccountIds []string) ConnectAPIConnectAdsRequest {
 	r.adAccountIds = &adAccountIds
 	return r
@@ -1144,6 +1144,8 @@ The Brand Identity is configured separately via PATCH /v1/connect/tiktok-ads (or
 Starts the Google Ads OAuth flow and creates a standalone ads SocialAccount (googleads) with no parent.
 
 - If the account already exists and has at least one discovered Google Ads customer account, returns alreadyConnected: true.
+- When the profile's accounts are already one per ad account of a single Google login, it also returns alreadyConnected: true and adds an account per new `adAccountIds` entry. Existing accounts are never de-scoped, and `accountId` is a reused account.
+- Accounts of several Google logins return an authUrl to sign in again.
 - When the existing connection has zero customer accounts (metadata.googleAdsCustomerIds is empty) or is flagged needsReconnection, it returns an authUrl instead. Completing it reconnects the same account (same accountId) and re-runs ad account discovery.
 
 Discovery includes the client accounts under every manager (MCC) the Google user can reach. It also includes Google Ads test accounts, which Google always reports with status CLOSED.
