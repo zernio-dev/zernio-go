@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.649.0
+API version: 1.650.0
 Contact: support@zernio.com
 */
 
@@ -8988,7 +8988,9 @@ func (r WebhookEventsAPIOnConversionReceivedRequest) Execute() (*http.Response, 
 /*
 OnConversionReceived Conversion received event
 
-Zernio stored an event: one sent to `POST /v1/events` or `POST /v1/ads/conversions`, or one a connected source sent for you (a lead form lead, a Shopify or WooCommerce order, a HubSpot deal). It fires again when a newer version of the same event is stored, such as an order that changed.
+Zernio stored an event: one sent to `POST /v1/events` or `POST /v1/ads/conversions`, or one a connected source sent for you (a lead form lead, a store order, a HubSpot deal, a Salesforce Opportunity).
+
+It fires again when a newer version of the same event is stored, such as an order that changed.
 
 `conversion` has the fields of `GET /v1/events/{eventId}`, plus `source`, `campaign` (the campaign the event counts for, or null) and `campaignMatch` (why there is none). Personal data is never sent: `hasEmail`, `hasPhone` and `hasExternalId` only say what the event carried.
 

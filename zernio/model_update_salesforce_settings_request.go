@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.649.0
+API version: 1.650.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,10 @@ type UpdateSalesforceSettingsRequest struct {
 	CreateAs *string `json:"createAs,omitempty"`
 	// Mark sent messages in the transcript as delivered, read or failed.
 	LogDeliveryStatus *bool `json:"logDeliveryStatus,omitempty"`
+	// Count closed-won Opportunities as sales on the ad campaign named by their Primary Campaign Source, in campaign results and ad rules. Turning it on also fills in the Opportunities won in the last 90 days. Lost or reopened Opportunities stop counting.
+	UseOpportunitiesInResults *bool `json:"useOpportunitiesInResults,omitempty"`
+	// Send each newly closed-won Opportunity once as a Purchase event (source `salesforce`, event id `salesforce_opp_{orgId}_{opportunityId}`) to the profile's event destinations, with the email and phone of its primary contact role, else the first Contact of its Account. Opportunities won before it was turned on are not sent.
+	ReportOpportunitiesToAds *bool `json:"reportOpportunitiesToAds,omitempty"`
 }
 
 // NewUpdateSalesforceSettingsRequest instantiates a new UpdateSalesforceSettingsRequest object
@@ -175,6 +179,70 @@ func (o *UpdateSalesforceSettingsRequest) SetLogDeliveryStatus(v bool) {
 	o.LogDeliveryStatus = &v
 }
 
+// GetUseOpportunitiesInResults returns the UseOpportunitiesInResults field value if set, zero value otherwise.
+func (o *UpdateSalesforceSettingsRequest) GetUseOpportunitiesInResults() bool {
+	if o == nil || IsNil(o.UseOpportunitiesInResults) {
+		var ret bool
+		return ret
+	}
+	return *o.UseOpportunitiesInResults
+}
+
+// GetUseOpportunitiesInResultsOk returns a tuple with the UseOpportunitiesInResults field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateSalesforceSettingsRequest) GetUseOpportunitiesInResultsOk() (*bool, bool) {
+	if o == nil || IsNil(o.UseOpportunitiesInResults) {
+		return nil, false
+	}
+	return o.UseOpportunitiesInResults, true
+}
+
+// HasUseOpportunitiesInResults returns a boolean if a field has been set.
+func (o *UpdateSalesforceSettingsRequest) HasUseOpportunitiesInResults() bool {
+	if o != nil && !IsNil(o.UseOpportunitiesInResults) {
+		return true
+	}
+
+	return false
+}
+
+// SetUseOpportunitiesInResults gets a reference to the given bool and assigns it to the UseOpportunitiesInResults field.
+func (o *UpdateSalesforceSettingsRequest) SetUseOpportunitiesInResults(v bool) {
+	o.UseOpportunitiesInResults = &v
+}
+
+// GetReportOpportunitiesToAds returns the ReportOpportunitiesToAds field value if set, zero value otherwise.
+func (o *UpdateSalesforceSettingsRequest) GetReportOpportunitiesToAds() bool {
+	if o == nil || IsNil(o.ReportOpportunitiesToAds) {
+		var ret bool
+		return ret
+	}
+	return *o.ReportOpportunitiesToAds
+}
+
+// GetReportOpportunitiesToAdsOk returns a tuple with the ReportOpportunitiesToAds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateSalesforceSettingsRequest) GetReportOpportunitiesToAdsOk() (*bool, bool) {
+	if o == nil || IsNil(o.ReportOpportunitiesToAds) {
+		return nil, false
+	}
+	return o.ReportOpportunitiesToAds, true
+}
+
+// HasReportOpportunitiesToAds returns a boolean if a field has been set.
+func (o *UpdateSalesforceSettingsRequest) HasReportOpportunitiesToAds() bool {
+	if o != nil && !IsNil(o.ReportOpportunitiesToAds) {
+		return true
+	}
+
+	return false
+}
+
+// SetReportOpportunitiesToAds gets a reference to the given bool and assigns it to the ReportOpportunitiesToAds field.
+func (o *UpdateSalesforceSettingsRequest) SetReportOpportunitiesToAds(v bool) {
+	o.ReportOpportunitiesToAds = &v
+}
+
 func (o UpdateSalesforceSettingsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -196,6 +264,12 @@ func (o UpdateSalesforceSettingsRequest) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.LogDeliveryStatus) {
 		toSerialize["logDeliveryStatus"] = o.LogDeliveryStatus
+	}
+	if !IsNil(o.UseOpportunitiesInResults) {
+		toSerialize["useOpportunitiesInResults"] = o.UseOpportunitiesInResults
+	}
+	if !IsNil(o.ReportOpportunitiesToAds) {
+		toSerialize["reportOpportunitiesToAds"] = o.ReportOpportunitiesToAds
 	}
 	return toSerialize, nil
 }

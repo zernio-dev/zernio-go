@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.649.0
+API version: 1.650.0
 Contact: support@zernio.com
 */
 
@@ -44,6 +44,10 @@ type SalesforceSettings struct {
 	// Whether sent messages in the transcript are marked delivered, read or failed.
 	LogDeliveryStatus bool                        `json:"logDeliveryStatus"`
 	SyncIssue         SalesforceSettingsSyncIssue `json:"syncIssue"`
+	// Whether closed-won Opportunities count as sales (Amount, in the Opportunity's or the org's currency) on the ad campaign named by their Primary Campaign Source, in campaign results and ad rules. Lost or reopened Opportunities stop counting.
+	UseOpportunitiesInResults bool `json:"useOpportunitiesInResults"`
+	// Whether Zernio sends newly closed-won Opportunities as Purchase events (source `salesforce`) to the profile's event destinations.
+	ReportOpportunitiesToAds bool `json:"reportOpportunitiesToAds"`
 }
 
 type _SalesforceSettings SalesforceSettings
@@ -52,7 +56,7 @@ type _SalesforceSettings SalesforceSettings
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSalesforceSettings(id string, platform string, orgId string, orgName NullableString, environment string, instanceUrl string, installedBy NullableString, syncContacts bool, logMessages bool, createAs string, logDeliveryStatus bool, syncIssue SalesforceSettingsSyncIssue) *SalesforceSettings {
+func NewSalesforceSettings(id string, platform string, orgId string, orgName NullableString, environment string, instanceUrl string, installedBy NullableString, syncContacts bool, logMessages bool, createAs string, logDeliveryStatus bool, syncIssue SalesforceSettingsSyncIssue, useOpportunitiesInResults bool, reportOpportunitiesToAds bool) *SalesforceSettings {
 	this := SalesforceSettings{}
 	this.Id = id
 	this.Platform = platform
@@ -66,6 +70,8 @@ func NewSalesforceSettings(id string, platform string, orgId string, orgName Nul
 	this.CreateAs = createAs
 	this.LogDeliveryStatus = logDeliveryStatus
 	this.SyncIssue = syncIssue
+	this.UseOpportunitiesInResults = useOpportunitiesInResults
+	this.ReportOpportunitiesToAds = reportOpportunitiesToAds
 	return &this
 }
 
@@ -369,6 +375,54 @@ func (o *SalesforceSettings) SetSyncIssue(v SalesforceSettingsSyncIssue) {
 	o.SyncIssue = v
 }
 
+// GetUseOpportunitiesInResults returns the UseOpportunitiesInResults field value
+func (o *SalesforceSettings) GetUseOpportunitiesInResults() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.UseOpportunitiesInResults
+}
+
+// GetUseOpportunitiesInResultsOk returns a tuple with the UseOpportunitiesInResults field value
+// and a boolean to check if the value has been set.
+func (o *SalesforceSettings) GetUseOpportunitiesInResultsOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UseOpportunitiesInResults, true
+}
+
+// SetUseOpportunitiesInResults sets field value
+func (o *SalesforceSettings) SetUseOpportunitiesInResults(v bool) {
+	o.UseOpportunitiesInResults = v
+}
+
+// GetReportOpportunitiesToAds returns the ReportOpportunitiesToAds field value
+func (o *SalesforceSettings) GetReportOpportunitiesToAds() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.ReportOpportunitiesToAds
+}
+
+// GetReportOpportunitiesToAdsOk returns a tuple with the ReportOpportunitiesToAds field value
+// and a boolean to check if the value has been set.
+func (o *SalesforceSettings) GetReportOpportunitiesToAdsOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ReportOpportunitiesToAds, true
+}
+
+// SetReportOpportunitiesToAds sets field value
+func (o *SalesforceSettings) SetReportOpportunitiesToAds(v bool) {
+	o.ReportOpportunitiesToAds = v
+}
+
 func (o SalesforceSettings) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -391,6 +445,8 @@ func (o SalesforceSettings) ToMap() (map[string]interface{}, error) {
 	toSerialize["createAs"] = o.CreateAs
 	toSerialize["logDeliveryStatus"] = o.LogDeliveryStatus
 	toSerialize["syncIssue"] = o.SyncIssue
+	toSerialize["useOpportunitiesInResults"] = o.UseOpportunitiesInResults
+	toSerialize["reportOpportunitiesToAds"] = o.ReportOpportunitiesToAds
 	return toSerialize, nil
 }
 
@@ -411,6 +467,8 @@ func (o *SalesforceSettings) UnmarshalJSON(data []byte) (err error) {
 		"createAs",
 		"logDeliveryStatus",
 		"syncIssue",
+		"useOpportunitiesInResults",
+		"reportOpportunitiesToAds",
 	}
 
 	allProperties := make(map[string]interface{})
