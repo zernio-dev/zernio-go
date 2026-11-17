@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.638.1
+API version: 1.639.0
 Contact: support@zernio.com
 */
 
@@ -28,8 +28,10 @@ type CompleteWhatsAppPhoneSelectionRequest struct {
 	PhoneNumberId string `json:"phoneNumberId"`
 	// The WABA ID containing the selected phone
 	WabaId string `json:"wabaId"`
-	// The temporary access token from the headless redirect
-	TempToken string `json:"tempToken"`
+	// The temporary access token from the headless redirect. Required unless sent in the X-Temp-Token header.
+	TempToken *string `json:"tempToken,omitempty"`
+	// Set by the Zernio-hosted picker, whose user token stays in an httpOnly cookie. Integrators send tempToken instead.
+	ConnectFlow *string `json:"connectFlow,omitempty" validate:"regexp=^[a-f0-9]{32}$"`
 	// Optional user profile data (passthrough)
 	UserProfile map[string]interface{} `json:"userProfile,omitempty"`
 	// Optional URL to receive the post-connection redirect target
@@ -42,12 +44,11 @@ type _CompleteWhatsAppPhoneSelectionRequest CompleteWhatsAppPhoneSelectionReques
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCompleteWhatsAppPhoneSelectionRequest(profileId string, phoneNumberId string, wabaId string, tempToken string) *CompleteWhatsAppPhoneSelectionRequest {
+func NewCompleteWhatsAppPhoneSelectionRequest(profileId string, phoneNumberId string, wabaId string) *CompleteWhatsAppPhoneSelectionRequest {
 	this := CompleteWhatsAppPhoneSelectionRequest{}
 	this.ProfileId = profileId
 	this.PhoneNumberId = phoneNumberId
 	this.WabaId = wabaId
-	this.TempToken = tempToken
 	return &this
 }
 
@@ -131,28 +132,68 @@ func (o *CompleteWhatsAppPhoneSelectionRequest) SetWabaId(v string) {
 	o.WabaId = v
 }
 
-// GetTempToken returns the TempToken field value
+// GetTempToken returns the TempToken field value if set, zero value otherwise.
 func (o *CompleteWhatsAppPhoneSelectionRequest) GetTempToken() string {
-	if o == nil {
+	if o == nil || IsNil(o.TempToken) {
 		var ret string
 		return ret
 	}
-
-	return o.TempToken
+	return *o.TempToken
 }
 
-// GetTempTokenOk returns a tuple with the TempToken field value
+// GetTempTokenOk returns a tuple with the TempToken field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CompleteWhatsAppPhoneSelectionRequest) GetTempTokenOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.TempToken) {
 		return nil, false
 	}
-	return &o.TempToken, true
+	return o.TempToken, true
 }
 
-// SetTempToken sets field value
+// HasTempToken returns a boolean if a field has been set.
+func (o *CompleteWhatsAppPhoneSelectionRequest) HasTempToken() bool {
+	if o != nil && !IsNil(o.TempToken) {
+		return true
+	}
+
+	return false
+}
+
+// SetTempToken gets a reference to the given string and assigns it to the TempToken field.
 func (o *CompleteWhatsAppPhoneSelectionRequest) SetTempToken(v string) {
-	o.TempToken = v
+	o.TempToken = &v
+}
+
+// GetConnectFlow returns the ConnectFlow field value if set, zero value otherwise.
+func (o *CompleteWhatsAppPhoneSelectionRequest) GetConnectFlow() string {
+	if o == nil || IsNil(o.ConnectFlow) {
+		var ret string
+		return ret
+	}
+	return *o.ConnectFlow
+}
+
+// GetConnectFlowOk returns a tuple with the ConnectFlow field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CompleteWhatsAppPhoneSelectionRequest) GetConnectFlowOk() (*string, bool) {
+	if o == nil || IsNil(o.ConnectFlow) {
+		return nil, false
+	}
+	return o.ConnectFlow, true
+}
+
+// HasConnectFlow returns a boolean if a field has been set.
+func (o *CompleteWhatsAppPhoneSelectionRequest) HasConnectFlow() bool {
+	if o != nil && !IsNil(o.ConnectFlow) {
+		return true
+	}
+
+	return false
+}
+
+// SetConnectFlow gets a reference to the given string and assigns it to the ConnectFlow field.
+func (o *CompleteWhatsAppPhoneSelectionRequest) SetConnectFlow(v string) {
+	o.ConnectFlow = &v
 }
 
 // GetUserProfile returns the UserProfile field value if set, zero value otherwise.
@@ -232,7 +273,12 @@ func (o CompleteWhatsAppPhoneSelectionRequest) ToMap() (map[string]interface{}, 
 	toSerialize["profileId"] = o.ProfileId
 	toSerialize["phoneNumberId"] = o.PhoneNumberId
 	toSerialize["wabaId"] = o.WabaId
-	toSerialize["tempToken"] = o.TempToken
+	if !IsNil(o.TempToken) {
+		toSerialize["tempToken"] = o.TempToken
+	}
+	if !IsNil(o.ConnectFlow) {
+		toSerialize["connectFlow"] = o.ConnectFlow
+	}
 	if !IsNil(o.UserProfile) {
 		toSerialize["userProfile"] = o.UserProfile
 	}
@@ -250,7 +296,6 @@ func (o *CompleteWhatsAppPhoneSelectionRequest) UnmarshalJSON(data []byte) (err 
 		"profileId",
 		"phoneNumberId",
 		"wabaId",
-		"tempToken",
 	}
 
 	allProperties := make(map[string]interface{})

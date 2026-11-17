@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.638.1
+API version: 1.639.0
 Contact: support@zernio.com
 */
 
@@ -615,6 +615,7 @@ type ConnectAPICompleteWhatsAppPhoneSelectionRequest struct {
 	ApiService                            *ConnectAPIService
 	completeWhatsAppPhoneSelectionRequest *CompleteWhatsAppPhoneSelectionRequest
 	xConnectToken                         *string
+	xTempToken                            *string
 }
 
 func (r ConnectAPICompleteWhatsAppPhoneSelectionRequest) CompleteWhatsAppPhoneSelectionRequest(completeWhatsAppPhoneSelectionRequest CompleteWhatsAppPhoneSelectionRequest) ConnectAPICompleteWhatsAppPhoneSelectionRequest {
@@ -625,6 +626,12 @@ func (r ConnectAPICompleteWhatsAppPhoneSelectionRequest) CompleteWhatsAppPhoneSe
 // Alternative auth for API users&#39; end customers
 func (r ConnectAPICompleteWhatsAppPhoneSelectionRequest) XConnectToken(xConnectToken string) ConnectAPICompleteWhatsAppPhoneSelectionRequest {
 	r.xConnectToken = &xConnectToken
+	return r
+}
+
+// The OAuth user token, in place of the tempToken query parameter. Prefer it: a query string is written to request logs along the way.
+func (r ConnectAPICompleteWhatsAppPhoneSelectionRequest) XTempToken(xTempToken string) ConnectAPICompleteWhatsAppPhoneSelectionRequest {
+	r.xTempToken = &xTempToken
 	return r
 }
 
@@ -691,6 +698,9 @@ func (a *ConnectAPIService) CompleteWhatsAppPhoneSelectionExecute(r ConnectAPICo
 	}
 	if r.xConnectToken != nil {
 		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Connect-Token", r.xConnectToken, "simple", "")
+	}
+	if r.xTempToken != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Temp-Token", r.xTempToken, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.completeWhatsAppPhoneSelectionRequest
@@ -10832,6 +10842,8 @@ type ConnectAPIListWhatsAppPhoneNumbersRequest struct {
 	ApiService    *ConnectAPIService
 	profileId     *string
 	tempToken     *string
+	xTempToken    *string
+	connectFlow   *string
 	xConnectToken *string
 }
 
@@ -10841,9 +10853,21 @@ func (r ConnectAPIListWhatsAppPhoneNumbersRequest) ProfileId(profileId string) C
 	return r
 }
 
-// The temporary access token from the headless redirect
+// The temporary access token from the headless redirect. Required unless sent in the X-Temp-Token header.
 func (r ConnectAPIListWhatsAppPhoneNumbersRequest) TempToken(tempToken string) ConnectAPIListWhatsAppPhoneNumbersRequest {
 	r.tempToken = &tempToken
+	return r
+}
+
+// The OAuth user token, in place of the tempToken query parameter. Prefer it: a query string is written to request logs along the way.
+func (r ConnectAPIListWhatsAppPhoneNumbersRequest) XTempToken(xTempToken string) ConnectAPIListWhatsAppPhoneNumbersRequest {
+	r.xTempToken = &xTempToken
+	return r
+}
+
+// Set by the Zernio-hosted picker, whose user token stays in an httpOnly cookie. Integrators send tempToken instead.
+func (r ConnectAPIListWhatsAppPhoneNumbersRequest) ConnectFlow(connectFlow string) ConnectAPIListWhatsAppPhoneNumbersRequest {
+	r.connectFlow = &connectFlow
 	return r
 }
 
@@ -10902,12 +10926,14 @@ func (a *ConnectAPIService) ListWhatsAppPhoneNumbersExecute(r ConnectAPIListWhat
 	if r.profileId == nil {
 		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
 	}
-	if r.tempToken == nil {
-		return localVarReturnValue, nil, reportError("tempToken is required and must be specified")
-	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "tempToken", r.tempToken, "form", "")
+	if r.tempToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tempToken", r.tempToken, "form", "")
+	}
+	if r.connectFlow != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "connectFlow", r.connectFlow, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -10924,6 +10950,9 @@ func (a *ConnectAPIService) ListWhatsAppPhoneNumbersExecute(r ConnectAPIListWhat
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.xTempToken != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Temp-Token", r.xTempToken, "simple", "")
 	}
 	if r.xConnectToken != nil {
 		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Connect-Token", r.xConnectToken, "simple", "")
