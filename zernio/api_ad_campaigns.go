@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.671.0
+API version: 1.672.0
 Contact: support@zernio.com
 */
 
@@ -4745,6 +4745,7 @@ type AdCampaignsAPIGetAdTreeRequest struct {
 	dailyLevel    *string
 	compare       *string
 	results       *bool
+	model         *string
 	depth         *string
 }
 
@@ -4870,6 +4871,12 @@ func (r AdCampaignsAPIGetAdTreeRequest) Compare(compare string) AdCampaignsAPIGe
 // Set to &#x60;true&#x60; to add your own results (see [Campaign results](/guides/campaign-results)): every campaign gains &#x60;results&#x60;, the values you sent for the range plus each formula they allow, and the response gains &#x60;resultMetrics&#x60; to label them.
 func (r AdCampaignsAPIGetAdTreeRequest) Results(results bool) AdCampaignsAPIGetAdTreeRequest {
 	r.results = &results
+	return r
+}
+
+// With &#x60;results&#x3D;true&#x60;: the attribution model your stored sales and leads count under in &#x60;results&#x60;. Uploaded values are the same under every model.
+func (r AdCampaignsAPIGetAdTreeRequest) Model(model string) AdCampaignsAPIGetAdTreeRequest {
+	r.model = &model
 	return r
 }
 
@@ -5030,6 +5037,13 @@ func (a *AdCampaignsAPIService) GetAdTreeExecute(r AdCampaignsAPIGetAdTreeReques
 	}
 	if r.results != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "results", r.results, "form", "")
+	}
+	if r.model != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "model", r.model, "form", "")
+	} else {
+		var defaultValue string = "last_click"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "model", defaultValue, "form", "")
+		r.model = &defaultValue
 	}
 	if r.depth != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "depth", r.depth, "form", "")
