@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.653.0
+API version: 1.653.1
 Contact: support@zernio.com
 */
 
@@ -26,9 +26,9 @@ type UpdateSalesforceSettingsRequest struct {
 	LogMessages *bool `json:"logMessages,omitempty"`
 	// What a person new to Salesforce is created as. Leads get Company `[not provided]`.
 	CreateAs *string `json:"createAs,omitempty"`
-	// Mark sent messages in the transcript as delivered, read or failed.
+	// Mark sent WhatsApp, SMS and RCS messages in the transcript as sent, delivered, read, played or failed.
 	LogDeliveryStatus *bool `json:"logDeliveryStatus,omitempty"`
-	// Count closed-won Opportunities as sales on the ad campaign named by their Primary Campaign Source, in campaign results and ad rules. Turning it on also fills in the Opportunities won in the last 90 days. Lost or reopened Opportunities stop counting.
+	// Count closed-won Opportunities as sales on the ad campaign named by their Primary Campaign Source, in campaign results and ad rules. Turning it on also fills in the Opportunities won in the last 90 days, never sent to the ad platforms. Lost or reopened Opportunities stop counting.
 	UseOpportunitiesInResults *bool `json:"useOpportunitiesInResults,omitempty"`
 	// Send each newly closed-won Opportunity once as a Purchase event (source `salesforce`, event id `salesforce_opp_{orgId}_{opportunityId}`) to the profile's event destinations, with the email and phone of its primary contact role, else the first Contact of its Account. Opportunities won before it was turned on are not sent.
 	ReportOpportunitiesToAds *bool `json:"reportOpportunitiesToAds,omitempty"`

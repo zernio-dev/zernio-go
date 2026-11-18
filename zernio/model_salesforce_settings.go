@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.653.0
+API version: 1.653.1
 Contact: support@zernio.com
 */
 
@@ -41,7 +41,7 @@ type SalesforceSettings struct {
 	LogMessages bool `json:"logMessages"`
 	// What a person new to Salesforce is created as.
 	CreateAs string `json:"createAs"`
-	// Whether sent messages in the transcript are marked delivered, read or failed.
+	// Whether sent WhatsApp, SMS and RCS messages in the transcript are marked sent, delivered, read, played or failed.
 	LogDeliveryStatus bool                        `json:"logDeliveryStatus"`
 	SyncIssue         SalesforceSettingsSyncIssue `json:"syncIssue"`
 	// Whether closed-won Opportunities count as sales (Amount, in the Opportunity's or the org's currency) on the ad campaign named by their Primary Campaign Source, in campaign results and ad rules. Lost or reopened Opportunities stop counting.
