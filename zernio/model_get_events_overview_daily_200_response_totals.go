@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.663.0
+API version: 1.664.0
 Contact: support@zernio.com
 */
 
@@ -36,6 +36,8 @@ type GetEventsOverviewDaily200ResponseTotals struct {
 	Matched *int32 `json:"matched,omitempty"`
 	// The period's events that count as campaign results, the ones looked up for a campaign.
 	Counted *int32 `json:"counted,omitempty"`
+	// Of the counted events, those that came from an ad: they named a campaign or carried a UTM campaign, a Google click id or a Zernio ad id (`zrn`), their own or the website visit's behind them. `matched` over `fromAds` is the share tied to a campaign.
+	FromAds *int32 `json:"fromAds,omitempty"`
 }
 
 // NewGetEventsOverviewDaily200ResponseTotals instantiates a new GetEventsOverviewDaily200ResponseTotals object
@@ -322,6 +324,38 @@ func (o *GetEventsOverviewDaily200ResponseTotals) SetCounted(v int32) {
 	o.Counted = &v
 }
 
+// GetFromAds returns the FromAds field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200ResponseTotals) GetFromAds() int32 {
+	if o == nil || IsNil(o.FromAds) {
+		var ret int32
+		return ret
+	}
+	return *o.FromAds
+}
+
+// GetFromAdsOk returns a tuple with the FromAds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200ResponseTotals) GetFromAdsOk() (*int32, bool) {
+	if o == nil || IsNil(o.FromAds) {
+		return nil, false
+	}
+	return o.FromAds, true
+}
+
+// HasFromAds returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200ResponseTotals) HasFromAds() bool {
+	if o != nil && !IsNil(o.FromAds) {
+		return true
+	}
+
+	return false
+}
+
+// SetFromAds gets a reference to the given int32 and assigns it to the FromAds field.
+func (o *GetEventsOverviewDaily200ResponseTotals) SetFromAds(v int32) {
+	o.FromAds = &v
+}
+
 func (o GetEventsOverviewDaily200ResponseTotals) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -355,6 +389,9 @@ func (o GetEventsOverviewDaily200ResponseTotals) ToMap() (map[string]interface{}
 	}
 	if !IsNil(o.Counted) {
 		toSerialize["counted"] = o.Counted
+	}
+	if !IsNil(o.FromAds) {
+		toSerialize["fromAds"] = o.FromAds
 	}
 	return toSerialize, nil
 }
