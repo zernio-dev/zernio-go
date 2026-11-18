@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.654.0
+API version: 1.655.0
 Contact: support@zernio.com
 */
 
@@ -8801,7 +8801,11 @@ QueryGoogleSearchConsoleSearchAnalytics Query Google Search Console search analy
 
 Clicks, impressions, CTR and average position from Google Search for a connected Search Console site, through Google's `searchAnalytics.query`.
 
-Group by any of `date`, `hour`, `query`, `page`, `country`, `device` and `searchAppearance`, and filter with Google's own filter groups. With no dimensions you get one row with the site's totals.
+Group by any of `date`, `hour`, `query`, `page`, `country`, `device`, `searchAppearance` and `brandedClassification`, and filter with Google's own filter groups. With no dimensions you get one row with the site's totals.
+
+### Branded queries
+
+`brandedClassification` splits searches into `BRANDED` and `NON_BRANDED`. Google has it from February 21, 2026, and only for sites with enough search volume. As a filter it takes `equals` only and cannot be combined with a `query` filter.
 
 ### Dates
 

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.654.0
+API version: 1.655.0
 Contact: support@zernio.com
 */
 
@@ -12,29 +12,26 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner{}
 
-// QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner struct for QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner
+// QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner Needs filters, filterLists or both. Every group must match.
 type QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner struct {
 	GroupType *string                                                                                `json:"groupType,omitempty"`
-	Filters   []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFiltersInner `json:"filters"`
+	Filters   []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFiltersInner `json:"filters,omitempty"`
+	// Matches a row whose value is any of the expressions. A dimension goes in filters or in filterLists, not both.
+	FilterLists []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFilterListsInner `json:"filterLists,omitempty"`
 }
-
-type _QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner
 
 // NewQueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner instantiates a new QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewQueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner(filters []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFiltersInner) *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner {
+func NewQueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner() *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner {
 	this := QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner{}
-	this.Filters = filters
 	return &this
 }
 
@@ -78,28 +75,68 @@ func (o *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInne
 	o.GroupType = &v
 }
 
-// GetFilters returns the Filters field value
+// GetFilters returns the Filters field value if set, zero value otherwise.
 func (o *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner) GetFilters() []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFiltersInner {
-	if o == nil {
+	if o == nil || IsNil(o.Filters) {
 		var ret []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFiltersInner
 		return ret
 	}
-
 	return o.Filters
 }
 
-// GetFiltersOk returns a tuple with the Filters field value
+// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner) GetFiltersOk() ([]QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFiltersInner, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Filters) {
 		return nil, false
 	}
 	return o.Filters, true
 }
 
-// SetFilters sets field value
+// HasFilters returns a boolean if a field has been set.
+func (o *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner) HasFilters() bool {
+	if o != nil && !IsNil(o.Filters) {
+		return true
+	}
+
+	return false
+}
+
+// SetFilters gets a reference to the given []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFiltersInner and assigns it to the Filters field.
 func (o *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner) SetFilters(v []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFiltersInner) {
 	o.Filters = v
+}
+
+// GetFilterLists returns the FilterLists field value if set, zero value otherwise.
+func (o *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner) GetFilterLists() []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFilterListsInner {
+	if o == nil || IsNil(o.FilterLists) {
+		var ret []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFilterListsInner
+		return ret
+	}
+	return o.FilterLists
+}
+
+// GetFilterListsOk returns a tuple with the FilterLists field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner) GetFilterListsOk() ([]QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFilterListsInner, bool) {
+	if o == nil || IsNil(o.FilterLists) {
+		return nil, false
+	}
+	return o.FilterLists, true
+}
+
+// HasFilterLists returns a boolean if a field has been set.
+func (o *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner) HasFilterLists() bool {
+	if o != nil && !IsNil(o.FilterLists) {
+		return true
+	}
+
+	return false
+}
+
+// SetFilterLists gets a reference to the given []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFilterListsInner and assigns it to the FilterLists field.
+func (o *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner) SetFilterLists(v []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInnerFilterListsInner) {
+	o.FilterLists = v
 }
 
 func (o QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner) MarshalJSON() ([]byte, error) {
@@ -115,45 +152,13 @@ func (o QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner
 	if !IsNil(o.GroupType) {
 		toSerialize["groupType"] = o.GroupType
 	}
-	toSerialize["filters"] = o.Filters
+	if !IsNil(o.Filters) {
+		toSerialize["filters"] = o.Filters
+	}
+	if !IsNil(o.FilterLists) {
+		toSerialize["filterLists"] = o.FilterLists
+	}
 	return toSerialize, nil
-}
-
-func (o *QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"filters",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varQueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner := _QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varQueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner)
-
-	if err != nil {
-		return err
-	}
-
-	*o = QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner(varQueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner)
-
-	return err
 }
 
 type NullableQueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner struct {

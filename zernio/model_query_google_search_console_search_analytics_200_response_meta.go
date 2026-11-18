@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.654.0
+API version: 1.655.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,10 @@ type QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta struct {
 	FromDate        *string        `json:"fromDate,omitempty"`
 	ToDate          *string        `json:"toDate,omitempty"`
 	AggregationType NullableString `json:"aggregationType,omitempty"`
+	// From this Pacific day on the numbers can still change. Sent with dataState all when grouped by date.
+	FirstIncompleteDate NullableString `json:"firstIncompleteDate,omitempty"`
+	// The same for hours, with dataState hourly_all when grouped by hour.
+	FirstIncompleteHour NullableString `json:"firstIncompleteHour,omitempty"`
 }
 
 // NewQueryGoogleSearchConsoleSearchAnalytics200ResponseMeta instantiates a new QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta object
@@ -215,6 +219,92 @@ func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) UnsetAggregatio
 	o.AggregationType.Unset()
 }
 
+// GetFirstIncompleteDate returns the FirstIncompleteDate field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) GetFirstIncompleteDate() string {
+	if o == nil || IsNil(o.FirstIncompleteDate.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.FirstIncompleteDate.Get()
+}
+
+// GetFirstIncompleteDateOk returns a tuple with the FirstIncompleteDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) GetFirstIncompleteDateOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FirstIncompleteDate.Get(), o.FirstIncompleteDate.IsSet()
+}
+
+// HasFirstIncompleteDate returns a boolean if a field has been set.
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) HasFirstIncompleteDate() bool {
+	if o != nil && o.FirstIncompleteDate.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFirstIncompleteDate gets a reference to the given NullableString and assigns it to the FirstIncompleteDate field.
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) SetFirstIncompleteDate(v string) {
+	o.FirstIncompleteDate.Set(&v)
+}
+
+// SetFirstIncompleteDateNil sets the value for FirstIncompleteDate to be an explicit nil
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) SetFirstIncompleteDateNil() {
+	o.FirstIncompleteDate.Set(nil)
+}
+
+// UnsetFirstIncompleteDate ensures that no value is present for FirstIncompleteDate, not even an explicit nil
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) UnsetFirstIncompleteDate() {
+	o.FirstIncompleteDate.Unset()
+}
+
+// GetFirstIncompleteHour returns the FirstIncompleteHour field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) GetFirstIncompleteHour() string {
+	if o == nil || IsNil(o.FirstIncompleteHour.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.FirstIncompleteHour.Get()
+}
+
+// GetFirstIncompleteHourOk returns a tuple with the FirstIncompleteHour field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) GetFirstIncompleteHourOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FirstIncompleteHour.Get(), o.FirstIncompleteHour.IsSet()
+}
+
+// HasFirstIncompleteHour returns a boolean if a field has been set.
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) HasFirstIncompleteHour() bool {
+	if o != nil && o.FirstIncompleteHour.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFirstIncompleteHour gets a reference to the given NullableString and assigns it to the FirstIncompleteHour field.
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) SetFirstIncompleteHour(v string) {
+	o.FirstIncompleteHour.Set(&v)
+}
+
+// SetFirstIncompleteHourNil sets the value for FirstIncompleteHour to be an explicit nil
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) SetFirstIncompleteHourNil() {
+	o.FirstIncompleteHour.Set(nil)
+}
+
+// UnsetFirstIncompleteHour ensures that no value is present for FirstIncompleteHour, not even an explicit nil
+func (o *QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) UnsetFirstIncompleteHour() {
+	o.FirstIncompleteHour.Unset()
+}
+
 func (o QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -239,6 +329,12 @@ func (o QueryGoogleSearchConsoleSearchAnalytics200ResponseMeta) ToMap() (map[str
 	}
 	if o.AggregationType.IsSet() {
 		toSerialize["aggregationType"] = o.AggregationType.Get()
+	}
+	if o.FirstIncompleteDate.IsSet() {
+		toSerialize["firstIncompleteDate"] = o.FirstIncompleteDate.Get()
+	}
+	if o.FirstIncompleteHour.IsSet() {
+		toSerialize["firstIncompleteHour"] = o.FirstIncompleteHour.Get()
 	}
 	return toSerialize, nil
 }

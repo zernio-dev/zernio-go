@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.654.0
+API version: 1.655.0
 Contact: support@zernio.com
 */
 
@@ -26,10 +26,11 @@ type QueryGoogleSearchConsoleSearchAnalyticsRequest struct {
 	FromDate   *string  `json:"fromDate,omitempty"`
 	ToDate     *string  `json:"toDate,omitempty"`
 	Dimensions []string `json:"dimensions,omitempty"`
-	// Which Google surface to read. Defaults to `web`.
+	// Which Google surface to read. Defaults to `web`. `webMultimodal` is Google Lens, Circle to Search and image uploads.
 	Type                  *string                                                                    `json:"type,omitempty"`
 	DimensionFilterGroups []QueryGoogleSearchConsoleSearchAnalyticsRequestDimensionFilterGroupsInner `json:"dimensionFilterGroups,omitempty"`
-	AggregationType       *string                                                                    `json:"aggregationType,omitempty"`
+	// byNewsShowcasePanel needs a NEWS_SHOWCASE searchAppearance filter and type discover or googleNews.
+	AggregationType *string `json:"aggregationType,omitempty"`
 	// Defaults to 1000.
 	RowLimit *int32 `json:"rowLimit,omitempty"`
 	// Row offset for paging past `rowLimit`.
