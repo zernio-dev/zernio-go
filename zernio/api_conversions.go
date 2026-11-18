@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.666.2
+API version: 1.667.0
 Contact: support@zernio.com
 */
 
@@ -3171,6 +3171,173 @@ func (a *ConversionsAPIService) GetConversionMetricsExecute(r ConversionsAPIGetC
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConversionsAPIGetConversionPathsRequest struct {
+	ctx        context.Context
+	ApiService *ConversionsAPIService
+	fromDate   *string
+	toDate     *string
+	profileId  *string
+	limit      *int32
+}
+
+func (r ConversionsAPIGetConversionPathsRequest) FromDate(fromDate string) ConversionsAPIGetConversionPathsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// Inclusive. At most 400 days after &#x60;fromDate&#x60;.
+func (r ConversionsAPIGetConversionPathsRequest) ToDate(toDate string) ConversionsAPIGetConversionPathsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// The profile to read. Omit for every profile you can access.
+func (r ConversionsAPIGetConversionPathsRequest) ProfileId(profileId string) ConversionsAPIGetConversionPathsRequest {
+	r.profileId = &profileId
+	return r
+}
+
+func (r ConversionsAPIGetConversionPathsRequest) Limit(limit int32) ConversionsAPIGetConversionPathsRequest {
+	r.limit = &limit
+	return r
+}
+
+func (r ConversionsAPIGetConversionPathsRequest) Execute() (*GetConversionPaths200Response, *http.Response, error) {
+	return r.ApiService.GetConversionPathsExecute(r)
+}
+
+/*
+GetConversionPaths List the touch paths that lead to conversions
+
+The most frequent sequences of touches people made before a conversion (sale, lead or another counted event) whose time falls in the range: ad clicks, tagged visits, search, referrals and earlier lead forms, oldest first.
+
+Only conversions with more than one touch have a path. Without `profileId` it covers every profile you can access. Requires the Ads add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConversionsAPIGetConversionPathsRequest
+*/
+func (a *ConversionsAPIService) GetConversionPaths(ctx context.Context) ConversionsAPIGetConversionPathsRequest {
+	return ConversionsAPIGetConversionPathsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetConversionPaths200Response
+func (a *ConversionsAPIService) GetConversionPathsExecute(r ConversionsAPIGetConversionPathsRequest) (*GetConversionPaths200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetConversionPaths200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.GetConversionPaths")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/events/paths"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.fromDate == nil {
+		return localVarReturnValue, nil, reportError("fromDate is required and must be specified")
+	}
+	if r.toDate == nil {
+		return localVarReturnValue, nil, reportError("toDate is required and must be specified")
+	}
+
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 10
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
