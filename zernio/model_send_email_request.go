@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.660.0
+API version: 1.661.0
 Contact: support@zernio.com
 */
 
@@ -41,7 +41,7 @@ type SendEmailRequest struct {
 	Html *string `json:"html,omitempty"`
 	// 25 MB in total on every provider. Send files over 4 MB by url: request bodies are capped at 4.5 MB.
 	Attachments []SendEmailRequestAttachmentsInner `json:"attachments,omitempty"`
-	// Custom `X-` headers only. `List-Unsubscribe` is dropped on Microsoft and reported in `metadata.droppedHeaders`.
+	// Custom headers: `X-` names, plus `List-Unsubscribe`, `List-Unsubscribe-Post`, `List-Id`, `Precedence` and `Auto-Submitted`. Other names, values with line breaks and header lines over 998 characters answer 400.  `List-Unsubscribe` takes one or more `<https://...>` or `<mailto:...>` URIs separated by commas. `List-Unsubscribe-Post` must be exactly `List-Unsubscribe=One-Click` and needs an https URI in `List-Unsubscribe` (RFC 8058).  Gmail and IMAP send them all. Outlook sends only `X-` headers: the others are left out and named in `metadata.droppedHeaders` on the sent message.
 	Headers  map[string]string `json:"headers,omitempty"`
 	Metadata map[string]string `json:"metadata,omitempty"`
 	// Send later, between 1 minute and 30 days from now. The request answers 202 with the scheduled send; it leaves within a minute of this time through the same caps as an immediate send. List or cancel it under `/v1/email/messages/scheduled`.
