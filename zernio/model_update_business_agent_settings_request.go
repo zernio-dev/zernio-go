@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.675.0
+API version: 1.676.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &UpdateBusinessAgentSettingsRequest{}
 
 // UpdateBusinessAgentSettingsRequest struct for UpdateBusinessAgentSettingsRequest
 type UpdateBusinessAgentSettingsRequest struct {
-	Rollout    *UpdateBusinessAgentSettingsRequestRollout  `json:"rollout,omitempty"`
+	Rollout    *GetTagNewAds200Response                    `json:"rollout,omitempty"`
 	Handoff    *UpdateBusinessAgentSettingsRequestHandoff  `json:"handoff,omitempty"`
 	Followup   *UpdateBusinessAgentSettingsRequestFollowup `json:"followup,omitempty"`
 	AiAudience *string                                     `json:"ai_audience,omitempty"`
@@ -46,9 +46,9 @@ func NewUpdateBusinessAgentSettingsRequestWithDefaults() *UpdateBusinessAgentSet
 }
 
 // GetRollout returns the Rollout field value if set, zero value otherwise.
-func (o *UpdateBusinessAgentSettingsRequest) GetRollout() UpdateBusinessAgentSettingsRequestRollout {
+func (o *UpdateBusinessAgentSettingsRequest) GetRollout() GetTagNewAds200Response {
 	if o == nil || IsNil(o.Rollout) {
-		var ret UpdateBusinessAgentSettingsRequestRollout
+		var ret GetTagNewAds200Response
 		return ret
 	}
 	return *o.Rollout
@@ -56,7 +56,7 @@ func (o *UpdateBusinessAgentSettingsRequest) GetRollout() UpdateBusinessAgentSet
 
 // GetRolloutOk returns a tuple with the Rollout field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateBusinessAgentSettingsRequest) GetRolloutOk() (*UpdateBusinessAgentSettingsRequestRollout, bool) {
+func (o *UpdateBusinessAgentSettingsRequest) GetRolloutOk() (*GetTagNewAds200Response, bool) {
 	if o == nil || IsNil(o.Rollout) {
 		return nil, false
 	}
@@ -72,8 +72,8 @@ func (o *UpdateBusinessAgentSettingsRequest) HasRollout() bool {
 	return false
 }
 
-// SetRollout gets a reference to the given UpdateBusinessAgentSettingsRequestRollout and assigns it to the Rollout field.
-func (o *UpdateBusinessAgentSettingsRequest) SetRollout(v UpdateBusinessAgentSettingsRequestRollout) {
+// SetRollout gets a reference to the given GetTagNewAds200Response and assigns it to the Rollout field.
+func (o *UpdateBusinessAgentSettingsRequest) SetRollout(v GetTagNewAds200Response) {
 	o.Rollout = &v
 }
 

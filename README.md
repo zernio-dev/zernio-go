@@ -453,8 +453,10 @@ func main() {
 | `client.AdCampaignResultsAPI.GetCampaignResultEvents(ctx)` | List the events that count as campaign results |
 | `client.AdCampaignResultsAPI.GetCampaignResultsTotals(ctx)` | Get your results totals |
 | `client.AdCampaignResultsAPI.GetCampaignResultsUpload(ctx)` | Check a results upload |
+| `client.AdCampaignResultsAPI.GetTagNewAds(ctx)` | Get the Tag new ads setting |
 | `client.AdCampaignResultsAPI.SetCampaignResultEvents(ctx)` | Choose the events that count as campaign results |
 | `client.AdCampaignResultsAPI.SetCampaignResultMetric(ctx)` | Name a result metric or define a formula |
+| `client.AdCampaignResultsAPI.SetTagNewAds(ctx)` | Turn Tag new ads on or off |
 | `client.AdCampaignResultsAPI.UploadCampaignResults(ctx)` | Upload your results per campaign |
 
 ### Ad Campaigns

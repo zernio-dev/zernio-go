@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.675.0
+API version: 1.676.0
 Contact: support@zernio.com
 */
 
@@ -30,9 +30,11 @@ type ImapDiscovery struct {
 	Smtp       *ImapDiscoverySmtp `json:"smtp,omitempty"`
 	Auth       *ImapDiscoveryAuth `json:"auth,omitempty"`
 	// What to switch on at the provider first, such as IMAP access on GMX or Yandex.
-	Preflight      []ImapDiscoveryPreflightInner `json:"preflight,omitempty"`
-	ReconnectCause NullableString                `json:"reconnectCause,omitempty"`
-	Reason         NullableString                `json:"reason,omitempty"`
+	Preflight []ImapDiscoveryPreflightInner `json:"preflight,omitempty"`
+	// Server names discovery swapped for the name the server certificate is issued for, as on shared hosting where mail.<domain> has no certificate of its own. Present on the imap route.
+	HostReplacements []ImapDiscoveryHostReplacementsInner `json:"hostReplacements,omitempty"`
+	ReconnectCause   NullableString                       `json:"reconnectCause,omitempty"`
+	Reason           NullableString                       `json:"reason,omitempty"`
 	// Why an `unsupported` route cannot connect:  - `proton_requires_bridge`: Proton Mail only works through its local bridge. - `forwarding_only`: the domain forwards mail (Cloudflare Email Routing) and stores none, so connect the mailbox it forwards to. - `domain_typo`: the domain takes no mail and looks like a mistyped consumer domain. `suggestedEmail` has the likely address. - `no_mail_domain`: the domain has no MX and no address, so it cannot receive email.
 	UnsupportedReason NullableString `json:"unsupportedReason,omitempty"`
 	// With unsupportedReason domain_typo: the address the user most likely meant, such as ana7275@gmail.com for ana@7275gmail.com. Run discovery again with it once the user confirms.
@@ -346,6 +348,38 @@ func (o *ImapDiscovery) SetPreflight(v []ImapDiscoveryPreflightInner) {
 	o.Preflight = v
 }
 
+// GetHostReplacements returns the HostReplacements field value if set, zero value otherwise.
+func (o *ImapDiscovery) GetHostReplacements() []ImapDiscoveryHostReplacementsInner {
+	if o == nil || IsNil(o.HostReplacements) {
+		var ret []ImapDiscoveryHostReplacementsInner
+		return ret
+	}
+	return o.HostReplacements
+}
+
+// GetHostReplacementsOk returns a tuple with the HostReplacements field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImapDiscovery) GetHostReplacementsOk() ([]ImapDiscoveryHostReplacementsInner, bool) {
+	if o == nil || IsNil(o.HostReplacements) {
+		return nil, false
+	}
+	return o.HostReplacements, true
+}
+
+// HasHostReplacements returns a boolean if a field has been set.
+func (o *ImapDiscovery) HasHostReplacements() bool {
+	if o != nil && !IsNil(o.HostReplacements) {
+		return true
+	}
+
+	return false
+}
+
+// SetHostReplacements gets a reference to the given []ImapDiscoveryHostReplacementsInner and assigns it to the HostReplacements field.
+func (o *ImapDiscovery) SetHostReplacements(v []ImapDiscoveryHostReplacementsInner) {
+	o.HostReplacements = v
+}
+
 // GetReconnectCause returns the ReconnectCause field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ImapDiscovery) GetReconnectCause() string {
 	if o == nil || IsNil(o.ReconnectCause.Get()) {
@@ -586,6 +620,9 @@ func (o ImapDiscovery) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Preflight) {
 		toSerialize["preflight"] = o.Preflight
+	}
+	if !IsNil(o.HostReplacements) {
+		toSerialize["hostReplacements"] = o.HostReplacements
 	}
 	if o.ReconnectCause.IsSet() {
 		toSerialize["reconnectCause"] = o.ReconnectCause.Get()

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.675.0
+API version: 1.676.0
 Contact: support@zernio.com
 */
 
@@ -22,11 +22,11 @@ var _ MappedNullable = &BusinessAgentSettings{}
 
 // BusinessAgentSettings Meta Business Agent settings for one WhatsApp number, as Meta returns them.
 type BusinessAgentSettings struct {
-	AgentId  string                                    `json:"agent_id"`
-	Channel  string                                    `json:"channel"`
-	Rollout  UpdateBusinessAgentSettingsRequestRollout `json:"rollout"`
-	Handoff  *BusinessAgentSettingsHandoff             `json:"handoff,omitempty"`
-	Followup *BusinessAgentSettingsFollowup            `json:"followup,omitempty"`
+	AgentId  string                         `json:"agent_id"`
+	Channel  string                         `json:"channel"`
+	Rollout  GetTagNewAds200Response        `json:"rollout"`
+	Handoff  *BusinessAgentSettingsHandoff  `json:"handoff,omitempty"`
+	Followup *BusinessAgentSettingsFollowup `json:"followup,omitempty"`
 	// EVERYONE answers all consumers; ALLOWLISTED_ONLY answers only the allowlist and needs no payment method.
 	AiAudience NullableString `json:"ai_audience,omitempty"`
 	// Exact phrases the agent must never say.
@@ -39,7 +39,7 @@ type _BusinessAgentSettings BusinessAgentSettings
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBusinessAgentSettings(agentId string, channel string, rollout UpdateBusinessAgentSettingsRequestRollout) *BusinessAgentSettings {
+func NewBusinessAgentSettings(agentId string, channel string, rollout GetTagNewAds200Response) *BusinessAgentSettings {
 	this := BusinessAgentSettings{}
 	this.AgentId = agentId
 	this.Channel = channel
@@ -104,9 +104,9 @@ func (o *BusinessAgentSettings) SetChannel(v string) {
 }
 
 // GetRollout returns the Rollout field value
-func (o *BusinessAgentSettings) GetRollout() UpdateBusinessAgentSettingsRequestRollout {
+func (o *BusinessAgentSettings) GetRollout() GetTagNewAds200Response {
 	if o == nil {
-		var ret UpdateBusinessAgentSettingsRequestRollout
+		var ret GetTagNewAds200Response
 		return ret
 	}
 
@@ -115,7 +115,7 @@ func (o *BusinessAgentSettings) GetRollout() UpdateBusinessAgentSettingsRequestR
 
 // GetRolloutOk returns a tuple with the Rollout field value
 // and a boolean to check if the value has been set.
-func (o *BusinessAgentSettings) GetRolloutOk() (*UpdateBusinessAgentSettingsRequestRollout, bool) {
+func (o *BusinessAgentSettings) GetRolloutOk() (*GetTagNewAds200Response, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -123,7 +123,7 @@ func (o *BusinessAgentSettings) GetRolloutOk() (*UpdateBusinessAgentSettingsRequ
 }
 
 // SetRollout sets field value
-func (o *BusinessAgentSettings) SetRollout(v UpdateBusinessAgentSettingsRequestRollout) {
+func (o *BusinessAgentSettings) SetRollout(v GetTagNewAds200Response) {
 	o.Rollout = v
 }
 
