@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.665.0
+API version: 1.666.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,7 @@ type ChangelogAPIListChangelogRequest struct {
 	impact     *string
 	platform   *string
 	before     *time.Time
+	cursor     *time.Time
 	limit      *int32
 }
 
@@ -54,6 +55,12 @@ func (r ChangelogAPIListChangelogRequest) Platform(platform string) ChangelogAPI
 // Only entries published strictly before this instant. Pass the previous page&#39;s &#x60;nextCursor&#x60;.
 func (r ChangelogAPIListChangelogRequest) Before(before time.Time) ChangelogAPIListChangelogRequest {
 	r.before = &before
+	return r
+}
+
+// Same as &#x60;before&#x60;, for clients that send &#x60;nextCursor&#x60; back as &#x60;cursor&#x60;. &#x60;before&#x60; wins when both are set.
+func (r ChangelogAPIListChangelogRequest) Cursor(cursor time.Time) ChangelogAPIListChangelogRequest {
+	r.cursor = &cursor
 	return r
 }
 
@@ -122,6 +129,9 @@ func (a *ChangelogAPIService) ListChangelogExecute(r ChangelogAPIListChangelogRe
 	}
 	if r.before != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "before", r.before, "form", "")
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
 	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
