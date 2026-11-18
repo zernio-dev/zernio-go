@@ -449,8 +449,10 @@ func main() {
 |--------|-------------|
 | `client.AdCampaignResultsAPI.ListCampaignResultMetrics(ctx)` | List your result metrics |
 | `client.AdCampaignResultsAPI.ListCampaignResults(ctx)` | List your results per campaign |
+| `client.AdCampaignResultsAPI.GetCampaignResultEvents(ctx)` | List the events that count as campaign results |
 | `client.AdCampaignResultsAPI.GetCampaignResultsTotals(ctx)` | Get your results totals |
 | `client.AdCampaignResultsAPI.GetCampaignResultsUpload(ctx)` | Check a results upload |
+| `client.AdCampaignResultsAPI.SetCampaignResultEvents(ctx)` | Choose the events that count as campaign results |
 | `client.AdCampaignResultsAPI.SetCampaignResultMetric(ctx)` | Name a result metric or define a formula |
 | `client.AdCampaignResultsAPI.UploadCampaignResults(ctx)` | Upload your results per campaign |
 

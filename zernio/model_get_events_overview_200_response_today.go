@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.661.0
+API version: 1.662.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,8 @@ type GetEventsOverview200ResponseToday struct {
 	Accepted *int32 `json:"accepted,omitempty"`
 	// Today's events matched to an ad campaign.
 	Matched *int32 `json:"matched,omitempty"`
+	// Today's events that count as campaign results (see `GET /v1/ads/campaign-results/events`), the ones looked up for a campaign.
+	Counted *int32 `json:"counted,omitempty"`
 }
 
 // NewGetEventsOverview200ResponseToday instantiates a new GetEventsOverview200ResponseToday object
@@ -254,6 +256,38 @@ func (o *GetEventsOverview200ResponseToday) SetMatched(v int32) {
 	o.Matched = &v
 }
 
+// GetCounted returns the Counted field value if set, zero value otherwise.
+func (o *GetEventsOverview200ResponseToday) GetCounted() int32 {
+	if o == nil || IsNil(o.Counted) {
+		var ret int32
+		return ret
+	}
+	return *o.Counted
+}
+
+// GetCountedOk returns a tuple with the Counted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverview200ResponseToday) GetCountedOk() (*int32, bool) {
+	if o == nil || IsNil(o.Counted) {
+		return nil, false
+	}
+	return o.Counted, true
+}
+
+// HasCounted returns a boolean if a field has been set.
+func (o *GetEventsOverview200ResponseToday) HasCounted() bool {
+	if o != nil && !IsNil(o.Counted) {
+		return true
+	}
+
+	return false
+}
+
+// SetCounted gets a reference to the given int32 and assigns it to the Counted field.
+func (o *GetEventsOverview200ResponseToday) SetCounted(v int32) {
+	o.Counted = &v
+}
+
 func (o GetEventsOverview200ResponseToday) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -281,6 +315,9 @@ func (o GetEventsOverview200ResponseToday) ToMap() (map[string]interface{}, erro
 	}
 	if !IsNil(o.Matched) {
 		toSerialize["matched"] = o.Matched
+	}
+	if !IsNil(o.Counted) {
+		toSerialize["counted"] = o.Counted
 	}
 	return toSerialize, nil
 }
