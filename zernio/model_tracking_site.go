@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.657.0
+API version: 1.658.0
 Contact: support@zernio.com
 */
 
@@ -33,7 +33,9 @@ type TrackingSite struct {
 	Domains        []string                    `json:"domains,omitempty"`
 	CustomHostname *TrackingSiteCustomHostname `json:"customHostname,omitempty"`
 	Proxy          *TrackingSiteProxy          `json:"proxy,omitempty"`
-	ConsentMode    *TrackingSiteConsentMode    `json:"consentMode,omitempty"`
+	// The site's own Google tags (Tag Manager, GA4, Google Ads) its own-domain path relays to Google, so they load and measure from the site's domain.
+	GoogleTagIds []string                 `json:"googleTagIds,omitempty"`
+	ConsentMode  *TrackingSiteConsentMode `json:"consentMode,omitempty"`
 	// One per setup step: `script` for the install, then one per ad account the site sends to, keyed by its platform and ids.
 	Checks    []TrackingSiteChecksInner `json:"checks,omitempty"`
 	Setup     *TrackingSiteSetup        `json:"setup,omitempty"`
@@ -378,6 +380,38 @@ func (o *TrackingSite) SetProxy(v TrackingSiteProxy) {
 	o.Proxy = &v
 }
 
+// GetGoogleTagIds returns the GoogleTagIds field value if set, zero value otherwise.
+func (o *TrackingSite) GetGoogleTagIds() []string {
+	if o == nil || IsNil(o.GoogleTagIds) {
+		var ret []string
+		return ret
+	}
+	return o.GoogleTagIds
+}
+
+// GetGoogleTagIdsOk returns a tuple with the GoogleTagIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingSite) GetGoogleTagIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.GoogleTagIds) {
+		return nil, false
+	}
+	return o.GoogleTagIds, true
+}
+
+// HasGoogleTagIds returns a boolean if a field has been set.
+func (o *TrackingSite) HasGoogleTagIds() bool {
+	if o != nil && !IsNil(o.GoogleTagIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetGoogleTagIds gets a reference to the given []string and assigns it to the GoogleTagIds field.
+func (o *TrackingSite) SetGoogleTagIds(v []string) {
+	o.GoogleTagIds = v
+}
+
 // GetConsentMode returns the ConsentMode field value if set, zero value otherwise.
 func (o *TrackingSite) GetConsentMode() TrackingSiteConsentMode {
 	if o == nil || IsNil(o.ConsentMode) {
@@ -577,6 +611,9 @@ func (o TrackingSite) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Proxy) {
 		toSerialize["proxy"] = o.Proxy
+	}
+	if !IsNil(o.GoogleTagIds) {
+		toSerialize["googleTagIds"] = o.GoogleTagIds
 	}
 	if !IsNil(o.ConsentMode) {
 		toSerialize["consentMode"] = o.ConsentMode

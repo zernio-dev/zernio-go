@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.657.0
+API version: 1.658.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type TrackingSiteProxy struct {
 	Path *string `json:"path,omitempty"`
 	// Signs the visitor's IP and country your proxy forwards. Only on reading or updating one site.
 	Secret NullableString `json:"secret,omitempty"`
+	// The loader of each of `googleTagIds` on the site's own domain. Use `src` in place of the tag's googletagmanager.com address.
+	GoogleTags []TrackingSiteProxyGoogleTagsInner `json:"googleTags,omitempty"`
 }
 
 // NewTrackingSiteProxy instantiates a new TrackingSiteProxy object
@@ -118,6 +120,38 @@ func (o *TrackingSiteProxy) UnsetSecret() {
 	o.Secret.Unset()
 }
 
+// GetGoogleTags returns the GoogleTags field value if set, zero value otherwise.
+func (o *TrackingSiteProxy) GetGoogleTags() []TrackingSiteProxyGoogleTagsInner {
+	if o == nil || IsNil(o.GoogleTags) {
+		var ret []TrackingSiteProxyGoogleTagsInner
+		return ret
+	}
+	return o.GoogleTags
+}
+
+// GetGoogleTagsOk returns a tuple with the GoogleTags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingSiteProxy) GetGoogleTagsOk() ([]TrackingSiteProxyGoogleTagsInner, bool) {
+	if o == nil || IsNil(o.GoogleTags) {
+		return nil, false
+	}
+	return o.GoogleTags, true
+}
+
+// HasGoogleTags returns a boolean if a field has been set.
+func (o *TrackingSiteProxy) HasGoogleTags() bool {
+	if o != nil && !IsNil(o.GoogleTags) {
+		return true
+	}
+
+	return false
+}
+
+// SetGoogleTags gets a reference to the given []TrackingSiteProxyGoogleTagsInner and assigns it to the GoogleTags field.
+func (o *TrackingSiteProxy) SetGoogleTags(v []TrackingSiteProxyGoogleTagsInner) {
+	o.GoogleTags = v
+}
+
 func (o TrackingSiteProxy) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -133,6 +167,9 @@ func (o TrackingSiteProxy) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Secret.IsSet() {
 		toSerialize["secret"] = o.Secret.Get()
+	}
+	if !IsNil(o.GoogleTags) {
+		toSerialize["googleTags"] = o.GoogleTags
 	}
 	return toSerialize, nil
 }
