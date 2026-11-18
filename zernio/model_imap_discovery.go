@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.655.0
+API version: 1.656.0
 Contact: support@zernio.com
 */
 
@@ -33,8 +33,10 @@ type ImapDiscovery struct {
 	Preflight      []ImapDiscoveryPreflightInner `json:"preflight,omitempty"`
 	ReconnectCause NullableString                `json:"reconnectCause,omitempty"`
 	Reason         NullableString                `json:"reason,omitempty"`
-	// proton_requires_bridge: Proton Mail only works through its local bridge. forwarding_only: the domain forwards mail (Cloudflare Email Routing) and stores none, so connect the mailbox it forwards to.
+	// Why an `unsupported` route cannot connect:  - `proton_requires_bridge`: Proton Mail only works through its local bridge. - `forwarding_only`: the domain forwards mail (Cloudflare Email Routing) and stores none, so connect the mailbox it forwards to. - `domain_typo`: the domain takes no mail and looks like a mistyped consumer domain. `suggestedEmail` has the likely address. - `no_mail_domain`: the domain has no MX and no address, so it cannot receive email.
 	UnsupportedReason NullableString `json:"unsupportedReason,omitempty"`
+	// With unsupportedReason domain_typo: the address the user most likely meant, such as ana7275@gmail.com for ana@7275gmail.com. Run discovery again with it once the user confirms.
+	SuggestedEmail NullableString `json:"suggestedEmail,omitempty"`
 	// Google only: Gmail over IMAP with an app password, for accounts whose admin blocks Google sign-in for other apps.
 	AppPasswordFallback map[string]interface{} `json:"appPasswordFallback,omitempty"`
 }
@@ -473,6 +475,49 @@ func (o *ImapDiscovery) UnsetUnsupportedReason() {
 	o.UnsupportedReason.Unset()
 }
 
+// GetSuggestedEmail returns the SuggestedEmail field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ImapDiscovery) GetSuggestedEmail() string {
+	if o == nil || IsNil(o.SuggestedEmail.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SuggestedEmail.Get()
+}
+
+// GetSuggestedEmailOk returns a tuple with the SuggestedEmail field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImapDiscovery) GetSuggestedEmailOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SuggestedEmail.Get(), o.SuggestedEmail.IsSet()
+}
+
+// HasSuggestedEmail returns a boolean if a field has been set.
+func (o *ImapDiscovery) HasSuggestedEmail() bool {
+	if o != nil && o.SuggestedEmail.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSuggestedEmail gets a reference to the given NullableString and assigns it to the SuggestedEmail field.
+func (o *ImapDiscovery) SetSuggestedEmail(v string) {
+	o.SuggestedEmail.Set(&v)
+}
+
+// SetSuggestedEmailNil sets the value for SuggestedEmail to be an explicit nil
+func (o *ImapDiscovery) SetSuggestedEmailNil() {
+	o.SuggestedEmail.Set(nil)
+}
+
+// UnsetSuggestedEmail ensures that no value is present for SuggestedEmail, not even an explicit nil
+func (o *ImapDiscovery) UnsetSuggestedEmail() {
+	o.SuggestedEmail.Unset()
+}
+
 // GetAppPasswordFallback returns the AppPasswordFallback field value if set, zero value otherwise.
 func (o *ImapDiscovery) GetAppPasswordFallback() map[string]interface{} {
 	if o == nil || IsNil(o.AppPasswordFallback) {
@@ -550,6 +595,9 @@ func (o ImapDiscovery) ToMap() (map[string]interface{}, error) {
 	}
 	if o.UnsupportedReason.IsSet() {
 		toSerialize["unsupportedReason"] = o.UnsupportedReason.Get()
+	}
+	if o.SuggestedEmail.IsSet() {
+		toSerialize["suggestedEmail"] = o.SuggestedEmail.Get()
 	}
 	if !IsNil(o.AppPasswordFallback) {
 		toSerialize["appPasswordFallback"] = o.AppPasswordFallback
