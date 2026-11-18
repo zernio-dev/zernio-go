@@ -1467,6 +1467,7 @@ func main() {
 | `client.TrackingLinksAPI.ListTrackingLinks(ctx)` | List tracking links |
 | `client.TrackingLinksAPI.CreateTrackingLink(ctx)` | Create a tracking link |
 | `client.TrackingLinksAPI.GetTrackingLink(ctx)` | Get a tracking link |
+| `client.TrackingLinksAPI.GetTrackingLinkStats(ctx)` | Get a tracking link's results |
 | `client.TrackingLinksAPI.UpdateTrackingLink(ctx)` | Update a tracking link |
 | `client.TrackingLinksAPI.DeleteTrackingLink(ctx)` | Delete a tracking link |
 | `client.TrackingLinksAPI.RotateTrackingLinkPostbackToken(ctx)` | Rotate a tracking link's postback URL |

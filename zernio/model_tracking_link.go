@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.678.0
+API version: 1.679.0
 Contact: support@zernio.com
 */
 
@@ -33,7 +33,7 @@ type TrackingLink struct {
 	Campaign     NullableTrackingLinkCampaign `json:"campaign,omitempty"`
 	// The link to put in ads, such as `https://t.brand.com/r/aB3dE5fG`. It uses the site's custom subdomain once that is active.
 	Url *string `json:"url,omitempty"`
-	// The server-to-server postback URL to give the network. Replace `{clickid}`, `{payout}` and `{txid}` with the network's own macros. It holds a secret: rotate it with `POST /v1/tracking-links/{linkId}/rotate-postback-token` if it leaks.
+	// The server-to-server postback URL for the network, with its own macros in place of `{clickid}`, `{payout}` and `{txid}`. A `status` of `rejected`, `declined`, `refunded`, `reversed` or `chargeback` retracts the conversion; `pending` is ignored. It holds a secret: rotate it with `POST /v1/tracking-links/{linkId}/rotate-postback-token` if it leaks.
 	PostbackUrl *string    `json:"postbackUrl,omitempty"`
 	CreatedAt   *time.Time `json:"createdAt,omitempty"`
 	UpdatedAt   *time.Time `json:"updatedAt,omitempty"`

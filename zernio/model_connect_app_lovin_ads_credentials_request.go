@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.678.0
+API version: 1.679.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type ConnectAppLovinAdsCredentialsRequest struct {
 	ApiKey string `json:"apiKey"`
 	// Event Key from the Keys page of Axon Ads Manager: 8 to 128 letters, digits, dots, dashes or underscores.
 	EventKey string `json:"eventKey"`
+	// Optional Report Key from the Keys page of your AppLovin account. With it, Zernio syncs AppLovin spend per campaign.
+	ReportKey *string `json:"reportKey,omitempty"`
 	// Optional display name for the account.
 	Name *string `json:"name,omitempty"`
 	// Your Zernio profile ID
@@ -104,6 +106,38 @@ func (o *ConnectAppLovinAdsCredentialsRequest) GetEventKeyOk() (*string, bool) {
 // SetEventKey sets field value
 func (o *ConnectAppLovinAdsCredentialsRequest) SetEventKey(v string) {
 	o.EventKey = v
+}
+
+// GetReportKey returns the ReportKey field value if set, zero value otherwise.
+func (o *ConnectAppLovinAdsCredentialsRequest) GetReportKey() string {
+	if o == nil || IsNil(o.ReportKey) {
+		var ret string
+		return ret
+	}
+	return *o.ReportKey
+}
+
+// GetReportKeyOk returns a tuple with the ReportKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectAppLovinAdsCredentialsRequest) GetReportKeyOk() (*string, bool) {
+	if o == nil || IsNil(o.ReportKey) {
+		return nil, false
+	}
+	return o.ReportKey, true
+}
+
+// HasReportKey returns a boolean if a field has been set.
+func (o *ConnectAppLovinAdsCredentialsRequest) HasReportKey() bool {
+	if o != nil && !IsNil(o.ReportKey) {
+		return true
+	}
+
+	return false
+}
+
+// SetReportKey gets a reference to the given string and assigns it to the ReportKey field.
+func (o *ConnectAppLovinAdsCredentialsRequest) SetReportKey(v string) {
+	o.ReportKey = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -238,6 +272,9 @@ func (o ConnectAppLovinAdsCredentialsRequest) ToMap() (map[string]interface{}, e
 	toSerialize := map[string]interface{}{}
 	toSerialize["apiKey"] = o.ApiKey
 	toSerialize["eventKey"] = o.EventKey
+	if !IsNil(o.ReportKey) {
+		toSerialize["reportKey"] = o.ReportKey
+	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
