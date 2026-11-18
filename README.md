@@ -957,6 +957,7 @@ func main() {
 | `client.ConversionsAPI.GetEvent(ctx)` | Get one stored event and its deliveries |
 | `client.ConversionsAPI.GetEventsOverview(ctx)` | Get today's tracking overview |
 | `client.ConversionsAPI.GetEventsOverviewDaily(ctx)` | Get daily tracking figures |
+| `client.ConversionsAPI.GetLtvCohorts(ctx)` | Get buyer cohorts by first purchase month and first channel |
 | `client.ConversionsAPI.GetTrackingSite(ctx)` | Get a tracking site |
 | `client.ConversionsAPI.UpdateAdConversionDestination(ctx)` | Update a conversion destination |
 | `client.ConversionsAPI.UpdateAdConversionGoals(ctx)` | Update account conversion goals |

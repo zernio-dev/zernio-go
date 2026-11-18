@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.672.0
+API version: 1.673.0
 Contact: support@zernio.com
 */
 
@@ -3974,6 +3974,159 @@ func (a *ConversionsAPIService) GetEventsOverviewDailyExecute(r ConversionsAPIGe
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConversionsAPIGetLtvCohortsRequest struct {
+	ctx        context.Context
+	ApiService *ConversionsAPIService
+	fromMonth  *string
+	toMonth    *string
+	profileId  *string
+}
+
+func (r ConversionsAPIGetLtvCohortsRequest) FromMonth(fromMonth string) ConversionsAPIGetLtvCohortsRequest {
+	r.fromMonth = &fromMonth
+	return r
+}
+
+func (r ConversionsAPIGetLtvCohortsRequest) ToMonth(toMonth string) ConversionsAPIGetLtvCohortsRequest {
+	r.toMonth = &toMonth
+	return r
+}
+
+// The profile to read. Omit for every profile you can access.
+func (r ConversionsAPIGetLtvCohortsRequest) ProfileId(profileId string) ConversionsAPIGetLtvCohortsRequest {
+	r.profileId = &profileId
+	return r
+}
+
+func (r ConversionsAPIGetLtvCohortsRequest) Execute() (*GetLtvCohorts200Response, *http.Response, error) {
+	return r.ApiService.GetLtvCohortsExecute(r)
+}
+
+/*
+GetLtvCohorts Get buyer cohorts by first purchase month and first channel
+
+Buyers grouped by the month of their first purchase and the platform that first brought them, with their purchases added up over the year after (months 0, 1, 3, 6 and 12).
+
+A buyer is a hashed email, else external id, else phone. The first channel is the first touch's platform, else the first purchase's own campaign, else `none`. Values stay in each purchase's currency, one row per currency. Requires the Ads add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConversionsAPIGetLtvCohortsRequest
+*/
+func (a *ConversionsAPIService) GetLtvCohorts(ctx context.Context) ConversionsAPIGetLtvCohortsRequest {
+	return ConversionsAPIGetLtvCohortsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetLtvCohorts200Response
+func (a *ConversionsAPIService) GetLtvCohortsExecute(r ConversionsAPIGetLtvCohortsRequest) (*GetLtvCohorts200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetLtvCohorts200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.GetLtvCohorts")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/events/ltv"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.fromMonth == nil {
+		return localVarReturnValue, nil, reportError("fromMonth is required and must be specified")
+	}
+	if r.toMonth == nil {
+		return localVarReturnValue, nil, reportError("toMonth is required and must be specified")
+	}
+
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	parameterAddToHeaderOrQuery(localVarQueryParams, "fromMonth", r.fromMonth, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "toMonth", r.toMonth, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
