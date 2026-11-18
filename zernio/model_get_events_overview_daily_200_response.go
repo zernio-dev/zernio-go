@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.662.0
+API version: 1.663.0
 Contact: support@zernio.com
 */
 
@@ -20,10 +20,16 @@ var _ MappedNullable = &GetEventsOverviewDaily200Response{}
 
 // GetEventsOverviewDaily200Response struct for GetEventsOverviewDaily200Response
 type GetEventsOverviewDaily200Response struct {
-	Period *string                            `json:"period,omitempty"`
-	Totals *GetEventsOverview200ResponseToday `json:"totals,omitempty"`
+	Period *string                                  `json:"period,omitempty"`
+	Totals *GetEventsOverviewDaily200ResponseTotals `json:"totals,omitempty"`
 	// Every day of the period, oldest first, zero where nothing happened.
 	Days []GetEventsOverviewDaily200ResponseDaysInner `json:"days,omitempty"`
+	// The event names stored in the period, most events first.
+	EventNames []string `json:"eventNames,omitempty"`
+	// Each platform events were sent to in the period, most sends first.
+	Platforms []GetEventsOverviewDaily200ResponsePlatformsInner `json:"platforms,omitempty"`
+	// For each platform sent to in the period, the website conversions of people who allowed ad cookies (bots left out) and how many its browser pixel missed, which Zernio sent from its server. Most missed first; `null` without a tracked website in scope.
+	PixelMissed []GetEventsOverviewDaily200ResponsePixelMissedInner `json:"pixelMissed,omitempty"`
 }
 
 // NewGetEventsOverviewDaily200Response instantiates a new GetEventsOverviewDaily200Response object
@@ -76,9 +82,9 @@ func (o *GetEventsOverviewDaily200Response) SetPeriod(v string) {
 }
 
 // GetTotals returns the Totals field value if set, zero value otherwise.
-func (o *GetEventsOverviewDaily200Response) GetTotals() GetEventsOverview200ResponseToday {
+func (o *GetEventsOverviewDaily200Response) GetTotals() GetEventsOverviewDaily200ResponseTotals {
 	if o == nil || IsNil(o.Totals) {
-		var ret GetEventsOverview200ResponseToday
+		var ret GetEventsOverviewDaily200ResponseTotals
 		return ret
 	}
 	return *o.Totals
@@ -86,7 +92,7 @@ func (o *GetEventsOverviewDaily200Response) GetTotals() GetEventsOverview200Resp
 
 // GetTotalsOk returns a tuple with the Totals field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetEventsOverviewDaily200Response) GetTotalsOk() (*GetEventsOverview200ResponseToday, bool) {
+func (o *GetEventsOverviewDaily200Response) GetTotalsOk() (*GetEventsOverviewDaily200ResponseTotals, bool) {
 	if o == nil || IsNil(o.Totals) {
 		return nil, false
 	}
@@ -102,8 +108,8 @@ func (o *GetEventsOverviewDaily200Response) HasTotals() bool {
 	return false
 }
 
-// SetTotals gets a reference to the given GetEventsOverview200ResponseToday and assigns it to the Totals field.
-func (o *GetEventsOverviewDaily200Response) SetTotals(v GetEventsOverview200ResponseToday) {
+// SetTotals gets a reference to the given GetEventsOverviewDaily200ResponseTotals and assigns it to the Totals field.
+func (o *GetEventsOverviewDaily200Response) SetTotals(v GetEventsOverviewDaily200ResponseTotals) {
 	o.Totals = &v
 }
 
@@ -139,6 +145,103 @@ func (o *GetEventsOverviewDaily200Response) SetDays(v []GetEventsOverviewDaily20
 	o.Days = v
 }
 
+// GetEventNames returns the EventNames field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200Response) GetEventNames() []string {
+	if o == nil || IsNil(o.EventNames) {
+		var ret []string
+		return ret
+	}
+	return o.EventNames
+}
+
+// GetEventNamesOk returns a tuple with the EventNames field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200Response) GetEventNamesOk() ([]string, bool) {
+	if o == nil || IsNil(o.EventNames) {
+		return nil, false
+	}
+	return o.EventNames, true
+}
+
+// HasEventNames returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200Response) HasEventNames() bool {
+	if o != nil && !IsNil(o.EventNames) {
+		return true
+	}
+
+	return false
+}
+
+// SetEventNames gets a reference to the given []string and assigns it to the EventNames field.
+func (o *GetEventsOverviewDaily200Response) SetEventNames(v []string) {
+	o.EventNames = v
+}
+
+// GetPlatforms returns the Platforms field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200Response) GetPlatforms() []GetEventsOverviewDaily200ResponsePlatformsInner {
+	if o == nil || IsNil(o.Platforms) {
+		var ret []GetEventsOverviewDaily200ResponsePlatformsInner
+		return ret
+	}
+	return o.Platforms
+}
+
+// GetPlatformsOk returns a tuple with the Platforms field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200Response) GetPlatformsOk() ([]GetEventsOverviewDaily200ResponsePlatformsInner, bool) {
+	if o == nil || IsNil(o.Platforms) {
+		return nil, false
+	}
+	return o.Platforms, true
+}
+
+// HasPlatforms returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200Response) HasPlatforms() bool {
+	if o != nil && !IsNil(o.Platforms) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatforms gets a reference to the given []GetEventsOverviewDaily200ResponsePlatformsInner and assigns it to the Platforms field.
+func (o *GetEventsOverviewDaily200Response) SetPlatforms(v []GetEventsOverviewDaily200ResponsePlatformsInner) {
+	o.Platforms = v
+}
+
+// GetPixelMissed returns the PixelMissed field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetEventsOverviewDaily200Response) GetPixelMissed() []GetEventsOverviewDaily200ResponsePixelMissedInner {
+	if o == nil {
+		var ret []GetEventsOverviewDaily200ResponsePixelMissedInner
+		return ret
+	}
+	return o.PixelMissed
+}
+
+// GetPixelMissedOk returns a tuple with the PixelMissed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetEventsOverviewDaily200Response) GetPixelMissedOk() ([]GetEventsOverviewDaily200ResponsePixelMissedInner, bool) {
+	if o == nil || IsNil(o.PixelMissed) {
+		return nil, false
+	}
+	return o.PixelMissed, true
+}
+
+// HasPixelMissed returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200Response) HasPixelMissed() bool {
+	if o != nil && !IsNil(o.PixelMissed) {
+		return true
+	}
+
+	return false
+}
+
+// SetPixelMissed gets a reference to the given []GetEventsOverviewDaily200ResponsePixelMissedInner and assigns it to the PixelMissed field.
+func (o *GetEventsOverviewDaily200Response) SetPixelMissed(v []GetEventsOverviewDaily200ResponsePixelMissedInner) {
+	o.PixelMissed = v
+}
+
 func (o GetEventsOverviewDaily200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -157,6 +260,15 @@ func (o GetEventsOverviewDaily200Response) ToMap() (map[string]interface{}, erro
 	}
 	if !IsNil(o.Days) {
 		toSerialize["days"] = o.Days
+	}
+	if !IsNil(o.EventNames) {
+		toSerialize["eventNames"] = o.EventNames
+	}
+	if !IsNil(o.Platforms) {
+		toSerialize["platforms"] = o.Platforms
+	}
+	if o.PixelMissed != nil {
+		toSerialize["pixelMissed"] = o.PixelMissed
 	}
 	return toSerialize, nil
 }

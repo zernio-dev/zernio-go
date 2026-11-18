@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.662.0
+API version: 1.663.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type GetEventsOverviewDaily200ResponseDaysInner struct {
 	Sent *int32 `json:"sent,omitempty"`
 	// Those the platform accepted.
 	Accepted *int32 `json:"accepted,omitempty"`
+	// The day's stored events per event name.
+	ByEvent map[string]int32 `json:"byEvent,omitempty"`
 }
 
 // NewGetEventsOverviewDaily200ResponseDaysInner instantiates a new GetEventsOverviewDaily200ResponseDaysInner object
@@ -174,6 +176,38 @@ func (o *GetEventsOverviewDaily200ResponseDaysInner) SetAccepted(v int32) {
 	o.Accepted = &v
 }
 
+// GetByEvent returns the ByEvent field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) GetByEvent() map[string]int32 {
+	if o == nil || IsNil(o.ByEvent) {
+		var ret map[string]int32
+		return ret
+	}
+	return o.ByEvent
+}
+
+// GetByEventOk returns a tuple with the ByEvent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) GetByEventOk() (map[string]int32, bool) {
+	if o == nil || IsNil(o.ByEvent) {
+		return map[string]int32{}, false
+	}
+	return o.ByEvent, true
+}
+
+// HasByEvent returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) HasByEvent() bool {
+	if o != nil && !IsNil(o.ByEvent) {
+		return true
+	}
+
+	return false
+}
+
+// SetByEvent gets a reference to the given map[string]int32 and assigns it to the ByEvent field.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) SetByEvent(v map[string]int32) {
+	o.ByEvent = v
+}
+
 func (o GetEventsOverviewDaily200ResponseDaysInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -195,6 +229,9 @@ func (o GetEventsOverviewDaily200ResponseDaysInner) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.Accepted) {
 		toSerialize["accepted"] = o.Accepted
+	}
+	if !IsNil(o.ByEvent) {
+		toSerialize["byEvent"] = o.ByEvent
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.662.0
+API version: 1.663.0
 Contact: support@zernio.com
 */
 
@@ -3647,6 +3647,9 @@ type ConversionsAPIGetEventsOverviewDailyRequest struct {
 	ApiService *ConversionsAPIService
 	profileId  *string
 	period     *string
+	eventName  *string
+	sources    *string
+	platform   *string
 }
 
 // The profile to read. Omit to cover every profile you can access, summed across them.
@@ -3655,9 +3658,27 @@ func (r ConversionsAPIGetEventsOverviewDailyRequest) ProfileId(profileId string)
 	return r
 }
 
-// The days to cover, each ending today (UTC): &#x60;today&#x60;, the last 7 days or the last 30 days.
+// The days to cover, each ending today (UTC): &#x60;today&#x60;, the last 7, 30 or 90 days.
 func (r ConversionsAPIGetEventsOverviewDailyRequest) Period(period string) ConversionsAPIGetEventsOverviewDailyRequest {
 	r.period = &period
+	return r
+}
+
+// Only events of this name, such as &#x60;Purchase&#x60;.
+func (r ConversionsAPIGetEventsOverviewDailyRequest) EventName(eventName string) ConversionsAPIGetEventsOverviewDailyRequest {
+	r.eventName = &eventName
+	return r
+}
+
+// Comma-separated sources (&#x60;web&#x60;, &#x60;shopify&#x60;, &#x60;stripe&#x60;, &#x60;api&#x60;...). Only events from them.
+func (r ConversionsAPIGetEventsOverviewDailyRequest) Sources(sources string) ConversionsAPIGetEventsOverviewDailyRequest {
+	r.sources = &sources
+	return r
+}
+
+// Only sends to this platform (&#x60;metaads&#x60;, &#x60;googleads&#x60;...), and only the events sent to it.
+func (r ConversionsAPIGetEventsOverviewDailyRequest) Platform(platform string) ConversionsAPIGetEventsOverviewDailyRequest {
+	r.platform = &platform
 	return r
 }
 
@@ -3668,9 +3689,9 @@ func (r ConversionsAPIGetEventsOverviewDailyRequest) Execute() (*GetEventsOvervi
 /*
 GetEventsOverviewDaily Get daily tracking figures
 
-The tracking figures of a period, day by day (UTC): events stored, events sent to the ad platforms and how many they accepted, plus the period's totals in the same shape as the overview's `today`.
+The tracking figures of a period, day by day (UTC): events stored per event name, events sent to each ad platform and how many it accepted, the period's totals in the same shape as the overview's `today`, and how many website conversions each platform's browser pixel missed.
 
-An event sent to a destination counts once, on the day of its first send, by its latest outcome. Without `profileId` it covers every profile you can access. Requires the Ads add-on.
+An event sent to a destination counts once, on the day of its first send, by its latest outcome. Without `profileId` it covers every profile you can access. `eventName`, `sources` and `platform` narrow every figure. Requires the Ads add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConversionsAPIGetEventsOverviewDailyRequest
@@ -3713,6 +3734,15 @@ func (a *ConversionsAPIService) GetEventsOverviewDailyExecute(r ConversionsAPIGe
 		var defaultValue string = "7d"
 		parameterAddToHeaderOrQuery(localVarQueryParams, "period", defaultValue, "form", "")
 		r.period = &defaultValue
+	}
+	if r.eventName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "eventName", r.eventName, "form", "")
+	}
+	if r.sources != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sources", r.sources, "form", "")
+	}
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
