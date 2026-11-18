@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.659.0
+API version: 1.660.0
 Contact: support@zernio.com
 */
 
@@ -44,6 +44,10 @@ type ConversionEventUserClickIds struct {
 	Alart *string `json:"alart,omitempty"`
 	// Axon Pixel browser id (the `_axwrt` cookie). Sent to Axon as `user_data.axwrt`, not hashed.
 	Axwrt *string `json:"axwrt,omitempty"`
+	// X click ID (the `twclid` URL param X adds to ad clicks). Sent to X as a `twclid` identifier, not hashed.
+	Twclid *string `json:"twclid,omitempty"`
+	// Microsoft Advertising click ID (the `msclkid` URL param Microsoft adds to ad clicks). Sent to Microsoft as `MicrosoftClickId`, not hashed.
+	Msclkid *string `json:"msclkid,omitempty"`
 }
 
 // NewConversionEventUserClickIds instantiates a new ConversionEventUserClickIds object
@@ -447,6 +451,70 @@ func (o *ConversionEventUserClickIds) SetAxwrt(v string) {
 	o.Axwrt = &v
 }
 
+// GetTwclid returns the Twclid field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetTwclid() string {
+	if o == nil || IsNil(o.Twclid) {
+		var ret string
+		return ret
+	}
+	return *o.Twclid
+}
+
+// GetTwclidOk returns a tuple with the Twclid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetTwclidOk() (*string, bool) {
+	if o == nil || IsNil(o.Twclid) {
+		return nil, false
+	}
+	return o.Twclid, true
+}
+
+// HasTwclid returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasTwclid() bool {
+	if o != nil && !IsNil(o.Twclid) {
+		return true
+	}
+
+	return false
+}
+
+// SetTwclid gets a reference to the given string and assigns it to the Twclid field.
+func (o *ConversionEventUserClickIds) SetTwclid(v string) {
+	o.Twclid = &v
+}
+
+// GetMsclkid returns the Msclkid field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetMsclkid() string {
+	if o == nil || IsNil(o.Msclkid) {
+		var ret string
+		return ret
+	}
+	return *o.Msclkid
+}
+
+// GetMsclkidOk returns a tuple with the Msclkid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetMsclkidOk() (*string, bool) {
+	if o == nil || IsNil(o.Msclkid) {
+		return nil, false
+	}
+	return o.Msclkid, true
+}
+
+// HasMsclkid returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasMsclkid() bool {
+	if o != nil && !IsNil(o.Msclkid) {
+		return true
+	}
+
+	return false
+}
+
+// SetMsclkid gets a reference to the given string and assigns it to the Msclkid field.
+func (o *ConversionEventUserClickIds) SetMsclkid(v string) {
+	o.Msclkid = &v
+}
+
 func (o ConversionEventUserClickIds) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -492,6 +560,12 @@ func (o ConversionEventUserClickIds) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Axwrt) {
 		toSerialize["axwrt"] = o.Axwrt
+	}
+	if !IsNil(o.Twclid) {
+		toSerialize["twclid"] = o.Twclid
+	}
+	if !IsNil(o.Msclkid) {
+		toSerialize["msclkid"] = o.Msclkid
 	}
 	return toSerialize, nil
 }
