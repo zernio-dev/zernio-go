@@ -22,7 +22,7 @@ var _ MappedNullable = &GetEvent200Response{}
 type GetEvent200Response struct {
 	Event      *StoredEvent                         `json:"event,omitempty"`
 	Deliveries []GetEvent200ResponseDeliveriesInner `json:"deliveries,omitempty"`
-	// The touches of the person before the event that its credit is split across, oldest first: website visits from somewhere (an ad click, search, a tagged link) and earlier lead forms or sales. Empty when the event counts whole for its own campaign under every model.
+	// The touches the event is split across, oldest first: website visits (an ad click, search, a tagged link), the first and latest visits HubSpot recorded for a deal, and earlier lead forms or sales. Empty when the event counts whole for its own campaign.
 	Touches []GetEvent200ResponseTouchesInner `json:"touches,omitempty"`
 }
 

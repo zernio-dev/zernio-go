@@ -27,7 +27,7 @@ type GetEvent200ResponseTouchesInner struct {
 	AdAccountId NullableString `json:"adAccountId,omitempty"`
 	// The campaign the touch resolved to; null for a touch that named none (search, referral).
 	CampaignId NullableString `json:"campaignId,omitempty"`
-	// The share of the event (0 to 1) this touch gets per model: first_touch, last_non_direct, linear, position_based, time_decay.
+	// The share of the event (0 to 1) this touch gets per model: first_touch, last_non_direct, linear, position_based, time_decay, w_shaped.
 	Credit map[string]float32 `json:"credit,omitempty"`
 }
 
