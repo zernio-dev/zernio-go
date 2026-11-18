@@ -114,6 +114,7 @@ func main() {
 |--------|-------------|
 | `client.AnalyticsAPI.ListFacebookTaggedPosts(ctx)` | List the posts a Facebook Page is tagged in |
 | `client.AnalyticsAPI.ListFacebookVisitorPosts(ctx)` | List visitor posts on a Facebook Page |
+| `client.AnalyticsAPI.ListGoogleSearchConsoleSitemaps(ctx)` | List Google Search Console sitemaps |
 | `client.AnalyticsAPI.ListPostAuthenticity(ctx)` | List authenticity scores |
 | `client.AnalyticsAPI.ListTrackingWindows(ctx)` | List tracking windows |
 | `client.AnalyticsAPI.GetAnalytics(ctx)` | Get post analytics |
@@ -151,7 +152,9 @@ func main() {
 | `client.AnalyticsAPI.GetYouTubeDemographics(ctx)` | Get YouTube demographics |
 | `client.AnalyticsAPI.GetYouTubeVideoRetention(ctx)` | Get YouTube video retention curve |
 | `client.AnalyticsAPI.CancelTrackingWindow(ctx)` | Cancel a tracking window |
+| `client.AnalyticsAPI.InspectGoogleSearchConsoleUrl(ctx)` | Inspect a URL in Google Search Console |
 | `client.AnalyticsAPI.OpenTrackingWindow(ctx)` | Open a tracking window |
+| `client.AnalyticsAPI.QueryGoogleSearchConsoleSearchAnalytics(ctx)` | Query Google Search Console search analytics |
 | `client.AnalyticsAPI.RunGoogleAnalyticsRealtimeReport(ctx)` | Run a Google Analytics (GA4) realtime report |
 | `client.AnalyticsAPI.RunGoogleAnalyticsReport(ctx)` | Run a Google Analytics (GA4) report |
 | `client.AnalyticsAPI.SyncExternalPosts(ctx)` | Sync an external post |
@@ -227,6 +230,7 @@ func main() {
 | `client.ConnectAPI.ListGoogleAnalyticsProperties(ctx)` | List Google Analytics properties for a pending connect |
 | `client.ConnectAPI.ListGoogleBusinessCategories(ctx)` | List Google Business Profile categories |
 | `client.ConnectAPI.ListGoogleBusinessLocations(ctx)` | List Google Business Profile locations |
+| `client.ConnectAPI.ListGoogleSearchConsoleSites(ctx)` | List Search Console sites for a pending connect |
 | `client.ConnectAPI.ListInstagramPages(ctx)` | List Pages with a linked Instagram account |
 | `client.ConnectAPI.ListLinkedInOrganizations(ctx)` | List LinkedIn orgs |
 | `client.ConnectAPI.ListOAuthApps(ctx)` | List your OAuth apps |
@@ -250,6 +254,7 @@ func main() {
 | `client.ConnectAPI.GetFacebookPages(ctx)` | List Facebook pages |
 | `client.ConnectAPI.GetGmbLocations(ctx)` | List Google Business Profile locations |
 | `client.ConnectAPI.GetGoogleAnalyticsConnectUrl(ctx)` | Get Google Analytics OAuth connect URL |
+| `client.ConnectAPI.GetGoogleSearchConsoleConnectUrl(ctx)` | Get Google Search Console OAuth connect URL |
 | `client.ConnectAPI.GetHubSpotConnectUrl(ctx)` | Get HubSpot OAuth connect URL |
 | `client.ConnectAPI.GetLinkedInOrganizations(ctx)` | List LinkedIn orgs |
 | `client.ConnectAPI.GetOAuthApp(ctx)` | Get an OAuth app |
@@ -309,6 +314,7 @@ func main() {
 | `client.ConnectAPI.SelectFacebookPage(ctx)` | Select Facebook page |
 | `client.ConnectAPI.SelectGoogleAnalyticsProperty(ctx)` | Connect the chosen Google Analytics property |
 | `client.ConnectAPI.SelectGoogleBusinessLocation(ctx)` | Select Google Business Profile location |
+| `client.ConnectAPI.SelectGoogleSearchConsoleSite(ctx)` | Connect the chosen Search Console site |
 | `client.ConnectAPI.SelectInstagramAccount(ctx)` | Select the Page whose Instagram account to connect |
 | `client.ConnectAPI.SelectLinkedInOrganization(ctx)` | Select LinkedIn org |
 | `client.ConnectAPI.SelectPinterestBoard(ctx)` | Select Pinterest board |
