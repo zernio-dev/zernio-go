@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.664.0
+API version: 1.665.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &GetEvent200Response{}
 type GetEvent200Response struct {
 	Event      *StoredEvent                         `json:"event,omitempty"`
 	Deliveries []GetEvent200ResponseDeliveriesInner `json:"deliveries,omitempty"`
+	// The touches of the person before the event that its credit is split across, oldest first: website visits from somewhere (an ad click, search, a tagged link) and earlier lead forms or sales. Empty when the event counts whole for its own campaign under every model.
+	Touches []GetEvent200ResponseTouchesInner `json:"touches,omitempty"`
 }
 
 // NewGetEvent200Response instantiates a new GetEvent200Response object
@@ -105,6 +107,38 @@ func (o *GetEvent200Response) SetDeliveries(v []GetEvent200ResponseDeliveriesInn
 	o.Deliveries = v
 }
 
+// GetTouches returns the Touches field value if set, zero value otherwise.
+func (o *GetEvent200Response) GetTouches() []GetEvent200ResponseTouchesInner {
+	if o == nil || IsNil(o.Touches) {
+		var ret []GetEvent200ResponseTouchesInner
+		return ret
+	}
+	return o.Touches
+}
+
+// GetTouchesOk returns a tuple with the Touches field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEvent200Response) GetTouchesOk() ([]GetEvent200ResponseTouchesInner, bool) {
+	if o == nil || IsNil(o.Touches) {
+		return nil, false
+	}
+	return o.Touches, true
+}
+
+// HasTouches returns a boolean if a field has been set.
+func (o *GetEvent200Response) HasTouches() bool {
+	if o != nil && !IsNil(o.Touches) {
+		return true
+	}
+
+	return false
+}
+
+// SetTouches gets a reference to the given []GetEvent200ResponseTouchesInner and assigns it to the Touches field.
+func (o *GetEvent200Response) SetTouches(v []GetEvent200ResponseTouchesInner) {
+	o.Touches = v
+}
+
 func (o GetEvent200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +154,9 @@ func (o GetEvent200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Deliveries) {
 		toSerialize["deliveries"] = o.Deliveries
+	}
+	if !IsNil(o.Touches) {
+		toSerialize["touches"] = o.Touches
 	}
 	return toSerialize, nil
 }
