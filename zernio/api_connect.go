@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.652.1
+API version: 1.653.0
 Contact: support@zernio.com
 */
 
@@ -4798,7 +4798,7 @@ func (r ConnectAPIGetConnectUrlRequest) ExpectedUsername(expectedUsername string
 	return r
 }
 
-// WhatsApp with &#x60;signup&#x3D;hosted&#x60; only; ignored on other flows. The number (E.164) the user must connect. If they pick a different number in Meta&#39;s popup, the hosted page ends with a 409 &#x60;NUMBER_MISMATCH&#x60; naming the number they picked, and nothing is saved.  Use it to reconnect a known number safely. For a number bought from Zernio, the hosted page already expects that number and this value is ignored.
+// WhatsApp with &#x60;signup&#x3D;hosted&#x60; only; ignored on other flows. The number (E.164) the user must connect. If they pick a different number in Meta&#39;s popup, the hosted page ends with a 409 &#x60;NUMBER_MISMATCH&#x60; naming the number they picked, and nothing is saved.  The full international number is compared, country code included. A number that differs only in its country code, or shares only its last digits, is a mismatch.  The only spellings treated as the same number are national re-spellings of one line, such as a Brazilian mobile with or without its ninth digit, or a Mexican mobile with or without the &#x60;1&#x60; after &#x60;+52&#x60;.  The pin is held server-side on the connect token, not in the hosted page URL, so removing it from the URL does not lift it.  It is also enforced on late completions: when the browser closes before the signup finishes, Zernio only connects the number in the background if it matches.  Use it to reconnect a known number safely. For a number bought from Zernio, the hosted page already expects that number and this value is ignored.
 func (r ConnectAPIGetConnectUrlRequest) ExpectedPhoneNumber(expectedPhoneNumber string) ConnectAPIGetConnectUrlRequest {
 	r.expectedPhoneNumber = &expectedPhoneNumber
 	return r
