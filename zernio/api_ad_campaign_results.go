@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.667.0
+API version: 1.671.0
 Contact: support@zernio.com
 */
 
@@ -138,6 +138,7 @@ type AdCampaignResultsAPIGetCampaignResultsTotalsRequest struct {
 	ApiService   *AdCampaignResultsAPIService
 	fromDate     *string
 	toDate       *string
+	model        *string
 	adAccountIds *string
 }
 
@@ -149,6 +150,12 @@ func (r AdCampaignResultsAPIGetCampaignResultsTotalsRequest) FromDate(fromDate s
 // Inclusive. At most 400 days after &#x60;fromDate&#x60;.
 func (r AdCampaignResultsAPIGetCampaignResultsTotalsRequest) ToDate(toDate string) AdCampaignResultsAPIGetCampaignResultsTotalsRequest {
 	r.toDate = &toDate
+	return r
+}
+
+// Attribution model your stored sales and leads count under. &#x60;last_click&#x60; (default) counts each event whole for the campaign it matched. The others split it across the campaigns of its earlier touches, so counts and revenue can be fractional. Uploads read the same under every model.
+func (r AdCampaignResultsAPIGetCampaignResultsTotalsRequest) Model(model string) AdCampaignResultsAPIGetCampaignResultsTotalsRequest {
+	r.model = &model
 	return r
 }
 
@@ -211,6 +218,13 @@ func (a *AdCampaignResultsAPIService) GetCampaignResultsTotalsExecute(r AdCampai
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	if r.model != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "model", r.model, "form", "")
+	} else {
+		var defaultValue string = "last_click"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "model", defaultValue, "form", "")
+		r.model = &defaultValue
+	}
 	if r.adAccountIds != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountIds", r.adAccountIds, "form", "")
 	}
@@ -533,6 +547,7 @@ type AdCampaignResultsAPIListCampaignResultsRequest struct {
 	ApiService  *AdCampaignResultsAPIService
 	fromDate    *string
 	toDate      *string
+	model       *string
 	campaignIds *string
 	limit       *int32
 	cursor      *string
@@ -546,6 +561,12 @@ func (r AdCampaignResultsAPIListCampaignResultsRequest) FromDate(fromDate string
 // Inclusive. At most 400 days after &#x60;fromDate&#x60;.
 func (r AdCampaignResultsAPIListCampaignResultsRequest) ToDate(toDate string) AdCampaignResultsAPIListCampaignResultsRequest {
 	r.toDate = &toDate
+	return r
+}
+
+// Attribution model your stored sales and leads count under. &#x60;last_click&#x60; (default) counts each event whole for the campaign it matched. The others split it across the campaigns of its earlier touches, so counts and revenue can be fractional. Uploads read the same under every model.
+func (r AdCampaignResultsAPIListCampaignResultsRequest) Model(model string) AdCampaignResultsAPIListCampaignResultsRequest {
+	r.model = &model
 	return r
 }
 
@@ -620,6 +641,13 @@ func (a *AdCampaignResultsAPIService) ListCampaignResultsExecute(r AdCampaignRes
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	if r.model != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "model", r.model, "form", "")
+	} else {
+		var defaultValue string = "last_click"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "model", defaultValue, "form", "")
+		r.model = &defaultValue
+	}
 	if r.campaignIds != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignIds", r.campaignIds, "form", "")
 	}

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.667.0
+API version: 1.671.0
 Contact: support@zernio.com
 */
 
@@ -22,8 +22,10 @@ var _ MappedNullable = &ListCampaignResults200Response{}
 
 // ListCampaignResults200Response struct for ListCampaignResults200Response
 type ListCampaignResults200Response struct {
-	FromDate   string                                         `json:"fromDate"`
-	ToDate     string                                         `json:"toDate"`
+	FromDate string `json:"fromDate"`
+	ToDate   string `json:"toDate"`
+	// The attribution model the results are counted under.
+	Model      string                                         `json:"model"`
 	Campaigns  []ListCampaignResults200ResponseCampaignsInner `json:"campaigns"`
 	NextCursor NullableString                                 `json:"nextCursor"`
 }
@@ -34,10 +36,11 @@ type _ListCampaignResults200Response ListCampaignResults200Response
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewListCampaignResults200Response(fromDate string, toDate string, campaigns []ListCampaignResults200ResponseCampaignsInner, nextCursor NullableString) *ListCampaignResults200Response {
+func NewListCampaignResults200Response(fromDate string, toDate string, model string, campaigns []ListCampaignResults200ResponseCampaignsInner, nextCursor NullableString) *ListCampaignResults200Response {
 	this := ListCampaignResults200Response{}
 	this.FromDate = fromDate
 	this.ToDate = toDate
+	this.Model = model
 	this.Campaigns = campaigns
 	this.NextCursor = nextCursor
 	return &this
@@ -97,6 +100,30 @@ func (o *ListCampaignResults200Response) GetToDateOk() (*string, bool) {
 // SetToDate sets field value
 func (o *ListCampaignResults200Response) SetToDate(v string) {
 	o.ToDate = v
+}
+
+// GetModel returns the Model field value
+func (o *ListCampaignResults200Response) GetModel() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Model
+}
+
+// GetModelOk returns a tuple with the Model field value
+// and a boolean to check if the value has been set.
+func (o *ListCampaignResults200Response) GetModelOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Model, true
+}
+
+// SetModel sets field value
+func (o *ListCampaignResults200Response) SetModel(v string) {
+	o.Model = v
 }
 
 // GetCampaigns returns the Campaigns field value
@@ -161,6 +188,7 @@ func (o ListCampaignResults200Response) ToMap() (map[string]interface{}, error) 
 	toSerialize := map[string]interface{}{}
 	toSerialize["fromDate"] = o.FromDate
 	toSerialize["toDate"] = o.ToDate
+	toSerialize["model"] = o.Model
 	toSerialize["campaigns"] = o.Campaigns
 	toSerialize["nextCursor"] = o.NextCursor.Get()
 	return toSerialize, nil
@@ -173,6 +201,7 @@ func (o *ListCampaignResults200Response) UnmarshalJSON(data []byte) (err error) 
 	requiredProperties := []string{
 		"fromDate",
 		"toDate",
+		"model",
 		"campaigns",
 		"nextCursor",
 	}

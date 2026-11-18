@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.667.0
+API version: 1.671.0
 Contact: support@zernio.com
 */
 
@@ -22,9 +22,11 @@ var _ MappedNullable = &GetCampaignResultsTotals200Response{}
 
 // GetCampaignResultsTotals200Response struct for GetCampaignResultsTotals200Response
 type GetCampaignResultsTotals200Response struct {
-	FromDate string             `json:"fromDate"`
-	ToDate   string             `json:"toDate"`
-	Totals   map[string]float32 `json:"totals"`
+	FromDate string `json:"fromDate"`
+	ToDate   string `json:"toDate"`
+	// The attribution model the results are counted under.
+	Model  string             `json:"model"`
+	Totals map[string]float32 `json:"totals"`
 }
 
 type _GetCampaignResultsTotals200Response GetCampaignResultsTotals200Response
@@ -33,10 +35,11 @@ type _GetCampaignResultsTotals200Response GetCampaignResultsTotals200Response
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetCampaignResultsTotals200Response(fromDate string, toDate string, totals map[string]float32) *GetCampaignResultsTotals200Response {
+func NewGetCampaignResultsTotals200Response(fromDate string, toDate string, model string, totals map[string]float32) *GetCampaignResultsTotals200Response {
 	this := GetCampaignResultsTotals200Response{}
 	this.FromDate = fromDate
 	this.ToDate = toDate
+	this.Model = model
 	this.Totals = totals
 	return &this
 }
@@ -97,6 +100,30 @@ func (o *GetCampaignResultsTotals200Response) SetToDate(v string) {
 	o.ToDate = v
 }
 
+// GetModel returns the Model field value
+func (o *GetCampaignResultsTotals200Response) GetModel() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Model
+}
+
+// GetModelOk returns a tuple with the Model field value
+// and a boolean to check if the value has been set.
+func (o *GetCampaignResultsTotals200Response) GetModelOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Model, true
+}
+
+// SetModel sets field value
+func (o *GetCampaignResultsTotals200Response) SetModel(v string) {
+	o.Model = v
+}
+
 // GetTotals returns the Totals field value
 func (o *GetCampaignResultsTotals200Response) GetTotals() map[string]float32 {
 	if o == nil {
@@ -133,6 +160,7 @@ func (o GetCampaignResultsTotals200Response) ToMap() (map[string]interface{}, er
 	toSerialize := map[string]interface{}{}
 	toSerialize["fromDate"] = o.FromDate
 	toSerialize["toDate"] = o.ToDate
+	toSerialize["model"] = o.Model
 	toSerialize["totals"] = o.Totals
 	return toSerialize, nil
 }
@@ -144,6 +172,7 @@ func (o *GetCampaignResultsTotals200Response) UnmarshalJSON(data []byte) (err er
 	requiredProperties := []string{
 		"fromDate",
 		"toDate",
+		"model",
 		"totals",
 	}
 
