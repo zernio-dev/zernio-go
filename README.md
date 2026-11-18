@@ -301,6 +301,7 @@ func main() {
 | `client.ConnectAPI.ConnectOpenAIAdsCredentials(ctx)` | Connect an OpenAI Ads account |
 | `client.ConnectAPI.ConnectShopifyWithToken(ctx)` | Connect a Shopify store with a custom-app Admin token |
 | `client.ConnectAPI.ConnectSlackChannel(ctx)` | Connect a Slack channel |
+| `client.ConnectAPI.ConnectSnapchatAdsCredentials(ctx)` | Connect a Snapchat Ads pixel |
 | `client.ConnectAPI.ConnectWebflowWithSiteToken(ctx)` | Connect Webflow with a site API token |
 | `client.ConnectAPI.ConnectWechatCredentials(ctx)` | Connect WeChat Official Account |
 | `client.ConnectAPI.ConnectWhatsAppCredentials(ctx)` | Connect WhatsApp via credentials |

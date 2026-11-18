@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.673.0
+API version: 1.674.0
 Contact: support@zernio.com
 */
 
@@ -48,6 +48,10 @@ type ConversionEventUserClickIds struct {
 	Twclid *string `json:"twclid,omitempty"`
 	// Microsoft Advertising click ID (the `msclkid` URL param Microsoft adds to ad clicks). Sent to Microsoft as `MicrosoftClickId`, not hashed.
 	Msclkid *string `json:"msclkid,omitempty"`
+	// Snapchat click ID (the `ScCid` URL param Snap adds to ad clicks). Sent to Snapchat as `sc_click_id`, not hashed.
+	Sccid *string `json:"sccid,omitempty"`
+	// Snap Pixel browser id (the `_scid` cookie). Sent to Snapchat as `sc_cookie1`, not hashed.
+	Scid *string `json:"scid,omitempty"`
 }
 
 // NewConversionEventUserClickIds instantiates a new ConversionEventUserClickIds object
@@ -515,6 +519,70 @@ func (o *ConversionEventUserClickIds) SetMsclkid(v string) {
 	o.Msclkid = &v
 }
 
+// GetSccid returns the Sccid field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetSccid() string {
+	if o == nil || IsNil(o.Sccid) {
+		var ret string
+		return ret
+	}
+	return *o.Sccid
+}
+
+// GetSccidOk returns a tuple with the Sccid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetSccidOk() (*string, bool) {
+	if o == nil || IsNil(o.Sccid) {
+		return nil, false
+	}
+	return o.Sccid, true
+}
+
+// HasSccid returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasSccid() bool {
+	if o != nil && !IsNil(o.Sccid) {
+		return true
+	}
+
+	return false
+}
+
+// SetSccid gets a reference to the given string and assigns it to the Sccid field.
+func (o *ConversionEventUserClickIds) SetSccid(v string) {
+	o.Sccid = &v
+}
+
+// GetScid returns the Scid field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetScid() string {
+	if o == nil || IsNil(o.Scid) {
+		var ret string
+		return ret
+	}
+	return *o.Scid
+}
+
+// GetScidOk returns a tuple with the Scid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetScidOk() (*string, bool) {
+	if o == nil || IsNil(o.Scid) {
+		return nil, false
+	}
+	return o.Scid, true
+}
+
+// HasScid returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasScid() bool {
+	if o != nil && !IsNil(o.Scid) {
+		return true
+	}
+
+	return false
+}
+
+// SetScid gets a reference to the given string and assigns it to the Scid field.
+func (o *ConversionEventUserClickIds) SetScid(v string) {
+	o.Scid = &v
+}
+
 func (o ConversionEventUserClickIds) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -566,6 +634,12 @@ func (o ConversionEventUserClickIds) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Msclkid) {
 		toSerialize["msclkid"] = o.Msclkid
+	}
+	if !IsNil(o.Sccid) {
+		toSerialize["sccid"] = o.Sccid
+	}
+	if !IsNil(o.Scid) {
+		toSerialize["scid"] = o.Scid
 	}
 	return toSerialize, nil
 }

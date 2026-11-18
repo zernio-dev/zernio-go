@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.673.0
+API version: 1.674.0
 Contact: support@zernio.com
 */
 
@@ -12,18 +12,17 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the MessagingCarouselCard type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &MessagingCarouselCard{}
 
-// MessagingCarouselCard One card of a messaging ad carousel (Meta link_data.child_attachments). Every card opens the same conversation, so a card has no link of its own.
+// MessagingCarouselCard One card of a messaging ad carousel (Meta link_data.child_attachments). Every card opens the same conversation, so a card has no link of its own. Exactly one of `imageUrl` or `video` (a 400 otherwise).
 type MessagingCarouselCard struct {
-	// Card image. Uploaded to the ad account and sent as the card image_hash (by URL on validateOnly).
-	ImageUrl string `json:"imageUrl"`
+	// Image card. Uploaded to the ad account and sent as the card image_hash (by URL on validateOnly).
+	ImageUrl *string                         `json:"imageUrl,omitempty"`
+	Video    *CreateStandaloneAdRequestVideo `json:"video,omitempty"`
 	// Card title (Meta name).
 	Headline *string `json:"headline,omitempty"`
 	// Card description, under the title.
@@ -34,15 +33,12 @@ type MessagingCarouselCard struct {
 	LinkUrl *string `json:"linkUrl,omitempty"`
 }
 
-type _MessagingCarouselCard MessagingCarouselCard
-
 // NewMessagingCarouselCard instantiates a new MessagingCarouselCard object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewMessagingCarouselCard(imageUrl string) *MessagingCarouselCard {
+func NewMessagingCarouselCard() *MessagingCarouselCard {
 	this := MessagingCarouselCard{}
-	this.ImageUrl = imageUrl
 	return &this
 }
 
@@ -54,28 +50,68 @@ func NewMessagingCarouselCardWithDefaults() *MessagingCarouselCard {
 	return &this
 }
 
-// GetImageUrl returns the ImageUrl field value
+// GetImageUrl returns the ImageUrl field value if set, zero value otherwise.
 func (o *MessagingCarouselCard) GetImageUrl() string {
-	if o == nil {
+	if o == nil || IsNil(o.ImageUrl) {
 		var ret string
 		return ret
 	}
-
-	return o.ImageUrl
+	return *o.ImageUrl
 }
 
-// GetImageUrlOk returns a tuple with the ImageUrl field value
+// GetImageUrlOk returns a tuple with the ImageUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MessagingCarouselCard) GetImageUrlOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.ImageUrl) {
 		return nil, false
 	}
-	return &o.ImageUrl, true
+	return o.ImageUrl, true
 }
 
-// SetImageUrl sets field value
+// HasImageUrl returns a boolean if a field has been set.
+func (o *MessagingCarouselCard) HasImageUrl() bool {
+	if o != nil && !IsNil(o.ImageUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetImageUrl gets a reference to the given string and assigns it to the ImageUrl field.
 func (o *MessagingCarouselCard) SetImageUrl(v string) {
-	o.ImageUrl = v
+	o.ImageUrl = &v
+}
+
+// GetVideo returns the Video field value if set, zero value otherwise.
+func (o *MessagingCarouselCard) GetVideo() CreateStandaloneAdRequestVideo {
+	if o == nil || IsNil(o.Video) {
+		var ret CreateStandaloneAdRequestVideo
+		return ret
+	}
+	return *o.Video
+}
+
+// GetVideoOk returns a tuple with the Video field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MessagingCarouselCard) GetVideoOk() (*CreateStandaloneAdRequestVideo, bool) {
+	if o == nil || IsNil(o.Video) {
+		return nil, false
+	}
+	return o.Video, true
+}
+
+// HasVideo returns a boolean if a field has been set.
+func (o *MessagingCarouselCard) HasVideo() bool {
+	if o != nil && !IsNil(o.Video) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideo gets a reference to the given CreateStandaloneAdRequestVideo and assigns it to the Video field.
+func (o *MessagingCarouselCard) SetVideo(v CreateStandaloneAdRequestVideo) {
+	o.Video = &v
 }
 
 // GetHeadline returns the Headline field value if set, zero value otherwise.
@@ -216,7 +252,12 @@ func (o MessagingCarouselCard) MarshalJSON() ([]byte, error) {
 
 func (o MessagingCarouselCard) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["imageUrl"] = o.ImageUrl
+	if !IsNil(o.ImageUrl) {
+		toSerialize["imageUrl"] = o.ImageUrl
+	}
+	if !IsNil(o.Video) {
+		toSerialize["video"] = o.Video
+	}
 	if !IsNil(o.Headline) {
 		toSerialize["headline"] = o.Headline
 	}
@@ -230,43 +271,6 @@ func (o MessagingCarouselCard) ToMap() (map[string]interface{}, error) {
 		toSerialize["linkUrl"] = o.LinkUrl
 	}
 	return toSerialize, nil
-}
-
-func (o *MessagingCarouselCard) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"imageUrl",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varMessagingCarouselCard := _MessagingCarouselCard{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varMessagingCarouselCard)
-
-	if err != nil {
-		return err
-	}
-
-	*o = MessagingCarouselCard(varMessagingCarouselCard)
-
-	return err
 }
 
 type NullableMessagingCarouselCard struct {

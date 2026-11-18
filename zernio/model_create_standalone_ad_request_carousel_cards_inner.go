@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.673.0
+API version: 1.674.0
 Contact: support@zernio.com
 */
 
@@ -12,18 +12,17 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the CreateStandaloneAdRequestCarouselCardsInner type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreateStandaloneAdRequestCarouselCardsInner{}
 
-// CreateStandaloneAdRequestCarouselCardsInner struct for CreateStandaloneAdRequestCarouselCardsInner
+// CreateStandaloneAdRequestCarouselCardsInner Exactly one of `imageUrl` or `video` (a 400 otherwise).
 type CreateStandaloneAdRequestCarouselCardsInner struct {
-	// Card image; uploaded to the ad account and referenced by hash.
-	ImageUrl string `json:"imageUrl"`
+	// Image card: the card image, uploaded to the ad account and referenced by hash.
+	ImageUrl *string                         `json:"imageUrl,omitempty"`
+	Video    *CreateStandaloneAdRequestVideo `json:"video,omitempty"`
 	// Card destination URL. Defaults to the top-level linkUrl, or Meta's lead-form link when leadGenFormId is set and neither is provided.
 	LinkUrl *string `json:"linkUrl,omitempty"`
 	// Card headline, shown below the card image.
@@ -34,15 +33,12 @@ type CreateStandaloneAdRequestCarouselCardsInner struct {
 	CallToAction *string `json:"callToAction,omitempty"`
 }
 
-type _CreateStandaloneAdRequestCarouselCardsInner CreateStandaloneAdRequestCarouselCardsInner
-
 // NewCreateStandaloneAdRequestCarouselCardsInner instantiates a new CreateStandaloneAdRequestCarouselCardsInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateStandaloneAdRequestCarouselCardsInner(imageUrl string) *CreateStandaloneAdRequestCarouselCardsInner {
+func NewCreateStandaloneAdRequestCarouselCardsInner() *CreateStandaloneAdRequestCarouselCardsInner {
 	this := CreateStandaloneAdRequestCarouselCardsInner{}
-	this.ImageUrl = imageUrl
 	return &this
 }
 
@@ -54,28 +50,68 @@ func NewCreateStandaloneAdRequestCarouselCardsInnerWithDefaults() *CreateStandal
 	return &this
 }
 
-// GetImageUrl returns the ImageUrl field value
+// GetImageUrl returns the ImageUrl field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequestCarouselCardsInner) GetImageUrl() string {
-	if o == nil {
+	if o == nil || IsNil(o.ImageUrl) {
 		var ret string
 		return ret
 	}
-
-	return o.ImageUrl
+	return *o.ImageUrl
 }
 
-// GetImageUrlOk returns a tuple with the ImageUrl field value
+// GetImageUrlOk returns a tuple with the ImageUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CreateStandaloneAdRequestCarouselCardsInner) GetImageUrlOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.ImageUrl) {
 		return nil, false
 	}
-	return &o.ImageUrl, true
+	return o.ImageUrl, true
 }
 
-// SetImageUrl sets field value
+// HasImageUrl returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestCarouselCardsInner) HasImageUrl() bool {
+	if o != nil && !IsNil(o.ImageUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetImageUrl gets a reference to the given string and assigns it to the ImageUrl field.
 func (o *CreateStandaloneAdRequestCarouselCardsInner) SetImageUrl(v string) {
-	o.ImageUrl = v
+	o.ImageUrl = &v
+}
+
+// GetVideo returns the Video field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequestCarouselCardsInner) GetVideo() CreateStandaloneAdRequestVideo {
+	if o == nil || IsNil(o.Video) {
+		var ret CreateStandaloneAdRequestVideo
+		return ret
+	}
+	return *o.Video
+}
+
+// GetVideoOk returns a tuple with the Video field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequestCarouselCardsInner) GetVideoOk() (*CreateStandaloneAdRequestVideo, bool) {
+	if o == nil || IsNil(o.Video) {
+		return nil, false
+	}
+	return o.Video, true
+}
+
+// HasVideo returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestCarouselCardsInner) HasVideo() bool {
+	if o != nil && !IsNil(o.Video) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideo gets a reference to the given CreateStandaloneAdRequestVideo and assigns it to the Video field.
+func (o *CreateStandaloneAdRequestCarouselCardsInner) SetVideo(v CreateStandaloneAdRequestVideo) {
+	o.Video = &v
 }
 
 // GetLinkUrl returns the LinkUrl field value if set, zero value otherwise.
@@ -216,7 +252,12 @@ func (o CreateStandaloneAdRequestCarouselCardsInner) MarshalJSON() ([]byte, erro
 
 func (o CreateStandaloneAdRequestCarouselCardsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["imageUrl"] = o.ImageUrl
+	if !IsNil(o.ImageUrl) {
+		toSerialize["imageUrl"] = o.ImageUrl
+	}
+	if !IsNil(o.Video) {
+		toSerialize["video"] = o.Video
+	}
 	if !IsNil(o.LinkUrl) {
 		toSerialize["linkUrl"] = o.LinkUrl
 	}
@@ -230,43 +271,6 @@ func (o CreateStandaloneAdRequestCarouselCardsInner) ToMap() (map[string]interfa
 		toSerialize["callToAction"] = o.CallToAction
 	}
 	return toSerialize, nil
-}
-
-func (o *CreateStandaloneAdRequestCarouselCardsInner) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"imageUrl",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varCreateStandaloneAdRequestCarouselCardsInner := _CreateStandaloneAdRequestCarouselCardsInner{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCreateStandaloneAdRequestCarouselCardsInner)
-
-	if err != nil {
-		return err
-	}
-
-	*o = CreateStandaloneAdRequestCarouselCardsInner(varCreateStandaloneAdRequestCarouselCardsInner)
-
-	return err
 }
 
 type NullableCreateStandaloneAdRequestCarouselCardsInner struct {
