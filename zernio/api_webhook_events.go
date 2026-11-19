@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.691.0
+API version: 1.692.0
 Contact: support@zernio.com
 */
 
@@ -11619,6 +11619,7 @@ The user's notification channel (Slack or Telegram) follows the email toggles, s
 - `post_failed`: once the failure is final (a permanent error, or a temporary one on its last retry), once per publish attempt that failed, for scheduled posts only (not "post now"). `refs.platforms` lists every platform that failed in that attempt.
 - `account_disconnected`: every time an account is disconnected, never for creator-profile accounts. `reason` says why.
 - `api_key_handed_over`: once per API key, when a departing team member's key used in the last 7 days moves to the workspace owner. It stops working within 24 hours: create a new key and switch to it. `refs.apiKey` carries the key id, preview and expiry.
+- `whatsapp_inbound_lost`: once each time Meta stops delivering a WhatsApp number's incoming messages to Zernio. The number can still send. Reconnect it from the same profile.
 
 ### Payload notes
 

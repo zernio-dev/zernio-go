@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.691.0
+API version: 1.692.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,11 @@ type AdsPerformanceResponseAdsInnerMetrics struct {
 	// In the ad's currency.
 	Spend       *float32 `json:"spend,omitempty"`
 	Impressions *int32   `json:"impressions,omitempty"`
-	Clicks      *int32   `json:"clicks,omitempty"`
+	// People who saw the ad. De-duplicated over the range on Meta and TikTok when the platform returns it; elsewhere the sum of each day's reach, which counts a person once per day.
+	Reach *int32 `json:"reach,omitempty"`
+	// Average times each person saw the ad: `impressions / reach`. 0 when the platform reports no reach.
+	Frequency *float32 `json:"frequency,omitempty"`
+	Clicks    *int32   `json:"clicks,omitempty"`
 	// Percent.
 	Ctr *float32 `json:"ctr,omitempty"`
 	// Results over the range (see AdMetrics.conversions).
@@ -114,6 +118,70 @@ func (o *AdsPerformanceResponseAdsInnerMetrics) HasImpressions() bool {
 // SetImpressions gets a reference to the given int32 and assigns it to the Impressions field.
 func (o *AdsPerformanceResponseAdsInnerMetrics) SetImpressions(v int32) {
 	o.Impressions = &v
+}
+
+// GetReach returns the Reach field value if set, zero value otherwise.
+func (o *AdsPerformanceResponseAdsInnerMetrics) GetReach() int32 {
+	if o == nil || IsNil(o.Reach) {
+		var ret int32
+		return ret
+	}
+	return *o.Reach
+}
+
+// GetReachOk returns a tuple with the Reach field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdsPerformanceResponseAdsInnerMetrics) GetReachOk() (*int32, bool) {
+	if o == nil || IsNil(o.Reach) {
+		return nil, false
+	}
+	return o.Reach, true
+}
+
+// HasReach returns a boolean if a field has been set.
+func (o *AdsPerformanceResponseAdsInnerMetrics) HasReach() bool {
+	if o != nil && !IsNil(o.Reach) {
+		return true
+	}
+
+	return false
+}
+
+// SetReach gets a reference to the given int32 and assigns it to the Reach field.
+func (o *AdsPerformanceResponseAdsInnerMetrics) SetReach(v int32) {
+	o.Reach = &v
+}
+
+// GetFrequency returns the Frequency field value if set, zero value otherwise.
+func (o *AdsPerformanceResponseAdsInnerMetrics) GetFrequency() float32 {
+	if o == nil || IsNil(o.Frequency) {
+		var ret float32
+		return ret
+	}
+	return *o.Frequency
+}
+
+// GetFrequencyOk returns a tuple with the Frequency field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdsPerformanceResponseAdsInnerMetrics) GetFrequencyOk() (*float32, bool) {
+	if o == nil || IsNil(o.Frequency) {
+		return nil, false
+	}
+	return o.Frequency, true
+}
+
+// HasFrequency returns a boolean if a field has been set.
+func (o *AdsPerformanceResponseAdsInnerMetrics) HasFrequency() bool {
+	if o != nil && !IsNil(o.Frequency) {
+		return true
+	}
+
+	return false
+}
+
+// SetFrequency gets a reference to the given float32 and assigns it to the Frequency field.
+func (o *AdsPerformanceResponseAdsInnerMetrics) SetFrequency(v float32) {
+	o.Frequency = &v
 }
 
 // GetClicks returns the Clicks field value if set, zero value otherwise.
@@ -355,6 +423,12 @@ func (o AdsPerformanceResponseAdsInnerMetrics) ToMap() (map[string]interface{}, 
 	}
 	if !IsNil(o.Impressions) {
 		toSerialize["impressions"] = o.Impressions
+	}
+	if !IsNil(o.Reach) {
+		toSerialize["reach"] = o.Reach
+	}
+	if !IsNil(o.Frequency) {
+		toSerialize["frequency"] = o.Frequency
 	}
 	if !IsNil(o.Clicks) {
 		toSerialize["clicks"] = o.Clicks

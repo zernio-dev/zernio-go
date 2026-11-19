@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.691.0
+API version: 1.692.0
 Contact: support@zernio.com
 */
 
@@ -8031,7 +8031,7 @@ ListAdsByPerformance Rank ads by performance
 
 Returns an ads account's ads ranked by spend, impressions, clicks, results or ROAS over a date range, each with its creative (type, thumbnail, headline, body, link) and campaign.
 
-Use it to see which creatives perform best. `accountId` is sibling-expanded like `/v1/ads/timeline`.
+Use it to see which creatives perform best, and from `frequency` which ones the same people keep seeing. `accountId` is sibling-expanded like `/v1/ads/timeline`.
 
 Money is ranked by its raw amount, so pass `adAccountId` when the connection's ad accounts bill in different currencies.
 
