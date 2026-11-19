@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.696.0
+API version: 1.697.0
 Contact: support@zernio.com
 */
 
@@ -24,10 +24,12 @@ type GetBalance200Response struct {
 	AvailableCents *int32 `json:"availableCents,omitempty"`
 	// True when the account pays pay-per-use from this prepaid balance (new signups). Absent otherwise: that pay-per-use is on the monthly invoice.
 	BalanceBilling *bool `json:"balanceBilling,omitempty"`
-	// Balance billing only (absent otherwise). What pay-per-use can still spend: availableCents plus promoCents, minus usage not yet posted. At 0 or below, new pay-per-use answers 402 `insufficient_balance`.
+	// Balance billing only (absent otherwise). What pay-per-use can still spend: availableCents plus promoCents plus bonusCents, minus usage not yet posted. At 0 or below, new pay-per-use answers 402 `insufficient_balance`.
 	SpendableCents *int32 `json:"spendableCents,omitempty"`
 	// Balance billing only (absent otherwise). Promotional and support credit Zernio added to your balance. Pay-per-use spends it before availableCents. It is never paid out to payees and is not part of availableCents.
-	PromoCents *int32                     `json:"promoCents,omitempty"`
+	PromoCents *int32 `json:"promoCents,omitempty"`
+	// Balance billing only (absent otherwise). Bonus credit in the balance, usually 0. Pay-per-use spends it after availableCents. It is not cash, never paid out or refunded, and not part of availableCents.
+	BonusCents *int32                     `json:"bonusCents,omitempty"`
 	Held       *GetBalance200ResponseHeld `json:"held,omitempty"`
 	// Always 0. The balance no longer pays creators, so none of it is locked from them.
 	// Deprecated
@@ -190,6 +192,38 @@ func (o *GetBalance200Response) HasPromoCents() bool {
 // SetPromoCents gets a reference to the given int32 and assigns it to the PromoCents field.
 func (o *GetBalance200Response) SetPromoCents(v int32) {
 	o.PromoCents = &v
+}
+
+// GetBonusCents returns the BonusCents field value if set, zero value otherwise.
+func (o *GetBalance200Response) GetBonusCents() int32 {
+	if o == nil || IsNil(o.BonusCents) {
+		var ret int32
+		return ret
+	}
+	return *o.BonusCents
+}
+
+// GetBonusCentsOk returns a tuple with the BonusCents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetBalance200Response) GetBonusCentsOk() (*int32, bool) {
+	if o == nil || IsNil(o.BonusCents) {
+		return nil, false
+	}
+	return o.BonusCents, true
+}
+
+// HasBonusCents returns a boolean if a field has been set.
+func (o *GetBalance200Response) HasBonusCents() bool {
+	if o != nil && !IsNil(o.BonusCents) {
+		return true
+	}
+
+	return false
+}
+
+// SetBonusCents gets a reference to the given int32 and assigns it to the BonusCents field.
+func (o *GetBalance200Response) SetBonusCents(v int32) {
+	o.BonusCents = &v
 }
 
 // GetHeld returns the Held field value if set, zero value otherwise.
@@ -507,6 +541,9 @@ func (o GetBalance200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PromoCents) {
 		toSerialize["promoCents"] = o.PromoCents
+	}
+	if !IsNil(o.BonusCents) {
+		toSerialize["bonusCents"] = o.BonusCents
 	}
 	if !IsNil(o.Held) {
 		toSerialize["held"] = o.Held
