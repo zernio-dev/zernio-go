@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.686.0
+API version: 1.687.0
 Contact: support@zernio.com
 */
 
@@ -2745,6 +2745,9 @@ When this month's auto top-ups plus the next one would pass `monthlyLimitCents`,
 
 - 400: a field is out of range, `toCents` is not at least $4 above `belowCents`, or, while auto top-up is on, `monthlyLimitCents` is lower than the back-to amount `toCents` (one top-up from $0 would pass it, so it could never charge). Omitted fields are checked with their stored values.
 - 409 `balance_billing_required`: the account is not on the prepaid balance, nor moved onto it at a date still ahead. An account moved onto it can read and change its rule before that date; nothing is charged until it.
+- 409 `payment_method_required`: the change turns auto top-up on, or changes its amounts while on, and there is no saved card.
+
+A change that turns auto top-up on (or back on), or changes its amounts while on, is recorded as the billing owner's consent: the card it charges and the auto top-up line, `consentWording` as your app showed it, or our own line for those amounts when you send none.
 
 Needs an owner, admin or billing admin, signed in or through a full-access key they created.
 
