@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.682.1
+API version: 1.683.0
 Contact: support@zernio.com
 */
 
@@ -27,13 +27,13 @@ type AutoRecharge struct {
 	Enabled bool `json:"enabled"`
 	// The below amount, in cents: when the balance drops below this, auto top-up brings it back to toCents.
 	BelowCents int32 `json:"belowCents"`
-	// The back-to amount, in cents. The charge is toCents minus the balance, plus tax.
+	// The back-to amount, in cents. The charge is toCents minus the balance (at least $5, at most toCents unless the balance is below $0 or a monthly fee is due), plus tax.
 	ToCents int32 `json:"toCents"`
 	// Most auto top-up may add per calendar month (UTC), before tax; null for no limit.
 	MonthlyLimitCents NullableInt32 `json:"monthlyLimitCents"`
 	// Low-balance email threshold, sent once per drop below it; null for none.
 	AlertBelowCents NullableInt32 `json:"alertBelowCents"`
-	// `payment_failed` after four failed charges in a row. Updating the card clears it.
+	// `payment_failed` once a failed charge is not retried, or its one retry fails. Updating the card clears it.
 	DisabledReason NullableString `json:"disabledReason"`
 	// Failed charges in a row; 0 once one goes through.
 	RetryCount int32 `json:"retryCount"`

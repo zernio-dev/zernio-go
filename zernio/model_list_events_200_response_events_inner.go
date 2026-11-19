@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.682.1
+API version: 1.683.0
 Contact: support@zernio.com
 */
 
@@ -47,6 +47,8 @@ type ListEvents200ResponseEventsInner struct {
 	PairedEventId *string              `json:"pairedEventId,omitempty"`
 	Ad            *StoredEventAd       `json:"ad,omitempty"`
 	Campaign      *StoredEventCampaign `json:"campaign,omitempty"`
+	// `false` for a website (`web`) copy of an event name a server source also reported that day: the server copy counts in the overview and campaign results, and this one is kept but not counted.
+	Counted *bool `json:"counted,omitempty"`
 	// Each destination the event was forwarded to, with its latest send status. The full detail is on GET /v1/events/{eventId}.
 	Deliveries []ListEvents200ResponseEventsInnerAllOfDeliveriesInner `json:"deliveries,omitempty"`
 }
@@ -708,6 +710,38 @@ func (o *ListEvents200ResponseEventsInner) SetCampaign(v StoredEventCampaign) {
 	o.Campaign = &v
 }
 
+// GetCounted returns the Counted field value if set, zero value otherwise.
+func (o *ListEvents200ResponseEventsInner) GetCounted() bool {
+	if o == nil || IsNil(o.Counted) {
+		var ret bool
+		return ret
+	}
+	return *o.Counted
+}
+
+// GetCountedOk returns a tuple with the Counted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListEvents200ResponseEventsInner) GetCountedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Counted) {
+		return nil, false
+	}
+	return o.Counted, true
+}
+
+// HasCounted returns a boolean if a field has been set.
+func (o *ListEvents200ResponseEventsInner) HasCounted() bool {
+	if o != nil && !IsNil(o.Counted) {
+		return true
+	}
+
+	return false
+}
+
+// SetCounted gets a reference to the given bool and assigns it to the Counted field.
+func (o *ListEvents200ResponseEventsInner) SetCounted(v bool) {
+	o.Counted = &v
+}
+
 // GetDeliveries returns the Deliveries field value if set, zero value otherwise.
 func (o *ListEvents200ResponseEventsInner) GetDeliveries() []ListEvents200ResponseEventsInnerAllOfDeliveriesInner {
 	if o == nil || IsNil(o.Deliveries) {
@@ -809,6 +843,9 @@ func (o ListEvents200ResponseEventsInner) ToMap() (map[string]interface{}, error
 	}
 	if !IsNil(o.Campaign) {
 		toSerialize["campaign"] = o.Campaign
+	}
+	if !IsNil(o.Counted) {
+		toSerialize["counted"] = o.Counted
 	}
 	if !IsNil(o.Deliveries) {
 		toSerialize["deliveries"] = o.Deliveries
