@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.693.1
+API version: 1.694.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type GetEvent200Response struct {
 	Deliveries []GetEvent200ResponseDeliveriesInner `json:"deliveries,omitempty"`
 	// The touches the event is split across, oldest first: website visits (an ad click, search, a tagged link), the first and latest visits HubSpot recorded for a deal, earlier lead forms or sales, and a Shopify buyer's post-purchase survey answer. Empty when the event counts whole for its own campaign.
 	Touches []GetEvent200ResponseTouchesInner `json:"touches,omitempty"`
+	// The same person's events in the 180 days after this one, oldest first, up to 50, like a Stripe payment after a sign-up. People match on email, phone, external id or visitor id. Copies of this event, and website copies of a sale a server reported, are left out.
+	After []GetEvent200ResponseAfterInner `json:"after,omitempty"`
 }
 
 // NewGetEvent200Response instantiates a new GetEvent200Response object
@@ -139,6 +141,38 @@ func (o *GetEvent200Response) SetTouches(v []GetEvent200ResponseTouchesInner) {
 	o.Touches = v
 }
 
+// GetAfter returns the After field value if set, zero value otherwise.
+func (o *GetEvent200Response) GetAfter() []GetEvent200ResponseAfterInner {
+	if o == nil || IsNil(o.After) {
+		var ret []GetEvent200ResponseAfterInner
+		return ret
+	}
+	return o.After
+}
+
+// GetAfterOk returns a tuple with the After field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEvent200Response) GetAfterOk() ([]GetEvent200ResponseAfterInner, bool) {
+	if o == nil || IsNil(o.After) {
+		return nil, false
+	}
+	return o.After, true
+}
+
+// HasAfter returns a boolean if a field has been set.
+func (o *GetEvent200Response) HasAfter() bool {
+	if o != nil && !IsNil(o.After) {
+		return true
+	}
+
+	return false
+}
+
+// SetAfter gets a reference to the given []GetEvent200ResponseAfterInner and assigns it to the After field.
+func (o *GetEvent200Response) SetAfter(v []GetEvent200ResponseAfterInner) {
+	o.After = v
+}
+
 func (o GetEvent200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -157,6 +191,9 @@ func (o GetEvent200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Touches) {
 		toSerialize["touches"] = o.Touches
+	}
+	if !IsNil(o.After) {
+		toSerialize["after"] = o.After
 	}
 	return toSerialize, nil
 }
