@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.695.0
+API version: 1.696.0
 Contact: support@zernio.com
 */
 
@@ -1608,9 +1608,15 @@ func (a *PostsAPIService) PinPostExecute(r PostsAPIPinPostRequest) (*PinPostResp
 }
 
 type PostsAPIRetryPostRequest struct {
-	ctx        context.Context
-	ApiService *PostsAPIService
-	postId     string
+	ctx              context.Context
+	ApiService       *PostsAPIService
+	postId           string
+	postRetryRequest *PostRetryRequest
+}
+
+func (r PostsAPIRetryPostRequest) PostRetryRequest(postRetryRequest PostRetryRequest) PostsAPIRetryPostRequest {
+	r.postRetryRequest = &postRetryRequest
+	return r
 }
 
 func (r PostsAPIRetryPostRequest) Execute() (*PostRetryResponse, *http.Response, error) {
@@ -1620,7 +1626,13 @@ func (r PostsAPIRetryPostRequest) Execute() (*PostRetryResponse, *http.Response,
 /*
 RetryPost Retry failed post
 
-Immediately retries publishing a failed post. Returns the updated post with its new status.
+Immediately retries publishing a failed or partial post and returns the updated post with a per-platform result.
+
+- Without a body, every failed or pending platform is retried.
+- Pass `platforms` to retry only some of them, for example the one platform that failed on a partial post. Platforms not listed are left alone.
+- Prefer this over creating the post again, which posts a second time to the platforms that already published.
+
+A retry never collides with its own post in the 24-hour duplicate-content check. It still answers 409 when another post with identical content published, or is about to publish, to the same account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
@@ -1658,7 +1670,7 @@ func (a *PostsAPIService) RetryPostExecute(r PostsAPIRetryPostRequest) (*PostRet
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1674,6 +1686,8 @@ func (a *PostsAPIService) RetryPostExecute(r PostsAPIRetryPostRequest) (*PostRet
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.postRetryRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

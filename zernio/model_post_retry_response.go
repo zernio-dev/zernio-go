@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.695.0
+API version: 1.696.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,11 @@ var _ MappedNullable = &PostRetryResponse{}
 // PostRetryResponse struct for PostRetryResponse
 type PostRetryResponse struct {
 	Message *string `json:"message,omitempty"`
-	Post    *Post   `json:"post,omitempty"`
+	// Present on a 207 only: summary of why the retry did not fully succeed.
+	Error *string `json:"error,omitempty"`
+	// One entry per platform of the post, in `post.platforms[]` order.
+	PlatformResults []PostRetryPlatformResult `json:"platformResults,omitempty"`
+	Post            *Post                     `json:"post,omitempty"`
 }
 
 // NewPostRetryResponse instantiates a new PostRetryResponse object
@@ -73,6 +77,70 @@ func (o *PostRetryResponse) SetMessage(v string) {
 	o.Message = &v
 }
 
+// GetError returns the Error field value if set, zero value otherwise.
+func (o *PostRetryResponse) GetError() string {
+	if o == nil || IsNil(o.Error) {
+		var ret string
+		return ret
+	}
+	return *o.Error
+}
+
+// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostRetryResponse) GetErrorOk() (*string, bool) {
+	if o == nil || IsNil(o.Error) {
+		return nil, false
+	}
+	return o.Error, true
+}
+
+// HasError returns a boolean if a field has been set.
+func (o *PostRetryResponse) HasError() bool {
+	if o != nil && !IsNil(o.Error) {
+		return true
+	}
+
+	return false
+}
+
+// SetError gets a reference to the given string and assigns it to the Error field.
+func (o *PostRetryResponse) SetError(v string) {
+	o.Error = &v
+}
+
+// GetPlatformResults returns the PlatformResults field value if set, zero value otherwise.
+func (o *PostRetryResponse) GetPlatformResults() []PostRetryPlatformResult {
+	if o == nil || IsNil(o.PlatformResults) {
+		var ret []PostRetryPlatformResult
+		return ret
+	}
+	return o.PlatformResults
+}
+
+// GetPlatformResultsOk returns a tuple with the PlatformResults field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostRetryResponse) GetPlatformResultsOk() ([]PostRetryPlatformResult, bool) {
+	if o == nil || IsNil(o.PlatformResults) {
+		return nil, false
+	}
+	return o.PlatformResults, true
+}
+
+// HasPlatformResults returns a boolean if a field has been set.
+func (o *PostRetryResponse) HasPlatformResults() bool {
+	if o != nil && !IsNil(o.PlatformResults) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformResults gets a reference to the given []PostRetryPlatformResult and assigns it to the PlatformResults field.
+func (o *PostRetryResponse) SetPlatformResults(v []PostRetryPlatformResult) {
+	o.PlatformResults = v
+}
+
 // GetPost returns the Post field value if set, zero value otherwise.
 func (o *PostRetryResponse) GetPost() Post {
 	if o == nil || IsNil(o.Post) {
@@ -117,6 +185,12 @@ func (o PostRetryResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Message) {
 		toSerialize["message"] = o.Message
+	}
+	if !IsNil(o.Error) {
+		toSerialize["error"] = o.Error
+	}
+	if !IsNil(o.PlatformResults) {
+		toSerialize["platformResults"] = o.PlatformResults
 	}
 	if !IsNil(o.Post) {
 		toSerialize["post"] = o.Post
