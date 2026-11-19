@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.684.0
+API version: 1.685.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,7 @@ type GetEventsOverviewDaily200Response struct {
 	Platforms []GetEventsOverviewDaily200ResponsePlatformsInner `json:"platforms,omitempty"`
 	// For each platform sent to in the period, the website conversions of people who allowed ad cookies (bots left out) and how many its browser pixel missed, which Zernio sent from its server. Most missed first; `null` without a tracked website in scope.
 	PixelMissed []GetEventsOverviewDaily200ResponsePixelMissedInner `json:"pixelMissed,omitempty"`
+	Breakdown   *GetEventsOverviewDaily200ResponseBreakdown         `json:"breakdown,omitempty"`
 	Previous    *GetEventsOverviewDaily200ResponsePrevious          `json:"previous,omitempty"`
 }
 
@@ -243,6 +244,38 @@ func (o *GetEventsOverviewDaily200Response) SetPixelMissed(v []GetEventsOverview
 	o.PixelMissed = v
 }
 
+// GetBreakdown returns the Breakdown field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200Response) GetBreakdown() GetEventsOverviewDaily200ResponseBreakdown {
+	if o == nil || IsNil(o.Breakdown) {
+		var ret GetEventsOverviewDaily200ResponseBreakdown
+		return ret
+	}
+	return *o.Breakdown
+}
+
+// GetBreakdownOk returns a tuple with the Breakdown field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200Response) GetBreakdownOk() (*GetEventsOverviewDaily200ResponseBreakdown, bool) {
+	if o == nil || IsNil(o.Breakdown) {
+		return nil, false
+	}
+	return o.Breakdown, true
+}
+
+// HasBreakdown returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200Response) HasBreakdown() bool {
+	if o != nil && !IsNil(o.Breakdown) {
+		return true
+	}
+
+	return false
+}
+
+// SetBreakdown gets a reference to the given GetEventsOverviewDaily200ResponseBreakdown and assigns it to the Breakdown field.
+func (o *GetEventsOverviewDaily200Response) SetBreakdown(v GetEventsOverviewDaily200ResponseBreakdown) {
+	o.Breakdown = &v
+}
+
 // GetPrevious returns the Previous field value if set, zero value otherwise.
 func (o *GetEventsOverviewDaily200Response) GetPrevious() GetEventsOverviewDaily200ResponsePrevious {
 	if o == nil || IsNil(o.Previous) {
@@ -302,6 +335,9 @@ func (o GetEventsOverviewDaily200Response) ToMap() (map[string]interface{}, erro
 	}
 	if o.PixelMissed != nil {
 		toSerialize["pixelMissed"] = o.PixelMissed
+	}
+	if !IsNil(o.Breakdown) {
+		toSerialize["breakdown"] = o.Breakdown
 	}
 	if !IsNil(o.Previous) {
 		toSerialize["previous"] = o.Previous
