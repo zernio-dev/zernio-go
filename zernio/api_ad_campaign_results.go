@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.692.1
+API version: 1.693.0
 Contact: support@zernio.com
 */
 
@@ -287,6 +287,8 @@ Each metric you send summed over a date range across every campaign of the ad ac
 An event counts here up to 15 minutes after it arrives.
 
 Formulas are not computed here, since they also read the platform's numbers: apply one to these totals and the account's spend for the same range, or read it per campaign from `GET /v1/ads/tree?results=true`.
+
+The newer way to read this is `GET /v1/metrics/ad-accounts`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignResultsAPIGetCampaignResultsTotalsRequest
@@ -822,6 +824,8 @@ Your results summed per campaign over a date range, one entry per campaign with 
 An event counts here up to 15 minutes after it arrives.
 
 Paginated by campaign: pass `nextCursor` back as `cursor` until it is null.
+
+The newer way to read this is `GET /v1/metrics/campaigns`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignResultsAPIListCampaignResultsRequest

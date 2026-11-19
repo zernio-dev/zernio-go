@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.692.1
+API version: 1.693.0
 Contact: support@zernio.com
 */
 
@@ -835,6 +835,8 @@ Requires analytics add-on subscription. Follower counts are refreshed once per d
 - Without `accountIds`, the response is the first page of 25 accounts even when `limit` and `cursor` are omitted. Pass `pagination.nextCursor` back as `cursor` for the next one.
 - When that default page cuts the list, the response also carries a `warning` and the headers `X-Result-Truncated: true` and `X-Result-Limit: 25`.
 - At most 1 year between `fromDate` and `toDate`. A longer range is cut to the year before `toDate`: `dateRange.from` shows where the data starts and the response carries a `warning`.
+
+The newer way to read this is `GET /v1/metrics/accounts` with `metrics=followers,followersGrowth` and the granularity you need.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AccountsAPIGetFollowerStatsRequest

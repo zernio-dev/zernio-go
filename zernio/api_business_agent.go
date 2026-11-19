@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.692.1
+API version: 1.693.0
 Contact: support@zernio.com
 */
 
@@ -1142,7 +1142,7 @@ type BusinessAgentAPIDeleteBusinessAgentConnectorRequest struct {
 	connectorId string
 }
 
-func (r BusinessAgentAPIDeleteBusinessAgentConnectorRequest) Execute() (*InlineObject, *http.Response, error) {
+func (r BusinessAgentAPIDeleteBusinessAgentConnectorRequest) Execute() (*InlineObject1, *http.Response, error) {
 	return r.ApiService.DeleteBusinessAgentConnectorExecute(r)
 }
 
@@ -1165,13 +1165,13 @@ func (a *BusinessAgentAPIService) DeleteBusinessAgentConnector(ctx context.Conte
 
 // Execute executes the request
 //
-//	@return InlineObject
-func (a *BusinessAgentAPIService) DeleteBusinessAgentConnectorExecute(r BusinessAgentAPIDeleteBusinessAgentConnectorRequest) (*InlineObject, *http.Response, error) {
+//	@return InlineObject1
+func (a *BusinessAgentAPIService) DeleteBusinessAgentConnectorExecute(r BusinessAgentAPIDeleteBusinessAgentConnectorRequest) (*InlineObject1, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *InlineObject
+		localVarReturnValue *InlineObject1
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BusinessAgentAPIService.DeleteBusinessAgentConnector")
@@ -1292,7 +1292,7 @@ type BusinessAgentAPIDeleteBusinessAgentConnectorToolRequest struct {
 	toolId      string
 }
 
-func (r BusinessAgentAPIDeleteBusinessAgentConnectorToolRequest) Execute() (*InlineObject, *http.Response, error) {
+func (r BusinessAgentAPIDeleteBusinessAgentConnectorToolRequest) Execute() (*InlineObject1, *http.Response, error) {
 	return r.ApiService.DeleteBusinessAgentConnectorToolExecute(r)
 }
 
@@ -1317,13 +1317,13 @@ func (a *BusinessAgentAPIService) DeleteBusinessAgentConnectorTool(ctx context.C
 
 // Execute executes the request
 //
-//	@return InlineObject
-func (a *BusinessAgentAPIService) DeleteBusinessAgentConnectorToolExecute(r BusinessAgentAPIDeleteBusinessAgentConnectorToolRequest) (*InlineObject, *http.Response, error) {
+//	@return InlineObject1
+func (a *BusinessAgentAPIService) DeleteBusinessAgentConnectorToolExecute(r BusinessAgentAPIDeleteBusinessAgentConnectorToolRequest) (*InlineObject1, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *InlineObject
+		localVarReturnValue *InlineObject1
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BusinessAgentAPIService.DeleteBusinessAgentConnectorTool")
@@ -1444,7 +1444,7 @@ type BusinessAgentAPIDeleteBusinessAgentFaqRequest struct {
 	faqId      string
 }
 
-func (r BusinessAgentAPIDeleteBusinessAgentFaqRequest) Execute() (*InlineObject, *http.Response, error) {
+func (r BusinessAgentAPIDeleteBusinessAgentFaqRequest) Execute() (*InlineObject1, *http.Response, error) {
 	return r.ApiService.DeleteBusinessAgentFaqExecute(r)
 }
 
@@ -1467,13 +1467,13 @@ func (a *BusinessAgentAPIService) DeleteBusinessAgentFaq(ctx context.Context, ac
 
 // Execute executes the request
 //
-//	@return InlineObject
-func (a *BusinessAgentAPIService) DeleteBusinessAgentFaqExecute(r BusinessAgentAPIDeleteBusinessAgentFaqRequest) (*InlineObject, *http.Response, error) {
+//	@return InlineObject1
+func (a *BusinessAgentAPIService) DeleteBusinessAgentFaqExecute(r BusinessAgentAPIDeleteBusinessAgentFaqRequest) (*InlineObject1, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *InlineObject
+		localVarReturnValue *InlineObject1
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BusinessAgentAPIService.DeleteBusinessAgentFaq")
@@ -1593,7 +1593,7 @@ type BusinessAgentAPIDeleteBusinessAgentFileRequest struct {
 	fileId     string
 }
 
-func (r BusinessAgentAPIDeleteBusinessAgentFileRequest) Execute() (*InlineObject, *http.Response, error) {
+func (r BusinessAgentAPIDeleteBusinessAgentFileRequest) Execute() (*InlineObject1, *http.Response, error) {
 	return r.ApiService.DeleteBusinessAgentFileExecute(r)
 }
 
@@ -1616,13 +1616,13 @@ func (a *BusinessAgentAPIService) DeleteBusinessAgentFile(ctx context.Context, a
 
 // Execute executes the request
 //
-//	@return InlineObject
-func (a *BusinessAgentAPIService) DeleteBusinessAgentFileExecute(r BusinessAgentAPIDeleteBusinessAgentFileRequest) (*InlineObject, *http.Response, error) {
+//	@return InlineObject1
+func (a *BusinessAgentAPIService) DeleteBusinessAgentFileExecute(r BusinessAgentAPIDeleteBusinessAgentFileRequest) (*InlineObject1, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *InlineObject
+		localVarReturnValue *InlineObject1
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BusinessAgentAPIService.DeleteBusinessAgentFile")
@@ -1742,7 +1742,7 @@ type BusinessAgentAPIDeleteBusinessAgentSkillRequest struct {
 	skillId    string
 }
 
-func (r BusinessAgentAPIDeleteBusinessAgentSkillRequest) Execute() (*InlineObject, *http.Response, error) {
+func (r BusinessAgentAPIDeleteBusinessAgentSkillRequest) Execute() (*InlineObject1, *http.Response, error) {
 	return r.ApiService.DeleteBusinessAgentSkillExecute(r)
 }
 
@@ -1765,13 +1765,13 @@ func (a *BusinessAgentAPIService) DeleteBusinessAgentSkill(ctx context.Context, 
 
 // Execute executes the request
 //
-//	@return InlineObject
-func (a *BusinessAgentAPIService) DeleteBusinessAgentSkillExecute(r BusinessAgentAPIDeleteBusinessAgentSkillRequest) (*InlineObject, *http.Response, error) {
+//	@return InlineObject1
+func (a *BusinessAgentAPIService) DeleteBusinessAgentSkillExecute(r BusinessAgentAPIDeleteBusinessAgentSkillRequest) (*InlineObject1, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *InlineObject
+		localVarReturnValue *InlineObject1
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BusinessAgentAPIService.DeleteBusinessAgentSkill")
@@ -1891,7 +1891,7 @@ type BusinessAgentAPIDeleteBusinessAgentUiSkillRequest struct {
 	uiSkillId  string
 }
 
-func (r BusinessAgentAPIDeleteBusinessAgentUiSkillRequest) Execute() (*InlineObject, *http.Response, error) {
+func (r BusinessAgentAPIDeleteBusinessAgentUiSkillRequest) Execute() (*InlineObject1, *http.Response, error) {
 	return r.ApiService.DeleteBusinessAgentUiSkillExecute(r)
 }
 
@@ -1914,13 +1914,13 @@ func (a *BusinessAgentAPIService) DeleteBusinessAgentUiSkill(ctx context.Context
 
 // Execute executes the request
 //
-//	@return InlineObject
-func (a *BusinessAgentAPIService) DeleteBusinessAgentUiSkillExecute(r BusinessAgentAPIDeleteBusinessAgentUiSkillRequest) (*InlineObject, *http.Response, error) {
+//	@return InlineObject1
+func (a *BusinessAgentAPIService) DeleteBusinessAgentUiSkillExecute(r BusinessAgentAPIDeleteBusinessAgentUiSkillRequest) (*InlineObject1, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *InlineObject
+		localVarReturnValue *InlineObject1
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BusinessAgentAPIService.DeleteBusinessAgentUiSkill")
@@ -2040,7 +2040,7 @@ type BusinessAgentAPIDeleteBusinessAgentWebsiteRequest struct {
 	websiteId  string
 }
 
-func (r BusinessAgentAPIDeleteBusinessAgentWebsiteRequest) Execute() (*InlineObject, *http.Response, error) {
+func (r BusinessAgentAPIDeleteBusinessAgentWebsiteRequest) Execute() (*InlineObject1, *http.Response, error) {
 	return r.ApiService.DeleteBusinessAgentWebsiteExecute(r)
 }
 
@@ -2063,13 +2063,13 @@ func (a *BusinessAgentAPIService) DeleteBusinessAgentWebsite(ctx context.Context
 
 // Execute executes the request
 //
-//	@return InlineObject
-func (a *BusinessAgentAPIService) DeleteBusinessAgentWebsiteExecute(r BusinessAgentAPIDeleteBusinessAgentWebsiteRequest) (*InlineObject, *http.Response, error) {
+//	@return InlineObject1
+func (a *BusinessAgentAPIService) DeleteBusinessAgentWebsiteExecute(r BusinessAgentAPIDeleteBusinessAgentWebsiteRequest) (*InlineObject1, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *InlineObject
+		localVarReturnValue *InlineObject1
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BusinessAgentAPIService.DeleteBusinessAgentWebsite")
@@ -5898,7 +5898,7 @@ type BusinessAgentAPIRemoveBusinessAgentAllowlistEntryRequest struct {
 	entryId    string
 }
 
-func (r BusinessAgentAPIRemoveBusinessAgentAllowlistEntryRequest) Execute() (*InlineObject, *http.Response, error) {
+func (r BusinessAgentAPIRemoveBusinessAgentAllowlistEntryRequest) Execute() (*InlineObject1, *http.Response, error) {
 	return r.ApiService.RemoveBusinessAgentAllowlistEntryExecute(r)
 }
 
@@ -5921,13 +5921,13 @@ func (a *BusinessAgentAPIService) RemoveBusinessAgentAllowlistEntry(ctx context.
 
 // Execute executes the request
 //
-//	@return InlineObject
-func (a *BusinessAgentAPIService) RemoveBusinessAgentAllowlistEntryExecute(r BusinessAgentAPIRemoveBusinessAgentAllowlistEntryRequest) (*InlineObject, *http.Response, error) {
+//	@return InlineObject1
+func (a *BusinessAgentAPIService) RemoveBusinessAgentAllowlistEntryExecute(r BusinessAgentAPIRemoveBusinessAgentAllowlistEntryRequest) (*InlineObject1, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *InlineObject
+		localVarReturnValue *InlineObject1
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BusinessAgentAPIService.RemoveBusinessAgentAllowlistEntry")
@@ -6362,7 +6362,7 @@ type BusinessAgentAPIResetBusinessAgentBusinessInformationRequest struct {
 	accountId  string
 }
 
-func (r BusinessAgentAPIResetBusinessAgentBusinessInformationRequest) Execute() (*InlineObject, *http.Response, error) {
+func (r BusinessAgentAPIResetBusinessAgentBusinessInformationRequest) Execute() (*InlineObject1, *http.Response, error) {
 	return r.ApiService.ResetBusinessAgentBusinessInformationExecute(r)
 }
 
@@ -6383,13 +6383,13 @@ func (a *BusinessAgentAPIService) ResetBusinessAgentBusinessInformation(ctx cont
 
 // Execute executes the request
 //
-//	@return InlineObject
-func (a *BusinessAgentAPIService) ResetBusinessAgentBusinessInformationExecute(r BusinessAgentAPIResetBusinessAgentBusinessInformationRequest) (*InlineObject, *http.Response, error) {
+//	@return InlineObject1
+func (a *BusinessAgentAPIService) ResetBusinessAgentBusinessInformationExecute(r BusinessAgentAPIResetBusinessAgentBusinessInformationRequest) (*InlineObject1, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *InlineObject
+		localVarReturnValue *InlineObject1
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BusinessAgentAPIService.ResetBusinessAgentBusinessInformation")

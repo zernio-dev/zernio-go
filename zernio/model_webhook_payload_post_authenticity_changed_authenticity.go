@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.692.1
+API version: 1.693.0
 Contact: support@zernio.com
 */
 
@@ -27,8 +27,8 @@ type WebhookPayloadPostAuthenticityChangedAuthenticity struct {
 	Score         int32 `json:"score"`
 	PreviousScore int32 `json:"previousScore"`
 	// 0 to 1, how much data the score rests on
-	Confidence float32                                                         `json:"confidence"`
-	Reasons    []WebhookPayloadPostAuthenticityChangedAuthenticityReasonsInner `json:"reasons"`
+	Confidence float32                              `json:"confidence"`
+	Reasons    []PostMetricAuthenticityReasonsInner `json:"reasons"`
 	// Scoring model version
 	Version    string    `json:"version"`
 	ComputedAt time.Time `json:"computedAt"`
@@ -40,7 +40,7 @@ type _WebhookPayloadPostAuthenticityChangedAuthenticity WebhookPayloadPostAuthen
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadPostAuthenticityChangedAuthenticity(score int32, previousScore int32, confidence float32, reasons []WebhookPayloadPostAuthenticityChangedAuthenticityReasonsInner, version string, computedAt time.Time) *WebhookPayloadPostAuthenticityChangedAuthenticity {
+func NewWebhookPayloadPostAuthenticityChangedAuthenticity(score int32, previousScore int32, confidence float32, reasons []PostMetricAuthenticityReasonsInner, version string, computedAt time.Time) *WebhookPayloadPostAuthenticityChangedAuthenticity {
 	this := WebhookPayloadPostAuthenticityChangedAuthenticity{}
 	this.Score = score
 	this.PreviousScore = previousScore
@@ -132,9 +132,9 @@ func (o *WebhookPayloadPostAuthenticityChangedAuthenticity) SetConfidence(v floa
 }
 
 // GetReasons returns the Reasons field value
-func (o *WebhookPayloadPostAuthenticityChangedAuthenticity) GetReasons() []WebhookPayloadPostAuthenticityChangedAuthenticityReasonsInner {
+func (o *WebhookPayloadPostAuthenticityChangedAuthenticity) GetReasons() []PostMetricAuthenticityReasonsInner {
 	if o == nil {
-		var ret []WebhookPayloadPostAuthenticityChangedAuthenticityReasonsInner
+		var ret []PostMetricAuthenticityReasonsInner
 		return ret
 	}
 
@@ -143,7 +143,7 @@ func (o *WebhookPayloadPostAuthenticityChangedAuthenticity) GetReasons() []Webho
 
 // GetReasonsOk returns a tuple with the Reasons field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadPostAuthenticityChangedAuthenticity) GetReasonsOk() ([]WebhookPayloadPostAuthenticityChangedAuthenticityReasonsInner, bool) {
+func (o *WebhookPayloadPostAuthenticityChangedAuthenticity) GetReasonsOk() ([]PostMetricAuthenticityReasonsInner, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -151,7 +151,7 @@ func (o *WebhookPayloadPostAuthenticityChangedAuthenticity) GetReasonsOk() ([]We
 }
 
 // SetReasons sets field value
-func (o *WebhookPayloadPostAuthenticityChangedAuthenticity) SetReasons(v []WebhookPayloadPostAuthenticityChangedAuthenticityReasonsInner) {
+func (o *WebhookPayloadPostAuthenticityChangedAuthenticity) SetReasons(v []PostMetricAuthenticityReasonsInner) {
 	o.Reasons = v
 }
 

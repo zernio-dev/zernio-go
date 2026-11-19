@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.692.1
+API version: 1.693.0
 Contact: support@zernio.com
 */
 
@@ -304,6 +304,8 @@ Mapping:
 - shares = story shares
 - clicks: always 0, because Meta exposes no link-click metric for stories
 
+The newer way to read this is `GET /v1/metrics/posts`: by `postId` or `platformPostId`, or as a list by `accountId` or `profileId`, sorted by date or by a metric.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetAnalyticsRequest
 */
@@ -494,7 +496,7 @@ func (a *AnalyticsAPIService) GetAnalyticsExecute(r AnalyticsAPIGetAnalyticsRequ
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -735,7 +737,7 @@ func (a *AnalyticsAPIService) GetAnalyticsDashboardExecute(r AnalyticsAPIGetAnal
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -861,6 +863,8 @@ A consumer that polls at least daily never reaches this.
 Pairs with the `analytics.synced` webhook, so changes can be read on notification instead of on a timer. That event carries no cursor of its own: keep using the `nextCursor` this endpoint gave you.
 
 Requires the same analytics access as `GET /v1/analytics`, and shares the stricter per-second rate-limit window applied to analytics endpoints.
+
+The newer way to read this is `GET /v1/metrics/posts` with `changedSince`: the same feed and cursors, with the metric names of the catalog.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetAnalyticsDeltaRequest
@@ -1009,7 +1013,7 @@ func (a *AnalyticsAPIService) GetAnalyticsDeltaExecute(r AnalyticsAPIGetAnalytic
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1098,6 +1102,8 @@ GetBestTimeToPost Get best times to post
 Returns the best times to post based on historical engagement data.
 Groups all published posts by day of week and hour (UTC), calculating average engagement per slot.
 Use this to auto-schedule posts at optimal times.
+
+The newer way to read this is `GET /v1/metrics/posts` with `groupBy=dayOfWeek,hour` and a list scope (`accountId` or `profileId`): one row per UTC weekday and hour, with any of its post metrics.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetBestTimeToPostRequest
@@ -1209,7 +1215,7 @@ func (a *AnalyticsAPIService) GetBestTimeToPostExecute(r AnalyticsAPIGetBestTime
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1276,6 +1282,8 @@ GetContentDecay Get content performance decay
 Returns how engagement accumulates over time after a post is published.
 Each bucket shows what percentage of the post's total engagement had been reached by that time window.
 Useful for understanding content lifespan (e.g. "posts reach 78% of total engagement within 24 hours").
+
+The newer way to read this is `GET /v1/metrics/posts` with `groupBy=postAge` and a list scope (`accountId` or `profileId`): one row per post age with `engagementShareOfFinal`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetContentDecayRequest
@@ -1387,7 +1395,7 @@ func (a *AnalyticsAPIService) GetContentDecayExecute(r AnalyticsAPIGetContentDec
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1477,6 +1485,8 @@ Each day includes post count, platform distribution, and summed metrics (impress
 Defaults to the last 180 days.
 
 `totals` sums the whole range for the applied filters (pass `accountId` for one account). With attribution "publish" they are the lifetime metrics of posts published in the range, with "received" the engagement that arrived in the range.
+
+The newer way to read this is `GET /v1/metrics/accounts` with `granularity=day`, grouped by `account`, `platform` or `none`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetDailyMetricsRequest
@@ -1601,7 +1611,7 @@ func (a *AnalyticsAPIService) GetDailyMetricsExecute(r AnalyticsAPIGetDailyMetri
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2367,6 +2377,8 @@ Requires analytics add-on subscription. Follower counts are refreshed once per d
 - Without `accountIds`, the response is the first page of 25 accounts even when `limit` and `cursor` are omitted. Pass `pagination.nextCursor` back as `cursor` for the next one.
 - When that default page cuts the list, the response also carries a `warning` and the headers `X-Result-Truncated: true` and `X-Result-Limit: 25`.
 - At most 1 year between `fromDate` and `toDate`. A longer range is cut to the year before `toDate`: `dateRange.from` shows where the data starts and the response carries a `warning`.
+
+The newer way to read this is `GET /v1/metrics/accounts` with `metrics=followers,followersGrowth` and the granularity you need.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetFollowerStatsRequest
@@ -5299,6 +5311,8 @@ Each sample is one analytics sync: the views and engagement as the platform repo
 - `shares` and `saves` are null on platforms that do not return that counter, which is different from a real zero.
 - `watchSeconds` and `completionRate` are null when the platform gives no watch signal.
 
+The newer way to read this is `GET /v1/metrics/posts` with `include=samples`, for up to 10 posts in one request.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetPostSamplesRequest
 */
@@ -5443,7 +5457,7 @@ func (a *AnalyticsAPIService) GetPostSamplesExecute(r AnalyticsAPIGetPostSamples
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -5503,6 +5517,8 @@ GetPostTimeline Get post analytics timeline
 Returns a daily timeline of analytics metrics for a specific post, showing how impressions, likes,
 and other metrics evolved day-by-day since publishing. Each row represents one day of data per platform.
 For multi-platform Zernio posts, returns separate rows for each platform.
+
+The newer way to read this is `GET /v1/metrics/posts` with one `postId` and `granularity=day`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetPostTimelineRequest
@@ -5641,7 +5657,7 @@ func (a *AnalyticsAPIService) GetPostTimelineExecute(r AnalyticsAPIGetPostTimeli
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -5708,6 +5724,8 @@ GetPostingFrequency Get frequency vs engagement
 Returns the correlation between posting frequency (posts per week) and engagement rate, broken down by platform.
 Helps find the optimal posting cadence for each platform. Each row represents a specific (platform, posts_per_week) combination
 with the average engagement rate observed across all weeks matching that frequency.
+
+The newer way to read this is `GET /v1/metrics/accounts` with `granularity=week`, `groupBy=platform` and `metrics=postCount,engagementRate`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetPostingFrequencyRequest
@@ -5819,7 +5837,7 @@ func (a *AnalyticsAPIService) GetPostingFrequencyExecute(r AnalyticsAPIGetPostin
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -6389,7 +6407,7 @@ func (a *AnalyticsAPIService) GetTrackingWindowExecute(r AnalyticsAPIGetTracking
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -8238,6 +8256,8 @@ Scores are 0 to 100 and come from Zernio's own model over verified platform samp
 - `minScore` and `maxScore`: find posts that look inflated.
 - `from` and `to`: bound when the score was computed.
 
+The newer way to read scores is `GET /v1/metrics/posts` with `metrics=authenticityScore` or `include=authenticity`. This route keeps the score filters (`minScore`, `maxScore`, `from`, `to`).
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIListPostAuthenticityRequest
 */
@@ -8576,7 +8596,7 @@ func (a *AnalyticsAPIService) ListTrackingWindowsExecute(r AnalyticsAPIListTrack
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
-			var v InlineObject3
+			var v InlineObject4
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -8802,6 +8822,8 @@ QueryGoogleSearchConsoleSearchAnalytics Query Google Search Console search analy
 Clicks, impressions, CTR and average position from Google Search for a connected Search Console site, through Google's `searchAnalytics.query`.
 
 Group by any of `date`, `hour`, `query`, `page`, `country`, `device`, `searchAppearance` and `brandedClassification`, and filter with Google's own filter groups. With no dimensions you get one row with the site's totals.
+
+The newer way to read clicks, impressions, ctr and position is `GET /v1/metrics/insights` with a Search Console `accountId`, grouped by any of `query`, `page`, `country` and `device`. This route keeps Google's filters, `type`, `aggregationType`, the `hour` dimension and `dataState`.
 
 ### Branded queries
 

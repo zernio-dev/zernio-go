@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.692.1
+API version: 1.693.0
 Contact: support@zernio.com
 */
 
@@ -36,7 +36,7 @@ func (r ConnectAPIAddOrgConnectionMailboxRequest) CreateImapAccountRequestIdenti
 	return r
 }
 
-func (r ConnectAPIAddOrgConnectionMailboxRequest) Execute() (*InlineObject1, *http.Response, error) {
+func (r ConnectAPIAddOrgConnectionMailboxRequest) Execute() (*InlineObject2, *http.Response, error) {
 	return r.ApiService.AddOrgConnectionMailboxExecute(r)
 }
 
@@ -61,13 +61,13 @@ func (a *ConnectAPIService) AddOrgConnectionMailbox(ctx context.Context, orgConn
 
 // Execute executes the request
 //
-//	@return InlineObject1
-func (a *ConnectAPIService) AddOrgConnectionMailboxExecute(r ConnectAPIAddOrgConnectionMailboxRequest) (*InlineObject1, *http.Response, error) {
+//	@return InlineObject2
+func (a *ConnectAPIService) AddOrgConnectionMailboxExecute(r ConnectAPIAddOrgConnectionMailboxRequest) (*InlineObject2, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *InlineObject1
+		localVarReturnValue *InlineObject2
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.AddOrgConnectionMailbox")
@@ -1496,7 +1496,7 @@ func (a *ConnectAPIService) ConnectAppLovinAdsCredentialsExecute(r ConnectAPICon
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1760,7 +1760,7 @@ func (a *ConnectAPIService) ConnectDiscordChannelExecute(r ConnectAPIConnectDisc
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2057,7 +2057,7 @@ func (a *ConnectAPIService) ConnectOpenAIAdsCredentialsExecute(r ConnectAPIConne
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2198,7 +2198,7 @@ func (a *ConnectAPIService) ConnectShopifyWithTokenExecute(r ConnectAPIConnectSh
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2339,7 +2339,7 @@ func (a *ConnectAPIService) ConnectSlackChannelExecute(r ConnectAPIConnectSlackC
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2477,7 +2477,7 @@ func (a *ConnectAPIService) ConnectSnapchatAdsCredentialsExecute(r ConnectAPICon
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2633,7 +2633,7 @@ func (a *ConnectAPIService) ConnectWebflowWithSiteTokenExecute(r ConnectAPIConne
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -3074,7 +3074,7 @@ func (a *ConnectAPIService) ConnectWhatsAppEmbeddedSignupExecute(r ConnectAPICon
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -3214,7 +3214,7 @@ func (a *ConnectAPIService) ConnectWhopAdsCredentialsExecute(r ConnectAPIConnect
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -3357,7 +3357,7 @@ func (a *ConnectAPIService) ConnectWordPressWithApplicationPasswordExecute(r Con
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -3527,7 +3527,7 @@ func (a *ConnectAPIService) CreateGoogleBusinessLocationExecute(r ConnectAPICrea
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject2
+			var v InlineObject3
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -4259,7 +4259,7 @@ func (a *ConnectAPIService) CreatePlatformInviteExecute(r ConnectAPICreatePlatfo
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject2
+			var v InlineObject3
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -5247,7 +5247,7 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -6071,7 +6071,7 @@ func (a *ConnectAPIService) GetGoogleAnalyticsConnectUrlExecute(r ConnectAPIGetG
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -6320,7 +6320,7 @@ func (a *ConnectAPIService) GetGoogleSearchConsoleConnectUrlExecute(r ConnectAPI
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -6502,7 +6502,7 @@ func (a *ConnectAPIService) GetHubSpotConnectUrlExecute(r ConnectAPIGetHubSpotCo
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -7712,7 +7712,7 @@ func (a *ConnectAPIService) GetSalesforceConnectUrlExecute(r ConnectAPIGetSalesf
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -7882,7 +7882,7 @@ func (a *ConnectAPIService) GetShopifyConnectUrlExecute(r ConnectAPIGetShopifyCo
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -8072,7 +8072,7 @@ func (a *ConnectAPIService) GetStripeConnectUrlExecute(r ConnectAPIGetStripeConn
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -8500,7 +8500,7 @@ func (a *ConnectAPIService) GetWebflowConnectUrlExecute(r ConnectAPIGetWebflowCo
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -8633,7 +8633,7 @@ func (a *ConnectAPIService) GetWechatIpWhitelistExecute(r ConnectAPIGetWechatIpW
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
-			var v InlineObject2
+			var v InlineObject3
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -8925,7 +8925,7 @@ func (a *ConnectAPIService) GetWixConnectUrlExecute(r ConnectAPIGetWixConnectUrl
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -9098,7 +9098,7 @@ func (a *ConnectAPIService) GetWordPressAuthUrlExecute(r ConnectAPIGetWordPressA
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -9538,7 +9538,7 @@ func (a *ConnectAPIService) HandleOAuthCallbackExecute(r ConnectAPIHandleOAuthCa
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -12988,7 +12988,7 @@ func (a *ConnectAPIService) SelectInstagramAccountExecute(r ConnectAPISelectInst
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject4
+			var v InlineObject5
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

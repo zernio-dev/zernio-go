@@ -1289,6 +1289,18 @@ func main() {
 | `client.MessagingAdsAPI.CreateCtwaAd(ctx)` | Create CTWA ad (deprecated) |
 | `client.MessagingAdsAPI.CreateMessagingAd(ctx)` | Create messaging ad |
 
+### Metrics
+| Method | Description |
+|--------|-------------|
+| `client.MetricsAPI.GetAccountMetrics(ctx)` | Read follower and post totals per account, platform or scope over time |
+| `client.MetricsAPI.GetAdAccountMetrics(ctx)` | Read the uploaded results summed across ad accounts |
+| `client.MetricsAPI.GetAdMetrics(ctx)` | Read ad metrics by id, or one ad day by day with breakdowns |
+| `client.MetricsAPI.GetCampaignMetrics(ctx)` | Read the uploaded results of each campaign over a window |
+| `client.MetricsAPI.GetInboxMetrics(ctx)` | Read message volume and response times |
+| `client.MetricsAPI.GetInsightMetrics(ctx)` | Read live account or post insights from the platform |
+| `client.MetricsAPI.GetMetricsCatalog(ctx)` | List the metrics, groupings and limits of each metrics endpoint |
+| `client.MetricsAPI.GetPostMetrics(ctx)` | Read post metrics by id, day by day, as a list, or grouped |
+
 ### Phone Numbers
 | Method | Description |
 |--------|-------------|

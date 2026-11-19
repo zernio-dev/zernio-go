@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.692.1
+API version: 1.693.0
 Contact: support@zernio.com
 */
 
@@ -12,7 +12,9 @@ Contact: support@zernio.com
 package zernio
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the InlineObject1 type satisfies the MappedNullable interface at compile time
@@ -20,15 +22,18 @@ var _ MappedNullable = &InlineObject1{}
 
 // InlineObject1 struct for InlineObject1
 type InlineObject1 struct {
-	Data *InlineObject1Data `json:"data,omitempty"`
+	Success bool `json:"success"`
 }
+
+type _InlineObject1 InlineObject1
 
 // NewInlineObject1 instantiates a new InlineObject1 object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInlineObject1() *InlineObject1 {
+func NewInlineObject1(success bool) *InlineObject1 {
 	this := InlineObject1{}
+	this.Success = success
 	return &this
 }
 
@@ -40,36 +45,28 @@ func NewInlineObject1WithDefaults() *InlineObject1 {
 	return &this
 }
 
-// GetData returns the Data field value if set, zero value otherwise.
-func (o *InlineObject1) GetData() InlineObject1Data {
-	if o == nil || IsNil(o.Data) {
-		var ret InlineObject1Data
+// GetSuccess returns the Success field value
+func (o *InlineObject1) GetSuccess() bool {
+	if o == nil {
+		var ret bool
 		return ret
 	}
-	return *o.Data
+
+	return o.Success
 }
 
-// GetDataOk returns a tuple with the Data field value if set, nil otherwise
+// GetSuccessOk returns a tuple with the Success field value
 // and a boolean to check if the value has been set.
-func (o *InlineObject1) GetDataOk() (*InlineObject1Data, bool) {
-	if o == nil || IsNil(o.Data) {
+func (o *InlineObject1) GetSuccessOk() (*bool, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Data, true
+	return &o.Success, true
 }
 
-// HasData returns a boolean if a field has been set.
-func (o *InlineObject1) HasData() bool {
-	if o != nil && !IsNil(o.Data) {
-		return true
-	}
-
-	return false
-}
-
-// SetData gets a reference to the given InlineObject1Data and assigns it to the Data field.
-func (o *InlineObject1) SetData(v InlineObject1Data) {
-	o.Data = &v
+// SetSuccess sets field value
+func (o *InlineObject1) SetSuccess(v bool) {
+	o.Success = v
 }
 
 func (o InlineObject1) MarshalJSON() ([]byte, error) {
@@ -82,10 +79,45 @@ func (o InlineObject1) MarshalJSON() ([]byte, error) {
 
 func (o InlineObject1) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Data) {
-		toSerialize["data"] = o.Data
-	}
+	toSerialize["success"] = o.Success
 	return toSerialize, nil
+}
+
+func (o *InlineObject1) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"success",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varInlineObject1 := _InlineObject1{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varInlineObject1)
+
+	if err != nil {
+		return err
+	}
+
+	*o = InlineObject1(varInlineObject1)
+
+	return err
 }
 
 type NullableInlineObject1 struct {

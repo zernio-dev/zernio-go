@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.692.1
+API version: 1.693.0
 Contact: support@zernio.com
 */
 
@@ -12,9 +12,7 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the InlineObject type satisfies the MappedNullable interface at compile time
@@ -22,18 +20,38 @@ var _ MappedNullable = &InlineObject{}
 
 // InlineObject struct for InlineObject
 type InlineObject struct {
-	Success bool `json:"success"`
+	// Human-readable error message.
+	Error *string `json:"error,omitempty"`
+	// Error class for programmatic handling.
+	Type *string `json:"type,omitempty"`
+	// Stable machine-readable error code.
+	Code *string `json:"code,omitempty"`
+	// The request field that caused the error, when applicable.
+	Param *string `json:"param,omitempty"`
+	// Documentation page for resolving the error, when one applies.
+	DocUrl *string `json:"docUrl,omitempty"`
+	// Upstream platform (e.g. meta, google, tiktok), present when type is platform_error.
+	Platform *string `json:"platform,omitempty"`
+	// Raw error payload from the upstream platform, passed through verbatim so integrators can read provider-specific codes. For Meta this includes error_subcode, error_user_title, and error_user_msg.
+	PlatformError map[string]interface{} `json:"platformError,omitempty"`
+	// Email API: the mailbox provider the error came from (`google`, `microsoft`).
+	Provider      *string                     `json:"provider,omitempty"`
+	ProviderError *ErrorResponseProviderError `json:"providerError,omitempty"`
+	// Email API: whether the same request can succeed if retried (with the same `Idempotency-Key` for sends).
+	Retryable *bool `json:"retryable,omitempty"`
+	// Email API: the request id, also in the `X-Request-Id` header. Quote it when you contact support.
+	RequestId *string `json:"requestId,omitempty"`
+	// Email API: where this `code` is documented.
+	DocsUrl *string                   `json:"docsUrl,omitempty"`
+	Details *InlineObjectAllOfDetails `json:"details,omitempty"`
 }
-
-type _InlineObject InlineObject
 
 // NewInlineObject instantiates a new InlineObject object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInlineObject(success bool) *InlineObject {
+func NewInlineObject() *InlineObject {
 	this := InlineObject{}
-	this.Success = success
 	return &this
 }
 
@@ -45,28 +63,420 @@ func NewInlineObjectWithDefaults() *InlineObject {
 	return &this
 }
 
-// GetSuccess returns the Success field value
-func (o *InlineObject) GetSuccess() bool {
-	if o == nil {
+// GetError returns the Error field value if set, zero value otherwise.
+func (o *InlineObject) GetError() string {
+	if o == nil || IsNil(o.Error) {
+		var ret string
+		return ret
+	}
+	return *o.Error
+}
+
+// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetErrorOk() (*string, bool) {
+	if o == nil || IsNil(o.Error) {
+		return nil, false
+	}
+	return o.Error, true
+}
+
+// HasError returns a boolean if a field has been set.
+func (o *InlineObject) HasError() bool {
+	if o != nil && !IsNil(o.Error) {
+		return true
+	}
+
+	return false
+}
+
+// SetError gets a reference to the given string and assigns it to the Error field.
+func (o *InlineObject) SetError(v string) {
+	o.Error = &v
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *InlineObject) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *InlineObject) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *InlineObject) SetType(v string) {
+	o.Type = &v
+}
+
+// GetCode returns the Code field value if set, zero value otherwise.
+func (o *InlineObject) GetCode() string {
+	if o == nil || IsNil(o.Code) {
+		var ret string
+		return ret
+	}
+	return *o.Code
+}
+
+// GetCodeOk returns a tuple with the Code field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.Code) {
+		return nil, false
+	}
+	return o.Code, true
+}
+
+// HasCode returns a boolean if a field has been set.
+func (o *InlineObject) HasCode() bool {
+	if o != nil && !IsNil(o.Code) {
+		return true
+	}
+
+	return false
+}
+
+// SetCode gets a reference to the given string and assigns it to the Code field.
+func (o *InlineObject) SetCode(v string) {
+	o.Code = &v
+}
+
+// GetParam returns the Param field value if set, zero value otherwise.
+func (o *InlineObject) GetParam() string {
+	if o == nil || IsNil(o.Param) {
+		var ret string
+		return ret
+	}
+	return *o.Param
+}
+
+// GetParamOk returns a tuple with the Param field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetParamOk() (*string, bool) {
+	if o == nil || IsNil(o.Param) {
+		return nil, false
+	}
+	return o.Param, true
+}
+
+// HasParam returns a boolean if a field has been set.
+func (o *InlineObject) HasParam() bool {
+	if o != nil && !IsNil(o.Param) {
+		return true
+	}
+
+	return false
+}
+
+// SetParam gets a reference to the given string and assigns it to the Param field.
+func (o *InlineObject) SetParam(v string) {
+	o.Param = &v
+}
+
+// GetDocUrl returns the DocUrl field value if set, zero value otherwise.
+func (o *InlineObject) GetDocUrl() string {
+	if o == nil || IsNil(o.DocUrl) {
+		var ret string
+		return ret
+	}
+	return *o.DocUrl
+}
+
+// GetDocUrlOk returns a tuple with the DocUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetDocUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.DocUrl) {
+		return nil, false
+	}
+	return o.DocUrl, true
+}
+
+// HasDocUrl returns a boolean if a field has been set.
+func (o *InlineObject) HasDocUrl() bool {
+	if o != nil && !IsNil(o.DocUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetDocUrl gets a reference to the given string and assigns it to the DocUrl field.
+func (o *InlineObject) SetDocUrl(v string) {
+	o.DocUrl = &v
+}
+
+// GetPlatform returns the Platform field value if set, zero value otherwise.
+func (o *InlineObject) GetPlatform() string {
+	if o == nil || IsNil(o.Platform) {
+		var ret string
+		return ret
+	}
+	return *o.Platform
+}
+
+// GetPlatformOk returns a tuple with the Platform field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetPlatformOk() (*string, bool) {
+	if o == nil || IsNil(o.Platform) {
+		return nil, false
+	}
+	return o.Platform, true
+}
+
+// HasPlatform returns a boolean if a field has been set.
+func (o *InlineObject) HasPlatform() bool {
+	if o != nil && !IsNil(o.Platform) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatform gets a reference to the given string and assigns it to the Platform field.
+func (o *InlineObject) SetPlatform(v string) {
+	o.Platform = &v
+}
+
+// GetPlatformError returns the PlatformError field value if set, zero value otherwise.
+func (o *InlineObject) GetPlatformError() map[string]interface{} {
+	if o == nil || IsNil(o.PlatformError) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.PlatformError
+}
+
+// GetPlatformErrorOk returns a tuple with the PlatformError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetPlatformErrorOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.PlatformError) {
+		return map[string]interface{}{}, false
+	}
+	return o.PlatformError, true
+}
+
+// HasPlatformError returns a boolean if a field has been set.
+func (o *InlineObject) HasPlatformError() bool {
+	if o != nil && !IsNil(o.PlatformError) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformError gets a reference to the given map[string]interface{} and assigns it to the PlatformError field.
+func (o *InlineObject) SetPlatformError(v map[string]interface{}) {
+	o.PlatformError = v
+}
+
+// GetProvider returns the Provider field value if set, zero value otherwise.
+func (o *InlineObject) GetProvider() string {
+	if o == nil || IsNil(o.Provider) {
+		var ret string
+		return ret
+	}
+	return *o.Provider
+}
+
+// GetProviderOk returns a tuple with the Provider field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetProviderOk() (*string, bool) {
+	if o == nil || IsNil(o.Provider) {
+		return nil, false
+	}
+	return o.Provider, true
+}
+
+// HasProvider returns a boolean if a field has been set.
+func (o *InlineObject) HasProvider() bool {
+	if o != nil && !IsNil(o.Provider) {
+		return true
+	}
+
+	return false
+}
+
+// SetProvider gets a reference to the given string and assigns it to the Provider field.
+func (o *InlineObject) SetProvider(v string) {
+	o.Provider = &v
+}
+
+// GetProviderError returns the ProviderError field value if set, zero value otherwise.
+func (o *InlineObject) GetProviderError() ErrorResponseProviderError {
+	if o == nil || IsNil(o.ProviderError) {
+		var ret ErrorResponseProviderError
+		return ret
+	}
+	return *o.ProviderError
+}
+
+// GetProviderErrorOk returns a tuple with the ProviderError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetProviderErrorOk() (*ErrorResponseProviderError, bool) {
+	if o == nil || IsNil(o.ProviderError) {
+		return nil, false
+	}
+	return o.ProviderError, true
+}
+
+// HasProviderError returns a boolean if a field has been set.
+func (o *InlineObject) HasProviderError() bool {
+	if o != nil && !IsNil(o.ProviderError) {
+		return true
+	}
+
+	return false
+}
+
+// SetProviderError gets a reference to the given ErrorResponseProviderError and assigns it to the ProviderError field.
+func (o *InlineObject) SetProviderError(v ErrorResponseProviderError) {
+	o.ProviderError = &v
+}
+
+// GetRetryable returns the Retryable field value if set, zero value otherwise.
+func (o *InlineObject) GetRetryable() bool {
+	if o == nil || IsNil(o.Retryable) {
 		var ret bool
 		return ret
 	}
-
-	return o.Success
+	return *o.Retryable
 }
 
-// GetSuccessOk returns a tuple with the Success field value
+// GetRetryableOk returns a tuple with the Retryable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InlineObject) GetSuccessOk() (*bool, bool) {
-	if o == nil {
+func (o *InlineObject) GetRetryableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Retryable) {
 		return nil, false
 	}
-	return &o.Success, true
+	return o.Retryable, true
 }
 
-// SetSuccess sets field value
-func (o *InlineObject) SetSuccess(v bool) {
-	o.Success = v
+// HasRetryable returns a boolean if a field has been set.
+func (o *InlineObject) HasRetryable() bool {
+	if o != nil && !IsNil(o.Retryable) {
+		return true
+	}
+
+	return false
+}
+
+// SetRetryable gets a reference to the given bool and assigns it to the Retryable field.
+func (o *InlineObject) SetRetryable(v bool) {
+	o.Retryable = &v
+}
+
+// GetRequestId returns the RequestId field value if set, zero value otherwise.
+func (o *InlineObject) GetRequestId() string {
+	if o == nil || IsNil(o.RequestId) {
+		var ret string
+		return ret
+	}
+	return *o.RequestId
+}
+
+// GetRequestIdOk returns a tuple with the RequestId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetRequestIdOk() (*string, bool) {
+	if o == nil || IsNil(o.RequestId) {
+		return nil, false
+	}
+	return o.RequestId, true
+}
+
+// HasRequestId returns a boolean if a field has been set.
+func (o *InlineObject) HasRequestId() bool {
+	if o != nil && !IsNil(o.RequestId) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequestId gets a reference to the given string and assigns it to the RequestId field.
+func (o *InlineObject) SetRequestId(v string) {
+	o.RequestId = &v
+}
+
+// GetDocsUrl returns the DocsUrl field value if set, zero value otherwise.
+func (o *InlineObject) GetDocsUrl() string {
+	if o == nil || IsNil(o.DocsUrl) {
+		var ret string
+		return ret
+	}
+	return *o.DocsUrl
+}
+
+// GetDocsUrlOk returns a tuple with the DocsUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetDocsUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.DocsUrl) {
+		return nil, false
+	}
+	return o.DocsUrl, true
+}
+
+// HasDocsUrl returns a boolean if a field has been set.
+func (o *InlineObject) HasDocsUrl() bool {
+	if o != nil && !IsNil(o.DocsUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetDocsUrl gets a reference to the given string and assigns it to the DocsUrl field.
+func (o *InlineObject) SetDocsUrl(v string) {
+	o.DocsUrl = &v
+}
+
+// GetDetails returns the Details field value if set, zero value otherwise.
+func (o *InlineObject) GetDetails() InlineObjectAllOfDetails {
+	if o == nil || IsNil(o.Details) {
+		var ret InlineObjectAllOfDetails
+		return ret
+	}
+	return *o.Details
+}
+
+// GetDetailsOk returns a tuple with the Details field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject) GetDetailsOk() (*InlineObjectAllOfDetails, bool) {
+	if o == nil || IsNil(o.Details) {
+		return nil, false
+	}
+	return o.Details, true
+}
+
+// HasDetails returns a boolean if a field has been set.
+func (o *InlineObject) HasDetails() bool {
+	if o != nil && !IsNil(o.Details) {
+		return true
+	}
+
+	return false
+}
+
+// SetDetails gets a reference to the given InlineObjectAllOfDetails and assigns it to the Details field.
+func (o *InlineObject) SetDetails(v InlineObjectAllOfDetails) {
+	o.Details = &v
 }
 
 func (o InlineObject) MarshalJSON() ([]byte, error) {
@@ -79,45 +489,46 @@ func (o InlineObject) MarshalJSON() ([]byte, error) {
 
 func (o InlineObject) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["success"] = o.Success
+	if !IsNil(o.Error) {
+		toSerialize["error"] = o.Error
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
+	}
+	if !IsNil(o.Code) {
+		toSerialize["code"] = o.Code
+	}
+	if !IsNil(o.Param) {
+		toSerialize["param"] = o.Param
+	}
+	if !IsNil(o.DocUrl) {
+		toSerialize["docUrl"] = o.DocUrl
+	}
+	if !IsNil(o.Platform) {
+		toSerialize["platform"] = o.Platform
+	}
+	if !IsNil(o.PlatformError) {
+		toSerialize["platformError"] = o.PlatformError
+	}
+	if !IsNil(o.Provider) {
+		toSerialize["provider"] = o.Provider
+	}
+	if !IsNil(o.ProviderError) {
+		toSerialize["providerError"] = o.ProviderError
+	}
+	if !IsNil(o.Retryable) {
+		toSerialize["retryable"] = o.Retryable
+	}
+	if !IsNil(o.RequestId) {
+		toSerialize["requestId"] = o.RequestId
+	}
+	if !IsNil(o.DocsUrl) {
+		toSerialize["docsUrl"] = o.DocsUrl
+	}
+	if !IsNil(o.Details) {
+		toSerialize["details"] = o.Details
+	}
 	return toSerialize, nil
-}
-
-func (o *InlineObject) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"success",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varInlineObject := _InlineObject{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varInlineObject)
-
-	if err != nil {
-		return err
-	}
-
-	*o = InlineObject(varInlineObject)
-
-	return err
 }
 
 type NullableInlineObject struct {
