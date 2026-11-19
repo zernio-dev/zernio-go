@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.683.0
+API version: 1.684.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,8 @@ type GetEventsOverviewDaily200ResponsePixelMissedInner struct {
 	Platform    *string `json:"platform,omitempty"`
 	Conversions *int32  `json:"conversions,omitempty"`
 	Missed      *int32  `json:"missed,omitempty"`
+	// Every day of the period, oldest first.
+	Days []GetEventsOverviewDaily200ResponsePixelMissedInnerDaysInner `json:"days,omitempty"`
 }
 
 // NewGetEventsOverviewDaily200ResponsePixelMissedInner instantiates a new GetEventsOverviewDaily200ResponsePixelMissedInner object
@@ -138,6 +140,38 @@ func (o *GetEventsOverviewDaily200ResponsePixelMissedInner) SetMissed(v int32) {
 	o.Missed = &v
 }
 
+// GetDays returns the Days field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200ResponsePixelMissedInner) GetDays() []GetEventsOverviewDaily200ResponsePixelMissedInnerDaysInner {
+	if o == nil || IsNil(o.Days) {
+		var ret []GetEventsOverviewDaily200ResponsePixelMissedInnerDaysInner
+		return ret
+	}
+	return o.Days
+}
+
+// GetDaysOk returns a tuple with the Days field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200ResponsePixelMissedInner) GetDaysOk() ([]GetEventsOverviewDaily200ResponsePixelMissedInnerDaysInner, bool) {
+	if o == nil || IsNil(o.Days) {
+		return nil, false
+	}
+	return o.Days, true
+}
+
+// HasDays returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200ResponsePixelMissedInner) HasDays() bool {
+	if o != nil && !IsNil(o.Days) {
+		return true
+	}
+
+	return false
+}
+
+// SetDays gets a reference to the given []GetEventsOverviewDaily200ResponsePixelMissedInnerDaysInner and assigns it to the Days field.
+func (o *GetEventsOverviewDaily200ResponsePixelMissedInner) SetDays(v []GetEventsOverviewDaily200ResponsePixelMissedInnerDaysInner) {
+	o.Days = v
+}
+
 func (o GetEventsOverviewDaily200ResponsePixelMissedInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -156,6 +190,9 @@ func (o GetEventsOverviewDaily200ResponsePixelMissedInner) ToMap() (map[string]i
 	}
 	if !IsNil(o.Missed) {
 		toSerialize["missed"] = o.Missed
+	}
+	if !IsNil(o.Days) {
+		toSerialize["days"] = o.Days
 	}
 	return toSerialize, nil
 }

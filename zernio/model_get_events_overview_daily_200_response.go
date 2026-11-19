@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.683.0
+API version: 1.684.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,7 @@ type GetEventsOverviewDaily200Response struct {
 	Platforms []GetEventsOverviewDaily200ResponsePlatformsInner `json:"platforms,omitempty"`
 	// For each platform sent to in the period, the website conversions of people who allowed ad cookies (bots left out) and how many its browser pixel missed, which Zernio sent from its server. Most missed first; `null` without a tracked website in scope.
 	PixelMissed []GetEventsOverviewDaily200ResponsePixelMissedInner `json:"pixelMissed,omitempty"`
+	Previous    *GetEventsOverviewDaily200ResponsePrevious          `json:"previous,omitempty"`
 }
 
 // NewGetEventsOverviewDaily200Response instantiates a new GetEventsOverviewDaily200Response object
@@ -242,6 +243,38 @@ func (o *GetEventsOverviewDaily200Response) SetPixelMissed(v []GetEventsOverview
 	o.PixelMissed = v
 }
 
+// GetPrevious returns the Previous field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200Response) GetPrevious() GetEventsOverviewDaily200ResponsePrevious {
+	if o == nil || IsNil(o.Previous) {
+		var ret GetEventsOverviewDaily200ResponsePrevious
+		return ret
+	}
+	return *o.Previous
+}
+
+// GetPreviousOk returns a tuple with the Previous field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200Response) GetPreviousOk() (*GetEventsOverviewDaily200ResponsePrevious, bool) {
+	if o == nil || IsNil(o.Previous) {
+		return nil, false
+	}
+	return o.Previous, true
+}
+
+// HasPrevious returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200Response) HasPrevious() bool {
+	if o != nil && !IsNil(o.Previous) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrevious gets a reference to the given GetEventsOverviewDaily200ResponsePrevious and assigns it to the Previous field.
+func (o *GetEventsOverviewDaily200Response) SetPrevious(v GetEventsOverviewDaily200ResponsePrevious) {
+	o.Previous = &v
+}
+
 func (o GetEventsOverviewDaily200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -269,6 +302,9 @@ func (o GetEventsOverviewDaily200Response) ToMap() (map[string]interface{}, erro
 	}
 	if o.PixelMissed != nil {
 		toSerialize["pixelMissed"] = o.PixelMissed
+	}
+	if !IsNil(o.Previous) {
+		toSerialize["previous"] = o.Previous
 	}
 	return toSerialize, nil
 }

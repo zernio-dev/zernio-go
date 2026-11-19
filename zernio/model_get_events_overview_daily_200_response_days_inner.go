@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.683.0
+API version: 1.684.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,14 @@ type GetEventsOverviewDaily200ResponseDaysInner struct {
 	Sent *int32 `json:"sent,omitempty"`
 	// Those the platform accepted.
 	Accepted *int32 `json:"accepted,omitempty"`
+	// The day's value, in the period's `totals.currency`.
+	Value *float32 `json:"value,omitempty"`
+	// Of that value, the conversions a platform accepted.
+	ValueSent *float32 `json:"valueSent,omitempty"`
+	// Counted events that came from an ad, as in `totals.fromAds`.
+	FromAds *int32 `json:"fromAds,omitempty"`
+	// Events matched to an ad campaign.
+	Matched *int32 `json:"matched,omitempty"`
 	// The day's stored events per event name.
 	ByEvent map[string]int32 `json:"byEvent,omitempty"`
 }
@@ -176,6 +184,134 @@ func (o *GetEventsOverviewDaily200ResponseDaysInner) SetAccepted(v int32) {
 	o.Accepted = &v
 }
 
+// GetValue returns the Value field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) GetValue() float32 {
+	if o == nil || IsNil(o.Value) {
+		var ret float32
+		return ret
+	}
+	return *o.Value
+}
+
+// GetValueOk returns a tuple with the Value field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) GetValueOk() (*float32, bool) {
+	if o == nil || IsNil(o.Value) {
+		return nil, false
+	}
+	return o.Value, true
+}
+
+// HasValue returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) HasValue() bool {
+	if o != nil && !IsNil(o.Value) {
+		return true
+	}
+
+	return false
+}
+
+// SetValue gets a reference to the given float32 and assigns it to the Value field.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) SetValue(v float32) {
+	o.Value = &v
+}
+
+// GetValueSent returns the ValueSent field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) GetValueSent() float32 {
+	if o == nil || IsNil(o.ValueSent) {
+		var ret float32
+		return ret
+	}
+	return *o.ValueSent
+}
+
+// GetValueSentOk returns a tuple with the ValueSent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) GetValueSentOk() (*float32, bool) {
+	if o == nil || IsNil(o.ValueSent) {
+		return nil, false
+	}
+	return o.ValueSent, true
+}
+
+// HasValueSent returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) HasValueSent() bool {
+	if o != nil && !IsNil(o.ValueSent) {
+		return true
+	}
+
+	return false
+}
+
+// SetValueSent gets a reference to the given float32 and assigns it to the ValueSent field.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) SetValueSent(v float32) {
+	o.ValueSent = &v
+}
+
+// GetFromAds returns the FromAds field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) GetFromAds() int32 {
+	if o == nil || IsNil(o.FromAds) {
+		var ret int32
+		return ret
+	}
+	return *o.FromAds
+}
+
+// GetFromAdsOk returns a tuple with the FromAds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) GetFromAdsOk() (*int32, bool) {
+	if o == nil || IsNil(o.FromAds) {
+		return nil, false
+	}
+	return o.FromAds, true
+}
+
+// HasFromAds returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) HasFromAds() bool {
+	if o != nil && !IsNil(o.FromAds) {
+		return true
+	}
+
+	return false
+}
+
+// SetFromAds gets a reference to the given int32 and assigns it to the FromAds field.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) SetFromAds(v int32) {
+	o.FromAds = &v
+}
+
+// GetMatched returns the Matched field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) GetMatched() int32 {
+	if o == nil || IsNil(o.Matched) {
+		var ret int32
+		return ret
+	}
+	return *o.Matched
+}
+
+// GetMatchedOk returns a tuple with the Matched field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) GetMatchedOk() (*int32, bool) {
+	if o == nil || IsNil(o.Matched) {
+		return nil, false
+	}
+	return o.Matched, true
+}
+
+// HasMatched returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) HasMatched() bool {
+	if o != nil && !IsNil(o.Matched) {
+		return true
+	}
+
+	return false
+}
+
+// SetMatched gets a reference to the given int32 and assigns it to the Matched field.
+func (o *GetEventsOverviewDaily200ResponseDaysInner) SetMatched(v int32) {
+	o.Matched = &v
+}
+
 // GetByEvent returns the ByEvent field value if set, zero value otherwise.
 func (o *GetEventsOverviewDaily200ResponseDaysInner) GetByEvent() map[string]int32 {
 	if o == nil || IsNil(o.ByEvent) {
@@ -229,6 +365,18 @@ func (o GetEventsOverviewDaily200ResponseDaysInner) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.Accepted) {
 		toSerialize["accepted"] = o.Accepted
+	}
+	if !IsNil(o.Value) {
+		toSerialize["value"] = o.Value
+	}
+	if !IsNil(o.ValueSent) {
+		toSerialize["valueSent"] = o.ValueSent
+	}
+	if !IsNil(o.FromAds) {
+		toSerialize["fromAds"] = o.FromAds
+	}
+	if !IsNil(o.Matched) {
+		toSerialize["matched"] = o.Matched
 	}
 	if !IsNil(o.ByEvent) {
 		toSerialize["byEvent"] = o.ByEvent

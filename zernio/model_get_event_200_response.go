@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.683.0
+API version: 1.684.0
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &GetEvent200Response{}
 type GetEvent200Response struct {
 	Event      *StoredEvent                         `json:"event,omitempty"`
 	Deliveries []GetEvent200ResponseDeliveriesInner `json:"deliveries,omitempty"`
-	// The touches the event is split across, oldest first: website visits (an ad click, search, a tagged link), the first and latest visits HubSpot recorded for a deal, and earlier lead forms or sales. Empty when the event counts whole for its own campaign.
+	// The touches the event is split across, oldest first: website visits (an ad click, search, a tagged link), the first and latest visits HubSpot recorded for a deal, earlier lead forms or sales, and a Shopify buyer's post-purchase survey answer. Empty when the event counts whole for its own campaign.
 	Touches []GetEvent200ResponseTouchesInner `json:"touches,omitempty"`
 }
 

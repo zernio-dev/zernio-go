@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.683.0
+API version: 1.684.0
 Contact: support@zernio.com
 */
 
@@ -21,8 +21,9 @@ var _ MappedNullable = &GetEvent200ResponseTouchesInner{}
 
 // GetEvent200ResponseTouchesInner struct for GetEvent200ResponseTouchesInner
 type GetEvent200ResponseTouchesInner struct {
-	At          *time.Time     `json:"at,omitempty"`
-	Kind        *string        `json:"kind,omitempty"`
+	At   *time.Time `json:"at,omitempty"`
+	Kind *string    `json:"kind,omitempty"`
+	// The ad platform of the campaign, or the one a survey answer names (Instagram reads as facebook).
 	Platform    NullableString `json:"platform,omitempty"`
 	AdAccountId NullableString `json:"adAccountId,omitempty"`
 	// The campaign the touch resolved to; null for a touch that named none (search, referral).
