@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.689.0
+API version: 1.690.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,8 @@ type ValidatePhoneNumberKycAddress400ResponseDetailsAddressSuggestionsInner stru
 	Field *string `json:"field,omitempty"`
 	Label *string `json:"label,omitempty"`
 	Value *string `json:"value,omitempty"`
+	// Present when the correction is a Spanish regional street-name form (e.g. 'Artazagane Kalea 5' for 'Calle Artazagane 5') that the carrier validates, rather than the carrier's own correction. Show it for the customer to confirm, never apply it automatically.
+	Source *string `json:"source,omitempty"`
 }
 
 // NewValidatePhoneNumberKycAddress400ResponseDetailsAddressSuggestionsInner instantiates a new ValidatePhoneNumberKycAddress400ResponseDetailsAddressSuggestionsInner object
@@ -138,6 +140,38 @@ func (o *ValidatePhoneNumberKycAddress400ResponseDetailsAddressSuggestionsInner)
 	o.Value = &v
 }
 
+// GetSource returns the Source field value if set, zero value otherwise.
+func (o *ValidatePhoneNumberKycAddress400ResponseDetailsAddressSuggestionsInner) GetSource() string {
+	if o == nil || IsNil(o.Source) {
+		var ret string
+		return ret
+	}
+	return *o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ValidatePhoneNumberKycAddress400ResponseDetailsAddressSuggestionsInner) GetSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.Source) {
+		return nil, false
+	}
+	return o.Source, true
+}
+
+// HasSource returns a boolean if a field has been set.
+func (o *ValidatePhoneNumberKycAddress400ResponseDetailsAddressSuggestionsInner) HasSource() bool {
+	if o != nil && !IsNil(o.Source) {
+		return true
+	}
+
+	return false
+}
+
+// SetSource gets a reference to the given string and assigns it to the Source field.
+func (o *ValidatePhoneNumberKycAddress400ResponseDetailsAddressSuggestionsInner) SetSource(v string) {
+	o.Source = &v
+}
+
 func (o ValidatePhoneNumberKycAddress400ResponseDetailsAddressSuggestionsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -156,6 +190,9 @@ func (o ValidatePhoneNumberKycAddress400ResponseDetailsAddressSuggestionsInner) 
 	}
 	if !IsNil(o.Value) {
 		toSerialize["value"] = o.Value
+	}
+	if !IsNil(o.Source) {
+		toSerialize["source"] = o.Source
 	}
 	return toSerialize, nil
 }
