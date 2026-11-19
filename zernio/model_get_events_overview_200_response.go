@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.681.0
+API version: 1.682.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,8 @@ type GetEventsOverview200Response struct {
 	Website *GetEventsOverview200ResponseWebsite       `json:"website,omitempty"`
 	// Each tracking site of the profiles covered, with its activity. Hit counts are approximate distinct counts without bots.
 	Sites []GetEventsOverview200ResponseSitesInner `json:"sites,omitempty"`
+	// Each event name stored in the 30 days before today and where it comes from. When a name comes from both the website tag and a server source, only the server copies count (in this overview, the daily overview and campaign results).
+	EventNames []GetEventsOverview200ResponseEventNamesInner `json:"eventNames,omitempty"`
 }
 
 // NewGetEventsOverview200Response instantiates a new GetEventsOverview200Response object
@@ -207,6 +209,38 @@ func (o *GetEventsOverview200Response) SetSites(v []GetEventsOverview200Response
 	o.Sites = v
 }
 
+// GetEventNames returns the EventNames field value if set, zero value otherwise.
+func (o *GetEventsOverview200Response) GetEventNames() []GetEventsOverview200ResponseEventNamesInner {
+	if o == nil || IsNil(o.EventNames) {
+		var ret []GetEventsOverview200ResponseEventNamesInner
+		return ret
+	}
+	return o.EventNames
+}
+
+// GetEventNamesOk returns a tuple with the EventNames field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverview200Response) GetEventNamesOk() ([]GetEventsOverview200ResponseEventNamesInner, bool) {
+	if o == nil || IsNil(o.EventNames) {
+		return nil, false
+	}
+	return o.EventNames, true
+}
+
+// HasEventNames returns a boolean if a field has been set.
+func (o *GetEventsOverview200Response) HasEventNames() bool {
+	if o != nil && !IsNil(o.EventNames) {
+		return true
+	}
+
+	return false
+}
+
+// SetEventNames gets a reference to the given []GetEventsOverview200ResponseEventNamesInner and assigns it to the EventNames field.
+func (o *GetEventsOverview200Response) SetEventNames(v []GetEventsOverview200ResponseEventNamesInner) {
+	o.EventNames = v
+}
+
 func (o GetEventsOverview200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -231,6 +265,9 @@ func (o GetEventsOverview200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Sites) {
 		toSerialize["sites"] = o.Sites
+	}
+	if !IsNil(o.EventNames) {
+		toSerialize["eventNames"] = o.EventNames
 	}
 	return toSerialize, nil
 }
