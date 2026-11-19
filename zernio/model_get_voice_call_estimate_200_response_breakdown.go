@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.687.0
+API version: 1.689.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,12 @@ var _ MappedNullable = &GetVoiceCallEstimate200ResponseBreakdown{}
 
 // GetVoiceCallEstimate200ResponseBreakdown struct for GetVoiceCallEstimate200ResponseBreakdown
 type GetVoiceCallEstimate200ResponseBreakdown struct {
-	TelnyxCostUSD        *float32 `json:"telnyxCostUSD,omitempty"`
+	// Raw Telnyx cost: carrierCostUSD plus callControlCostUSD.
+	TelnyxCostUSD *float32 `json:"telnyxCostUSD,omitempty"`
+	// Raw carrier cost of the legs, without call control.
+	CarrierCostUSD *float32 `json:"carrierCostUSD,omitempty"`
+	// Voice API call-control fee, part of telnyxCostUSD. 0 on trunk calls.
+	CallControlCostUSD   *float32 `json:"callControlCostUSD,omitempty"`
 	RecordingCostUSD     *float32 `json:"recordingCostUSD,omitempty"`
 	TranscriptionCostUSD *float32 `json:"transcriptionCostUSD,omitempty"`
 	// Branded Calling surcharge, 0 unless `from` is a verified branded number calling a US destination.
@@ -78,6 +83,70 @@ func (o *GetVoiceCallEstimate200ResponseBreakdown) HasTelnyxCostUSD() bool {
 // SetTelnyxCostUSD gets a reference to the given float32 and assigns it to the TelnyxCostUSD field.
 func (o *GetVoiceCallEstimate200ResponseBreakdown) SetTelnyxCostUSD(v float32) {
 	o.TelnyxCostUSD = &v
+}
+
+// GetCarrierCostUSD returns the CarrierCostUSD field value if set, zero value otherwise.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) GetCarrierCostUSD() float32 {
+	if o == nil || IsNil(o.CarrierCostUSD) {
+		var ret float32
+		return ret
+	}
+	return *o.CarrierCostUSD
+}
+
+// GetCarrierCostUSDOk returns a tuple with the CarrierCostUSD field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) GetCarrierCostUSDOk() (*float32, bool) {
+	if o == nil || IsNil(o.CarrierCostUSD) {
+		return nil, false
+	}
+	return o.CarrierCostUSD, true
+}
+
+// HasCarrierCostUSD returns a boolean if a field has been set.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) HasCarrierCostUSD() bool {
+	if o != nil && !IsNil(o.CarrierCostUSD) {
+		return true
+	}
+
+	return false
+}
+
+// SetCarrierCostUSD gets a reference to the given float32 and assigns it to the CarrierCostUSD field.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) SetCarrierCostUSD(v float32) {
+	o.CarrierCostUSD = &v
+}
+
+// GetCallControlCostUSD returns the CallControlCostUSD field value if set, zero value otherwise.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) GetCallControlCostUSD() float32 {
+	if o == nil || IsNil(o.CallControlCostUSD) {
+		var ret float32
+		return ret
+	}
+	return *o.CallControlCostUSD
+}
+
+// GetCallControlCostUSDOk returns a tuple with the CallControlCostUSD field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) GetCallControlCostUSDOk() (*float32, bool) {
+	if o == nil || IsNil(o.CallControlCostUSD) {
+		return nil, false
+	}
+	return o.CallControlCostUSD, true
+}
+
+// HasCallControlCostUSD returns a boolean if a field has been set.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) HasCallControlCostUSD() bool {
+	if o != nil && !IsNil(o.CallControlCostUSD) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallControlCostUSD gets a reference to the given float32 and assigns it to the CallControlCostUSD field.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) SetCallControlCostUSD(v float32) {
+	o.CallControlCostUSD = &v
 }
 
 // GetRecordingCostUSD returns the RecordingCostUSD field value if set, zero value otherwise.
@@ -252,6 +321,12 @@ func (o GetVoiceCallEstimate200ResponseBreakdown) ToMap() (map[string]interface{
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.TelnyxCostUSD) {
 		toSerialize["telnyxCostUSD"] = o.TelnyxCostUSD
+	}
+	if !IsNil(o.CarrierCostUSD) {
+		toSerialize["carrierCostUSD"] = o.CarrierCostUSD
+	}
+	if !IsNil(o.CallControlCostUSD) {
+		toSerialize["callControlCostUSD"] = o.CallControlCostUSD
 	}
 	if !IsNil(o.RecordingCostUSD) {
 		toSerialize["recordingCostUSD"] = o.RecordingCostUSD

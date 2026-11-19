@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.687.0
+API version: 1.689.0
 Contact: support@zernio.com
 */
 
@@ -20,11 +20,21 @@ var _ MappedNullable = &GetVoiceCallEstimate200Response{}
 
 // GetVoiceCallEstimate200Response struct for GetVoiceCallEstimate200Response
 type GetVoiceCallEstimate200Response struct {
-	DestinationCountry NullableString `json:"destinationCountry,omitempty"`
-	Minutes            *int32         `json:"minutes,omitempty"`
-	// Billable cost per minute for the requested options.
-	PerMinuteUsd *float32                                  `json:"perMinuteUsd,omitempty"`
-	Breakdown    *GetVoiceCallEstimate200ResponseBreakdown `json:"breakdown,omitempty"`
+	Via *string `json:"via,omitempty"`
+	// ISO country of `to`. Isle of Man, Jersey and Guernsey numbers return IM, JE and GG.
+	DestinationCountry *string `json:"destinationCountry,omitempty"`
+	// Line type of `to`. Where it is not `mobile` or `landline`, `perMinuteUsd` takes the dearer of the two.
+	LineType *string `json:"lineType,omitempty"`
+	// Caller ID the rates were picked for. Voice API estimates without `from` use your first calling number.
+	CallerId      NullableString `json:"callerId,omitempty"`
+	CallerCountry NullableString `json:"callerCountry,omitempty"`
+	Minutes       *int32         `json:"minutes,omitempty"`
+	// Billable cost per minute for `to`'s line type and the requested options.
+	PerMinuteUsd            *float32                                                `json:"perMinuteUsd,omitempty"`
+	BillingIncrementSeconds *GetVoiceCallEstimate200ResponseBillingIncrementSeconds `json:"billingIncrementSeconds,omitempty"`
+	Rates                   *GetVoiceCallEstimate200ResponseRates                   `json:"rates,omitempty"`
+	Trunk                   *GetVoiceCallEstimate200ResponseTrunk                   `json:"trunk,omitempty"`
+	Breakdown               *GetVoiceCallEstimate200ResponseBreakdown               `json:"breakdown,omitempty"`
 }
 
 // NewGetVoiceCallEstimate200Response instantiates a new GetVoiceCallEstimate200Response object
@@ -44,47 +54,186 @@ func NewGetVoiceCallEstimate200ResponseWithDefaults() *GetVoiceCallEstimate200Re
 	return &this
 }
 
-// GetDestinationCountry returns the DestinationCountry field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GetVoiceCallEstimate200Response) GetDestinationCountry() string {
-	if o == nil || IsNil(o.DestinationCountry.Get()) {
+// GetVia returns the Via field value if set, zero value otherwise.
+func (o *GetVoiceCallEstimate200Response) GetVia() string {
+	if o == nil || IsNil(o.Via) {
 		var ret string
 		return ret
 	}
-	return *o.DestinationCountry.Get()
+	return *o.Via
 }
 
-// GetDestinationCountryOk returns a tuple with the DestinationCountry field value if set, nil otherwise
+// GetViaOk returns a tuple with the Via field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GetVoiceCallEstimate200Response) GetDestinationCountryOk() (*string, bool) {
-	if o == nil {
+func (o *GetVoiceCallEstimate200Response) GetViaOk() (*string, bool) {
+	if o == nil || IsNil(o.Via) {
 		return nil, false
 	}
-	return o.DestinationCountry.Get(), o.DestinationCountry.IsSet()
+	return o.Via, true
 }
 
-// HasDestinationCountry returns a boolean if a field has been set.
-func (o *GetVoiceCallEstimate200Response) HasDestinationCountry() bool {
-	if o != nil && o.DestinationCountry.IsSet() {
+// HasVia returns a boolean if a field has been set.
+func (o *GetVoiceCallEstimate200Response) HasVia() bool {
+	if o != nil && !IsNil(o.Via) {
 		return true
 	}
 
 	return false
 }
 
-// SetDestinationCountry gets a reference to the given NullableString and assigns it to the DestinationCountry field.
+// SetVia gets a reference to the given string and assigns it to the Via field.
+func (o *GetVoiceCallEstimate200Response) SetVia(v string) {
+	o.Via = &v
+}
+
+// GetDestinationCountry returns the DestinationCountry field value if set, zero value otherwise.
+func (o *GetVoiceCallEstimate200Response) GetDestinationCountry() string {
+	if o == nil || IsNil(o.DestinationCountry) {
+		var ret string
+		return ret
+	}
+	return *o.DestinationCountry
+}
+
+// GetDestinationCountryOk returns a tuple with the DestinationCountry field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetVoiceCallEstimate200Response) GetDestinationCountryOk() (*string, bool) {
+	if o == nil || IsNil(o.DestinationCountry) {
+		return nil, false
+	}
+	return o.DestinationCountry, true
+}
+
+// HasDestinationCountry returns a boolean if a field has been set.
+func (o *GetVoiceCallEstimate200Response) HasDestinationCountry() bool {
+	if o != nil && !IsNil(o.DestinationCountry) {
+		return true
+	}
+
+	return false
+}
+
+// SetDestinationCountry gets a reference to the given string and assigns it to the DestinationCountry field.
 func (o *GetVoiceCallEstimate200Response) SetDestinationCountry(v string) {
-	o.DestinationCountry.Set(&v)
+	o.DestinationCountry = &v
 }
 
-// SetDestinationCountryNil sets the value for DestinationCountry to be an explicit nil
-func (o *GetVoiceCallEstimate200Response) SetDestinationCountryNil() {
-	o.DestinationCountry.Set(nil)
+// GetLineType returns the LineType field value if set, zero value otherwise.
+func (o *GetVoiceCallEstimate200Response) GetLineType() string {
+	if o == nil || IsNil(o.LineType) {
+		var ret string
+		return ret
+	}
+	return *o.LineType
 }
 
-// UnsetDestinationCountry ensures that no value is present for DestinationCountry, not even an explicit nil
-func (o *GetVoiceCallEstimate200Response) UnsetDestinationCountry() {
-	o.DestinationCountry.Unset()
+// GetLineTypeOk returns a tuple with the LineType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetVoiceCallEstimate200Response) GetLineTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.LineType) {
+		return nil, false
+	}
+	return o.LineType, true
+}
+
+// HasLineType returns a boolean if a field has been set.
+func (o *GetVoiceCallEstimate200Response) HasLineType() bool {
+	if o != nil && !IsNil(o.LineType) {
+		return true
+	}
+
+	return false
+}
+
+// SetLineType gets a reference to the given string and assigns it to the LineType field.
+func (o *GetVoiceCallEstimate200Response) SetLineType(v string) {
+	o.LineType = &v
+}
+
+// GetCallerId returns the CallerId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetVoiceCallEstimate200Response) GetCallerId() string {
+	if o == nil || IsNil(o.CallerId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CallerId.Get()
+}
+
+// GetCallerIdOk returns a tuple with the CallerId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetVoiceCallEstimate200Response) GetCallerIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CallerId.Get(), o.CallerId.IsSet()
+}
+
+// HasCallerId returns a boolean if a field has been set.
+func (o *GetVoiceCallEstimate200Response) HasCallerId() bool {
+	if o != nil && o.CallerId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCallerId gets a reference to the given NullableString and assigns it to the CallerId field.
+func (o *GetVoiceCallEstimate200Response) SetCallerId(v string) {
+	o.CallerId.Set(&v)
+}
+
+// SetCallerIdNil sets the value for CallerId to be an explicit nil
+func (o *GetVoiceCallEstimate200Response) SetCallerIdNil() {
+	o.CallerId.Set(nil)
+}
+
+// UnsetCallerId ensures that no value is present for CallerId, not even an explicit nil
+func (o *GetVoiceCallEstimate200Response) UnsetCallerId() {
+	o.CallerId.Unset()
+}
+
+// GetCallerCountry returns the CallerCountry field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetVoiceCallEstimate200Response) GetCallerCountry() string {
+	if o == nil || IsNil(o.CallerCountry.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CallerCountry.Get()
+}
+
+// GetCallerCountryOk returns a tuple with the CallerCountry field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetVoiceCallEstimate200Response) GetCallerCountryOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CallerCountry.Get(), o.CallerCountry.IsSet()
+}
+
+// HasCallerCountry returns a boolean if a field has been set.
+func (o *GetVoiceCallEstimate200Response) HasCallerCountry() bool {
+	if o != nil && o.CallerCountry.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCallerCountry gets a reference to the given NullableString and assigns it to the CallerCountry field.
+func (o *GetVoiceCallEstimate200Response) SetCallerCountry(v string) {
+	o.CallerCountry.Set(&v)
+}
+
+// SetCallerCountryNil sets the value for CallerCountry to be an explicit nil
+func (o *GetVoiceCallEstimate200Response) SetCallerCountryNil() {
+	o.CallerCountry.Set(nil)
+}
+
+// UnsetCallerCountry ensures that no value is present for CallerCountry, not even an explicit nil
+func (o *GetVoiceCallEstimate200Response) UnsetCallerCountry() {
+	o.CallerCountry.Unset()
 }
 
 // GetMinutes returns the Minutes field value if set, zero value otherwise.
@@ -151,6 +300,102 @@ func (o *GetVoiceCallEstimate200Response) SetPerMinuteUsd(v float32) {
 	o.PerMinuteUsd = &v
 }
 
+// GetBillingIncrementSeconds returns the BillingIncrementSeconds field value if set, zero value otherwise.
+func (o *GetVoiceCallEstimate200Response) GetBillingIncrementSeconds() GetVoiceCallEstimate200ResponseBillingIncrementSeconds {
+	if o == nil || IsNil(o.BillingIncrementSeconds) {
+		var ret GetVoiceCallEstimate200ResponseBillingIncrementSeconds
+		return ret
+	}
+	return *o.BillingIncrementSeconds
+}
+
+// GetBillingIncrementSecondsOk returns a tuple with the BillingIncrementSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetVoiceCallEstimate200Response) GetBillingIncrementSecondsOk() (*GetVoiceCallEstimate200ResponseBillingIncrementSeconds, bool) {
+	if o == nil || IsNil(o.BillingIncrementSeconds) {
+		return nil, false
+	}
+	return o.BillingIncrementSeconds, true
+}
+
+// HasBillingIncrementSeconds returns a boolean if a field has been set.
+func (o *GetVoiceCallEstimate200Response) HasBillingIncrementSeconds() bool {
+	if o != nil && !IsNil(o.BillingIncrementSeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetBillingIncrementSeconds gets a reference to the given GetVoiceCallEstimate200ResponseBillingIncrementSeconds and assigns it to the BillingIncrementSeconds field.
+func (o *GetVoiceCallEstimate200Response) SetBillingIncrementSeconds(v GetVoiceCallEstimate200ResponseBillingIncrementSeconds) {
+	o.BillingIncrementSeconds = &v
+}
+
+// GetRates returns the Rates field value if set, zero value otherwise.
+func (o *GetVoiceCallEstimate200Response) GetRates() GetVoiceCallEstimate200ResponseRates {
+	if o == nil || IsNil(o.Rates) {
+		var ret GetVoiceCallEstimate200ResponseRates
+		return ret
+	}
+	return *o.Rates
+}
+
+// GetRatesOk returns a tuple with the Rates field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetVoiceCallEstimate200Response) GetRatesOk() (*GetVoiceCallEstimate200ResponseRates, bool) {
+	if o == nil || IsNil(o.Rates) {
+		return nil, false
+	}
+	return o.Rates, true
+}
+
+// HasRates returns a boolean if a field has been set.
+func (o *GetVoiceCallEstimate200Response) HasRates() bool {
+	if o != nil && !IsNil(o.Rates) {
+		return true
+	}
+
+	return false
+}
+
+// SetRates gets a reference to the given GetVoiceCallEstimate200ResponseRates and assigns it to the Rates field.
+func (o *GetVoiceCallEstimate200Response) SetRates(v GetVoiceCallEstimate200ResponseRates) {
+	o.Rates = &v
+}
+
+// GetTrunk returns the Trunk field value if set, zero value otherwise.
+func (o *GetVoiceCallEstimate200Response) GetTrunk() GetVoiceCallEstimate200ResponseTrunk {
+	if o == nil || IsNil(o.Trunk) {
+		var ret GetVoiceCallEstimate200ResponseTrunk
+		return ret
+	}
+	return *o.Trunk
+}
+
+// GetTrunkOk returns a tuple with the Trunk field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetVoiceCallEstimate200Response) GetTrunkOk() (*GetVoiceCallEstimate200ResponseTrunk, bool) {
+	if o == nil || IsNil(o.Trunk) {
+		return nil, false
+	}
+	return o.Trunk, true
+}
+
+// HasTrunk returns a boolean if a field has been set.
+func (o *GetVoiceCallEstimate200Response) HasTrunk() bool {
+	if o != nil && !IsNil(o.Trunk) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrunk gets a reference to the given GetVoiceCallEstimate200ResponseTrunk and assigns it to the Trunk field.
+func (o *GetVoiceCallEstimate200Response) SetTrunk(v GetVoiceCallEstimate200ResponseTrunk) {
+	o.Trunk = &v
+}
+
 // GetBreakdown returns the Breakdown field value if set, zero value otherwise.
 func (o *GetVoiceCallEstimate200Response) GetBreakdown() GetVoiceCallEstimate200ResponseBreakdown {
 	if o == nil || IsNil(o.Breakdown) {
@@ -193,14 +438,35 @@ func (o GetVoiceCallEstimate200Response) MarshalJSON() ([]byte, error) {
 
 func (o GetVoiceCallEstimate200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if o.DestinationCountry.IsSet() {
-		toSerialize["destinationCountry"] = o.DestinationCountry.Get()
+	if !IsNil(o.Via) {
+		toSerialize["via"] = o.Via
+	}
+	if !IsNil(o.DestinationCountry) {
+		toSerialize["destinationCountry"] = o.DestinationCountry
+	}
+	if !IsNil(o.LineType) {
+		toSerialize["lineType"] = o.LineType
+	}
+	if o.CallerId.IsSet() {
+		toSerialize["callerId"] = o.CallerId.Get()
+	}
+	if o.CallerCountry.IsSet() {
+		toSerialize["callerCountry"] = o.CallerCountry.Get()
 	}
 	if !IsNil(o.Minutes) {
 		toSerialize["minutes"] = o.Minutes
 	}
 	if !IsNil(o.PerMinuteUsd) {
 		toSerialize["perMinuteUsd"] = o.PerMinuteUsd
+	}
+	if !IsNil(o.BillingIncrementSeconds) {
+		toSerialize["billingIncrementSeconds"] = o.BillingIncrementSeconds
+	}
+	if !IsNil(o.Rates) {
+		toSerialize["rates"] = o.Rates
+	}
+	if !IsNil(o.Trunk) {
+		toSerialize["trunk"] = o.Trunk
 	}
 	if !IsNil(o.Breakdown) {
 		toSerialize["breakdown"] = o.Breakdown

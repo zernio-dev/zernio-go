@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.687.0
+API version: 1.689.0
 Contact: support@zernio.com
 */
 
@@ -1761,6 +1761,9 @@ type VoiceAPIGetVoiceCallEstimateRequest struct {
 	ApiService    *VoiceAPIService
 	to            *string
 	from          *string
+	fromNumberId  *string
+	trunkId       *string
+	via           *string
 	forwardTo     *string
 	minutes       *int32
 	recording     *bool
@@ -1773,13 +1776,31 @@ func (r VoiceAPIGetVoiceCallEstimateRequest) To(to string) VoiceAPIGetVoiceCallE
 	return r
 }
 
-// The number the call would dial from, E.164. When it is verified on a Branded Calling identity and &#x60;to&#x60; is a US number, the estimate includes the per-call Branded Calling surcharge.
+// Caller ID the call would present, E.164. Picks the carrier&#39;s caller-ID rates, and prices a trunk call when the number is attached to a SIP trunk. A verified Branded Calling number calling the US adds the per-call surcharge.
 func (r VoiceAPIGetVoiceCallEstimateRequest) From(from string) VoiceAPIGetVoiceCallEstimateRequest {
 	r.from = &from
 	return r
 }
 
-// Destination the call bridges to: &#x60;tel:+E164&#x60;, &#x60;sip:...&#x60; or &#x60;wss://...&#x60;. Defaults to the dialing number&#39;s configured forward. A &#x60;tel:&#x60; destination adds a second carrier leg to the quote. Encode the &#x60;+&#x60; as &#x60;%2B&#x60;.
+// Id of one of your numbers to use as the caller ID, instead of &#x60;from&#x60;.
+func (r VoiceAPIGetVoiceCallEstimateRequest) FromNumberId(fromNumberId string) VoiceAPIGetVoiceCallEstimateRequest {
+	r.fromNumberId = &fromNumberId
+	return r
+}
+
+// SIP trunk the call goes through. Prices it as a trunk call and checks that trunk&#39;s limits. Without &#x60;from&#x60;, a number attached to the trunk is the caller ID.
+func (r VoiceAPIGetVoiceCallEstimateRequest) TrunkId(trunkId string) VoiceAPIGetVoiceCallEstimateRequest {
+	r.trunkId = &trunkId
+	return r
+}
+
+// Force trunk or Voice API pricing. Defaults from the caller number, see above. &#x60;trunk&#x60; without a caller ID quotes the dearest caller band.
+func (r VoiceAPIGetVoiceCallEstimateRequest) Via(via string) VoiceAPIGetVoiceCallEstimateRequest {
+	r.via = &via
+	return r
+}
+
+// Voice API only. Destination the call bridges to: &#x60;tel:+E164&#x60;, &#x60;sip:...&#x60; or &#x60;wss://...&#x60;. Defaults to the dialing number&#39;s configured forward. A &#x60;tel:&#x60; destination adds a second carrier leg to the quote. Encode the &#x60;+&#x60; as &#x60;%2B&#x60;.
 func (r VoiceAPIGetVoiceCallEstimateRequest) ForwardTo(forwardTo string) VoiceAPIGetVoiceCallEstimateRequest {
 	r.forwardTo = &forwardTo
 	return r
@@ -1790,11 +1811,13 @@ func (r VoiceAPIGetVoiceCallEstimateRequest) Minutes(minutes int32) VoiceAPIGetV
 	return r
 }
 
+// Voice API only.
 func (r VoiceAPIGetVoiceCallEstimateRequest) Recording(recording bool) VoiceAPIGetVoiceCallEstimateRequest {
 	r.recording = &recording
 	return r
 }
 
+// Voice API only.
 func (r VoiceAPIGetVoiceCallEstimateRequest) Transcription(transcription bool) VoiceAPIGetVoiceCallEstimateRequest {
 	r.transcription = &transcription
 	return r
@@ -1807,15 +1830,21 @@ func (r VoiceAPIGetVoiceCallEstimateRequest) Execute() (*GetVoiceCallEstimate200
 /*
 GetVoiceCallEstimate Estimate call cost
 
-Pre-call cost estimate for a PSTN call: the carrier leg plus optional recording and transcription add-ons.
+Pre-call cost estimate for an outbound phone call, placed through the Voice API or through a [SIP trunk](/platforms/voice/integrations/elevenlabs).
 
-The per-minute figure is the most a minute can cost to that destination, so the final charge can be lower.
+Rates come from the carrier's live price list. The carrier prices a route by the caller ID, so pass the number you will call from (`from` or `fromNumberId`).
 
-The carrier figure follows the carrier's per-destination rate card: a call dialed from a number in the destination country uses the local mobile rate, and a `tel:` forward destination is quoted as a second carrier leg billed from the same number.
+- **Caller-ID rates.** A caller in the destination country gets local rates. EEA callers get cheaper rates to EEA destinations, and some caller prefixes pay a surcharge. `rates.*.origination` names the band used.
+- **Mobile and landline.** `rates.mobile` and `rates.landline` are quoted separately, with every network the carrier lists. `lineType` says which one `to` is, and `perMinuteUsd` follows it.
+- **Trunk or Voice API.** Trunk calls bill twice the carrier rate. Voice API calls add a $0.002/min call-control fee before the markup, plus optional forward, recording and transcription legs.
 
-The real cost comes from the settled carrier record after the call.
+`via` defaults to `trunk` when the caller number is attached to a SIP trunk (or `trunkId` is passed), and to `voice` otherwise. For trunk calls, `trunk` reports whether the trunk's limits would refuse the call.
 
-Parity endpoint of `GET /v1/whatsapp/calls/estimate`, minus the Meta line. PSTN calls have no separate Meta bill, so `totalCostUSD` equals `billableCostUSD`.
+`trunk.maxDestinationRateUsd` is compared with the carrier's rate for the route, which is half the billed rate. Isle of Man, Jersey and Guernsey numbers on +44 count as their own countries for the whitelist.
+
+The dialed network cannot be known from the number, so the invoice can differ within the `minPerMinuteUsd` to `maxPerMinuteUsd` range. The real cost comes from the settled carrier record after the call.
+
+PSTN calls have no separate Meta bill, so `totalCostUSD` equals `billableCostUSD`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return VoiceAPIGetVoiceCallEstimateRequest
@@ -1855,6 +1884,15 @@ func (a *VoiceAPIService) GetVoiceCallEstimateExecute(r VoiceAPIGetVoiceCallEsti
 	parameterAddToHeaderOrQuery(localVarQueryParams, "to", r.to, "form", "")
 	if r.from != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
+	}
+	if r.fromNumberId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromNumberId", r.fromNumberId, "form", "")
+	}
+	if r.trunkId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "trunkId", r.trunkId, "form", "")
+	}
+	if r.via != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "via", r.via, "form", "")
 	}
 	if r.forwardTo != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "forwardTo", r.forwardTo, "form", "")
@@ -1911,6 +1949,17 @@ func (a *VoiceAPIService) GetVoiceCallEstimateExecute(r VoiceAPIGetVoiceCallEsti
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -1920,6 +1969,18 @@ func (a *VoiceAPIService) GetVoiceCallEstimateExecute(r VoiceAPIGetVoiceCallEsti
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

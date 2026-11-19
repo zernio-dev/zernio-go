@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.687.0
+API version: 1.689.0
 Contact: support@zernio.com
 */
 
@@ -33,8 +33,10 @@ type AutoRecharge struct {
 	MonthlyLimitCents NullableInt32 `json:"monthlyLimitCents"`
 	// Low-balance email threshold, sent once per drop below it; null for none.
 	AlertBelowCents NullableInt32 `json:"alertBelowCents"`
-	// `payment_failed` once a declined charge is not retried, or its one retry fails; updating the card clears it. `charge_error` after 24 charges in a row failed on our side (not the card); turning auto top-up back on (`enabled: true`) clears it.
+	// `payment_failed` once a declined charge is not retried, or its one retry fails; updating the card clears it. `charge_error` after 24 charges in a row failed for a reason other than a decline; turning auto top-up back on (`enabled: true`) clears it.
 	DisabledReason NullableString `json:"disabledReason"`
+	// With `charge_error`: `billing_address` when the last failure was a billing address that tax cannot be worked out from (fix it, then turn auto top-up back on). Null otherwise.
+	DisabledCause NullableString `json:"disabledCause"`
 	// Failed charges in a row; 0 once one goes through.
 	RetryCount int32 `json:"retryCount"`
 	// When a declined auto top-up is tried again; null when none is waiting.
@@ -49,7 +51,7 @@ type _AutoRecharge AutoRecharge
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAutoRecharge(enabled bool, belowCents int32, toCents int32, monthlyLimitCents NullableInt32, alertBelowCents NullableInt32, disabledReason NullableString, retryCount int32, nextRetryAt NullableTime, monthRechargedCents int32) *AutoRecharge {
+func NewAutoRecharge(enabled bool, belowCents int32, toCents int32, monthlyLimitCents NullableInt32, alertBelowCents NullableInt32, disabledReason NullableString, disabledCause NullableString, retryCount int32, nextRetryAt NullableTime, monthRechargedCents int32) *AutoRecharge {
 	this := AutoRecharge{}
 	this.Enabled = enabled
 	this.BelowCents = belowCents
@@ -57,6 +59,7 @@ func NewAutoRecharge(enabled bool, belowCents int32, toCents int32, monthlyLimit
 	this.MonthlyLimitCents = monthlyLimitCents
 	this.AlertBelowCents = alertBelowCents
 	this.DisabledReason = disabledReason
+	this.DisabledCause = disabledCause
 	this.RetryCount = retryCount
 	this.NextRetryAt = nextRetryAt
 	this.MonthRechargedCents = monthRechargedCents
@@ -221,6 +224,32 @@ func (o *AutoRecharge) SetDisabledReason(v string) {
 	o.DisabledReason.Set(&v)
 }
 
+// GetDisabledCause returns the DisabledCause field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *AutoRecharge) GetDisabledCause() string {
+	if o == nil || o.DisabledCause.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.DisabledCause.Get()
+}
+
+// GetDisabledCauseOk returns a tuple with the DisabledCause field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AutoRecharge) GetDisabledCauseOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DisabledCause.Get(), o.DisabledCause.IsSet()
+}
+
+// SetDisabledCause sets field value
+func (o *AutoRecharge) SetDisabledCause(v string) {
+	o.DisabledCause.Set(&v)
+}
+
 // GetRetryCount returns the RetryCount field value
 func (o *AutoRecharge) GetRetryCount() int32 {
 	if o == nil {
@@ -311,6 +340,7 @@ func (o AutoRecharge) ToMap() (map[string]interface{}, error) {
 	toSerialize["monthlyLimitCents"] = o.MonthlyLimitCents.Get()
 	toSerialize["alertBelowCents"] = o.AlertBelowCents.Get()
 	toSerialize["disabledReason"] = o.DisabledReason.Get()
+	toSerialize["disabledCause"] = o.DisabledCause.Get()
 	toSerialize["retryCount"] = o.RetryCount
 	toSerialize["nextRetryAt"] = o.NextRetryAt.Get()
 	toSerialize["monthRechargedCents"] = o.MonthRechargedCents
@@ -328,6 +358,7 @@ func (o *AutoRecharge) UnmarshalJSON(data []byte) (err error) {
 		"monthlyLimitCents",
 		"alertBelowCents",
 		"disabledReason",
+		"disabledCause",
 		"retryCount",
 		"nextRetryAt",
 		"monthRechargedCents",
