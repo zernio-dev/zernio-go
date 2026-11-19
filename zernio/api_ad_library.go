@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.690.1
+API version: 1.691.0
 Contact: support@zernio.com
 */
 
@@ -23,25 +23,26 @@ import (
 type AdLibraryAPIService service
 
 type AdLibraryAPISearchAdLibraryRequest struct {
-	ctx        context.Context
-	ApiService *AdLibraryAPIService
-	platform   *string
-	accountId  *string
-	q          *string
-	pageIds    *string
-	advertiser *string
-	countries  *string
-	adType     *string
-	status     *string
-	platforms  *string
-	mediaType  *string
-	languages  *string
-	since      *string
-	until      *string
-	searchType *string
-	fields     *string
-	limit      *int32
-	after      *string
+	ctx          context.Context
+	ApiService   *AdLibraryAPIService
+	platform     *string
+	accountId    *string
+	q            *string
+	pageIds      *string
+	advertiser   *string
+	countries    *string
+	adType       *string
+	status       *string
+	platforms    *string
+	mediaType    *string
+	languages    *string
+	since        *string
+	until        *string
+	searchType   *string
+	fields       *string
+	includeMedia *bool
+	limit        *int32
+	after        *string
 }
 
 // Which archive to search. &#x60;meta&#x60; needs no accountId. Required unless accountId is given.
@@ -134,6 +135,12 @@ func (r AdLibraryAPISearchAdLibraryRequest) Fields(fields string) AdLibraryAPISe
 	return r
 }
 
+// Meta only. When &#x60;true&#x60;, each row also carries &#x60;media&#x60;: the ad&#39;s rendered creative (images, videos, carousel cards) as direct file URLs, so you don&#39;t have to open &#x60;ad_snapshot_url&#x60; yourself.  - Meta CDN links are signed and expire: download what you need before each item&#39;s &#x60;expires_at&#x60;. - &#x60;media&#x60; is &#x60;null&#x60; when Meta would not render the snapshot for that ad, and &#x60;[]&#x60; for a text-only ad. - Every row costs one extra page render, so responses are slower: use a small &#x60;limit&#x60;. - With a &#x60;fields&#x60; override, include &#x60;ad_snapshot_url&#x60; or no row gets &#x60;media&#x60;.
+func (r AdLibraryAPISearchAdLibraryRequest) IncludeMedia(includeMedia bool) AdLibraryAPISearchAdLibraryRequest {
+	r.includeMedia = &includeMedia
+	return r
+}
+
 // Rows per page. LinkedIn accepts at most 25.
 func (r AdLibraryAPISearchAdLibraryRequest) Limit(limit int32) AdLibraryAPISearchAdLibraryRequest {
 	r.limit = &limit
@@ -176,7 +183,7 @@ Pages are capped at 25 ads (`limit` > 25 is a 400). `after` is the next offset.
 ### Which params apply
 
 - Both: `q`, `countries`, `limit`, `after`
-- Meta-only: `pageIds`, `adType`, `status`, `platforms`, `mediaType`, `languages`, `searchType`, `fields`, `since`, `until`
+- Meta-only: `pageIds`, `adType`, `status`, `platforms`, `mediaType`, `languages`, `searchType`, `fields`, `includeMedia`, `since`, `until`
 - LinkedIn-only: `advertiser`
 
 Passing a param the account's platform does not support is a 400 naming the param.
@@ -269,6 +276,13 @@ func (a *AdLibraryAPIService) SearchAdLibraryExecute(r AdLibraryAPISearchAdLibra
 	}
 	if r.fields != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "fields", r.fields, "form", "")
+	}
+	if r.includeMedia != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeMedia", r.includeMedia, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeMedia", defaultValue, "form", "")
+		r.includeMedia = &defaultValue
 	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
