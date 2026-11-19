@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.680.0
+API version: 1.680.1
 Contact: support@zernio.com
 */
 
@@ -41,6 +41,8 @@ func (r WebhooksAPICreateWebhookSettingsRequest) Execute() (*UpdateWebhookSettin
 CreateWebhookSettings Create webhook
 
 Create a new webhook configuration. Maximum 50 webhooks per user.
+
+Only the account owner and admins (and their API keys) can create, update or delete webhooks. Any other team member gets 403 and can still list them.
 
 `name`, `url` and `events` are required. `url` must be a valid URL and `events` must contain at least one event. Whitespace is trimmed from `url` before validation.
 
@@ -208,6 +210,8 @@ func (r WebhooksAPIDeleteWebhookSettingsRequest) Execute() (*UpdateYoutubeDefaul
 DeleteWebhookSettings Delete webhook
 
 Permanently delete a webhook configuration.
+
+Only the account owner and admins (and their API keys) can create, update or delete webhooks. Any other team member gets 403 and can still list them.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhooksAPIDeleteWebhookSettingsRequest
@@ -992,6 +996,8 @@ func (r WebhooksAPIUpdateWebhookSettingsRequest) Execute() (*UpdateWebhookSettin
 UpdateWebhookSettings Update webhook
 
 Update an existing webhook configuration. All fields except `webhookId` are optional; only provided fields will be updated.
+
+Only the account owner and admins (and their API keys) can create, update or delete webhooks. Any other team member gets 403 and can still list them.
 
 `webhookId` is the same name the other /v1/webhooks operations use (logs, redeliver, test). The deprecated `_id` is still accepted in its place.
 
