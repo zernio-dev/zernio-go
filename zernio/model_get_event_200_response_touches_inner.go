@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.692.0
+API version: 1.692.1
 Contact: support@zernio.com
 */
 
@@ -23,11 +23,14 @@ var _ MappedNullable = &GetEvent200ResponseTouchesInner{}
 type GetEvent200ResponseTouchesInner struct {
 	At   *time.Time `json:"at,omitempty"`
 	Kind *string    `json:"kind,omitempty"`
-	// The ad platform of the campaign, or the one a survey answer names (Instagram reads as facebook).
+	// The ad platform of the campaign, the one an ad click's click id names (gclid reads as googleads), or the one a survey answer names (Instagram reads as facebook).
 	Platform    NullableString `json:"platform,omitempty"`
 	AdAccountId NullableString `json:"adAccountId,omitempty"`
 	// The campaign the touch resolved to; null for a touch that named none (search, referral).
 	CampaignId NullableString `json:"campaignId,omitempty"`
+	// The campaign's name in the ad account, when Zernio holds it.
+	CampaignName NullableString                         `json:"campaignName,omitempty"`
+	Detail       *GetEvent200ResponseTouchesInnerDetail `json:"detail,omitempty"`
 	// The share of the event (0 to 1) this touch gets per model: first_touch, last_non_direct, linear, position_based, time_decay, w_shaped.
 	Credit map[string]float32 `json:"credit,omitempty"`
 }
@@ -242,6 +245,81 @@ func (o *GetEvent200ResponseTouchesInner) UnsetCampaignId() {
 	o.CampaignId.Unset()
 }
 
+// GetCampaignName returns the CampaignName field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetEvent200ResponseTouchesInner) GetCampaignName() string {
+	if o == nil || IsNil(o.CampaignName.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CampaignName.Get()
+}
+
+// GetCampaignNameOk returns a tuple with the CampaignName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetEvent200ResponseTouchesInner) GetCampaignNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CampaignName.Get(), o.CampaignName.IsSet()
+}
+
+// HasCampaignName returns a boolean if a field has been set.
+func (o *GetEvent200ResponseTouchesInner) HasCampaignName() bool {
+	if o != nil && o.CampaignName.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignName gets a reference to the given NullableString and assigns it to the CampaignName field.
+func (o *GetEvent200ResponseTouchesInner) SetCampaignName(v string) {
+	o.CampaignName.Set(&v)
+}
+
+// SetCampaignNameNil sets the value for CampaignName to be an explicit nil
+func (o *GetEvent200ResponseTouchesInner) SetCampaignNameNil() {
+	o.CampaignName.Set(nil)
+}
+
+// UnsetCampaignName ensures that no value is present for CampaignName, not even an explicit nil
+func (o *GetEvent200ResponseTouchesInner) UnsetCampaignName() {
+	o.CampaignName.Unset()
+}
+
+// GetDetail returns the Detail field value if set, zero value otherwise.
+func (o *GetEvent200ResponseTouchesInner) GetDetail() GetEvent200ResponseTouchesInnerDetail {
+	if o == nil || IsNil(o.Detail) {
+		var ret GetEvent200ResponseTouchesInnerDetail
+		return ret
+	}
+	return *o.Detail
+}
+
+// GetDetailOk returns a tuple with the Detail field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEvent200ResponseTouchesInner) GetDetailOk() (*GetEvent200ResponseTouchesInnerDetail, bool) {
+	if o == nil || IsNil(o.Detail) {
+		return nil, false
+	}
+	return o.Detail, true
+}
+
+// HasDetail returns a boolean if a field has been set.
+func (o *GetEvent200ResponseTouchesInner) HasDetail() bool {
+	if o != nil && !IsNil(o.Detail) {
+		return true
+	}
+
+	return false
+}
+
+// SetDetail gets a reference to the given GetEvent200ResponseTouchesInnerDetail and assigns it to the Detail field.
+func (o *GetEvent200ResponseTouchesInner) SetDetail(v GetEvent200ResponseTouchesInnerDetail) {
+	o.Detail = &v
+}
+
 // GetCredit returns the Credit field value if set, zero value otherwise.
 func (o *GetEvent200ResponseTouchesInner) GetCredit() map[string]float32 {
 	if o == nil || IsNil(o.Credit) {
@@ -298,6 +376,12 @@ func (o GetEvent200ResponseTouchesInner) ToMap() (map[string]interface{}, error)
 	}
 	if o.CampaignId.IsSet() {
 		toSerialize["campaignId"] = o.CampaignId.Get()
+	}
+	if o.CampaignName.IsSet() {
+		toSerialize["campaignName"] = o.CampaignName.Get()
+	}
+	if !IsNil(o.Detail) {
+		toSerialize["detail"] = o.Detail
 	}
 	if !IsNil(o.Credit) {
 		toSerialize["credit"] = o.Credit
