@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.693.0
+API version: 1.693.1
 Contact: support@zernio.com
 */
 
@@ -4423,8 +4423,8 @@ Returns aggregate analytics for a LinkedIn organization page. Parallel to
 Backed by LinkedIn's organizationalEntityShareStatistics,
 organizationalEntityFollowerStatistics, and organizationPageStatistics endpoints.
 
-Response shape matches /v1/analytics/instagram/account-insights. Max 89 days,
-defaults to last 30 days.
+Response shape matches /v1/analytics/instagram/account-insights. Max 365 days,
+fromDate no older than 365 days ago, defaults to last 30 days.
 
 Scope requirements: r_organization_social, r_organization_followers, and
 r_organization_admin must all be present on the account. Accounts connected before
@@ -4434,17 +4434,12 @@ Enforced by this endpoint:
   - Page-view metrics accept only metricType=total_value (LinkedIn omits per-day
     segmentation even when the API is called with DAY granularity, so a time-series
     response would be meaningless).
-  - Date range capped at 89 days.
+  - Date range capped at 365 days, starting no more than 365 days ago.
 
-LinkedIn-side platform limits (not re-enforced here, but worth knowing for larger
-ranges in a future release):
+LinkedIn keeps about 13 months of follower stats, and they end 2 days before today.
 
-  - Follower stats: rolling 12-month window, end must be no later than 2 days ago.
-
-  - Share stats: rolling 12-month window.
-
-    @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-    @return AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest
 */
 func (a *AnalyticsAPIService) GetLinkedInOrgAggregateAnalytics(ctx context.Context) AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest {
 	return AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest{
