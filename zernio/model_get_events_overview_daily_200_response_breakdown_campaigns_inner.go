@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.690.0
+API version: 1.690.1
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type GetEventsOverviewDaily200ResponseBreakdownCampaignsInner struct {
 	Name        NullableString `json:"name,omitempty"`
 	Reason      NullableString `json:"reason,omitempty"`
 	Conversions *int32         `json:"conversions,omitempty"`
+	// The value of those conversions in the currency of `totals`.
+	Value *float32 `json:"value,omitempty"`
 }
 
 // NewGetEventsOverviewDaily200ResponseBreakdownCampaignsInner instantiates a new GetEventsOverviewDaily200ResponseBreakdownCampaignsInner object
@@ -249,6 +251,38 @@ func (o *GetEventsOverviewDaily200ResponseBreakdownCampaignsInner) SetConversion
 	o.Conversions = &v
 }
 
+// GetValue returns the Value field value if set, zero value otherwise.
+func (o *GetEventsOverviewDaily200ResponseBreakdownCampaignsInner) GetValue() float32 {
+	if o == nil || IsNil(o.Value) {
+		var ret float32
+		return ret
+	}
+	return *o.Value
+}
+
+// GetValueOk returns a tuple with the Value field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverviewDaily200ResponseBreakdownCampaignsInner) GetValueOk() (*float32, bool) {
+	if o == nil || IsNil(o.Value) {
+		return nil, false
+	}
+	return o.Value, true
+}
+
+// HasValue returns a boolean if a field has been set.
+func (o *GetEventsOverviewDaily200ResponseBreakdownCampaignsInner) HasValue() bool {
+	if o != nil && !IsNil(o.Value) {
+		return true
+	}
+
+	return false
+}
+
+// SetValue gets a reference to the given float32 and assigns it to the Value field.
+func (o *GetEventsOverviewDaily200ResponseBreakdownCampaignsInner) SetValue(v float32) {
+	o.Value = &v
+}
+
 func (o GetEventsOverviewDaily200ResponseBreakdownCampaignsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -273,6 +307,9 @@ func (o GetEventsOverviewDaily200ResponseBreakdownCampaignsInner) ToMap() (map[s
 	}
 	if !IsNil(o.Conversions) {
 		toSerialize["conversions"] = o.Conversions
+	}
+	if !IsNil(o.Value) {
+		toSerialize["value"] = o.Value
 	}
 	return toSerialize, nil
 }
