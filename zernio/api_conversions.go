@@ -5950,6 +5950,8 @@ type ConversionsAPIListEventsRequest struct {
 	source         *string
 	platform       *string
 	deliveryStatus *string
+	fromAd         *bool
+	campaignId     *string
 	cursor         *string
 }
 
@@ -5997,6 +5999,18 @@ func (r ConversionsAPIListEventsRequest) Platform(platform string) ConversionsAP
 // Only events whose latest send to a destination (of &#x60;platform&#x60;, when given) was accepted (&#x60;sent&#x60;) or was not (&#x60;failed&#x60;: failed or still retrying).
 func (r ConversionsAPIListEventsRequest) DeliveryStatus(deliveryStatus string) ConversionsAPIListEventsRequest {
 	r.deliveryStatus = &deliveryStatus
+	return r
+}
+
+// &#x60;true&#x60;: only events carrying an ad click or a campaign (a gclid, gbraid or wbraid, a &#x60;zrn&#x60;, or a matched campaign). &#x60;false&#x60;: only the others.
+func (r ConversionsAPIListEventsRequest) FromAd(fromAd bool) ConversionsAPIListEventsRequest {
+	r.fromAd = &fromAd
+	return r
+}
+
+// Only events of this ad platform campaign id: matched to it, or behind a Google click of it.
+func (r ConversionsAPIListEventsRequest) CampaignId(campaignId string) ConversionsAPIListEventsRequest {
+	r.campaignId = &campaignId
 	return r
 }
 
@@ -6080,6 +6094,12 @@ func (a *ConversionsAPIService) ListEventsExecute(r ConversionsAPIListEventsRequ
 	}
 	if r.deliveryStatus != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "deliveryStatus", r.deliveryStatus, "form", "")
+	}
+	if r.fromAd != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromAd", r.fromAd, "form", "")
+	}
+	if r.campaignId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
 	}
 	if r.cursor != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")

@@ -2998,6 +2998,7 @@ model_store_pixel_install.go
 model_store_pixel_install_tags_inner.go
 model_stored_event.go
 model_stored_event_ad.go
+model_stored_event_campaign.go
 model_stored_event_click_ids.go
 model_stored_event_utm.go
 model_stripe_settings.go

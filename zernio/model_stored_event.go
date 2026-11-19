@@ -44,8 +44,9 @@ type StoredEvent struct {
 	HasPhone         *bool  `json:"hasPhone,omitempty"`
 	HasExternalId    *bool  `json:"hasExternalId,omitempty"`
 	// In a `GET /v1/events` page: the other copy of the same conversion, when a website tag (`web`) and a server send both stored it under different event ids (same event name, a shared identifier, at most 30 minutes apart). `null` otherwise, and always `null` from `GET /v1/events/{eventId}`.
-	PairedEventId NullableString `json:"pairedEventId,omitempty"`
-	Ad            *StoredEventAd `json:"ad,omitempty"`
+	PairedEventId NullableString       `json:"pairedEventId,omitempty"`
+	Ad            *StoredEventAd       `json:"ad,omitempty"`
+	Campaign      *StoredEventCampaign `json:"campaign,omitempty"`
 }
 
 // NewStoredEvent instantiates a new StoredEvent object
@@ -739,6 +740,38 @@ func (o *StoredEvent) SetAd(v StoredEventAd) {
 	o.Ad = &v
 }
 
+// GetCampaign returns the Campaign field value if set, zero value otherwise.
+func (o *StoredEvent) GetCampaign() StoredEventCampaign {
+	if o == nil || IsNil(o.Campaign) {
+		var ret StoredEventCampaign
+		return ret
+	}
+	return *o.Campaign
+}
+
+// GetCampaignOk returns a tuple with the Campaign field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StoredEvent) GetCampaignOk() (*StoredEventCampaign, bool) {
+	if o == nil || IsNil(o.Campaign) {
+		return nil, false
+	}
+	return o.Campaign, true
+}
+
+// HasCampaign returns a boolean if a field has been set.
+func (o *StoredEvent) HasCampaign() bool {
+	if o != nil && !IsNil(o.Campaign) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaign gets a reference to the given StoredEventCampaign and assigns it to the Campaign field.
+func (o *StoredEvent) SetCampaign(v StoredEventCampaign) {
+	o.Campaign = &v
+}
+
 func (o StoredEvent) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -805,6 +838,9 @@ func (o StoredEvent) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Ad) {
 		toSerialize["ad"] = o.Ad
+	}
+	if !IsNil(o.Campaign) {
+		toSerialize["campaign"] = o.Campaign
 	}
 	return toSerialize, nil
 }

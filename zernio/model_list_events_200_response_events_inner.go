@@ -44,8 +44,9 @@ type ListEvents200ResponseEventsInner struct {
 	HasPhone         *bool  `json:"hasPhone,omitempty"`
 	HasExternalId    *bool  `json:"hasExternalId,omitempty"`
 	// In a `GET /v1/events` page: the other copy of the same conversion, when a website tag (`web`) and a server send both stored it under different event ids (same event name, a shared identifier, at most 30 minutes apart). `null` otherwise, and always `null` from `GET /v1/events/{eventId}`.
-	PairedEventId *string        `json:"pairedEventId,omitempty"`
-	Ad            *StoredEventAd `json:"ad,omitempty"`
+	PairedEventId *string              `json:"pairedEventId,omitempty"`
+	Ad            *StoredEventAd       `json:"ad,omitempty"`
+	Campaign      *StoredEventCampaign `json:"campaign,omitempty"`
 	// Each destination the event was forwarded to, with its latest send status. The full detail is on GET /v1/events/{eventId}.
 	Deliveries []ListEvents200ResponseEventsInnerAllOfDeliveriesInner `json:"deliveries,omitempty"`
 }
@@ -675,6 +676,38 @@ func (o *ListEvents200ResponseEventsInner) SetAd(v StoredEventAd) {
 	o.Ad = &v
 }
 
+// GetCampaign returns the Campaign field value if set, zero value otherwise.
+func (o *ListEvents200ResponseEventsInner) GetCampaign() StoredEventCampaign {
+	if o == nil || IsNil(o.Campaign) {
+		var ret StoredEventCampaign
+		return ret
+	}
+	return *o.Campaign
+}
+
+// GetCampaignOk returns a tuple with the Campaign field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListEvents200ResponseEventsInner) GetCampaignOk() (*StoredEventCampaign, bool) {
+	if o == nil || IsNil(o.Campaign) {
+		return nil, false
+	}
+	return o.Campaign, true
+}
+
+// HasCampaign returns a boolean if a field has been set.
+func (o *ListEvents200ResponseEventsInner) HasCampaign() bool {
+	if o != nil && !IsNil(o.Campaign) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaign gets a reference to the given StoredEventCampaign and assigns it to the Campaign field.
+func (o *ListEvents200ResponseEventsInner) SetCampaign(v StoredEventCampaign) {
+	o.Campaign = &v
+}
+
 // GetDeliveries returns the Deliveries field value if set, zero value otherwise.
 func (o *ListEvents200ResponseEventsInner) GetDeliveries() []ListEvents200ResponseEventsInnerAllOfDeliveriesInner {
 	if o == nil || IsNil(o.Deliveries) {
@@ -773,6 +806,9 @@ func (o ListEvents200ResponseEventsInner) ToMap() (map[string]interface{}, error
 	}
 	if !IsNil(o.Ad) {
 		toSerialize["ad"] = o.Ad
+	}
+	if !IsNil(o.Campaign) {
+		toSerialize["campaign"] = o.Campaign
 	}
 	if !IsNil(o.Deliveries) {
 		toSerialize["deliveries"] = o.Deliveries
