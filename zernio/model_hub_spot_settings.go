@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.680.2
+API version: 1.681.0
 Contact: support@zernio.com
 */
 
@@ -44,6 +44,8 @@ type HubSpotSettings struct {
 	ReportDeals bool `json:"reportDeals"`
 	// Whether closed-won deals count as sales on the ad campaign that brought their contact, in campaign results and ad rules.
 	UseDealsAsResults bool `json:"useDealsAsResults"`
+	// Which contacts count as qualified leads, or null when it was never set.
+	QualifiedLeads NullableHubSpotQualifiedLeads `json:"qualifiedLeads,omitempty"`
 }
 
 type _HubSpotSettings HubSpotSettings
@@ -367,6 +369,49 @@ func (o *HubSpotSettings) SetUseDealsAsResults(v bool) {
 	o.UseDealsAsResults = v
 }
 
+// GetQualifiedLeads returns the QualifiedLeads field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *HubSpotSettings) GetQualifiedLeads() HubSpotQualifiedLeads {
+	if o == nil || IsNil(o.QualifiedLeads.Get()) {
+		var ret HubSpotQualifiedLeads
+		return ret
+	}
+	return *o.QualifiedLeads.Get()
+}
+
+// GetQualifiedLeadsOk returns a tuple with the QualifiedLeads field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *HubSpotSettings) GetQualifiedLeadsOk() (*HubSpotQualifiedLeads, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.QualifiedLeads.Get(), o.QualifiedLeads.IsSet()
+}
+
+// HasQualifiedLeads returns a boolean if a field has been set.
+func (o *HubSpotSettings) HasQualifiedLeads() bool {
+	if o != nil && o.QualifiedLeads.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetQualifiedLeads gets a reference to the given NullableHubSpotQualifiedLeads and assigns it to the QualifiedLeads field.
+func (o *HubSpotSettings) SetQualifiedLeads(v HubSpotQualifiedLeads) {
+	o.QualifiedLeads.Set(&v)
+}
+
+// SetQualifiedLeadsNil sets the value for QualifiedLeads to be an explicit nil
+func (o *HubSpotSettings) SetQualifiedLeadsNil() {
+	o.QualifiedLeads.Set(nil)
+}
+
+// UnsetQualifiedLeads ensures that no value is present for QualifiedLeads, not even an explicit nil
+func (o *HubSpotSettings) UnsetQualifiedLeads() {
+	o.QualifiedLeads.Unset()
+}
+
 func (o HubSpotSettings) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -389,6 +434,9 @@ func (o HubSpotSettings) ToMap() (map[string]interface{}, error) {
 	toSerialize["syncIssue"] = o.SyncIssue
 	toSerialize["reportDeals"] = o.ReportDeals
 	toSerialize["useDealsAsResults"] = o.UseDealsAsResults
+	if o.QualifiedLeads.IsSet() {
+		toSerialize["qualifiedLeads"] = o.QualifiedLeads.Get()
+	}
 	return toSerialize, nil
 }
 
