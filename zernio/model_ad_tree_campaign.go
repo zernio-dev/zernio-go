@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.679.2
+API version: 1.680.0
 Contact: support@zernio.com
 */
 
@@ -31,7 +31,7 @@ type AdTreeCampaign struct {
 	// Delivery status derived from child ad statuses. Reads `paused` when the campaign is switched off on the platform (`platformCampaignStatus`), even while its ads still report their own switch as on. Distinct from `reviewStatus`, which reflects the platform-side review state.
 	Status   *AdStatus                                 `json:"status,omitempty"`
 	Schedule *ListAdSets200ResponseAdSetsInnerSchedule `json:"schedule,omitempty"`
-	// Platform-side review state of the campaign. Independent of the children-derived delivery `status`: a campaign can have ads already active (status=active) while the campaign itself is still being reviewed by the platform (reviewStatus=in_review). For Meta, derived from `effective_status` + `issues_info` on the Campaign, plus ad-level PENDING_REVIEW rollup.
+	// Platform-side review state of the campaign. Independent of the children-derived delivery `status`: a campaign can have ads already active (status=active) while the campaign itself is still being reviewed by the platform (reviewStatus=in_review). For Meta, derived from `effective_status` + `issues_info` on the Campaign, plus ad-level PENDING_REVIEW rollup.  On other platforms, including Google search, display and Performance Max (whose ads are asset groups), `rejected` when any ad is rejected and `in_review` when any ad is pending review.
 	ReviewStatus NullableAdReviewStatus `json:"reviewStatus,omitempty"`
 	// Raw platform-level campaign status (Meta `effective_status`: ACTIVE, PAUSED, DELETED, ARCHIVED, IN_PROCESS, WITH_ISSUES; ChatGPT (OpenAI): the campaign's own switch, active / paused / archived, independent of the delivery `status`; TikTok: the campaign's own switch `operation_status`, ENABLE / DISABLE; Reddit: the campaign's `configured_status`, ACTIVE / PAUSED / ARCHIVED). Distinct from per-ad `platformStatus`.
 	PlatformCampaignStatus NullableString `json:"platformCampaignStatus,omitempty"`

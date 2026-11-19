@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.679.2
+API version: 1.680.0
 Contact: support@zernio.com
 */
 
@@ -31,11 +31,12 @@ type GetAdReview200ResponseReview struct {
 	ForbiddenOperatingSystems []string       `json:"forbiddenOperatingSystems,omitempty"`
 	// One entry per rejected piece of content (TikTok `reject_info`). Empty when the ad was approved.
 	Rejections []GetAdReview200ResponseReviewRejectionsInner `json:"rejections,omitempty"`
-	// Google only. ad_group_ad.policy_summary.approval_status, verbatim.
+	// Google only. ad_group_ad.policy_summary.approval_status, verbatim. Performance Max: derived from the asset group's primary status (see the description).
 	ApprovalStatus NullableString `json:"approvalStatus,omitempty"`
-	// Google only. ad_group_ad.policy_summary.policy_topic_entries.
-	PolicyTopics   []GetAdReview200ResponseReviewPolicyTopicsInner `json:"policyTopics,omitempty"`
-	ReviewFeedback *GetAdReview200ResponseReviewReviewFeedback     `json:"reviewFeedback,omitempty"`
+	// Google only. ad_group_ad.policy_summary.policy_topic_entries. Performance Max: the entries of every linked asset.
+	PolicyTopics   []GooglePolicyTopicEntry                    `json:"policyTopics,omitempty"`
+	AssetGroup     *GetAdReview200ResponseReviewAssetGroup     `json:"assetGroup,omitempty"`
+	ReviewFeedback *GetAdReview200ResponseReviewReviewFeedback `json:"reviewFeedback,omitempty"`
 	// Meta only. The Ad's `issues_info` objects (`error_code`, `error_message`, `error_summary`, `error_type`, `level`), verbatim.
 	Issues []map[string]interface{} `json:"issues,omitempty"`
 	// When the verdict was read from the platform.
@@ -349,9 +350,9 @@ func (o *GetAdReview200ResponseReview) UnsetApprovalStatus() {
 }
 
 // GetPolicyTopics returns the PolicyTopics field value if set, zero value otherwise.
-func (o *GetAdReview200ResponseReview) GetPolicyTopics() []GetAdReview200ResponseReviewPolicyTopicsInner {
+func (o *GetAdReview200ResponseReview) GetPolicyTopics() []GooglePolicyTopicEntry {
 	if o == nil || IsNil(o.PolicyTopics) {
-		var ret []GetAdReview200ResponseReviewPolicyTopicsInner
+		var ret []GooglePolicyTopicEntry
 		return ret
 	}
 	return o.PolicyTopics
@@ -359,7 +360,7 @@ func (o *GetAdReview200ResponseReview) GetPolicyTopics() []GetAdReview200Respons
 
 // GetPolicyTopicsOk returns a tuple with the PolicyTopics field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetAdReview200ResponseReview) GetPolicyTopicsOk() ([]GetAdReview200ResponseReviewPolicyTopicsInner, bool) {
+func (o *GetAdReview200ResponseReview) GetPolicyTopicsOk() ([]GooglePolicyTopicEntry, bool) {
 	if o == nil || IsNil(o.PolicyTopics) {
 		return nil, false
 	}
@@ -375,9 +376,41 @@ func (o *GetAdReview200ResponseReview) HasPolicyTopics() bool {
 	return false
 }
 
-// SetPolicyTopics gets a reference to the given []GetAdReview200ResponseReviewPolicyTopicsInner and assigns it to the PolicyTopics field.
-func (o *GetAdReview200ResponseReview) SetPolicyTopics(v []GetAdReview200ResponseReviewPolicyTopicsInner) {
+// SetPolicyTopics gets a reference to the given []GooglePolicyTopicEntry and assigns it to the PolicyTopics field.
+func (o *GetAdReview200ResponseReview) SetPolicyTopics(v []GooglePolicyTopicEntry) {
 	o.PolicyTopics = v
+}
+
+// GetAssetGroup returns the AssetGroup field value if set, zero value otherwise.
+func (o *GetAdReview200ResponseReview) GetAssetGroup() GetAdReview200ResponseReviewAssetGroup {
+	if o == nil || IsNil(o.AssetGroup) {
+		var ret GetAdReview200ResponseReviewAssetGroup
+		return ret
+	}
+	return *o.AssetGroup
+}
+
+// GetAssetGroupOk returns a tuple with the AssetGroup field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdReview200ResponseReview) GetAssetGroupOk() (*GetAdReview200ResponseReviewAssetGroup, bool) {
+	if o == nil || IsNil(o.AssetGroup) {
+		return nil, false
+	}
+	return o.AssetGroup, true
+}
+
+// HasAssetGroup returns a boolean if a field has been set.
+func (o *GetAdReview200ResponseReview) HasAssetGroup() bool {
+	if o != nil && !IsNil(o.AssetGroup) {
+		return true
+	}
+
+	return false
+}
+
+// SetAssetGroup gets a reference to the given GetAdReview200ResponseReviewAssetGroup and assigns it to the AssetGroup field.
+func (o *GetAdReview200ResponseReview) SetAssetGroup(v GetAdReview200ResponseReviewAssetGroup) {
+	o.AssetGroup = &v
 }
 
 // GetReviewFeedback returns the ReviewFeedback field value if set, zero value otherwise.
@@ -512,6 +545,9 @@ func (o GetAdReview200ResponseReview) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PolicyTopics) {
 		toSerialize["policyTopics"] = o.PolicyTopics
+	}
+	if !IsNil(o.AssetGroup) {
+		toSerialize["assetGroup"] = o.AssetGroup
 	}
 	if !IsNil(o.ReviewFeedback) {
 		toSerialize["reviewFeedback"] = o.ReviewFeedback

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.679.2
+API version: 1.680.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadAdReview type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadAdReview{}
 
-// WebhookPayloadAdReview Webhook payload for the `ad.review.approved` and `ad.review.rejected` events. Emitted for every ad network Zernio syncs (Meta, Google, TikTok, LinkedIn, Pinterest, X, Reddit and the rest).  Fires when an ad Zernio already tracked changes review outcome:  - `approved`: it leaves review as deliverable, or a rejection is overturned. - `rejected`: the platform rejects it.  Ads seen for the first time by a sync, including the history loaded when an account is connected, never fire it.  On X, Pinterest and LinkedIn, Zernio reads the review apart from the delivery status. An ad that leaves review while paused (for example under a paused campaign) still sends `approved`.  On the other networks the review shows only in the delivery status, so an ad that leaves review paused sends no `approved` event.  Detected by Zernio's own ad sync (and, for Meta, the review poll), so it arrives within one sync cycle of the platform's decision, not instantly. Each outcome is delivered at most once per ad per 24 hours.
+// WebhookPayloadAdReview Webhook payload for the `ad.review.approved` and `ad.review.rejected` events. Emitted for every ad network Zernio syncs (Meta, Google, TikTok, LinkedIn, Pinterest, X, Reddit and the rest).  Fires when an ad Zernio already tracked changes review outcome:  - `approved`: it leaves review as deliverable, or a rejection is overturned. - `rejected`: the platform rejects it.  Ads seen for the first time by a sync, including the history loaded when an account is connected, never fire it.  On X, Pinterest and LinkedIn, Zernio reads the review apart from the delivery status. An ad that leaves review while paused (for example under a paused campaign) still sends `approved`.  On the other networks the review shows only in the delivery status, so an ad that leaves review paused sends no `approved` event.  On Google Performance Max the reviewed object is the asset group (the ad Zernio syncs for PMax): it fires when the group's primary status reports ASSET_GROUP_DISAPPROVED (`rejected`) or leaves ASSET_GROUP_UNDER_REVIEW for an eligible state (`approved`).  Detected by Zernio's own ad sync (and, for Meta, the review poll), so it arrives within one sync cycle of the platform's decision, not instantly. Each outcome is delivered at most once per ad per 24 hours.
 type WebhookPayloadAdReview struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery.
 	Id string `json:"id"`

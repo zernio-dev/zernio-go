@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.679.2
+API version: 1.680.0
 Contact: support@zernio.com
 */
 
@@ -4232,6 +4232,15 @@ Reads `ad_group_ad.policy_summary` live. `approvalStatus` and `reviewStatus` are
 `policyTopics` carries every policy topic entry with its `type` (PROHIBITED, LIMITED, ...) and Google's `evidences` and `constraints` verbatim. Each PROHIBITED topic is also listed in `rejections` (reason = the topic).
 
 The `forbidden*` arrays are TikTok-only and always empty on Google.
+
+### Google Performance Max
+
+A Performance Max "ad" is an asset group, which has no `policy_summary` of its own. Google reports the group's review through `asset_group.primary_status` and `primary_status_reasons`, and reviews each linked asset separately (`asset_group_asset.policy_summary`). The response maps both onto the same fields as other Google ads:
+
+- `approvalStatus`: DISAPPROVED when the reasons include ASSET_GROUP_DISAPPROVED, UNDER_REVIEW for ASSET_GROUP_UNDER_REVIEW or a PENDING group, APPROVED_LIMITED for ASSET_GROUP_LIMITED or a LIMITED group, APPROVED for an ELIGIBLE group, null otherwise (for example a group that is not serving only because its campaign is paused or ended).
+- `reviewStatus`: REVIEW_IN_PROGRESS while the group or any linked asset is still in review, otherwise the least settled asset review status (UNDER_APPEAL, ELIGIBLE_MAY_SERVE, REVIEWED).
+- `policyTopics`: the policy topic entries of every linked asset. Each PROHIBITED topic is also listed in `rejections`. A disapproved group whose assets name no PROHIBITED topic gets one rejection with reason ASSET_GROUP_DISAPPROVED.
+- `assetGroup`: the group's `primaryStatus` and `primaryStatusReasons` verbatim, and each linked asset's own `approvalStatus`, `reviewStatus` and `policyTopics`. Removed asset links are left out.
 
 ### Meta (Facebook and Instagram ads)
 
@@ -8893,6 +8902,8 @@ func (r AdCampaignsAPIListGoogleAssetGroupsRequest) Execute() (*ListGoogleAssetG
 ListGoogleAssetGroups List Performance Max asset groups
 
 Lists a Performance Max campaign's asset groups with their linked text, image and YouTube assets.
+
+Each asset carries Google's policy review of it in that group (`policySummary`), and each group its `primaryStatus` and `primaryStatusReasons`, so a disapproved asset or group shows here without a separate call. `GET /v1/ads/{adId}/review` reads the same verdict live for one asset group.
 
 campaignId is the platform campaign id returned by creation or the campaign list. The campaign must be visible to the caller.
 

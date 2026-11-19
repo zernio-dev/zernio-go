@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.679.2
+API version: 1.680.0
 Contact: support@zernio.com
 */
 
@@ -27,10 +27,11 @@ type GooglePmaxAssetGroupAssetsInner struct {
 	FieldType string `json:"fieldType"`
 	Status    string `json:"status"`
 	// Who added the asset: ADVERTISER, or AUTOMATICALLY_CREATED when Google generated it. Empty when Google does not say.
-	Source         *string `json:"source,omitempty"`
-	Text           *string `json:"text,omitempty"`
-	ImageUrl       *string `json:"imageUrl,omitempty"`
-	YoutubeVideoId *string `json:"youtubeVideoId,omitempty"`
+	Source         *string                                      `json:"source,omitempty"`
+	PolicySummary  GooglePmaxAssetGroupAssetsInnerPolicySummary `json:"policySummary"`
+	Text           *string                                      `json:"text,omitempty"`
+	ImageUrl       *string                                      `json:"imageUrl,omitempty"`
+	YoutubeVideoId *string                                      `json:"youtubeVideoId,omitempty"`
 }
 
 type _GooglePmaxAssetGroupAssetsInner GooglePmaxAssetGroupAssetsInner
@@ -39,11 +40,12 @@ type _GooglePmaxAssetGroupAssetsInner GooglePmaxAssetGroupAssetsInner
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGooglePmaxAssetGroupAssetsInner(resourceName string, fieldType string, status string) *GooglePmaxAssetGroupAssetsInner {
+func NewGooglePmaxAssetGroupAssetsInner(resourceName string, fieldType string, status string, policySummary GooglePmaxAssetGroupAssetsInnerPolicySummary) *GooglePmaxAssetGroupAssetsInner {
 	this := GooglePmaxAssetGroupAssetsInner{}
 	this.ResourceName = resourceName
 	this.FieldType = fieldType
 	this.Status = status
+	this.PolicySummary = policySummary
 	return &this
 }
 
@@ -159,6 +161,30 @@ func (o *GooglePmaxAssetGroupAssetsInner) SetSource(v string) {
 	o.Source = &v
 }
 
+// GetPolicySummary returns the PolicySummary field value
+func (o *GooglePmaxAssetGroupAssetsInner) GetPolicySummary() GooglePmaxAssetGroupAssetsInnerPolicySummary {
+	if o == nil {
+		var ret GooglePmaxAssetGroupAssetsInnerPolicySummary
+		return ret
+	}
+
+	return o.PolicySummary
+}
+
+// GetPolicySummaryOk returns a tuple with the PolicySummary field value
+// and a boolean to check if the value has been set.
+func (o *GooglePmaxAssetGroupAssetsInner) GetPolicySummaryOk() (*GooglePmaxAssetGroupAssetsInnerPolicySummary, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.PolicySummary, true
+}
+
+// SetPolicySummary sets field value
+func (o *GooglePmaxAssetGroupAssetsInner) SetPolicySummary(v GooglePmaxAssetGroupAssetsInnerPolicySummary) {
+	o.PolicySummary = v
+}
+
 // GetText returns the Text field value if set, zero value otherwise.
 func (o *GooglePmaxAssetGroupAssetsInner) GetText() string {
 	if o == nil || IsNil(o.Text) {
@@ -271,6 +297,7 @@ func (o GooglePmaxAssetGroupAssetsInner) ToMap() (map[string]interface{}, error)
 	if !IsNil(o.Source) {
 		toSerialize["source"] = o.Source
 	}
+	toSerialize["policySummary"] = o.PolicySummary
 	if !IsNil(o.Text) {
 		toSerialize["text"] = o.Text
 	}
@@ -291,6 +318,7 @@ func (o *GooglePmaxAssetGroupAssetsInner) UnmarshalJSON(data []byte) (err error)
 		"resourceName",
 		"fieldType",
 		"status",
+		"policySummary",
 	}
 
 	allProperties := make(map[string]interface{})
