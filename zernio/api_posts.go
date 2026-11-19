@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.694.1
+API version: 1.695.0
 Contact: support@zernio.com
 */
 
@@ -488,6 +488,17 @@ func (a *PostsAPIService) CreatePostExecute(r PostsAPICreatePostRequest) (*Creat
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v CreatePost404Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 409 {
 			var v CreatePost409Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -936,6 +947,8 @@ GetPost Get post
 
 Fetch a single post by ID. For published posts, this returns platformPostUrl for each platform.
 
+To wait for a post to publish, subscribe to the `post.published`, `post.failed` and `post.partial` webhooks instead of polling this endpoint. Each event carries the post, so no follow-up read is needed.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
 	@return PostsAPIGetPostRequest
@@ -1227,6 +1240,8 @@ func (r PostsAPIListPostsRequest) Execute() (*PostsListResponse, *http.Response,
 ListPosts List posts
 
 Returns a paginated list of posts. Published posts include platformPostUrl with the public URL on each platform. A query parameter that is not listed here returns 400 naming it and the accepted parameters, so a misspelled filter never silently returns the unfiltered list.
+
+To learn when posts publish or fail, subscribe to the `post.published`, `post.failed` and `post.partial` webhooks instead of re-reading this list.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PostsAPIListPostsRequest
@@ -2315,7 +2330,7 @@ func (r PostsAPIUpdatePostRequest) Execute() (*PostUpdateResponse, *http.Respons
 /*
 UpdatePost Update post
 
-Update an existing post. Draft, scheduled, failed, partial, and cancelled posts can be edited. Published posts can only have their recycling config updated.
+Update an existing post. Draft, scheduled, failed, partial, and cancelled posts can be edited. Published posts can only have their recycling config updated: to change the text of a live post, use `POST /v1/posts/{postId}/edit`.
 
 To promote a draft to scheduled, send `isDraft: false` together with `scheduledFor` (or `publishNow: true`, or `queuedFromProfile`). If `isDraft` is omitted the post keeps its current draft status, so sending only `scheduledFor` to a draft returns 200 but the post remains a draft.
 
@@ -2445,7 +2460,7 @@ func (a *PostsAPIService) UpdatePostExecute(r PostsAPIUpdatePostRequest) (*PostU
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v GetYouTubeDailyViews400Response
+			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

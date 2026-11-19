@@ -991,6 +991,7 @@ model_create_post_200_response.go
 model_create_post_400_response.go
 model_create_post_400_response_details.go
 model_create_post_403_response.go
+model_create_post_404_response.go
 model_create_post_409_response.go
 model_create_post_409_response_details.go
 model_create_post_request.go

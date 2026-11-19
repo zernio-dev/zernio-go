@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.694.1
+API version: 1.695.0
 Contact: support@zernio.com
 */
 
@@ -21,6 +21,7 @@ var _ MappedNullable = &CreatePost409Response{}
 // CreatePost409Response struct for CreatePost409Response
 type CreatePost409Response struct {
 	Error   *string                       `json:"error,omitempty"`
+	Code    *string                       `json:"code,omitempty"`
 	Details *CreatePost409ResponseDetails `json:"details,omitempty"`
 }
 
@@ -73,6 +74,38 @@ func (o *CreatePost409Response) SetError(v string) {
 	o.Error = &v
 }
 
+// GetCode returns the Code field value if set, zero value otherwise.
+func (o *CreatePost409Response) GetCode() string {
+	if o == nil || IsNil(o.Code) {
+		var ret string
+		return ret
+	}
+	return *o.Code
+}
+
+// GetCodeOk returns a tuple with the Code field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePost409Response) GetCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.Code) {
+		return nil, false
+	}
+	return o.Code, true
+}
+
+// HasCode returns a boolean if a field has been set.
+func (o *CreatePost409Response) HasCode() bool {
+	if o != nil && !IsNil(o.Code) {
+		return true
+	}
+
+	return false
+}
+
+// SetCode gets a reference to the given string and assigns it to the Code field.
+func (o *CreatePost409Response) SetCode(v string) {
+	o.Code = &v
+}
+
 // GetDetails returns the Details field value if set, zero value otherwise.
 func (o *CreatePost409Response) GetDetails() CreatePost409ResponseDetails {
 	if o == nil || IsNil(o.Details) {
@@ -117,6 +150,9 @@ func (o CreatePost409Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
+	}
+	if !IsNil(o.Code) {
+		toSerialize["code"] = o.Code
 	}
 	if !IsNil(o.Details) {
 		toSerialize["details"] = o.Details
