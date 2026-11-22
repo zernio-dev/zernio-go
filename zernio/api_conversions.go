@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.763.0
+API version: 1.763.1
 Contact: support@zernio.com
 */
 
@@ -7935,7 +7935,7 @@ Relays one or more events to the target ad platform's native Conversions API. Th
 - Attentive (`attentive`) via the eCommerce and Custom Events APIs
 - Impact (`impact`) via the Conversions API (`POST /Advertisers/{AccountSID}/Conversions`)
 - Awin (`awin`) via the Conversion API (`POST /s2s/advertiser/{advertiserId}/orders`)
-- Campaign Manager 360 (`campaignmanager360`) via the Data Manager API `ingestEvents`, to a Floodlight activity
+- Campaign Manager 360 (`campaignmanager360`, coming soon: pending Google's verification of the `dfatrafficking` permission) via the Data Manager API `ingestEvents`, to a Floodlight activity
 - The Trade Desk (`tradedeskads`) via the Real-Time Conversions API (`POST https://insight.adsrvr.org/track/realtimeconversion`)
 - Amazon Ads (`amazonads`) via the Amazon Ads Conversions API (`POST /adsApi/v1/create/events`)
 
