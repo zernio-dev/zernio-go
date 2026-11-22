@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.761.0
+API version: 1.762.0
 Contact: support@zernio.com
 */
 
@@ -57,6 +57,8 @@ type ConversionAuditReport struct {
 	TagManagers []string                           `json:"tagManagers,omitempty"`
 	// Ad networks found that the score does not cover. `relaySupported` is true when Zernio can send them conversions.
 	OtherNetworks []ConversionAuditReportOtherNetworksInner `json:"otherNetworks,omitempty"`
+	// Rendered scans: unscored ad networks found only in a Google Tag Manager container that the visit never saw load or send. Not counted in `otherNetworks`.
+	OtherNetworksConfigured []ConversionAuditReportOtherNetworksInner `json:"otherNetworksConfigured,omitempty"`
 	// The site's icon. Absent when the site was unreachable.
 	FaviconUrl *string `json:"faviconUrl,omitempty"`
 	// One-paragraph summary of the audit.
@@ -648,6 +650,38 @@ func (o *ConversionAuditReport) SetOtherNetworks(v []ConversionAuditReportOtherN
 	o.OtherNetworks = v
 }
 
+// GetOtherNetworksConfigured returns the OtherNetworksConfigured field value if set, zero value otherwise.
+func (o *ConversionAuditReport) GetOtherNetworksConfigured() []ConversionAuditReportOtherNetworksInner {
+	if o == nil || IsNil(o.OtherNetworksConfigured) {
+		var ret []ConversionAuditReportOtherNetworksInner
+		return ret
+	}
+	return o.OtherNetworksConfigured
+}
+
+// GetOtherNetworksConfiguredOk returns a tuple with the OtherNetworksConfigured field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionAuditReport) GetOtherNetworksConfiguredOk() ([]ConversionAuditReportOtherNetworksInner, bool) {
+	if o == nil || IsNil(o.OtherNetworksConfigured) {
+		return nil, false
+	}
+	return o.OtherNetworksConfigured, true
+}
+
+// HasOtherNetworksConfigured returns a boolean if a field has been set.
+func (o *ConversionAuditReport) HasOtherNetworksConfigured() bool {
+	if o != nil && !IsNil(o.OtherNetworksConfigured) {
+		return true
+	}
+
+	return false
+}
+
+// SetOtherNetworksConfigured gets a reference to the given []ConversionAuditReportOtherNetworksInner and assigns it to the OtherNetworksConfigured field.
+func (o *ConversionAuditReport) SetOtherNetworksConfigured(v []ConversionAuditReportOtherNetworksInner) {
+	o.OtherNetworksConfigured = v
+}
+
 // GetFaviconUrl returns the FaviconUrl field value if set, zero value otherwise.
 func (o *ConversionAuditReport) GetFaviconUrl() string {
 	if o == nil || IsNil(o.FaviconUrl) {
@@ -751,6 +785,9 @@ func (o ConversionAuditReport) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.OtherNetworks) {
 		toSerialize["otherNetworks"] = o.OtherNetworks
+	}
+	if !IsNil(o.OtherNetworksConfigured) {
+		toSerialize["otherNetworksConfigured"] = o.OtherNetworksConfigured
 	}
 	if !IsNil(o.FaviconUrl) {
 		toSerialize["faviconUrl"] = o.FaviconUrl

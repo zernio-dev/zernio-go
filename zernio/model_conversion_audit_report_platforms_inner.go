@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.761.0
+API version: 1.762.0
 Contact: support@zernio.com
 */
 
@@ -36,7 +36,7 @@ type ConversionAuditReportPlatformsInner struct {
 	ServerSideVerified *bool `json:"serverSideVerified,omitempty"`
 	// A third-party server-side tool installed on the site that may already send this platform's events (Elevar, Littledata, Stape), when its status is `likely`. Which platforms the tool feeds is not visible from the page.
 	ServerTool *string `json:"serverTool,omitempty"`
-	// `good` = server-side, `warn` = browser-only (the leak), `missing` = not tracked, `not-firing` = the tag is installed but sent nothing during a full visit.
+	// `good`: server-side. `warn`: browser-only (the leak). `missing`: not tracked. `not-firing`: installed but sent nothing during a full visit. `configured`: only in a Google Tag Manager container and not seen firing on a visit where silence proves nothing, so not counted as tracked.
 	Status string `json:"status"`
 	// Share of conversions typically lost when this platform runs browser-only, 0-1.
 	EstimatedLossBrowserOnly float32 `json:"estimatedLossBrowserOnly"`
