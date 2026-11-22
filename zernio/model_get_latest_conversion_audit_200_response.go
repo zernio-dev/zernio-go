@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.762.0
+API version: 1.763.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,10 @@ var _ MappedNullable = &GetLatestConversionAudit200Response{}
 // GetLatestConversionAudit200Response struct for GetLatestConversionAudit200Response
 type GetLatestConversionAudit200Response struct {
 	Report ConversionAuditReport `json:"report"`
+	// Each ad network with its final setup and leak, computed exactly as the public report page shows them, best setup first.
+	Networks []ConversionAuditAnswerNetworksInner `json:"networks"`
+	// The few fixes that matter most, in the order the public report page lists them.
+	TopFixes []ConversionAuditAnswerTopFixesInner `json:"topFixes"`
 	// A prompt to paste into a coding agent. It lists the report's findings, then connecting Zernio, sending conversions server-side and verifying them.
 	FixPrompt    string                                    `json:"fixPrompt"`
 	PublicReport NullableConversionAuditAnswerPublicReport `json:"publicReport"`
@@ -36,9 +40,11 @@ type _GetLatestConversionAudit200Response GetLatestConversionAudit200Response
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetLatestConversionAudit200Response(report ConversionAuditReport, fixPrompt string, publicReport NullableConversionAuditAnswerPublicReport, host string) *GetLatestConversionAudit200Response {
+func NewGetLatestConversionAudit200Response(report ConversionAuditReport, networks []ConversionAuditAnswerNetworksInner, topFixes []ConversionAuditAnswerTopFixesInner, fixPrompt string, publicReport NullableConversionAuditAnswerPublicReport, host string) *GetLatestConversionAudit200Response {
 	this := GetLatestConversionAudit200Response{}
 	this.Report = report
+	this.Networks = networks
+	this.TopFixes = topFixes
 	this.FixPrompt = fixPrompt
 	this.PublicReport = publicReport
 	this.Host = host
@@ -75,6 +81,54 @@ func (o *GetLatestConversionAudit200Response) GetReportOk() (*ConversionAuditRep
 // SetReport sets field value
 func (o *GetLatestConversionAudit200Response) SetReport(v ConversionAuditReport) {
 	o.Report = v
+}
+
+// GetNetworks returns the Networks field value
+func (o *GetLatestConversionAudit200Response) GetNetworks() []ConversionAuditAnswerNetworksInner {
+	if o == nil {
+		var ret []ConversionAuditAnswerNetworksInner
+		return ret
+	}
+
+	return o.Networks
+}
+
+// GetNetworksOk returns a tuple with the Networks field value
+// and a boolean to check if the value has been set.
+func (o *GetLatestConversionAudit200Response) GetNetworksOk() ([]ConversionAuditAnswerNetworksInner, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Networks, true
+}
+
+// SetNetworks sets field value
+func (o *GetLatestConversionAudit200Response) SetNetworks(v []ConversionAuditAnswerNetworksInner) {
+	o.Networks = v
+}
+
+// GetTopFixes returns the TopFixes field value
+func (o *GetLatestConversionAudit200Response) GetTopFixes() []ConversionAuditAnswerTopFixesInner {
+	if o == nil {
+		var ret []ConversionAuditAnswerTopFixesInner
+		return ret
+	}
+
+	return o.TopFixes
+}
+
+// GetTopFixesOk returns a tuple with the TopFixes field value
+// and a boolean to check if the value has been set.
+func (o *GetLatestConversionAudit200Response) GetTopFixesOk() ([]ConversionAuditAnswerTopFixesInner, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TopFixes, true
+}
+
+// SetTopFixes sets field value
+func (o *GetLatestConversionAudit200Response) SetTopFixes(v []ConversionAuditAnswerTopFixesInner) {
+	o.TopFixes = v
 }
 
 // GetFixPrompt returns the FixPrompt field value
@@ -162,6 +216,8 @@ func (o GetLatestConversionAudit200Response) MarshalJSON() ([]byte, error) {
 func (o GetLatestConversionAudit200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["report"] = o.Report
+	toSerialize["networks"] = o.Networks
+	toSerialize["topFixes"] = o.TopFixes
 	toSerialize["fixPrompt"] = o.FixPrompt
 	toSerialize["publicReport"] = o.PublicReport.Get()
 	toSerialize["host"] = o.Host
@@ -174,6 +230,8 @@ func (o *GetLatestConversionAudit200Response) UnmarshalJSON(data []byte) (err er
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"report",
+		"networks",
+		"topFixes",
 		"fixPrompt",
 		"publicReport",
 		"host",

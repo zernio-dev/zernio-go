@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.762.0
+API version: 1.763.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,8 @@ type ConversionAuditReportPlatformsInner struct {
 	ServerSide bool `json:"serverSide"`
 	// The only server path seen is the Zernio site tag relay; `serverSideVerified` says whether its delivery to this platform is proven.
 	RelayedBy *string `json:"relayedBy,omitempty"`
+	// On a scan that read the page source only: the pixel comes from the Zernio site tag's settings, which load it after consent, not from the page. Its ids are not reported.
+	LoadedBy *string `json:"loadedBy,omitempty"`
 	// The Zernio site tag on the page belongs to an account whose destination for this platform accepted the site's events in the last 7 days.
 	ServerSideVerified *bool `json:"serverSideVerified,omitempty"`
 	// A third-party server-side tool installed on the site that may already send this platform's events (Elevar, Littledata, Stape), when its status is `likely`. Which platforms the tool feeds is not visible from the page.
@@ -204,6 +206,38 @@ func (o *ConversionAuditReportPlatformsInner) HasRelayedBy() bool {
 // SetRelayedBy gets a reference to the given string and assigns it to the RelayedBy field.
 func (o *ConversionAuditReportPlatformsInner) SetRelayedBy(v string) {
 	o.RelayedBy = &v
+}
+
+// GetLoadedBy returns the LoadedBy field value if set, zero value otherwise.
+func (o *ConversionAuditReportPlatformsInner) GetLoadedBy() string {
+	if o == nil || IsNil(o.LoadedBy) {
+		var ret string
+		return ret
+	}
+	return *o.LoadedBy
+}
+
+// GetLoadedByOk returns a tuple with the LoadedBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionAuditReportPlatformsInner) GetLoadedByOk() (*string, bool) {
+	if o == nil || IsNil(o.LoadedBy) {
+		return nil, false
+	}
+	return o.LoadedBy, true
+}
+
+// HasLoadedBy returns a boolean if a field has been set.
+func (o *ConversionAuditReportPlatformsInner) HasLoadedBy() bool {
+	if o != nil && !IsNil(o.LoadedBy) {
+		return true
+	}
+
+	return false
+}
+
+// SetLoadedBy gets a reference to the given string and assigns it to the LoadedBy field.
+func (o *ConversionAuditReportPlatformsInner) SetLoadedBy(v string) {
+	o.LoadedBy = &v
 }
 
 // GetServerSideVerified returns the ServerSideVerified field value if set, zero value otherwise.
@@ -486,6 +520,9 @@ func (o ConversionAuditReportPlatformsInner) ToMap() (map[string]interface{}, er
 	toSerialize["serverSide"] = o.ServerSide
 	if !IsNil(o.RelayedBy) {
 		toSerialize["relayedBy"] = o.RelayedBy
+	}
+	if !IsNil(o.LoadedBy) {
+		toSerialize["loadedBy"] = o.LoadedBy
 	}
 	if !IsNil(o.ServerSideVerified) {
 		toSerialize["serverSideVerified"] = o.ServerSideVerified

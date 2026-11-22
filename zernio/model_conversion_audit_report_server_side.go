@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.762.0
+API version: 1.763.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,8 @@ type ConversionAuditReportServerSide struct {
 	Status  string                                        `json:"status"`
 	Signals []ConversionAuditReportServerSideSignalsInner `json:"signals"`
 	Note    string                                        `json:"note"`
+	// The server-side path that collects on the site's own domain, when the scan saw one.
+	FirstPartyCollection *string `json:"firstPartyCollection,omitempty"`
 }
 
 type _ConversionAuditReportServerSide ConversionAuditReportServerSide
@@ -121,6 +123,38 @@ func (o *ConversionAuditReportServerSide) SetNote(v string) {
 	o.Note = v
 }
 
+// GetFirstPartyCollection returns the FirstPartyCollection field value if set, zero value otherwise.
+func (o *ConversionAuditReportServerSide) GetFirstPartyCollection() string {
+	if o == nil || IsNil(o.FirstPartyCollection) {
+		var ret string
+		return ret
+	}
+	return *o.FirstPartyCollection
+}
+
+// GetFirstPartyCollectionOk returns a tuple with the FirstPartyCollection field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionAuditReportServerSide) GetFirstPartyCollectionOk() (*string, bool) {
+	if o == nil || IsNil(o.FirstPartyCollection) {
+		return nil, false
+	}
+	return o.FirstPartyCollection, true
+}
+
+// HasFirstPartyCollection returns a boolean if a field has been set.
+func (o *ConversionAuditReportServerSide) HasFirstPartyCollection() bool {
+	if o != nil && !IsNil(o.FirstPartyCollection) {
+		return true
+	}
+
+	return false
+}
+
+// SetFirstPartyCollection gets a reference to the given string and assigns it to the FirstPartyCollection field.
+func (o *ConversionAuditReportServerSide) SetFirstPartyCollection(v string) {
+	o.FirstPartyCollection = &v
+}
+
 func (o ConversionAuditReportServerSide) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -134,6 +168,9 @@ func (o ConversionAuditReportServerSide) ToMap() (map[string]interface{}, error)
 	toSerialize["status"] = o.Status
 	toSerialize["signals"] = o.Signals
 	toSerialize["note"] = o.Note
+	if !IsNil(o.FirstPartyCollection) {
+		toSerialize["firstPartyCollection"] = o.FirstPartyCollection
+	}
 	return toSerialize, nil
 }
 
