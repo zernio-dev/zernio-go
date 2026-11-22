@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.764.0
+API version: 1.765.0
 Contact: support@zernio.com
 */
 
@@ -7999,7 +7999,7 @@ Reddit errors:
 
 ### TikTok notes
 
-This path sends OFFLINE conversions (in-store / CRM / call-center), not web-pixel events. Each event must carry an email or phone (TikTok requires at least one).
+Two kinds of destination. A TikTok pixel (`destinationId` `pixel:<pixelCode>`, as listed by the destinations endpoint) takes website events through the Events API and honours `testCode`. An offline event set (its numeric id) takes in-store, CRM and call-center conversions; each of those events must carry an email or phone.
 
 The connected TikTok ads account must have granted the Offline Events permission; older grants must reconnect.
 
@@ -8024,6 +8024,8 @@ Batching is handled automatically. Per-platform caps:
 - LinkedIn: 5000, all-or-nothing per chunk.
 - OpenAI Ads: 1000 per request. Larger submissions are split into 1000-event chunks, each all-or-nothing (a malformed event fails every event in that chunk, not the whole request).
 - Reddit: works the same way as OpenAI Ads, in chunks of 1000.
+- TikTok: 1000. Microsoft: its offline conversion cap per request. X: 500. Other destinations are sent in their platform's own batch size or one event at a time.
+- An event a platform would refuse (too old, no usable identifier) is listed in `failures` and the rest of its chunk is still sent, except on Google Ads and OpenAI Ads.
 
 ### Dedup
 
