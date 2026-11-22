@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,9 @@ type Automation struct {
 	AutomationOneOf  *AutomationOneOf
 	AutomationOneOf1 *AutomationOneOf1
 	AutomationOneOf2 *AutomationOneOf2
+	AutomationOneOf3 *AutomationOneOf3
+	AutomationOneOf4 *AutomationOneOf4
+	AutomationOneOf5 *AutomationOneOf5
 }
 
 // AutomationOneOfAsAutomation is a convenience function that returns AutomationOneOf wrapped in Automation
@@ -42,6 +45,27 @@ func AutomationOneOf1AsAutomation(v *AutomationOneOf1) Automation {
 func AutomationOneOf2AsAutomation(v *AutomationOneOf2) Automation {
 	return Automation{
 		AutomationOneOf2: v,
+	}
+}
+
+// AutomationOneOf3AsAutomation is a convenience function that returns AutomationOneOf3 wrapped in Automation
+func AutomationOneOf3AsAutomation(v *AutomationOneOf3) Automation {
+	return Automation{
+		AutomationOneOf3: v,
+	}
+}
+
+// AutomationOneOf4AsAutomation is a convenience function that returns AutomationOneOf4 wrapped in Automation
+func AutomationOneOf4AsAutomation(v *AutomationOneOf4) Automation {
+	return Automation{
+		AutomationOneOf4: v,
+	}
+}
+
+// AutomationOneOf5AsAutomation is a convenience function that returns AutomationOneOf5 wrapped in Automation
+func AutomationOneOf5AsAutomation(v *AutomationOneOf5) Automation {
+	return Automation{
+		AutomationOneOf5: v,
 	}
 }
 
@@ -100,11 +124,65 @@ func (dst *Automation) UnmarshalJSON(data []byte) error {
 		dst.AutomationOneOf2 = nil
 	}
 
+	// try to unmarshal data into AutomationOneOf3
+	err = newStrictDecoder(data).Decode(&dst.AutomationOneOf3)
+	if err == nil {
+		jsonAutomationOneOf3, _ := json.Marshal(dst.AutomationOneOf3)
+		if string(jsonAutomationOneOf3) == "{}" { // empty struct
+			dst.AutomationOneOf3 = nil
+		} else {
+			if err = validator.Validate(dst.AutomationOneOf3); err != nil {
+				dst.AutomationOneOf3 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AutomationOneOf3 = nil
+	}
+
+	// try to unmarshal data into AutomationOneOf4
+	err = newStrictDecoder(data).Decode(&dst.AutomationOneOf4)
+	if err == nil {
+		jsonAutomationOneOf4, _ := json.Marshal(dst.AutomationOneOf4)
+		if string(jsonAutomationOneOf4) == "{}" { // empty struct
+			dst.AutomationOneOf4 = nil
+		} else {
+			if err = validator.Validate(dst.AutomationOneOf4); err != nil {
+				dst.AutomationOneOf4 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AutomationOneOf4 = nil
+	}
+
+	// try to unmarshal data into AutomationOneOf5
+	err = newStrictDecoder(data).Decode(&dst.AutomationOneOf5)
+	if err == nil {
+		jsonAutomationOneOf5, _ := json.Marshal(dst.AutomationOneOf5)
+		if string(jsonAutomationOneOf5) == "{}" { // empty struct
+			dst.AutomationOneOf5 = nil
+		} else {
+			if err = validator.Validate(dst.AutomationOneOf5); err != nil {
+				dst.AutomationOneOf5 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AutomationOneOf5 = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.AutomationOneOf = nil
 		dst.AutomationOneOf1 = nil
 		dst.AutomationOneOf2 = nil
+		dst.AutomationOneOf3 = nil
+		dst.AutomationOneOf4 = nil
+		dst.AutomationOneOf5 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(Automation)")
 	} else if match == 1 {
@@ -128,6 +206,18 @@ func (src Automation) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AutomationOneOf2)
 	}
 
+	if src.AutomationOneOf3 != nil {
+		return json.Marshal(&src.AutomationOneOf3)
+	}
+
+	if src.AutomationOneOf4 != nil {
+		return json.Marshal(&src.AutomationOneOf4)
+	}
+
+	if src.AutomationOneOf5 != nil {
+		return json.Marshal(&src.AutomationOneOf5)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -148,6 +238,18 @@ func (obj *Automation) GetActualInstance() interface{} {
 		return obj.AutomationOneOf2
 	}
 
+	if obj.AutomationOneOf3 != nil {
+		return obj.AutomationOneOf3
+	}
+
+	if obj.AutomationOneOf4 != nil {
+		return obj.AutomationOneOf4
+	}
+
+	if obj.AutomationOneOf5 != nil {
+		return obj.AutomationOneOf5
+	}
+
 	// all schemas are nil
 	return nil
 }
@@ -164,6 +266,18 @@ func (obj Automation) GetActualInstanceValue() interface{} {
 
 	if obj.AutomationOneOf2 != nil {
 		return *obj.AutomationOneOf2
+	}
+
+	if obj.AutomationOneOf3 != nil {
+		return *obj.AutomationOneOf3
+	}
+
+	if obj.AutomationOneOf4 != nil {
+		return *obj.AutomationOneOf4
+	}
+
+	if obj.AutomationOneOf5 != nil {
+		return *obj.AutomationOneOf5
 	}
 
 	// all schemas are nil

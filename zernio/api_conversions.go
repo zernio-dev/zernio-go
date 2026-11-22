@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -489,6 +489,142 @@ func (a *ConversionsAPIService) AdjustConversionsExecute(r ConversionsAPIAdjustC
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConversionsAPICheckTrackingSiteProxyRequest struct {
+	ctx        context.Context
+	ApiService *ConversionsAPIService
+	siteId     string
+}
+
+func (r ConversionsAPICheckTrackingSiteProxyRequest) Execute() (*CreateTrackingSite201Response, *http.Response, error) {
+	return r.ApiService.CheckTrackingSiteProxyExecute(r)
+}
+
+/*
+CheckTrackingSiteProxy Check a tracking site's own-domain path
+
+Loads `https://<first domain><proxyPath>/z.js` from Zernio's servers and records whether your proxy serves the tag, signed, in `proxy.status`. Once `verified`, cookies come from your own domain and Safari keeps them; a connected Tag Manager container moves to the path. Also runs after `proxyPath` changes.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param siteId
+	@return ConversionsAPICheckTrackingSiteProxyRequest
+*/
+func (a *ConversionsAPIService) CheckTrackingSiteProxy(ctx context.Context, siteId string) ConversionsAPICheckTrackingSiteProxyRequest {
+	return ConversionsAPICheckTrackingSiteProxyRequest{
+		ApiService: a,
+		ctx:        ctx,
+		siteId:     siteId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateTrackingSite201Response
+func (a *ConversionsAPIService) CheckTrackingSiteProxyExecute(r ConversionsAPICheckTrackingSiteProxyRequest) (*CreateTrackingSite201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateTrackingSite201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConversionsAPIService.CheckTrackingSiteProxy")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/tracking-sites/{siteId}/proxy-check"
+	localVarPath = strings.Replace(localVarPath, "{"+"siteId"+"}", url.PathEscape(parameterValueToString(r.siteId, "siteId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1635,7 +1771,7 @@ func (r ConversionsAPICreateTrackingSiteRequest) Execute() (*CreateTrackingSite2
 /*
 CreateTrackingSite Turn on server-side tracking for a website
 
-Creates a tracking site. With `storeAccountId`, Zernio installs its tag on the connected Shopify, WordPress (WooCommerce), Wix or Webflow store. With only `url`, paste the returned `install.snippet` into the site.
+Creates a tracking site. With `storeAccountId`, Zernio installs its tag on the connected Shopify, WordPress (WooCommerce), Wix or Webflow store. With only `url`, paste the returned `install.snippet` into the site. Adding a `url` the profile already tracks returns that site and its snippet instead of creating a second one.
 
 The ad accounts you picked for each connection get a forwarding rule, so website conversions reach them at once. `checks` shows each step; `setup.status` turns `ready` when all have passed.
 
@@ -7791,9 +7927,17 @@ Relays one or more events to the target ad platform's native Conversions API. Th
 - OpenAI Ads (`openaiads`) via its Conversions API (a separate host, `bzr.openai.com`)
 - Pinterest (`pinterestads`) via `POST /v5/ad_accounts/{id}/events`
 - Reddit (`redditads`) via the Reddit Conversions API (`POST /api/v3/pixels/{pixelId}/conversion_events`)
-- Microsoft Advertising (`microsoftads`) via offline conversion uploads (`ApplyOfflineConversions`)
+- Microsoft Advertising (`microsoftads`) via offline conversion uploads (`ApplyOfflineConversions`) or the UET Conversions API (`POST https://capi.uet.microsoft.com/v1/{tagId}/events`)
 - X Ads (`xads`) via the X Conversion API (`POST /12/measurement/conversions/{pixelId}`)
 - Snapchat (`snapchatads`) via the Snapchat Conversions API (`POST https://tr.snapchat.com/v3/{pixelId}/events`)
+- Taboola (`taboolaads`) via its S2S postback (`GET https://trc.taboola.com/actions-handler/log/3/s2s-action`), one request per event
+- Klaviyo (`klaviyo`) via the Events API (`POST https://a.klaviyo.com/api/events`)
+- Attentive (`attentive`) via the eCommerce and Custom Events APIs
+- Impact (`impact`) via the Conversions API (`POST /Advertisers/{AccountSID}/Conversions`)
+- Awin (`awin`) via the Conversion API (`POST /s2s/advertiser/{advertiserId}/orders`)
+- Campaign Manager 360 (`campaignmanager360`) via the Data Manager API `ingestEvents`, to a Floodlight activity
+- The Trade Desk (`tradedeskads`) via the Real-Time Conversions API (`POST https://insight.adsrvr.org/track/realtimeconversion`)
+- Amazon Ads (`amazonads`) via the Amazon Ads Conversions API (`POST /adsApi/v1/create/events`)
 
 ### `destinationId` per platform
 
@@ -7804,9 +7948,21 @@ Relays one or more events to the target ad platform's native Conversions API. Th
 - OpenAI Ads: pixel wire id (numeric `pixel_id`, distinct from the internal pixel id), as returned by `GET /v1/ads/conversions/destinations`
 - Pinterest: numeric ad account id, e.g. `549755885175` (Pinterest attributes to the ad account, not to a tag)
 - Reddit: pixel id, e.g. `a2_abc123`, as returned by `GET /v1/ads/conversions/destinations` (any other shape returns 400)
-- Microsoft Advertising: offline conversion goal, e.g. `accounts/123456789/conversionGoals/987654`. Each event needs `clickIds.msclkid`, an `email` or a `phone`; the goal decides the event type.
+- Microsoft Advertising offline conversion goal, e.g. `accounts/123456789/conversionGoals/987654`. Each event needs `clickIds.msclkid`, an `email` or a `phone`; the goal decides the event type.
+- Microsoft Advertising UET tag, e.g. `accounts/123456789/uetTags/26012345`. Each event needs `clickIds.msclkid`, an `email` or a `phone`. `eventName` is the event action its goals match (a `PageView` with `sourceUrl` is a page load) and `eventId` dedups with the browser tag.
+- Microsoft has no test mode: with `testCode`, UET events are sent with ad storage denied, which Microsoft excludes from conversion attribution and retargeting.
 - X Ads: X Pixel event id, e.g. `tw-rbhhj-rcfms`. Each event needs `clickIds.twclid`, an `email`, a `phone`, or `ipAddress` plus `userAgent`; the event decides the type and `eventId` is sent as `conversion_id`.
 - Snapchat: the connection's Snap Pixel ID, e.g. `1a2b3c4d-5e6f-4a8b-9c0d-1e2f3a4b5c6d`. Each event needs an `email`, a `phone`, or `ipAddress` plus `userAgent`; website events also need `sourceUrl`. With `testCode`, events go to Snap's validate endpoint and are not recorded.
+- Taboola: the connection's numeric Taboola Account ID, e.g. `1234567`. Each event needs `clickIds.tblci`. `eventName` is sent as is and must equal the Event Name of a conversion rule in Realize (case-sensitive). Taboola has no test mode, so `testCode` is ignored.
+- Klaviyo: the connection's Klaviyo account id. Each event needs an unhashed `email`, a `phone` with its country code, or an `externalId`; `eventId` is the `unique_id`. Klaviyo has no test mode, so a `testCode` is refused.
+- Klaviyo metrics: `Purchase` is `Placed Order`, `InitiateCheckout` `Started Checkout`, `ViewContent` `Viewed Product`, `AddToCart` `Added to Cart`; any other name is a metric of that name.
+- Attentive: the connection's Attentive company id. `Purchase`, `AddToCart` and `ViewContent` with priced `items` go to the eCommerce endpoints; every other event goes out as a custom event named `eventName`. Each event needs an unhashed `email`, a `phone` with its country code, or an `externalId`. A `testCode` is refused.
+- Impact: `<program id>:<event type id>`, e.g. `12345:67890`. Each event needs `clickIds.irclickid`, an `externalId` (sent as `CustomerId`) or `platformData.promo_code`; the email is sent SHA-256 hashed. Priced `items` are sent as item lines, otherwise `value` as the order subtotal. A `testCode` is refused: credit a test partner instead.
+- Awin: the connection's advertiser id. Each event needs `clickIds.awc` (or `platformData.voucher`), `value` and `currency`; `value` is the order amount on the `DEFAULT` commission group (`platformData.commission_group` overrides it). With `testCode`, orders are sent with `isTest` and not tracked.
+- Impact and Awin refuse browsing and funnel steps (`ViewContent`, `AddToCart`, `InitiateCheckout` and the like): they pay a partner for every conversion they get.
+- Campaign Manager 360: `<floodlightConfigurationId>:<floodlightActivityId>`, e.g. `1234567:7654321`. Each event needs `clickIds.gclid` or `clickIds.dclid` (a hashed email or phone only enhances it); `eventId` is the transaction id Google dedups on. With `testCode`, events are only validated (`validateOnly`) and not recorded.
+- The Trade Desk: the connection's tracking tag id, e.g. `abc1234`. Each event needs `clickIds.tdid`, `clickIds.uid2` or `clickIds.uid2Token`; `eventId` is sent as `order_id`. TTD has no test mode, so an event with `testCode` is not sent (code `TEST_MODE_UNSUPPORTED`).
+- Amazon Ads: `<region>:<profileId>:<accountId>:<country>`, e.g. `EU:42:ENTITY1ABC:DE`. Each event needs an `email` or a `phone` (sent hashed); `eventId` is Amazon's dedup key; standard event names keep their name and custom ones are sent as `Custom` (Amazon caps conversion definitions at 100). No test mode: an event with `testCode` is not sent.
 
 Callers can list valid destinations via `GET /v1/ads/conversions/destinations`.
 
@@ -8048,6 +8204,19 @@ The recommended way to send conversions. Sends conversion events once and forwar
 - Each destination receives the events exactly as `POST /v1/ads/conversions` would send them, so the per-platform notes there (hashing, batching, `eventName` semantics, dedup on `eventId`) apply here too.
 - A destination saved with `eventNames` only receives events with those names.
 - One destination failing never blocks the others: each one reports its own result.
+
+### Consent
+
+Send each visitor's consent on the event (`events[].consent`) or for the whole request (`consent`), as Google Consent Mode's four signals. Zernio applies it per destination for visitors in the EEA, the UK and Switzerland, read from `user.country` (website events use the visitor's country):
+
+- A signal left out counts as `DENIED`. Zernio has no setting to change this.
+- Meta, LinkedIn, TikTok, Pinterest, Reddit, X, Snapchat, Microsoft, OpenAI and AppLovin get the event only with `adUserData: GRANTED` and neither `adStorage` nor `adPersonalization` `DENIED`.
+- Google Ads gets every event with `adUserData` and `adPersonalization` set, a missing one as `DENIED`. Google decides what it can use.
+- Google Analytics gets the event only with `analyticsStorage: GRANTED`, with the same ad signals.
+- An event left out is reported on its destination as `drops` (with `consent_denied` or `consent_missing`), as `dropped` on `GET /v1/events/{eventId}`, and counted in `GET /v1/events/overview`. It is still stored and counted in your results.
+- Visitors elsewhere, or with no `user.country`, are sent as before with the consent they carry.
+
+Zernio applies the consent you send; it does not collect it or give legal advice. Profiles created before this rule started (Nov 2026) keep sending as before until they are switched over.
 
 ### Storage
 
@@ -9183,6 +9352,10 @@ Changes the site's name, domains, consent mode, custom subdomain or own-domain p
 `proxyPath` serves the tag from a path of the site itself, such as `brand.com/zt`, through a proxy on your server. The response's `proxy.secret` signs what the proxy forwards. `null` removes it.
 
 `googleTagIds` lists the site's own Google tags that the same proxy relays to Google's tag gateway. Load each from its `proxy.googleTags[].src` instead of googletagmanager.com. `null` or an empty list removes them.
+
+`pixels` lists the ad pixels the tag loads for you. In the EEA, UK and Switzerland none loads until the visitor accepts on the site's consent banner. Elsewhere `consentMode` decides. Remove your own copy of each pixel, or it fires twice. `null` or an empty list removes them.
+
+`consentModeBridge` writes the banner's answer into Google Consent Mode v2. The tag reads OneTrust, Cookiebot, Usercentrics, Didomi, Shopify's privacy banner and any IAB TCF v2 banner.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param siteId

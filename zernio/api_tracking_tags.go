@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -2099,6 +2099,7 @@ When the site cannot run the pixel, nothing is left behind and the call answers 
 - `wordpress_com_plan`: a WordPress.com plan that strips scripts (plans without plugins).
 - `no_widget_areas`: the theme has no widget areas (block themes such as Twenty Twenty-Five).
 - `widgets_api_unavailable`: no widgets REST API (WordPress older than 5.8, or disabled).
+- `jetpack_site`: a self-hosted site connected through Jetpack with a WordPress.com login. WordPress.com does not pass widget calls to Jetpack sites; connect the site as self-hosted with an Application Password instead.
 
 The `error` message names the manual alternative (Meta's official WordPress plugin).
 

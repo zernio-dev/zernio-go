@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -17,17 +17,27 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// AutomationDefinition - An automation of one of three kinds, told apart by its shape:  - **Ad rule**: a `schedule` trigger over campaigns, ad sets, ads, Google keywords or Google search terms, with metric `conditions` and ad `steps`. - **Event**: a Zernio event in `trigger.type`, narrowed by `trigger.filter`, with notify steps, or none to only record each matching event as a check. - **Scheduled**: a `schedule` trigger over `subjects.each: post`, narrowed by `filter`, with notify and boost steps.
+// AutomationDefinition - An automation of one of six kinds. The kind follows from `trigger.type`, each type belonging to one kind; a `schedule` is an ad rule unless `subjects.each` is `post`, and a flow may leave `trigger.type` out:  - **Ad rule**: a `schedule` trigger over campaigns, ad sets, ads, Google keywords or Google search terms, with metric `conditions` and ad `steps`. - **Event**: a Zernio event in `trigger.type`, narrowed by `trigger.filter`, with notify steps, or none to only record each matching event as a check. - **Scheduled**: a `schedule` trigger over `subjects.each: post`, narrowed by `filter`, with notify and boost steps. - **Sequence**: an `enrollment` trigger on one account, with message steps sent over time. - **Comment to DM**: a comment door in `trigger.type` (`comment.keyword`, `comment.live`, `story.reply`, `story.mention`) with a `graph`. - **Flow**: a workflow trigger (`inbound_message`, `api_call`, `comment` and the others) with the builder's `graph`; `trigger.type` may be left out, read from the graph's trigger node.
 type AutomationDefinition struct {
 	AdRuleAutomationDefinition    *AdRuleAutomationDefinition
+	CommentAutomationDefinition   *CommentAutomationDefinition
 	EventAutomationDefinition     *EventAutomationDefinition
+	FlowAutomationDefinition      *FlowAutomationDefinition
 	ScheduledAutomationDefinition *ScheduledAutomationDefinition
+	SequenceAutomationDefinition  *SequenceAutomationDefinition
 }
 
 // AdRuleAutomationDefinitionAsAutomationDefinition is a convenience function that returns AdRuleAutomationDefinition wrapped in AutomationDefinition
 func AdRuleAutomationDefinitionAsAutomationDefinition(v *AdRuleAutomationDefinition) AutomationDefinition {
 	return AutomationDefinition{
 		AdRuleAutomationDefinition: v,
+	}
+}
+
+// CommentAutomationDefinitionAsAutomationDefinition is a convenience function that returns CommentAutomationDefinition wrapped in AutomationDefinition
+func CommentAutomationDefinitionAsAutomationDefinition(v *CommentAutomationDefinition) AutomationDefinition {
+	return AutomationDefinition{
+		CommentAutomationDefinition: v,
 	}
 }
 
@@ -38,10 +48,24 @@ func EventAutomationDefinitionAsAutomationDefinition(v *EventAutomationDefinitio
 	}
 }
 
+// FlowAutomationDefinitionAsAutomationDefinition is a convenience function that returns FlowAutomationDefinition wrapped in AutomationDefinition
+func FlowAutomationDefinitionAsAutomationDefinition(v *FlowAutomationDefinition) AutomationDefinition {
+	return AutomationDefinition{
+		FlowAutomationDefinition: v,
+	}
+}
+
 // ScheduledAutomationDefinitionAsAutomationDefinition is a convenience function that returns ScheduledAutomationDefinition wrapped in AutomationDefinition
 func ScheduledAutomationDefinitionAsAutomationDefinition(v *ScheduledAutomationDefinition) AutomationDefinition {
 	return AutomationDefinition{
 		ScheduledAutomationDefinition: v,
+	}
+}
+
+// SequenceAutomationDefinitionAsAutomationDefinition is a convenience function that returns SequenceAutomationDefinition wrapped in AutomationDefinition
+func SequenceAutomationDefinitionAsAutomationDefinition(v *SequenceAutomationDefinition) AutomationDefinition {
+	return AutomationDefinition{
+		SequenceAutomationDefinition: v,
 	}
 }
 
@@ -66,6 +90,23 @@ func (dst *AutomationDefinition) UnmarshalJSON(data []byte) error {
 		dst.AdRuleAutomationDefinition = nil
 	}
 
+	// try to unmarshal data into CommentAutomationDefinition
+	err = newStrictDecoder(data).Decode(&dst.CommentAutomationDefinition)
+	if err == nil {
+		jsonCommentAutomationDefinition, _ := json.Marshal(dst.CommentAutomationDefinition)
+		if string(jsonCommentAutomationDefinition) == "{}" { // empty struct
+			dst.CommentAutomationDefinition = nil
+		} else {
+			if err = validator.Validate(dst.CommentAutomationDefinition); err != nil {
+				dst.CommentAutomationDefinition = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.CommentAutomationDefinition = nil
+	}
+
 	// try to unmarshal data into EventAutomationDefinition
 	err = newStrictDecoder(data).Decode(&dst.EventAutomationDefinition)
 	if err == nil {
@@ -81,6 +122,23 @@ func (dst *AutomationDefinition) UnmarshalJSON(data []byte) error {
 		}
 	} else {
 		dst.EventAutomationDefinition = nil
+	}
+
+	// try to unmarshal data into FlowAutomationDefinition
+	err = newStrictDecoder(data).Decode(&dst.FlowAutomationDefinition)
+	if err == nil {
+		jsonFlowAutomationDefinition, _ := json.Marshal(dst.FlowAutomationDefinition)
+		if string(jsonFlowAutomationDefinition) == "{}" { // empty struct
+			dst.FlowAutomationDefinition = nil
+		} else {
+			if err = validator.Validate(dst.FlowAutomationDefinition); err != nil {
+				dst.FlowAutomationDefinition = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.FlowAutomationDefinition = nil
 	}
 
 	// try to unmarshal data into ScheduledAutomationDefinition
@@ -100,11 +158,31 @@ func (dst *AutomationDefinition) UnmarshalJSON(data []byte) error {
 		dst.ScheduledAutomationDefinition = nil
 	}
 
+	// try to unmarshal data into SequenceAutomationDefinition
+	err = newStrictDecoder(data).Decode(&dst.SequenceAutomationDefinition)
+	if err == nil {
+		jsonSequenceAutomationDefinition, _ := json.Marshal(dst.SequenceAutomationDefinition)
+		if string(jsonSequenceAutomationDefinition) == "{}" { // empty struct
+			dst.SequenceAutomationDefinition = nil
+		} else {
+			if err = validator.Validate(dst.SequenceAutomationDefinition); err != nil {
+				dst.SequenceAutomationDefinition = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.SequenceAutomationDefinition = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.AdRuleAutomationDefinition = nil
+		dst.CommentAutomationDefinition = nil
 		dst.EventAutomationDefinition = nil
+		dst.FlowAutomationDefinition = nil
 		dst.ScheduledAutomationDefinition = nil
+		dst.SequenceAutomationDefinition = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(AutomationDefinition)")
 	} else if match == 1 {
@@ -120,12 +198,24 @@ func (src AutomationDefinition) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AdRuleAutomationDefinition)
 	}
 
+	if src.CommentAutomationDefinition != nil {
+		return json.Marshal(&src.CommentAutomationDefinition)
+	}
+
 	if src.EventAutomationDefinition != nil {
 		return json.Marshal(&src.EventAutomationDefinition)
 	}
 
+	if src.FlowAutomationDefinition != nil {
+		return json.Marshal(&src.FlowAutomationDefinition)
+	}
+
 	if src.ScheduledAutomationDefinition != nil {
 		return json.Marshal(&src.ScheduledAutomationDefinition)
+	}
+
+	if src.SequenceAutomationDefinition != nil {
+		return json.Marshal(&src.SequenceAutomationDefinition)
 	}
 
 	return nil, nil // no data in oneOf schemas
@@ -140,12 +230,24 @@ func (obj *AutomationDefinition) GetActualInstance() interface{} {
 		return obj.AdRuleAutomationDefinition
 	}
 
+	if obj.CommentAutomationDefinition != nil {
+		return obj.CommentAutomationDefinition
+	}
+
 	if obj.EventAutomationDefinition != nil {
 		return obj.EventAutomationDefinition
 	}
 
+	if obj.FlowAutomationDefinition != nil {
+		return obj.FlowAutomationDefinition
+	}
+
 	if obj.ScheduledAutomationDefinition != nil {
 		return obj.ScheduledAutomationDefinition
+	}
+
+	if obj.SequenceAutomationDefinition != nil {
+		return obj.SequenceAutomationDefinition
 	}
 
 	// all schemas are nil
@@ -158,12 +260,24 @@ func (obj AutomationDefinition) GetActualInstanceValue() interface{} {
 		return *obj.AdRuleAutomationDefinition
 	}
 
+	if obj.CommentAutomationDefinition != nil {
+		return *obj.CommentAutomationDefinition
+	}
+
 	if obj.EventAutomationDefinition != nil {
 		return *obj.EventAutomationDefinition
 	}
 
+	if obj.FlowAutomationDefinition != nil {
+		return *obj.FlowAutomationDefinition
+	}
+
 	if obj.ScheduledAutomationDefinition != nil {
 		return *obj.ScheduledAutomationDefinition
+	}
+
+	if obj.SequenceAutomationDefinition != nil {
+		return *obj.SequenceAutomationDefinition
 	}
 
 	// all schemas are nil

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -19,14 +19,22 @@ import (
 
 // UpdateAutomationRequestStepsInner - struct for UpdateAutomationRequestStepsInner
 type UpdateAutomationRequestStepsInner struct {
-	AutomationBoostStep *AutomationBoostStep
-	AutomationStep      *AutomationStep
+	AutomationBoostStep    *AutomationBoostStep
+	AutomationSequenceStep *AutomationSequenceStep
+	AutomationStep         *AutomationStep
 }
 
 // AutomationBoostStepAsUpdateAutomationRequestStepsInner is a convenience function that returns AutomationBoostStep wrapped in UpdateAutomationRequestStepsInner
 func AutomationBoostStepAsUpdateAutomationRequestStepsInner(v *AutomationBoostStep) UpdateAutomationRequestStepsInner {
 	return UpdateAutomationRequestStepsInner{
 		AutomationBoostStep: v,
+	}
+}
+
+// AutomationSequenceStepAsUpdateAutomationRequestStepsInner is a convenience function that returns AutomationSequenceStep wrapped in UpdateAutomationRequestStepsInner
+func AutomationSequenceStepAsUpdateAutomationRequestStepsInner(v *AutomationSequenceStep) UpdateAutomationRequestStepsInner {
+	return UpdateAutomationRequestStepsInner{
+		AutomationSequenceStep: v,
 	}
 }
 
@@ -58,6 +66,23 @@ func (dst *UpdateAutomationRequestStepsInner) UnmarshalJSON(data []byte) error {
 		dst.AutomationBoostStep = nil
 	}
 
+	// try to unmarshal data into AutomationSequenceStep
+	err = newStrictDecoder(data).Decode(&dst.AutomationSequenceStep)
+	if err == nil {
+		jsonAutomationSequenceStep, _ := json.Marshal(dst.AutomationSequenceStep)
+		if string(jsonAutomationSequenceStep) == "{}" { // empty struct
+			dst.AutomationSequenceStep = nil
+		} else {
+			if err = validator.Validate(dst.AutomationSequenceStep); err != nil {
+				dst.AutomationSequenceStep = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AutomationSequenceStep = nil
+	}
+
 	// try to unmarshal data into AutomationStep
 	err = newStrictDecoder(data).Decode(&dst.AutomationStep)
 	if err == nil {
@@ -78,6 +103,7 @@ func (dst *UpdateAutomationRequestStepsInner) UnmarshalJSON(data []byte) error {
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.AutomationBoostStep = nil
+		dst.AutomationSequenceStep = nil
 		dst.AutomationStep = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(UpdateAutomationRequestStepsInner)")
@@ -92,6 +118,10 @@ func (dst *UpdateAutomationRequestStepsInner) UnmarshalJSON(data []byte) error {
 func (src UpdateAutomationRequestStepsInner) MarshalJSON() ([]byte, error) {
 	if src.AutomationBoostStep != nil {
 		return json.Marshal(&src.AutomationBoostStep)
+	}
+
+	if src.AutomationSequenceStep != nil {
+		return json.Marshal(&src.AutomationSequenceStep)
 	}
 
 	if src.AutomationStep != nil {
@@ -110,6 +140,10 @@ func (obj *UpdateAutomationRequestStepsInner) GetActualInstance() interface{} {
 		return obj.AutomationBoostStep
 	}
 
+	if obj.AutomationSequenceStep != nil {
+		return obj.AutomationSequenceStep
+	}
+
 	if obj.AutomationStep != nil {
 		return obj.AutomationStep
 	}
@@ -122,6 +156,10 @@ func (obj *UpdateAutomationRequestStepsInner) GetActualInstance() interface{} {
 func (obj UpdateAutomationRequestStepsInner) GetActualInstanceValue() interface{} {
 	if obj.AutomationBoostStep != nil {
 		return *obj.AutomationBoostStep
+	}
+
+	if obj.AutomationSequenceStep != nil {
+		return *obj.AutomationSequenceStep
 	}
 
 	if obj.AutomationStep != nil {

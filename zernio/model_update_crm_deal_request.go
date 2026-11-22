@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -21,15 +21,15 @@ var _ MappedNullable = &UpdateCrmDealRequest{}
 // UpdateCrmDealRequest struct for UpdateCrmDealRequest
 type UpdateCrmDealRequest struct {
 	Name *string `json:"name,omitempty"`
-	// HubSpot stage id or Salesforce `StageName`.
+	// HubSpot stage id, Salesforce `StageName` or HighLevel pipeline stage id.
 	Stage  *string         `json:"stage,omitempty"`
 	Amount NullableFloat32 `json:"amount,omitempty"`
-	// ISO 4217 code. Multi-currency portals and orgs only.
+	// ISO 4217 code. Multi-currency HubSpot portals and Salesforce orgs only.
 	Currency  *string        `json:"currency,omitempty" validate:"regexp=^[A-Z]{3}$"`
 	CloseDate NullableString `json:"closeDate,omitempty"`
 	// An id from `GET /v1/crm/{accountId}/owners`.
 	OwnerId *string `json:"ownerId,omitempty"`
-	// Native fields by internal name (HubSpot `lifecyclestage`, Salesforce `LeadSource` or `Industry__c`). A unified field of the same request wins over its native twin. `null` clears a field.
+	// Native fields by internal name (HubSpot `lifecyclestage`, Salesforce `LeadSource` or `Industry__c`). On HighLevel, a record field (`source`, an opportunity `status`) or else a custom field id or key. A unified field of the same request wins over its native twin. `null` clears a field.
 	Properties map[string]CrmNativePropertiesValue `json:"properties,omitempty"`
 }
 

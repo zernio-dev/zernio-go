@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the UpdateAdRequestCreative type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdRequestCreative{}
 
-// UpdateAdRequestCreative Replace or patch the ad's creative. Meta, TikTok, and LinkedIn.  **Meta**: patch-style.  - Pass any subset: omitted fields are preserved from the live creative, including media (`image_hash`/`video_id` reused, no re-upload) and `url_tags`. Sending the full set (`headline`, `body`, `callToAction`, `linkUrl`, `imageUrl`) rebuilds the creative from scratch. - Partial patching reads the live `object_story_spec`, which Meta strips on SHARE / page-post / dark post creatives; those return 422 asking for the full set. A `videoUrl`/`videoId` on an image creative is a type change and also needs the full set. - Creatives with an `asset_feed_spec` (several text options, placement or language rules) take text, link, tracking and enhancement edits in place. The new creative is built from the live asset feed with the edited text, and every video, image, label and rule is kept. - On those, `body`, `headline` and `description` replace the one option of that kind. When the feed has several, send `bodies`, `headlines` or `descriptions` with one text per option, in order. `linkUrl` replaces the feed's only destination link. - Image, video and call-to-action changes on asset_feed creatives apply to the story spec (Multiple Text Options creatives). They return 422 when the feed itself holds the images, videos or call-to-action options. - The live creative's deprecated `standard_enhancements` setting (Meta subcode 3858504) is never sent back; every other enhancement setting is kept. - `existingCreativeId` repoints the ad at a creative from GET /v1/ads/creatives and ignores every other field. - Meta creatives are immutable: any change creates a new creative and repoints the ad. The old creative stays on the ad account for historical reporting. - `creativeFeatures` is Meta-only. Omitted settings are preserved from the live creative, including on full rebuilds; a supplied creativeFeatures map overrides individual existing keys.  - A `creative` object with no recognised field (`promotion` alone does not count) is a 400 `missing_required_field` when it is the only update, and is ignored (no creative rebuild) next to another updatable field.  **TikTok**: patch-style. Pass any subset.  - `headline` is ignored (no headline slot). - `body` becomes the in-feed `ad_text`; `linkUrl` becomes `landing_page_url`; `videoUrl` triggers a fresh upload. - `description`, `videoId` and `existingCreativeId` are Meta-only and return 400.  **LinkedIn**: requires new media (image via `imageUrl` or video via `videoUrl`); a text-only update returns 400.  - Uploads the media, creates a new inline media creative on the same campaign, and removes the old creative. `platformAdId` and `creative.creativeId` move to the new one. - The new creative keeps the old one's state. A `DRAFT` or `PAUSED` creative is re-created `DRAFT`, because LinkedIn refuses `PAUSED` before review is `APPROVED`. - If the old creative cannot be removed, the new one is deleted and the LinkedIn error is returned. - `videoId` and `existingCreativeId` are Meta-only and return 400.
+// UpdateAdRequestCreative Replace or patch the ad's creative. Meta, TikTok, and LinkedIn.  **Meta**: patch-style.  - Pass any subset: omitted fields are preserved from the live creative, including media (`image_hash`/`video_id` reused, no re-upload) and `url_tags`. Sending the full set (`headline`, `body`, `callToAction`, `linkUrl`, `imageUrl`) rebuilds the creative from scratch.  - On lead ads, the instant form is kept through every edit, and `linkUrl` is ignored: Meta requires a lead ad's links to stay on its instant-form link. An edit that changes only `linkUrl` leaves the ad's creative as it is. - Partial patching reads the live `object_story_spec`, which Meta strips on SHARE / page-post / dark post creatives; those return 422 asking for the full set. A `videoUrl`/`videoId` on an image creative is a type change and also needs the full set. - Creatives with an `asset_feed_spec` (several text options, placement or language rules) take text, link, tracking and enhancement edits in place. The new creative is built from the live asset feed with the edited text, and every video, image, label and rule is kept. - On those, `body`, `headline` and `description` replace the one option of that kind. When the feed has several, send `bodies`, `headlines` or `descriptions` with one text per option, in order. `linkUrl` replaces the feed's only destination link. - Image, video and call-to-action changes on asset_feed creatives apply to the story spec (Multiple Text Options creatives). They return 422 when the feed itself holds the images, videos or call-to-action options. - The live creative's deprecated `standard_enhancements` setting (Meta subcode 3858504) is never sent back; every other enhancement setting is kept. - `existingCreativeId` repoints the ad at a creative from GET /v1/ads/creatives and ignores every other field. - `leadGenFormId` moves a lead ad to another instant form. `caption` sets the display link of a link ad. - In a dynamic creative ad set (`is_dynamic_creative`), only asset feed creatives run: a full rebuild, or `existingCreativeId` pointing at a creative without an asset feed, returns 422. Text edits update the feed. - Meta creatives are immutable: any change creates a new creative and repoints the ad. The old creative stays on the ad account for historical reporting. - `creativeFeatures` is Meta-only. Omitted settings are preserved from the live creative, including on full rebuilds; a supplied creativeFeatures map overrides individual existing keys.  - A `creative` object with no recognised field (`promotion` alone does not count) is a 400 `missing_required_field` when it is the only update, and is ignored (no creative rebuild) next to another updatable field.  **TikTok**: patch-style. Pass any subset.  - `headline` is ignored (no headline slot). - `body` becomes the in-feed `ad_text`; `linkUrl` becomes `landing_page_url`; `videoUrl` triggers a fresh upload. - `description`, `videoId` and `existingCreativeId` are Meta-only and return 400.  **LinkedIn**: requires new media (image via `imageUrl` or video via `videoUrl`); a text-only update returns 400.  - Uploads the media, creates a new inline media creative on the same campaign, and removes the old creative. `platformAdId` and `creative.creativeId` move to the new one. - The new creative keeps the old one's state. A `DRAFT` or `PAUSED` creative is re-created `DRAFT`, because LinkedIn refuses `PAUSED` before review is `APPROVED`. - If the old creative cannot be removed, the new one is deleted and the LinkedIn error is returned. - `videoId` and `existingCreativeId` are Meta-only and return 400.
 type UpdateAdRequestCreative struct {
 	// Not supported. Send null or omit the field, and set the Promotion on the ad in Ads Manager. Any object is rejected with 400 invalid_field_value.  Meta validates creative_sourcing_spec.promotion_metadata_spec on the create call and then discards it, so a Promotion set through the Marketing API never reaches the creative. Verified on 2026-09-11 across Graph v19.0 to v25.0 and every write path.
 	Promotion map[string]interface{} `json:"promotion,omitempty"`
@@ -52,6 +52,10 @@ type UpdateAdRequestCreative struct {
 	VideoId *string `json:"videoId,omitempty"`
 	// Meta only. Repoint the ad at an existing library creative (from GET /v1/ads/creatives); all other creative fields are ignored.
 	ExistingCreativeId *string `json:"existingCreativeId,omitempty"`
+	// Meta only. Moves a lead ad to another instant form (from GET /v1/ads/lead-forms), keeping the rest of the creative. Returns 422 on an ad that does not open an instant form.
+	LeadGenFormId *string `json:"leadGenFormId,omitempty" validate:"regexp=^\\\\d+$"`
+	// Meta only. The display link shown on link (image) ads, Meta link_data.caption. Returns 422 on video creatives and on asset feeds without a link.
+	Caption *string `json:"caption,omitempty"`
 }
 
 // NewUpdateAdRequestCreative instantiates a new UpdateAdRequestCreative object
@@ -648,6 +652,70 @@ func (o *UpdateAdRequestCreative) SetExistingCreativeId(v string) {
 	o.ExistingCreativeId = &v
 }
 
+// GetLeadGenFormId returns the LeadGenFormId field value if set, zero value otherwise.
+func (o *UpdateAdRequestCreative) GetLeadGenFormId() string {
+	if o == nil || IsNil(o.LeadGenFormId) {
+		var ret string
+		return ret
+	}
+	return *o.LeadGenFormId
+}
+
+// GetLeadGenFormIdOk returns a tuple with the LeadGenFormId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestCreative) GetLeadGenFormIdOk() (*string, bool) {
+	if o == nil || IsNil(o.LeadGenFormId) {
+		return nil, false
+	}
+	return o.LeadGenFormId, true
+}
+
+// HasLeadGenFormId returns a boolean if a field has been set.
+func (o *UpdateAdRequestCreative) HasLeadGenFormId() bool {
+	if o != nil && !IsNil(o.LeadGenFormId) {
+		return true
+	}
+
+	return false
+}
+
+// SetLeadGenFormId gets a reference to the given string and assigns it to the LeadGenFormId field.
+func (o *UpdateAdRequestCreative) SetLeadGenFormId(v string) {
+	o.LeadGenFormId = &v
+}
+
+// GetCaption returns the Caption field value if set, zero value otherwise.
+func (o *UpdateAdRequestCreative) GetCaption() string {
+	if o == nil || IsNil(o.Caption) {
+		var ret string
+		return ret
+	}
+	return *o.Caption
+}
+
+// GetCaptionOk returns a tuple with the Caption field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestCreative) GetCaptionOk() (*string, bool) {
+	if o == nil || IsNil(o.Caption) {
+		return nil, false
+	}
+	return o.Caption, true
+}
+
+// HasCaption returns a boolean if a field has been set.
+func (o *UpdateAdRequestCreative) HasCaption() bool {
+	if o != nil && !IsNil(o.Caption) {
+		return true
+	}
+
+	return false
+}
+
+// SetCaption gets a reference to the given string and assigns it to the Caption field.
+func (o *UpdateAdRequestCreative) SetCaption(v string) {
+	o.Caption = &v
+}
+
 func (o UpdateAdRequestCreative) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -711,6 +779,12 @@ func (o UpdateAdRequestCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ExistingCreativeId) {
 		toSerialize["existingCreativeId"] = o.ExistingCreativeId
+	}
+	if !IsNil(o.LeadGenFormId) {
+		toSerialize["leadGenFormId"] = o.LeadGenFormId
+	}
+	if !IsNil(o.Caption) {
+		toSerialize["caption"] = o.Caption
 	}
 	return toSerialize, nil
 }

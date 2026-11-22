@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -21,19 +21,20 @@ import (
 // checks if the CrmDeal type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CrmDeal{}
 
-// CrmDeal A HubSpot deal or a Salesforce Opportunity.
+// CrmDeal A HubSpot deal, a Salesforce Opportunity or a HighLevel opportunity.
 type CrmDeal struct {
 	Id         string         `json:"id"`
 	ObjectType string         `json:"objectType"`
 	Name       NullableString `json:"name"`
-	// HubSpot stage id (`closedwon`) or Salesforce `StageName` (`Closed Won`).
+	// HubSpot stage id (`closedwon`), Salesforce `StageName` (`Closed Won`) or HighLevel pipeline stage id. A HighLevel opportunity's won or lost `status` is a native field (`properties=status`).
 	Stage  NullableString  `json:"stage"`
 	Amount NullableFloat32 `json:"amount"`
-	// ISO 4217. HubSpot sets it on multi-currency portals only. Salesforce gives the Opportunity's currency on multi-currency orgs, else the org currency read from its Currency Locale.
-	Currency  NullableString `json:"currency"`
+	// ISO 4217. HubSpot sets it on multi-currency portals only. Salesforce gives the Opportunity's currency on multi-currency orgs, else the org currency read from its Currency Locale. Null on HighLevel.
+	Currency NullableString `json:"currency"`
+	// Null on HighLevel, whose opportunities have no close date.
 	CloseDate NullableString `json:"closeDate"`
 	OwnerId   NullableString `json:"ownerId"`
-	// Associated HubSpot contacts, or the Opportunity's contact roles (primary first).
+	// Associated HubSpot contacts, the Opportunity's contact roles (primary first), or the HighLevel opportunity's contact.
 	ContactIds []string               `json:"contactIds"`
 	CreatedAt  NullableTime           `json:"createdAt"`
 	UpdatedAt  NullableTime           `json:"updatedAt"`

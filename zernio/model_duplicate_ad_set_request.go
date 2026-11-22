@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -40,6 +40,8 @@ type DuplicateAdSetRequest struct {
 	// Text appended to each renamed object's name.
 	RenameSuffix *string `json:"renameSuffix,omitempty"`
 	SyncAfter    *bool   `json:"syncAfter,omitempty"`
+	// Meta only. Rebuilds each copied ad (new creative and ad) instead of using Meta's native copy, so the creative carries applink_treatment web_only and Ads Manager shows Website as the only destination.  - Omitted or false: keeps the native copy. - 400 with `deepCopy: false`, and when an ad runs an existing post (its creative cannot be rebuilt). - Meta rejects it when the campaign uses Website and App conversion locations.
+	WebsiteOnly *bool `json:"websiteOnly,omitempty"`
 }
 
 type _DuplicateAdSetRequest DuplicateAdSetRequest
@@ -386,6 +388,38 @@ func (o *DuplicateAdSetRequest) SetSyncAfter(v bool) {
 	o.SyncAfter = &v
 }
 
+// GetWebsiteOnly returns the WebsiteOnly field value if set, zero value otherwise.
+func (o *DuplicateAdSetRequest) GetWebsiteOnly() bool {
+	if o == nil || IsNil(o.WebsiteOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.WebsiteOnly
+}
+
+// GetWebsiteOnlyOk returns a tuple with the WebsiteOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DuplicateAdSetRequest) GetWebsiteOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.WebsiteOnly) {
+		return nil, false
+	}
+	return o.WebsiteOnly, true
+}
+
+// HasWebsiteOnly returns a boolean if a field has been set.
+func (o *DuplicateAdSetRequest) HasWebsiteOnly() bool {
+	if o != nil && !IsNil(o.WebsiteOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetWebsiteOnly gets a reference to the given bool and assigns it to the WebsiteOnly field.
+func (o *DuplicateAdSetRequest) SetWebsiteOnly(v bool) {
+	o.WebsiteOnly = &v
+}
+
 func (o DuplicateAdSetRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -423,6 +457,9 @@ func (o DuplicateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SyncAfter) {
 		toSerialize["syncAfter"] = o.SyncAfter
+	}
+	if !IsNil(o.WebsiteOnly) {
+		toSerialize["websiteOnly"] = o.WebsiteOnly
 	}
 	return toSerialize, nil
 }

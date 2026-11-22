@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,8 @@ type SendEventsRequest struct {
 	Events    []ConversionEvent `json:"events"`
 	// Send to these destinations instead of the saved ones (every event goes to each).
 	Destinations []SendEventsRequestDestinationsInner `json:"destinations,omitempty"`
-	Consent      *SendConversionsRequestConsent       `json:"consent,omitempty"`
+	// Every event's consent, unless the event sets its own (see Consent above).
+	Consent *EventConsent `json:"consent,omitempty"`
 	// Forwarded as each platform test code (see POST /v1/ads/conversions). A root-level `test_event_code` is accepted as an alias. Test events are not stored.
 	TestCode *string `json:"testCode,omitempty"`
 	// `sync` sends to every destination before answering (200, per-destination results). `async` stores and queues the sends, then answers 202 at once; each send is retried while the platform fails for now, and its outcome shows on GET /v1/events/{eventId}. Requests with `testCode` always send now.
@@ -140,9 +141,9 @@ func (o *SendEventsRequest) SetDestinations(v []SendEventsRequestDestinationsInn
 }
 
 // GetConsent returns the Consent field value if set, zero value otherwise.
-func (o *SendEventsRequest) GetConsent() SendConversionsRequestConsent {
+func (o *SendEventsRequest) GetConsent() EventConsent {
 	if o == nil || IsNil(o.Consent) {
-		var ret SendConversionsRequestConsent
+		var ret EventConsent
 		return ret
 	}
 	return *o.Consent
@@ -150,7 +151,7 @@ func (o *SendEventsRequest) GetConsent() SendConversionsRequestConsent {
 
 // GetConsentOk returns a tuple with the Consent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SendEventsRequest) GetConsentOk() (*SendConversionsRequestConsent, bool) {
+func (o *SendEventsRequest) GetConsentOk() (*EventConsent, bool) {
 	if o == nil || IsNil(o.Consent) {
 		return nil, false
 	}
@@ -166,8 +167,8 @@ func (o *SendEventsRequest) HasConsent() bool {
 	return false
 }
 
-// SetConsent gets a reference to the given SendConversionsRequestConsent and assigns it to the Consent field.
-func (o *SendEventsRequest) SetConsent(v SendConversionsRequestConsent) {
+// SetConsent gets a reference to the given EventConsent and assigns it to the Consent field.
+func (o *SendEventsRequest) SetConsent(v EventConsent) {
 	o.Consent = &v
 }
 

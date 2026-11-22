@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -18,22 +18,28 @@ import (
 // checks if the UpdateAutomationRequest type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAutomationRequest{}
 
-// UpdateAutomationRequest struct for UpdateAutomationRequest
+// UpdateAutomationRequest Any top-level field of the automation's kind (see `AutomationDefinition`); the fields of another kind are refused.
 type UpdateAutomationRequest struct {
-	Name       *string                          `json:"name,omitempty"`
-	Status     *string                          `json:"status,omitempty"`
-	Trigger    *AutomationTrigger               `json:"trigger,omitempty"`
+	Name *string `json:"name,omitempty"`
+	// Sequences and flows.
+	Description *string `json:"description,omitempty"`
+	// `draft` only for a sequence or a flow that has not left draft.
+	Status *string `json:"status,omitempty"`
+	// The trigger of the automation's kind.
+	Trigger map[string]interface{} `json:"trigger,omitempty"`
+	// Comment to DM.
+	OrTriggers []map[string]interface{} `json:"orTriggers,omitempty"`
+	// Comment to DM and flows: the whole graph, as read.
+	Graph      map[string]interface{}           `json:"graph,omitempty"`
 	Subjects   *UpdateAutomationRequestSubjects `json:"subjects,omitempty"`
 	Filter     *AutomationFactCondition         `json:"filter,omitempty"`
 	Conditions *AdRuleConditions                `json:"conditions,omitempty"`
 	Alert      NullableAutomationAlert          `json:"alert,omitempty"`
 	// The steps the automation's kind takes.
-	Steps                []UpdateAutomationRequestStepsInner `json:"steps,omitempty"`
-	Limits               *UpdateAutomationRequestLimits      `json:"limits,omitempty"`
-	AdditionalProperties map[string]interface{}
+	Steps []UpdateAutomationRequestStepsInner `json:"steps,omitempty"`
+	// The limits of the automation's kind.
+	Limits map[string]interface{} `json:"limits,omitempty"`
 }
-
-type _UpdateAutomationRequest UpdateAutomationRequest
 
 // NewUpdateAutomationRequest instantiates a new UpdateAutomationRequest object
 // This constructor will assign default values to properties that have it defined,
@@ -84,6 +90,38 @@ func (o *UpdateAutomationRequest) SetName(v string) {
 	o.Name = &v
 }
 
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *UpdateAutomationRequest) GetDescription() string {
+	if o == nil || IsNil(o.Description) {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAutomationRequest) GetDescriptionOk() (*string, bool) {
+	if o == nil || IsNil(o.Description) {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *UpdateAutomationRequest) HasDescription() bool {
+	if o != nil && !IsNil(o.Description) {
+		return true
+	}
+
+	return false
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *UpdateAutomationRequest) SetDescription(v string) {
+	o.Description = &v
+}
+
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *UpdateAutomationRequest) GetStatus() string {
 	if o == nil || IsNil(o.Status) {
@@ -117,19 +155,19 @@ func (o *UpdateAutomationRequest) SetStatus(v string) {
 }
 
 // GetTrigger returns the Trigger field value if set, zero value otherwise.
-func (o *UpdateAutomationRequest) GetTrigger() AutomationTrigger {
+func (o *UpdateAutomationRequest) GetTrigger() map[string]interface{} {
 	if o == nil || IsNil(o.Trigger) {
-		var ret AutomationTrigger
+		var ret map[string]interface{}
 		return ret
 	}
-	return *o.Trigger
+	return o.Trigger
 }
 
 // GetTriggerOk returns a tuple with the Trigger field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateAutomationRequest) GetTriggerOk() (*AutomationTrigger, bool) {
+func (o *UpdateAutomationRequest) GetTriggerOk() (map[string]interface{}, bool) {
 	if o == nil || IsNil(o.Trigger) {
-		return nil, false
+		return map[string]interface{}{}, false
 	}
 	return o.Trigger, true
 }
@@ -143,9 +181,73 @@ func (o *UpdateAutomationRequest) HasTrigger() bool {
 	return false
 }
 
-// SetTrigger gets a reference to the given AutomationTrigger and assigns it to the Trigger field.
-func (o *UpdateAutomationRequest) SetTrigger(v AutomationTrigger) {
-	o.Trigger = &v
+// SetTrigger gets a reference to the given map[string]interface{} and assigns it to the Trigger field.
+func (o *UpdateAutomationRequest) SetTrigger(v map[string]interface{}) {
+	o.Trigger = v
+}
+
+// GetOrTriggers returns the OrTriggers field value if set, zero value otherwise.
+func (o *UpdateAutomationRequest) GetOrTriggers() []map[string]interface{} {
+	if o == nil || IsNil(o.OrTriggers) {
+		var ret []map[string]interface{}
+		return ret
+	}
+	return o.OrTriggers
+}
+
+// GetOrTriggersOk returns a tuple with the OrTriggers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAutomationRequest) GetOrTriggersOk() ([]map[string]interface{}, bool) {
+	if o == nil || IsNil(o.OrTriggers) {
+		return nil, false
+	}
+	return o.OrTriggers, true
+}
+
+// HasOrTriggers returns a boolean if a field has been set.
+func (o *UpdateAutomationRequest) HasOrTriggers() bool {
+	if o != nil && !IsNil(o.OrTriggers) {
+		return true
+	}
+
+	return false
+}
+
+// SetOrTriggers gets a reference to the given []map[string]interface{} and assigns it to the OrTriggers field.
+func (o *UpdateAutomationRequest) SetOrTriggers(v []map[string]interface{}) {
+	o.OrTriggers = v
+}
+
+// GetGraph returns the Graph field value if set, zero value otherwise.
+func (o *UpdateAutomationRequest) GetGraph() map[string]interface{} {
+	if o == nil || IsNil(o.Graph) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.Graph
+}
+
+// GetGraphOk returns a tuple with the Graph field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAutomationRequest) GetGraphOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Graph) {
+		return map[string]interface{}{}, false
+	}
+	return o.Graph, true
+}
+
+// HasGraph returns a boolean if a field has been set.
+func (o *UpdateAutomationRequest) HasGraph() bool {
+	if o != nil && !IsNil(o.Graph) {
+		return true
+	}
+
+	return false
+}
+
+// SetGraph gets a reference to the given map[string]interface{} and assigns it to the Graph field.
+func (o *UpdateAutomationRequest) SetGraph(v map[string]interface{}) {
+	o.Graph = v
 }
 
 // GetSubjects returns the Subjects field value if set, zero value otherwise.
@@ -320,19 +422,19 @@ func (o *UpdateAutomationRequest) SetSteps(v []UpdateAutomationRequestStepsInner
 }
 
 // GetLimits returns the Limits field value if set, zero value otherwise.
-func (o *UpdateAutomationRequest) GetLimits() UpdateAutomationRequestLimits {
+func (o *UpdateAutomationRequest) GetLimits() map[string]interface{} {
 	if o == nil || IsNil(o.Limits) {
-		var ret UpdateAutomationRequestLimits
+		var ret map[string]interface{}
 		return ret
 	}
-	return *o.Limits
+	return o.Limits
 }
 
 // GetLimitsOk returns a tuple with the Limits field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateAutomationRequest) GetLimitsOk() (*UpdateAutomationRequestLimits, bool) {
+func (o *UpdateAutomationRequest) GetLimitsOk() (map[string]interface{}, bool) {
 	if o == nil || IsNil(o.Limits) {
-		return nil, false
+		return map[string]interface{}{}, false
 	}
 	return o.Limits, true
 }
@@ -346,9 +448,9 @@ func (o *UpdateAutomationRequest) HasLimits() bool {
 	return false
 }
 
-// SetLimits gets a reference to the given UpdateAutomationRequestLimits and assigns it to the Limits field.
-func (o *UpdateAutomationRequest) SetLimits(v UpdateAutomationRequestLimits) {
-	o.Limits = &v
+// SetLimits gets a reference to the given map[string]interface{} and assigns it to the Limits field.
+func (o *UpdateAutomationRequest) SetLimits(v map[string]interface{}) {
+	o.Limits = v
 }
 
 func (o UpdateAutomationRequest) MarshalJSON() ([]byte, error) {
@@ -364,11 +466,20 @@ func (o UpdateAutomationRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
+	if !IsNil(o.Description) {
+		toSerialize["description"] = o.Description
+	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
 	}
 	if !IsNil(o.Trigger) {
 		toSerialize["trigger"] = o.Trigger
+	}
+	if !IsNil(o.OrTriggers) {
+		toSerialize["orTriggers"] = o.OrTriggers
+	}
+	if !IsNil(o.Graph) {
+		toSerialize["graph"] = o.Graph
 	}
 	if !IsNil(o.Subjects) {
 		toSerialize["subjects"] = o.Subjects
@@ -388,41 +499,7 @@ func (o UpdateAutomationRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Limits) {
 		toSerialize["limits"] = o.Limits
 	}
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
-	}
-
 	return toSerialize, nil
-}
-
-func (o *UpdateAutomationRequest) UnmarshalJSON(data []byte) (err error) {
-	varUpdateAutomationRequest := _UpdateAutomationRequest{}
-
-	err = json.Unmarshal(data, &varUpdateAutomationRequest)
-
-	if err != nil {
-		return err
-	}
-
-	*o = UpdateAutomationRequest(varUpdateAutomationRequest)
-
-	additionalProperties := make(map[string]interface{})
-
-	if err = json.Unmarshal(data, &additionalProperties); err == nil {
-		delete(additionalProperties, "name")
-		delete(additionalProperties, "status")
-		delete(additionalProperties, "trigger")
-		delete(additionalProperties, "subjects")
-		delete(additionalProperties, "filter")
-		delete(additionalProperties, "conditions")
-		delete(additionalProperties, "alert")
-		delete(additionalProperties, "steps")
-		delete(additionalProperties, "limits")
-		o.AdditionalProperties = additionalProperties
-	}
-
-	return err
 }
 
 type NullableUpdateAutomationRequest struct {

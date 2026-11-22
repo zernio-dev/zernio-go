@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -46,6 +46,8 @@ type ExternalPostWebhookPost struct {
 	IsSharedToFeed *bool `json:"isSharedToFeed,omitempty"`
 	// Instagram only: audio type of the media (MUSIC or ORIGINAL_SOUND). Absent when the platform did not report it.
 	MediaAudioType *string `json:"mediaAudioType,omitempty"`
+	// YouTube only. Start time of an upcoming Premiere or scheduled live stream, absent once it airs. Sent on post.external.created and on any event fired for another change; the airing itself does not fire an event.
+	UpcomingStartAt *time.Time `json:"upcomingStartAt,omitempty"`
 	// Always \"external\". Distinguishes these from Zernio-originated post.* events.
 	Source string `json:"source"`
 	// Detection time of deletion. Present on post.external.deleted; null/absent otherwise.
@@ -429,6 +431,38 @@ func (o *ExternalPostWebhookPost) SetMediaAudioType(v string) {
 	o.MediaAudioType = &v
 }
 
+// GetUpcomingStartAt returns the UpcomingStartAt field value if set, zero value otherwise.
+func (o *ExternalPostWebhookPost) GetUpcomingStartAt() time.Time {
+	if o == nil || IsNil(o.UpcomingStartAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.UpcomingStartAt
+}
+
+// GetUpcomingStartAtOk returns a tuple with the UpcomingStartAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostWebhookPost) GetUpcomingStartAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.UpcomingStartAt) {
+		return nil, false
+	}
+	return o.UpcomingStartAt, true
+}
+
+// HasUpcomingStartAt returns a boolean if a field has been set.
+func (o *ExternalPostWebhookPost) HasUpcomingStartAt() bool {
+	if o != nil && !IsNil(o.UpcomingStartAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetUpcomingStartAt gets a reference to the given time.Time and assigns it to the UpcomingStartAt field.
+func (o *ExternalPostWebhookPost) SetUpcomingStartAt(v time.Time) {
+	o.UpcomingStartAt = &v
+}
+
 // GetSource returns the Source field value
 func (o *ExternalPostWebhookPost) GetSource() string {
 	if o == nil {
@@ -526,6 +560,9 @@ func (o ExternalPostWebhookPost) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MediaAudioType) {
 		toSerialize["mediaAudioType"] = o.MediaAudioType
+	}
+	if !IsNil(o.UpcomingStartAt) {
+		toSerialize["upcomingStartAt"] = o.UpcomingStartAt
 	}
 	toSerialize["source"] = o.Source
 	if o.DeletedAt.IsSet() {

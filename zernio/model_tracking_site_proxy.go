@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the TrackingSiteProxy type satisfies the MappedNullable interface at compile time
@@ -24,6 +25,9 @@ type TrackingSiteProxy struct {
 	Path *string `json:"path,omitempty"`
 	// Signs the visitor's IP and country your proxy forwards. Only on reading or updating one site.
 	Secret NullableString `json:"secret,omitempty"`
+	// The last check of the path. `verified`: it serves the tag, signed, so cookies keep their full life in Safari. `unsigned`: it reaches Zernio without a valid signature, so no cookies are set. `unreachable`: it does not serve the tag. `unchecked`: the path or key changed since.
+	Status    *string      `json:"status,omitempty"`
+	CheckedAt NullableTime `json:"checkedAt,omitempty"`
 	// The loader of each of `googleTagIds` on the site's own domain. Use `src` in place of the tag's googletagmanager.com address.
 	GoogleTags []TrackingSiteProxyGoogleTagsInner `json:"googleTags,omitempty"`
 }
@@ -120,6 +124,81 @@ func (o *TrackingSiteProxy) UnsetSecret() {
 	o.Secret.Unset()
 }
 
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *TrackingSiteProxy) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingSiteProxy) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *TrackingSiteProxy) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *TrackingSiteProxy) SetStatus(v string) {
+	o.Status = &v
+}
+
+// GetCheckedAt returns the CheckedAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *TrackingSiteProxy) GetCheckedAt() time.Time {
+	if o == nil || IsNil(o.CheckedAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.CheckedAt.Get()
+}
+
+// GetCheckedAtOk returns a tuple with the CheckedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TrackingSiteProxy) GetCheckedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CheckedAt.Get(), o.CheckedAt.IsSet()
+}
+
+// HasCheckedAt returns a boolean if a field has been set.
+func (o *TrackingSiteProxy) HasCheckedAt() bool {
+	if o != nil && o.CheckedAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCheckedAt gets a reference to the given NullableTime and assigns it to the CheckedAt field.
+func (o *TrackingSiteProxy) SetCheckedAt(v time.Time) {
+	o.CheckedAt.Set(&v)
+}
+
+// SetCheckedAtNil sets the value for CheckedAt to be an explicit nil
+func (o *TrackingSiteProxy) SetCheckedAtNil() {
+	o.CheckedAt.Set(nil)
+}
+
+// UnsetCheckedAt ensures that no value is present for CheckedAt, not even an explicit nil
+func (o *TrackingSiteProxy) UnsetCheckedAt() {
+	o.CheckedAt.Unset()
+}
+
 // GetGoogleTags returns the GoogleTags field value if set, zero value otherwise.
 func (o *TrackingSiteProxy) GetGoogleTags() []TrackingSiteProxyGoogleTagsInner {
 	if o == nil || IsNil(o.GoogleTags) {
@@ -167,6 +246,12 @@ func (o TrackingSiteProxy) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Secret.IsSet() {
 		toSerialize["secret"] = o.Secret.Get()
+	}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
+	}
+	if o.CheckedAt.IsSet() {
+		toSerialize["checkedAt"] = o.CheckedAt.Get()
 	}
 	if !IsNil(o.GoogleTags) {
 		toSerialize["googleTags"] = o.GoogleTags

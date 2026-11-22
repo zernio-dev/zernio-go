@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,9 @@ type PurchasePhoneNumber202Response struct {
 	Country *string `json:"country,omitempty"`
 	// The type that will be ordered after KYC approval.
 	NumberType *string `json:"numberType,omitempty"`
-	KycUrl     *string `json:"kycUrl,omitempty"`
+	// Echo of the purchaseIntentId you sent. Pass it to the KYC submission (or the KYC share link) so the resulting numbers and their whatsapp.number.* webhooks carry it.
+	PurchaseIntentId *string `json:"purchaseIntentId,omitempty"`
+	KycUrl           *string `json:"kycUrl,omitempty"`
 }
 
 // NewPurchasePhoneNumber202Response instantiates a new PurchasePhoneNumber202Response object
@@ -140,6 +142,38 @@ func (o *PurchasePhoneNumber202Response) SetNumberType(v string) {
 	o.NumberType = &v
 }
 
+// GetPurchaseIntentId returns the PurchaseIntentId field value if set, zero value otherwise.
+func (o *PurchasePhoneNumber202Response) GetPurchaseIntentId() string {
+	if o == nil || IsNil(o.PurchaseIntentId) {
+		var ret string
+		return ret
+	}
+	return *o.PurchaseIntentId
+}
+
+// GetPurchaseIntentIdOk returns a tuple with the PurchaseIntentId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PurchasePhoneNumber202Response) GetPurchaseIntentIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PurchaseIntentId) {
+		return nil, false
+	}
+	return o.PurchaseIntentId, true
+}
+
+// HasPurchaseIntentId returns a boolean if a field has been set.
+func (o *PurchasePhoneNumber202Response) HasPurchaseIntentId() bool {
+	if o != nil && !IsNil(o.PurchaseIntentId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPurchaseIntentId gets a reference to the given string and assigns it to the PurchaseIntentId field.
+func (o *PurchasePhoneNumber202Response) SetPurchaseIntentId(v string) {
+	o.PurchaseIntentId = &v
+}
+
 // GetKycUrl returns the KycUrl field value if set, zero value otherwise.
 func (o *PurchasePhoneNumber202Response) GetKycUrl() string {
 	if o == nil || IsNil(o.KycUrl) {
@@ -190,6 +224,9 @@ func (o PurchasePhoneNumber202Response) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.NumberType) {
 		toSerialize["numberType"] = o.NumberType
+	}
+	if !IsNil(o.PurchaseIntentId) {
+		toSerialize["purchaseIntentId"] = o.PurchaseIntentId
 	}
 	if !IsNil(o.KycUrl) {
 		toSerialize["kycUrl"] = o.KycUrl

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -15,6 +15,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 // checks if the PostMetricContent type satisfies the MappedNullable interface at compile time
@@ -22,16 +23,18 @@ var _ MappedNullable = &PostMetricContent{}
 
 // PostMetricContent struct for PostMetricContent
 type PostMetricContent struct {
-	Content              NullableString                     `json:"content"`
-	ContentNotRetained   *bool                              `json:"contentNotRetained,omitempty"`
-	ThumbnailUrl         NullableString                     `json:"thumbnailUrl"`
-	MediaType            NullableString                     `json:"mediaType"`
-	MediaItems           []PostMetricContentMediaItemsInner `json:"mediaItems"`
-	VideoDurationSeconds NullableFloat32                    `json:"videoDurationSeconds"`
-	MediaProductType     *string                            `json:"mediaProductType,omitempty"`
-	IsAiGenerated        *bool                              `json:"isAiGenerated,omitempty"`
-	IsSharedToFeed       *bool                              `json:"isSharedToFeed,omitempty"`
-	MediaAudioType       *string                            `json:"mediaAudioType,omitempty"`
+	Content              NullableString        `json:"content"`
+	ContentNotRetained   *bool                 `json:"contentNotRetained,omitempty"`
+	ThumbnailUrl         NullableString        `json:"thumbnailUrl"`
+	MediaType            NullableString        `json:"mediaType"`
+	MediaItems           []PostMetricMediaItem `json:"mediaItems"`
+	VideoDurationSeconds NullableFloat32       `json:"videoDurationSeconds"`
+	MediaProductType     *string               `json:"mediaProductType,omitempty"`
+	IsAiGenerated        *bool                 `json:"isAiGenerated,omitempty"`
+	IsSharedToFeed       *bool                 `json:"isSharedToFeed,omitempty"`
+	MediaAudioType       *string               `json:"mediaAudioType,omitempty"`
+	// YouTube only. Start time of an upcoming Premiere or scheduled live stream. Absent once it airs. While it is present, publishedAt is the upload time; after it airs, publishedAt is the time it actually started.
+	UpcomingStartAt *time.Time `json:"upcomingStartAt,omitempty"`
 }
 
 type _PostMetricContent PostMetricContent
@@ -40,7 +43,7 @@ type _PostMetricContent PostMetricContent
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPostMetricContent(content NullableString, thumbnailUrl NullableString, mediaType NullableString, mediaItems []PostMetricContentMediaItemsInner, videoDurationSeconds NullableFloat32) *PostMetricContent {
+func NewPostMetricContent(content NullableString, thumbnailUrl NullableString, mediaType NullableString, mediaItems []PostMetricMediaItem, videoDurationSeconds NullableFloat32) *PostMetricContent {
 	this := PostMetricContent{}
 	this.Content = content
 	this.ThumbnailUrl = thumbnailUrl
@@ -169,9 +172,9 @@ func (o *PostMetricContent) SetMediaType(v string) {
 }
 
 // GetMediaItems returns the MediaItems field value
-func (o *PostMetricContent) GetMediaItems() []PostMetricContentMediaItemsInner {
+func (o *PostMetricContent) GetMediaItems() []PostMetricMediaItem {
 	if o == nil {
-		var ret []PostMetricContentMediaItemsInner
+		var ret []PostMetricMediaItem
 		return ret
 	}
 
@@ -180,7 +183,7 @@ func (o *PostMetricContent) GetMediaItems() []PostMetricContentMediaItemsInner {
 
 // GetMediaItemsOk returns a tuple with the MediaItems field value
 // and a boolean to check if the value has been set.
-func (o *PostMetricContent) GetMediaItemsOk() ([]PostMetricContentMediaItemsInner, bool) {
+func (o *PostMetricContent) GetMediaItemsOk() ([]PostMetricMediaItem, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -188,7 +191,7 @@ func (o *PostMetricContent) GetMediaItemsOk() ([]PostMetricContentMediaItemsInne
 }
 
 // SetMediaItems sets field value
-func (o *PostMetricContent) SetMediaItems(v []PostMetricContentMediaItemsInner) {
+func (o *PostMetricContent) SetMediaItems(v []PostMetricMediaItem) {
 	o.MediaItems = v
 }
 
@@ -346,6 +349,38 @@ func (o *PostMetricContent) SetMediaAudioType(v string) {
 	o.MediaAudioType = &v
 }
 
+// GetUpcomingStartAt returns the UpcomingStartAt field value if set, zero value otherwise.
+func (o *PostMetricContent) GetUpcomingStartAt() time.Time {
+	if o == nil || IsNil(o.UpcomingStartAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.UpcomingStartAt
+}
+
+// GetUpcomingStartAtOk returns a tuple with the UpcomingStartAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostMetricContent) GetUpcomingStartAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.UpcomingStartAt) {
+		return nil, false
+	}
+	return o.UpcomingStartAt, true
+}
+
+// HasUpcomingStartAt returns a boolean if a field has been set.
+func (o *PostMetricContent) HasUpcomingStartAt() bool {
+	if o != nil && !IsNil(o.UpcomingStartAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetUpcomingStartAt gets a reference to the given time.Time and assigns it to the UpcomingStartAt field.
+func (o *PostMetricContent) SetUpcomingStartAt(v time.Time) {
+	o.UpcomingStartAt = &v
+}
+
 func (o PostMetricContent) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -375,6 +410,9 @@ func (o PostMetricContent) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MediaAudioType) {
 		toSerialize["mediaAudioType"] = o.MediaAudioType
+	}
+	if !IsNil(o.UpcomingStartAt) {
+		toSerialize["upcomingStartAt"] = o.UpcomingStartAt
 	}
 	return toSerialize, nil
 }

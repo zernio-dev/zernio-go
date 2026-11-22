@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -36,6 +36,10 @@ type TrackingSite struct {
 	// The site's own Google tags (Tag Manager, GA4, Google Ads) its own-domain path relays to Google, so they load and measure from the site's domain.
 	GoogleTagIds []string                 `json:"googleTagIds,omitempty"`
 	ConsentMode  *TrackingSiteConsentMode `json:"consentMode,omitempty"`
+	// The ad pixels the tag loads itself. In the EEA, UK and Switzerland none loads before the visitor accepts on the site's consent banner; elsewhere `consentMode` decides.
+	Pixels []TrackingSitePixel `json:"pixels,omitempty"`
+	// The tag writes the answer on the site's consent banner into Google Consent Mode v2: denied by default in the EEA, UK and Switzerland, then updated. On for sites created from November 2026.
+	ConsentModeBridge *bool `json:"consentModeBridge,omitempty"`
 	// One per setup step: `script` for the install, then one per ad account the site sends to, keyed by its platform and ids.
 	Checks    []TrackingSiteChecksInner `json:"checks,omitempty"`
 	Setup     *TrackingSiteSetup        `json:"setup,omitempty"`
@@ -444,6 +448,70 @@ func (o *TrackingSite) SetConsentMode(v TrackingSiteConsentMode) {
 	o.ConsentMode = &v
 }
 
+// GetPixels returns the Pixels field value if set, zero value otherwise.
+func (o *TrackingSite) GetPixels() []TrackingSitePixel {
+	if o == nil || IsNil(o.Pixels) {
+		var ret []TrackingSitePixel
+		return ret
+	}
+	return o.Pixels
+}
+
+// GetPixelsOk returns a tuple with the Pixels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingSite) GetPixelsOk() ([]TrackingSitePixel, bool) {
+	if o == nil || IsNil(o.Pixels) {
+		return nil, false
+	}
+	return o.Pixels, true
+}
+
+// HasPixels returns a boolean if a field has been set.
+func (o *TrackingSite) HasPixels() bool {
+	if o != nil && !IsNil(o.Pixels) {
+		return true
+	}
+
+	return false
+}
+
+// SetPixels gets a reference to the given []TrackingSitePixel and assigns it to the Pixels field.
+func (o *TrackingSite) SetPixels(v []TrackingSitePixel) {
+	o.Pixels = v
+}
+
+// GetConsentModeBridge returns the ConsentModeBridge field value if set, zero value otherwise.
+func (o *TrackingSite) GetConsentModeBridge() bool {
+	if o == nil || IsNil(o.ConsentModeBridge) {
+		var ret bool
+		return ret
+	}
+	return *o.ConsentModeBridge
+}
+
+// GetConsentModeBridgeOk returns a tuple with the ConsentModeBridge field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingSite) GetConsentModeBridgeOk() (*bool, bool) {
+	if o == nil || IsNil(o.ConsentModeBridge) {
+		return nil, false
+	}
+	return o.ConsentModeBridge, true
+}
+
+// HasConsentModeBridge returns a boolean if a field has been set.
+func (o *TrackingSite) HasConsentModeBridge() bool {
+	if o != nil && !IsNil(o.ConsentModeBridge) {
+		return true
+	}
+
+	return false
+}
+
+// SetConsentModeBridge gets a reference to the given bool and assigns it to the ConsentModeBridge field.
+func (o *TrackingSite) SetConsentModeBridge(v bool) {
+	o.ConsentModeBridge = &v
+}
+
 // GetChecks returns the Checks field value if set, zero value otherwise.
 func (o *TrackingSite) GetChecks() []TrackingSiteChecksInner {
 	if o == nil || IsNil(o.Checks) {
@@ -617,6 +685,12 @@ func (o TrackingSite) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ConsentMode) {
 		toSerialize["consentMode"] = o.ConsentMode
+	}
+	if !IsNil(o.Pixels) {
+		toSerialize["pixels"] = o.Pixels
+	}
+	if !IsNil(o.ConsentModeBridge) {
+		toSerialize["consentModeBridge"] = o.ConsentModeBridge
 	}
 	if !IsNil(o.Checks) {
 		toSerialize["checks"] = o.Checks

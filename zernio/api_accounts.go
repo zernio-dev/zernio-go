@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -152,6 +152,163 @@ func (a *AccountsAPIService) DeleteAccountExecute(r AccountsAPIDeleteAccountRequ
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AccountsAPIGetAccountRequest struct {
+	ctx        context.Context
+	ApiService *AccountsAPIService
+	accountId  string
+}
+
+func (r AccountsAPIGetAccountRequest) Execute() (*GetAccount200Response, *http.Response, error) {
+	return r.ApiService.GetAccountExecute(r)
+}
+
+/*
+GetAccount Get account
+
+Returns one connected account, in the same shape as an item of `GET /v1/accounts`.
+
+The same access rules apply: a key or a team member limited to some profiles gets a 404 for an account outside them.
+
+An account the list leaves out by default is still returned when you name it:
+
+- one over the plan's profile limit
+- one on a creator profile
+- an ad account listed behind its ads login
+
+A malformed `accountId` returns 400; an unknown account, or one you cannot access, returns 404.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId
+	@return AccountsAPIGetAccountRequest
+*/
+func (a *AccountsAPIService) GetAccount(ctx context.Context, accountId string) AccountsAPIGetAccountRequest {
+	return AccountsAPIGetAccountRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAccount200Response
+func (a *AccountsAPIService) GetAccountExecute(r AccountsAPIGetAccountRequest) (*GetAccount200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAccount200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.GetAccount")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 503 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AccountsAPIGetAccountHealthRequest struct {
 	ctx        context.Context
 	ApiService *AccountsAPIService
@@ -168,6 +325,8 @@ GetAccountHealth Check account health
 Returns detailed health info for a specific account including token status, permissions, and recommendations.
 
 A failing or stalled analytics sync (see `analyticsSync`) raises a healthy account to at least `warning`.
+
+An account the platform has restricted or banned is `error`, with the platform's reason in `issues` and a recommendation that says reconnecting does not lift it.
 
 ### Facebook, Instagram and Threads
 
@@ -186,6 +345,7 @@ The OAuth token can be perfectly valid while Meta refuses to serve the phone-num
 - When the Meta link is dead, `platformConnection.status` is `disconnected` and the overall `status` is `error`.
 - When Meta reports that the number's inbound message webhook does not reach Zernio, or subscribing the number's WhatsApp Business Account to Zernio's webhooks failed at connect, `platformConnection.inboundWebhookSubscribed` is `false`, an entry is added to `issues`, and the overall `status` is at least `warning`.
 - When `platformConnection.phoneStatus` is anything other than `CONNECTED`, an entry is added to `issues` and the overall `status` is at least `warning`; `BANNED` makes it `error`. `disconnectReason` stays null, since reconnecting does not lift a Meta status.
+- When Meta reports `platformConnection.canSendMessage` as `BLOCKED` (for example a payment-method error on the WhatsApp Business Account), an entry is added to `issues` with Meta's own reason, the recommendation is Meta's suggested fix, and the overall `status` is at least `warning`. `LIMITED` does not change `status`. Reconnecting does not lift it.
 
 ### LINE
 
@@ -328,6 +488,20 @@ type AccountsAPIGetAccountPostsRequest struct {
 	ctx        context.Context
 	ApiService *AccountsAPIService
 	accountId  string
+	limit      *int32
+	cursor     *string
+}
+
+// Page size. Values above the maximum return 400 rather than being clamped.
+func (r AccountsAPIGetAccountPostsRequest) Limit(limit int32) AccountsAPIGetAccountPostsRequest {
+	r.limit = &limit
+	return r
+}
+
+// &#x60;pagination.nextCursor&#x60; of the previous page, sent back unchanged. An unreadable cursor returns 400.
+func (r AccountsAPIGetAccountPostsRequest) Cursor(cursor string) AccountsAPIGetAccountPostsRequest {
+	r.cursor = &cursor
+	return r
 }
 
 func (r AccountsAPIGetAccountPostsRequest) Execute() (*GetAccountPosts200Response, *http.Response, error) {
@@ -337,7 +511,20 @@ func (r AccountsAPIGetAccountPostsRequest) Execute() (*GetAccountPosts200Respons
 /*
 GetAccountPosts List posts published on the platform
 
-Returns the 25 most recent posts that exist on the platform for a connected account, read live from the platform API. This covers everything on the account, including posts that were never created through Zernio.
+Returns the most recent posts that exist on the platform for a connected account, newest first, read live from the platform API. This covers everything on the account, including posts that were never created through Zernio.
+
+### Pagination
+
+Returns `limit` posts (25 by default, up to 100). When `pagination.hasMore` is true, send `pagination.nextCursor` back as `cursor` for the next, older page, until `nextCursor` is null.
+
+On TikTok only the newest page is available for now: `pagination.hasMore` is always false there.
+
+On X:
+
+- Every page, the first one included, is a separate X read billed through your X API usage. You control the cost by choosing whether to fetch the next page.
+- A page reads `limit` tweets. X reads at least 5 per request, so a `limit` below 5 is billed as 5 tweets. A tweet read again on the same UTC day is not billed twice.
+- A page can hold fewer than `limit` posts, because replies and reposts are left out.
+- X serves only the newest 800 tweets of a timeline, so `hasMore` turns false past that.
 
 Use it to obtain the platform's own post id, which the analytics endpoints take as input. On YouTube the returned `id` is the video ID that `GET /v1/analytics/youtube/daily-views`, `/video-retention` and `/demographics` expect as `videoId`, so this endpoint is what backs a video picker in your own UI.
 
@@ -391,6 +578,16 @@ func (a *AccountsAPIService) GetAccountPostsExecute(r AccountsAPIGetAccountPosts
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 25
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -522,6 +719,8 @@ func (r AccountsAPIGetAllAccountsHealthRequest) Execute() (*GetAllAccountsHealth
 GetAllAccountsHealth Check accounts health
 
 Returns health status of all connected accounts including token validity, permissions, and issues needing attention. A failing or stalled analytics sync (see `analyticsSync`) raises a healthy account to at least warning.
+
+An account the platform has restricted or banned (for example a WhatsApp number Meta reports as BANNED) is `error`, with the platform's reason in `issues`. `needsReconnect` stays false, since reconnecting does not lift it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AccountsAPIGetAllAccountsHealthRequest
@@ -965,6 +1164,260 @@ func (a *AccountsAPIService) GetFollowerStatsExecute(r AccountsAPIGetFollowerSta
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AccountsAPIGetGohighlevelFunnelTrackingRequest struct {
+	ctx        context.Context
+	ApiService *AccountsAPIService
+	accountId  string
+}
+
+func (r AccountsAPIGetGohighlevelFunnelTrackingRequest) Execute() (*GohighlevelFunnelTracking, *http.Response, error) {
+	return r.ApiService.GetGohighlevelFunnelTrackingExecute(r)
+}
+
+/*
+GetGohighlevelFunnelTracking Get HighLevel funnel tracking
+
+Get the Zernio tag for a connected HighLevel sub-account's funnels and websites, created on the first call, and the line to paste into each funnel's tracking code (the funnel's Settings, then Head tracking code).
+
+Each funnel and website says whether it already carries the tag, and `live` whether the tag has sent its first visit. Visits on tagged pages tie ad clicks to the leads and sales HighLevel records.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The HighLevel account id from `listAccounts`.
+	@return AccountsAPIGetGohighlevelFunnelTrackingRequest
+*/
+func (a *AccountsAPIService) GetGohighlevelFunnelTracking(ctx context.Context, accountId string) AccountsAPIGetGohighlevelFunnelTrackingRequest {
+	return AccountsAPIGetGohighlevelFunnelTrackingRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GohighlevelFunnelTracking
+func (a *AccountsAPIService) GetGohighlevelFunnelTrackingExecute(r AccountsAPIGetGohighlevelFunnelTrackingRequest) (*GohighlevelFunnelTracking, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GohighlevelFunnelTracking
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.GetGohighlevelFunnelTracking")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gohighlevel-funnel-tracking"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AccountsAPIGetGohighlevelSettingsRequest struct {
+	ctx        context.Context
+	ApiService *AccountsAPIService
+	accountId  string
+}
+
+func (r AccountsAPIGetGohighlevelSettingsRequest) Execute() (*GetGohighlevelSettings200Response, *http.Response, error) {
+	return r.ApiService.GetGohighlevelSettingsExecute(r)
+}
+
+/*
+GetGohighlevelSettings Get HighLevel account settings
+
+Read a connected HighLevel sub-account and what Zernio relays from it and writes back to it.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId
+	@return AccountsAPIGetGohighlevelSettingsRequest
+*/
+func (a *AccountsAPIService) GetGohighlevelSettings(ctx context.Context, accountId string) AccountsAPIGetGohighlevelSettingsRequest {
+	return AccountsAPIGetGohighlevelSettingsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetGohighlevelSettings200Response
+func (a *AccountsAPIService) GetGohighlevelSettingsExecute(r AccountsAPIGetGohighlevelSettingsRequest) (*GetGohighlevelSettings200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetGohighlevelSettings200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.GetGohighlevelSettings")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gohighlevel-settings"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2488,6 +2941,132 @@ func (a *AccountsAPIService) ListBusinessPartnersExecute(r AccountsAPIListBusine
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AccountsAPIListGohighlevelAudienceSyncsRequest struct {
+	ctx        context.Context
+	ApiService *AccountsAPIService
+	accountId  string
+}
+
+func (r AccountsAPIListGohighlevelAudienceSyncsRequest) Execute() (*GohighlevelAudienceSyncOverview, *http.Response, error) {
+	return r.ApiService.ListGohighlevelAudienceSyncsExecute(r)
+}
+
+/*
+ListGohighlevelAudienceSyncs List HighLevel tag audience syncs
+
+List the tags of a connected HighLevel sub-account that Zernio keeps as customer list audiences on Meta and Reddit ad accounts, the ad accounts a tag can sync to (`targetChoices`), and the sub-account's tags. Pass a `targetChoices` entry to `startGohighlevelAudienceSync` to start a sync.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The HighLevel account id from `listAccounts`.
+	@return AccountsAPIListGohighlevelAudienceSyncsRequest
+*/
+func (a *AccountsAPIService) ListGohighlevelAudienceSyncs(ctx context.Context, accountId string) AccountsAPIListGohighlevelAudienceSyncsRequest {
+	return AccountsAPIListGohighlevelAudienceSyncsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GohighlevelAudienceSyncOverview
+func (a *AccountsAPIService) ListGohighlevelAudienceSyncsExecute(r AccountsAPIListGohighlevelAudienceSyncsRequest) (*GohighlevelAudienceSyncOverview, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GohighlevelAudienceSyncOverview
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.ListGohighlevelAudienceSyncs")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gohighlevel-audiences"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AccountsAPIListHubSpotContactPropertiesRequest struct {
 	ctx        context.Context
 	ApiService *AccountsAPIService
@@ -3172,6 +3751,407 @@ func (a *AccountsAPIService) SearchTikTokLocationsExecute(r AccountsAPISearchTik
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AccountsAPISendGohighlevelPastWonDealsRequest struct {
+	ctx        context.Context
+	ApiService *AccountsAPIService
+	accountId  string
+}
+
+func (r AccountsAPISendGohighlevelPastWonDealsRequest) Execute() (*SendGohighlevelPastWonDeals200Response, *http.Response, error) {
+	return r.ApiService.SendGohighlevelPastWonDealsExecute(r)
+}
+
+/*
+SendGohighlevelPastWonDeals Send past HighLevel won deals as conversions
+
+Send the opportunities a connected HighLevel sub-account won in the last 90 days through the conversion relay. Each is stored as a Purchase conversion and forwarded to the profile's ad platforms when `reportToAds` is on.
+
+Each call sends up to 50 and skips deals Zernio already holds, so calling again goes on with the rest. `remaining` says how many are left. A deal that fails is picked again on the next call, so stop when a call sends none.
+
+Returns `relay_off` when the conversion relay is off (`updateGohighlevelSettings`). Needs a read-write key.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The HighLevel account id from `listAccounts`.
+	@return AccountsAPISendGohighlevelPastWonDealsRequest
+*/
+func (a *AccountsAPIService) SendGohighlevelPastWonDeals(ctx context.Context, accountId string) AccountsAPISendGohighlevelPastWonDealsRequest {
+	return AccountsAPISendGohighlevelPastWonDealsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SendGohighlevelPastWonDeals200Response
+func (a *AccountsAPIService) SendGohighlevelPastWonDealsExecute(r AccountsAPISendGohighlevelPastWonDealsRequest) (*SendGohighlevelPastWonDeals200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SendGohighlevelPastWonDeals200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.SendGohighlevelPastWonDeals")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gohighlevel-won-deals-backfill"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AccountsAPIStartGohighlevelAudienceSyncRequest struct {
+	ctx                                 context.Context
+	ApiService                          *AccountsAPIService
+	accountId                           string
+	startGohighlevelAudienceSyncRequest *StartGohighlevelAudienceSyncRequest
+}
+
+func (r AccountsAPIStartGohighlevelAudienceSyncRequest) StartGohighlevelAudienceSyncRequest(startGohighlevelAudienceSyncRequest StartGohighlevelAudienceSyncRequest) AccountsAPIStartGohighlevelAudienceSyncRequest {
+	r.startGohighlevelAudienceSyncRequest = &startGohighlevelAudienceSyncRequest
+	return r
+}
+
+func (r AccountsAPIStartGohighlevelAudienceSyncRequest) Execute() (*StartGohighlevelAudienceSync201Response, *http.Response, error) {
+	return r.ApiService.StartGohighlevelAudienceSyncExecute(r)
+}
+
+/*
+StartGohighlevelAudienceSync Sync a HighLevel tag to ad audiences
+
+Keep every HighLevel contact with a tag as a customer list audience on one or more Meta or Reddit ad accounts of the profile. Take `targets` from `targetChoices` of `listGohighlevelAudienceSyncs`.
+
+Zernio creates one audience per ad account and fills it within a few minutes. A contact joins or leaves as soon as the tag is added to or removed from it, and every 6 hours Zernio re-reads the tag. Emails and phones are hashed before upload.
+
+A tag syncs once per sub-account; stop it to change its ad accounts. Needs a read-write key.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The HighLevel account id from `listAccounts`.
+	@return AccountsAPIStartGohighlevelAudienceSyncRequest
+*/
+func (a *AccountsAPIService) StartGohighlevelAudienceSync(ctx context.Context, accountId string) AccountsAPIStartGohighlevelAudienceSyncRequest {
+	return AccountsAPIStartGohighlevelAudienceSyncRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return StartGohighlevelAudienceSync201Response
+func (a *AccountsAPIService) StartGohighlevelAudienceSyncExecute(r AccountsAPIStartGohighlevelAudienceSyncRequest) (*StartGohighlevelAudienceSync201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *StartGohighlevelAudienceSync201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.StartGohighlevelAudienceSync")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gohighlevel-audiences"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.startGohighlevelAudienceSyncRequest == nil {
+		return localVarReturnValue, nil, reportError("startGohighlevelAudienceSyncRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.startGohighlevelAudienceSyncRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AccountsAPIStopGohighlevelAudienceSyncRequest struct {
+	ctx        context.Context
+	ApiService *AccountsAPIService
+	accountId  string
+	syncId     string
+}
+
+func (r AccountsAPIStopGohighlevelAudienceSyncRequest) Execute() (*DeleteAccountGroup200Response, *http.Response, error) {
+	return r.ApiService.StopGohighlevelAudienceSyncExecute(r)
+}
+
+/*
+StopGohighlevelAudienceSync Stop a HighLevel tag audience sync
+
+Stop keeping a tag in sync. Its audiences stay on the ad accounts with their current members, so running ads keep their targeting; delete an audience with `deleteAdAudience`. Needs a read-write key.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The HighLevel account id from `listAccounts`.
+	@param syncId The sync id from `listGohighlevelAudienceSyncs`.
+	@return AccountsAPIStopGohighlevelAudienceSyncRequest
+*/
+func (a *AccountsAPIService) StopGohighlevelAudienceSync(ctx context.Context, accountId string, syncId string) AccountsAPIStopGohighlevelAudienceSyncRequest {
+	return AccountsAPIStopGohighlevelAudienceSyncRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+		syncId:     syncId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return DeleteAccountGroup200Response
+func (a *AccountsAPIService) StopGohighlevelAudienceSyncExecute(r AccountsAPIStopGohighlevelAudienceSyncRequest) (*DeleteAccountGroup200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeleteAccountGroup200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.StopGohighlevelAudienceSync")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gohighlevel-audiences/{syncId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"syncId"+"}", url.PathEscape(parameterValueToString(r.syncId, "syncId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AccountsAPIUpdateAccountRequest struct {
 	ctx                  context.Context
 	ApiService           *AccountsAPIService
@@ -3455,6 +4435,143 @@ func (a *AccountsAPIService) UpdateBlueskySettingsExecute(r AccountsAPIUpdateBlu
 	}
 
 	return localVarHTTPResponse, nil
+}
+
+type AccountsAPIUpdateGohighlevelSettingsRequest struct {
+	ctx                              context.Context
+	ApiService                       *AccountsAPIService
+	accountId                        string
+	updateGohighlevelSettingsRequest *UpdateGohighlevelSettingsRequest
+}
+
+func (r AccountsAPIUpdateGohighlevelSettingsRequest) UpdateGohighlevelSettingsRequest(updateGohighlevelSettingsRequest UpdateGohighlevelSettingsRequest) AccountsAPIUpdateGohighlevelSettingsRequest {
+	r.updateGohighlevelSettingsRequest = &updateGohighlevelSettingsRequest
+	return r
+}
+
+func (r AccountsAPIUpdateGohighlevelSettingsRequest) Execute() (*UpdateGohighlevelSettings200Response, *http.Response, error) {
+	return r.ApiService.UpdateGohighlevelSettingsExecute(r)
+}
+
+/*
+UpdateGohighlevelSettings Update HighLevel account settings
+
+Turn the conversion relay, the write-back to HighLevel contacts, forwarding to the profile's ad platforms, contact sync, conversation logging, delivery marks or the ad lead sync on or off for a connected HighLevel sub-account. Send at least one field; omitted fields keep their value. Settings survive reconnecting the same sub-account.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId
+	@return AccountsAPIUpdateGohighlevelSettingsRequest
+*/
+func (a *AccountsAPIService) UpdateGohighlevelSettings(ctx context.Context, accountId string) AccountsAPIUpdateGohighlevelSettingsRequest {
+	return AccountsAPIUpdateGohighlevelSettingsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateGohighlevelSettings200Response
+func (a *AccountsAPIService) UpdateGohighlevelSettingsExecute(r AccountsAPIUpdateGohighlevelSettingsRequest) (*UpdateGohighlevelSettings200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateGohighlevelSettings200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.UpdateGohighlevelSettings")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gohighlevel-settings"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateGohighlevelSettingsRequest == nil {
+		return localVarReturnValue, nil, reportError("updateGohighlevelSettingsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateGohighlevelSettingsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 type AccountsAPIUpdateHubSpotSettingsRequest struct {
@@ -3934,6 +5051,145 @@ func (a *AccountsAPIService) UpdateStripeSettingsExecute(r AccountsAPIUpdateStri
 	}
 	// body params
 	localVarPostBody = r.updateStripeSettingsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AccountsAPIVerifyGohighlevelFunnelTrackingRequest struct {
+	ctx                                    context.Context
+	ApiService                             *AccountsAPIService
+	accountId                              string
+	verifyGohighlevelFunnelTrackingRequest *VerifyGohighlevelFunnelTrackingRequest
+}
+
+func (r AccountsAPIVerifyGohighlevelFunnelTrackingRequest) VerifyGohighlevelFunnelTrackingRequest(verifyGohighlevelFunnelTrackingRequest VerifyGohighlevelFunnelTrackingRequest) AccountsAPIVerifyGohighlevelFunnelTrackingRequest {
+	r.verifyGohighlevelFunnelTrackingRequest = &verifyGohighlevelFunnelTrackingRequest
+	return r
+}
+
+func (r AccountsAPIVerifyGohighlevelFunnelTrackingRequest) Execute() (*GohighlevelFunnelTracking, *http.Response, error) {
+	return r.ApiService.VerifyGohighlevelFunnelTrackingExecute(r)
+}
+
+/*
+VerifyGohighlevelFunnelTracking Check the Zernio tag on a HighLevel funnel page
+
+Load a live funnel or website page and report whether it carries the sub-account's Zernio tag. A page that does adds its domain to the tag's domains, so visits there are tied to the contacts who fill its forms.
+
+Returns the same funnel tracking state as `getGohighlevelFunnelTracking`, with `verified` set. Needs a read-write key.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The HighLevel account id from `listAccounts`.
+	@return AccountsAPIVerifyGohighlevelFunnelTrackingRequest
+*/
+func (a *AccountsAPIService) VerifyGohighlevelFunnelTracking(ctx context.Context, accountId string) AccountsAPIVerifyGohighlevelFunnelTrackingRequest {
+	return AccountsAPIVerifyGohighlevelFunnelTrackingRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GohighlevelFunnelTracking
+func (a *AccountsAPIService) VerifyGohighlevelFunnelTrackingExecute(r AccountsAPIVerifyGohighlevelFunnelTrackingRequest) (*GohighlevelFunnelTracking, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GohighlevelFunnelTracking
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.VerifyGohighlevelFunnelTracking")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/gohighlevel-funnel-tracking/verify"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.verifyGohighlevelFunnelTrackingRequest == nil {
+		return localVarReturnValue, nil, reportError("verifyGohighlevelFunnelTrackingRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.verifyGohighlevelFunnelTrackingRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

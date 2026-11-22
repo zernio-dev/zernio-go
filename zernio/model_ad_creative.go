@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -46,6 +46,8 @@ type AdCreative struct {
 	TiktokItemId *string `json:"tiktokItemId,omitempty"`
 	// Meta: the instant form the call to action opens (`call_to_action.value.lead_gen_form_id`, or the asset feed's `call_to_actions` on a dynamic creative), the same value as the `leadGenFormId` create input. Absent on ads without a lead form.
 	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
+	// Meta: the display link of a link (image) ad (`link_data.caption`). Absent when the creative has none.
+	Caption *string `json:"caption,omitempty"`
 	// Meta: the ad image hash (`image_hash`), reusable as `imageHash` on POST /v1/ads/create within the same ad account. `thumbnailUrl` and `mediaUrls` carry its stable full resolution permalink when Meta resolves it.
 	ImageHash *string `json:"imageHash,omitempty"`
 	// Meta: the creative's `url_tags` query string appended to the destination URL.
@@ -86,6 +88,7 @@ type AdCreative struct {
 	MediaUrls []string `json:"mediaUrls,omitempty"`
 	// Meta only today. The carousel's cards in display order, one per Meta `link_data.child_attachments` entry, using the same field names as the `carouselCards` create input. Absent on non-carousel ads and other platforms.  - Synced from Meta: `imageUrl` is resolved exactly like `mediaUrls` (the stable `/adimages` permalink first), so cards with an image line up with `mediaUrls` in order. A card whose image Meta does not resolve keeps its place without `imageUrl`. - Created through Zernio: starts as the cards you sent. - Synced carousels stored before this field existed fill it in on their next sync.
 	CarouselCards []AdCreativeCarouselCardsInner `json:"carouselCards,omitempty"`
+	AssetFeed     *AdCreativeAssetFeed           `json:"assetFeed,omitempty"`
 	// LinkedIn only. Whether LinkedIn is currently serving this specific creative. Complements the ad-level `servingStatuses`, which describes the parent campaign.
 	IsServing NullableBool `json:"isServing,omitempty"`
 	// LinkedIn (and TikTok with `live=true`). The LinkedIn ad format, in LinkedIn's own vocabulary: STANDARD_UPDATE, SINGLE_VIDEO, CAROUSEL, NATIVE_DOCUMENT, EVENT, TEXT_AD, SPOTLIGHT, FOLLOW_COMPANY, JOBS, SPONSORED_INMAILS and others. The list is open, so treat an unrecognized value as valid.  - On an ad Zernio created: the format it was created as. - On an ad synced from Campaign Manager: the parent campaign's raw `format`, which is what LinkedIn actually enforces on its creatives.  Absent on LinkedIn ads not yet re-synced. On TikTok with `live=true`: the ad's `ad_format` (e.g. SINGLE_VIDEO). Absent on every other platform.
@@ -541,6 +544,38 @@ func (o *AdCreative) HasLeadGenFormId() bool {
 // SetLeadGenFormId gets a reference to the given string and assigns it to the LeadGenFormId field.
 func (o *AdCreative) SetLeadGenFormId(v string) {
 	o.LeadGenFormId = &v
+}
+
+// GetCaption returns the Caption field value if set, zero value otherwise.
+func (o *AdCreative) GetCaption() string {
+	if o == nil || IsNil(o.Caption) {
+		var ret string
+		return ret
+	}
+	return *o.Caption
+}
+
+// GetCaptionOk returns a tuple with the Caption field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetCaptionOk() (*string, bool) {
+	if o == nil || IsNil(o.Caption) {
+		return nil, false
+	}
+	return o.Caption, true
+}
+
+// HasCaption returns a boolean if a field has been set.
+func (o *AdCreative) HasCaption() bool {
+	if o != nil && !IsNil(o.Caption) {
+		return true
+	}
+
+	return false
+}
+
+// SetCaption gets a reference to the given string and assigns it to the Caption field.
+func (o *AdCreative) SetCaption(v string) {
+	o.Caption = &v
 }
 
 // GetImageHash returns the ImageHash field value if set, zero value otherwise.
@@ -1336,6 +1371,38 @@ func (o *AdCreative) SetCarouselCards(v []AdCreativeCarouselCardsInner) {
 	o.CarouselCards = v
 }
 
+// GetAssetFeed returns the AssetFeed field value if set, zero value otherwise.
+func (o *AdCreative) GetAssetFeed() AdCreativeAssetFeed {
+	if o == nil || IsNil(o.AssetFeed) {
+		var ret AdCreativeAssetFeed
+		return ret
+	}
+	return *o.AssetFeed
+}
+
+// GetAssetFeedOk returns a tuple with the AssetFeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetAssetFeedOk() (*AdCreativeAssetFeed, bool) {
+	if o == nil || IsNil(o.AssetFeed) {
+		return nil, false
+	}
+	return o.AssetFeed, true
+}
+
+// HasAssetFeed returns a boolean if a field has been set.
+func (o *AdCreative) HasAssetFeed() bool {
+	if o != nil && !IsNil(o.AssetFeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetAssetFeed gets a reference to the given AdCreativeAssetFeed and assigns it to the AssetFeed field.
+func (o *AdCreative) SetAssetFeed(v AdCreativeAssetFeed) {
+	o.AssetFeed = &v
+}
+
 // GetIsServing returns the IsServing field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AdCreative) GetIsServing() bool {
 	if o == nil || IsNil(o.IsServing.Get()) {
@@ -1823,6 +1890,9 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.LeadGenFormId) {
 		toSerialize["leadGenFormId"] = o.LeadGenFormId
 	}
+	if !IsNil(o.Caption) {
+		toSerialize["caption"] = o.Caption
+	}
 	if !IsNil(o.ImageHash) {
 		toSerialize["imageHash"] = o.ImageHash
 	}
@@ -1885,6 +1955,9 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CarouselCards) {
 		toSerialize["carouselCards"] = o.CarouselCards
+	}
+	if !IsNil(o.AssetFeed) {
+		toSerialize["assetFeed"] = o.AssetFeed
 	}
 	if o.IsServing.IsSet() {
 		toSerialize["isServing"] = o.IsServing.Get()

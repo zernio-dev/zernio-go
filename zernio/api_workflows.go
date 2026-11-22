@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -930,6 +930,7 @@ type WorkflowsAPIListWorkflowExecutionsRequest struct {
 	status     *string
 	limit      *int32
 	skip       *int32
+	cursor     *string
 }
 
 func (r WorkflowsAPIListWorkflowExecutionsRequest) Status(status string) WorkflowsAPIListWorkflowExecutionsRequest {
@@ -944,6 +945,12 @@ func (r WorkflowsAPIListWorkflowExecutionsRequest) Limit(limit int32) WorkflowsA
 
 func (r WorkflowsAPIListWorkflowExecutionsRequest) Skip(skip int32) WorkflowsAPIListWorkflowExecutionsRequest {
 	r.skip = &skip
+	return r
+}
+
+// The previous page&#39;s pagination.nextCursor. Pages stay stable while runs start or end; skip applies after it. Page past the first 1000 runs with the cursor: a larger skip may be refused with 400.
+func (r WorkflowsAPIListWorkflowExecutionsRequest) Cursor(cursor string) WorkflowsAPIListWorkflowExecutionsRequest {
+	r.cursor = &cursor
 	return r
 }
 
@@ -1007,6 +1014,9 @@ func (a *WorkflowsAPIService) ListWorkflowExecutionsExecute(r WorkflowsAPIListWo
 		var defaultValue int32 = 0
 		parameterAddToHeaderOrQuery(localVarQueryParams, "skip", defaultValue, "form", "")
 		r.skip = &defaultValue
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1606,6 +1616,144 @@ func (a *WorkflowsAPIService) RestoreWorkflowVersionExecute(r WorkflowsAPIRestor
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type WorkflowsAPITakeOverWorkflowRequest struct {
+	ctx        context.Context
+	ApiService *WorkflowsAPIService
+	workflowId string
+}
+
+func (r WorkflowsAPITakeOverWorkflowRequest) Execute() (*TakeOverWorkflow200Response, *http.Response, error) {
+	return r.ApiService.TakeOverWorkflowExecute(r)
+}
+
+/*
+TakeOverWorkflow Take over a workflow
+
+Makes the caller the workflow's owner, so its AI steps use the caller's own AI key. Only the owner or an admin of the active workspace can take over, from the dashboard.
+
+When the member who made a workflow leaves the workspace, its AI steps pause (they take the error edge with "{Name} left this workspace. Add a workspace AI key or take over this automation.") and every other step keeps running; taking it over starts the AI steps again.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param workflowId
+	@return WorkflowsAPITakeOverWorkflowRequest
+*/
+func (a *WorkflowsAPIService) TakeOverWorkflow(ctx context.Context, workflowId string) WorkflowsAPITakeOverWorkflowRequest {
+	return WorkflowsAPITakeOverWorkflowRequest{
+		ApiService: a,
+		ctx:        ctx,
+		workflowId: workflowId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return TakeOverWorkflow200Response
+func (a *WorkflowsAPIService) TakeOverWorkflowExecute(r WorkflowsAPITakeOverWorkflowRequest) (*TakeOverWorkflow200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TakeOverWorkflow200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WorkflowsAPIService.TakeOverWorkflow")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/workflows/{workflowId}/take-over"
+	localVarPath = strings.Replace(localVarPath, "{"+"workflowId"+"}", url.PathEscape(parameterValueToString(r.workflowId, "workflowId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse

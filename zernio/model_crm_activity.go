@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ var _ MappedNullable = &CrmActivity{}
 // CrmActivity struct for CrmActivity
 type CrmActivity struct {
 	Id string `json:"id"`
-	// HubSpot `note` or `communication` (WhatsApp, SMS); Salesforce `task`.
+	// HubSpot `note` or `communication` (WhatsApp, SMS); Salesforce `task`; HighLevel `note`.
 	ObjectType string         `json:"objectType"`
 	ContactId  string         `json:"contactId"`
 	Channel    string         `json:"channel"`
@@ -32,7 +32,7 @@ type CrmActivity struct {
 	Subject    NullableString `json:"subject"`
 	Body       string         `json:"body"`
 	OccurredAt time.Time      `json:"occurredAt"`
-	// The Salesforce Task, or the HubSpot contact whose timeline shows it.
+	// The Salesforce Task, or the HubSpot or HighLevel contact whose record shows it.
 	Url string `json:"url"`
 }
 

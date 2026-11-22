@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -24,8 +24,11 @@ type SendConversions200Response struct {
 	// Events accepted by the platform.
 	EventsReceived *int32 `json:"eventsReceived,omitempty"`
 	// Events rejected (see failures).
-	EventsFailed *int32                                    `json:"eventsFailed,omitempty"`
-	Failures     []SendConversions200ResponseFailuresInner `json:"failures,omitempty"`
+	EventsFailed *int32 `json:"eventsFailed,omitempty"`
+	// Events not sent because the visitor did not consent (see `consent`).
+	EventsDropped *int32                                    `json:"eventsDropped,omitempty"`
+	Drops         []ConsentDrop                             `json:"drops,omitempty"`
+	Failures      []SendConversions200ResponseFailuresInner `json:"failures,omitempty"`
 	// Platform trace ID for debugging. fbtrace_id for Meta, requestId for Google, request_id for TikTok. Absent for LinkedIn (LinkedIn's conversionEvents endpoint does not surface a trace ID), OpenAI Ads and Reddit (no trace ID surfaced).
 	TraceId *string `json:"traceId,omitempty"`
 	// Meta only. Meta's `messages` (warnings about the events it accepted), each distinct one once, at most 20. Absent when Meta sent none.
@@ -145,6 +148,70 @@ func (o *SendConversions200Response) HasEventsFailed() bool {
 // SetEventsFailed gets a reference to the given int32 and assigns it to the EventsFailed field.
 func (o *SendConversions200Response) SetEventsFailed(v int32) {
 	o.EventsFailed = &v
+}
+
+// GetEventsDropped returns the EventsDropped field value if set, zero value otherwise.
+func (o *SendConversions200Response) GetEventsDropped() int32 {
+	if o == nil || IsNil(o.EventsDropped) {
+		var ret int32
+		return ret
+	}
+	return *o.EventsDropped
+}
+
+// GetEventsDroppedOk returns a tuple with the EventsDropped field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendConversions200Response) GetEventsDroppedOk() (*int32, bool) {
+	if o == nil || IsNil(o.EventsDropped) {
+		return nil, false
+	}
+	return o.EventsDropped, true
+}
+
+// HasEventsDropped returns a boolean if a field has been set.
+func (o *SendConversions200Response) HasEventsDropped() bool {
+	if o != nil && !IsNil(o.EventsDropped) {
+		return true
+	}
+
+	return false
+}
+
+// SetEventsDropped gets a reference to the given int32 and assigns it to the EventsDropped field.
+func (o *SendConversions200Response) SetEventsDropped(v int32) {
+	o.EventsDropped = &v
+}
+
+// GetDrops returns the Drops field value if set, zero value otherwise.
+func (o *SendConversions200Response) GetDrops() []ConsentDrop {
+	if o == nil || IsNil(o.Drops) {
+		var ret []ConsentDrop
+		return ret
+	}
+	return o.Drops
+}
+
+// GetDropsOk returns a tuple with the Drops field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendConversions200Response) GetDropsOk() ([]ConsentDrop, bool) {
+	if o == nil || IsNil(o.Drops) {
+		return nil, false
+	}
+	return o.Drops, true
+}
+
+// HasDrops returns a boolean if a field has been set.
+func (o *SendConversions200Response) HasDrops() bool {
+	if o != nil && !IsNil(o.Drops) {
+		return true
+	}
+
+	return false
+}
+
+// SetDrops gets a reference to the given []ConsentDrop and assigns it to the Drops field.
+func (o *SendConversions200Response) SetDrops(v []ConsentDrop) {
+	o.Drops = v
 }
 
 // GetFailures returns the Failures field value if set, zero value otherwise.
@@ -304,6 +371,12 @@ func (o SendConversions200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.EventsFailed) {
 		toSerialize["eventsFailed"] = o.EventsFailed
+	}
+	if !IsNil(o.EventsDropped) {
+		toSerialize["eventsDropped"] = o.EventsDropped
+	}
+	if !IsNil(o.Drops) {
+		toSerialize["drops"] = o.Drops
 	}
 	if !IsNil(o.Failures) {
 		toSerialize["failures"] = o.Failures

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -21,6 +21,10 @@ var _ MappedNullable = &UpdateTrackingSiteRequest{}
 // UpdateTrackingSiteRequest struct for UpdateTrackingSiteRequest
 type UpdateTrackingSiteRequest struct {
 	Name *string `json:"name,omitempty"`
+	// The ad pixels the tag loads once consent allows, up to 20, one Microsoft UET tag at most. `null` or `[]` removes them.
+	Pixels []TrackingSitePixel `json:"pixels,omitempty"`
+	// Write the site's consent banner into Google Consent Mode v2: a denied default in the EEA, UK and Switzerland where the page sets none, then each update.
+	ConsentModeBridge *bool `json:"consentModeBridge,omitempty"`
 	// Hosts allowed to send events, such as `brand.com`. Events from any other origin are dropped.
 	Domains     []string                 `json:"domains,omitempty"`
 	ConsentMode *TrackingSiteConsentMode `json:"consentMode,omitempty"`
@@ -82,6 +86,71 @@ func (o *UpdateTrackingSiteRequest) HasName() bool {
 // SetName gets a reference to the given string and assigns it to the Name field.
 func (o *UpdateTrackingSiteRequest) SetName(v string) {
 	o.Name = &v
+}
+
+// GetPixels returns the Pixels field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateTrackingSiteRequest) GetPixels() []TrackingSitePixel {
+	if o == nil {
+		var ret []TrackingSitePixel
+		return ret
+	}
+	return o.Pixels
+}
+
+// GetPixelsOk returns a tuple with the Pixels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateTrackingSiteRequest) GetPixelsOk() ([]TrackingSitePixel, bool) {
+	if o == nil || IsNil(o.Pixels) {
+		return nil, false
+	}
+	return o.Pixels, true
+}
+
+// HasPixels returns a boolean if a field has been set.
+func (o *UpdateTrackingSiteRequest) HasPixels() bool {
+	if o != nil && !IsNil(o.Pixels) {
+		return true
+	}
+
+	return false
+}
+
+// SetPixels gets a reference to the given []TrackingSitePixel and assigns it to the Pixels field.
+func (o *UpdateTrackingSiteRequest) SetPixels(v []TrackingSitePixel) {
+	o.Pixels = v
+}
+
+// GetConsentModeBridge returns the ConsentModeBridge field value if set, zero value otherwise.
+func (o *UpdateTrackingSiteRequest) GetConsentModeBridge() bool {
+	if o == nil || IsNil(o.ConsentModeBridge) {
+		var ret bool
+		return ret
+	}
+	return *o.ConsentModeBridge
+}
+
+// GetConsentModeBridgeOk returns a tuple with the ConsentModeBridge field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateTrackingSiteRequest) GetConsentModeBridgeOk() (*bool, bool) {
+	if o == nil || IsNil(o.ConsentModeBridge) {
+		return nil, false
+	}
+	return o.ConsentModeBridge, true
+}
+
+// HasConsentModeBridge returns a boolean if a field has been set.
+func (o *UpdateTrackingSiteRequest) HasConsentModeBridge() bool {
+	if o != nil && !IsNil(o.ConsentModeBridge) {
+		return true
+	}
+
+	return false
+}
+
+// SetConsentModeBridge gets a reference to the given bool and assigns it to the ConsentModeBridge field.
+func (o *UpdateTrackingSiteRequest) SetConsentModeBridge(v bool) {
+	o.ConsentModeBridge = &v
 }
 
 // GetDomains returns the Domains field value if set, zero value otherwise.
@@ -280,6 +349,12 @@ func (o UpdateTrackingSiteRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
+	if o.Pixels != nil {
+		toSerialize["pixels"] = o.Pixels
+	}
+	if !IsNil(o.ConsentModeBridge) {
+		toSerialize["consentModeBridge"] = o.ConsentModeBridge
+	}
 	if !IsNil(o.Domains) {
 		toSerialize["domains"] = o.Domains
 	}
@@ -318,6 +393,8 @@ func (o *UpdateTrackingSiteRequest) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "name")
+		delete(additionalProperties, "pixels")
+		delete(additionalProperties, "consentModeBridge")
 		delete(additionalProperties, "domains")
 		delete(additionalProperties, "consentMode")
 		delete(additionalProperties, "customHostname")

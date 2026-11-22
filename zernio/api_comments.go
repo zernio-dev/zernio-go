@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -710,13 +710,14 @@ func (r CommentsAPILikeInboxCommentRequest) Execute() (*LikeInboxComment200Respo
 /*
 LikeInboxComment Like comment
 
-Like or upvote a comment on a post. Supported platforms: Facebook, X, Bluesky, Reddit, LinkedIn, and Instagram in limited release (see below).
+Like or upvote a comment on a post. Supported platforms: Facebook, X, Bluesky, Reddit, LinkedIn, TikTok, and Instagram in limited release (see below).
 
 ### Platform notes
 
 - Bluesky: the cid (content identifier) is required in the request body.
 - LinkedIn: pass the composite comment URN returned by the comments endpoints as commentId. An optional reactionType picks the reaction (defaults to LIKE).
 - LinkedIn: accounts connected before the social-feed scopes were requested get a 403 with code `linkedin_reconnect_required`.
+- TikTok: works only on accounts connected through the TikTok Business (Accounts API) connection. An account on the older developer-app connection gets a 400 with code `PLATFORM_LIMITATION`.
 
 ### Instagram (limited release)
 
@@ -2083,9 +2084,11 @@ func (r CommentsAPIUnlikeInboxCommentRequest) Execute() (*UnlikeInboxComment200R
 UnlikeInboxComment Unlike comment
 
 Remove a like from a comment. Supported platforms: Facebook, X, Bluesky,
-Reddit, LinkedIn, and Instagram in limited release. For Bluesky, the likeUri query
-parameter is required. Instagram has the same limited release, Facebook Login,
-`instagram_manage_engagement` and burst-limit constraints as liking.
+Reddit, LinkedIn, TikTok, and Instagram in limited release.
+
+- Bluesky: the likeUri query parameter is required.
+- TikTok: works only on accounts connected through the TikTok Business (Accounts API) connection. An account on the older developer-app connection gets a 400 with code `PLATFORM_LIMITATION`.
+- Instagram: the same limited release, Facebook Login, `instagram_manage_engagement` and burst-limit constraints as liking.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId

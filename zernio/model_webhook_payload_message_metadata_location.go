@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the WebhookPayloadMessageMetadataLocation type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageMetadataLocation{}
 
-// WebhookPayloadMessageMetadataLocation WhatsApp only. The location pin the user shared, forwarded verbatim from Meta. The message `text` is only the emoji preview (`📍 <name>`); the coordinates live here.
+// WebhookPayloadMessageMetadataLocation WhatsApp and iMessage. The location pin the user shared. On WhatsApp it is forwarded verbatim from Meta and the message `text` is only the emoji preview (`📍 <name>`); the coordinates live here. On iMessage it is parsed from a Maps link in `text`, which stays as sent.
 type WebhookPayloadMessageMetadataLocation struct {
 	// Latitude in decimal degrees.
 	Latitude *float32 `json:"latitude,omitempty"`

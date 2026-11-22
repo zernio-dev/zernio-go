@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,7 @@ var _ MappedNullable = &ListInboxConversations200Response{}
 type ListInboxConversations200Response struct {
 	Data       []ListInboxConversations200ResponseDataInner     `json:"data,omitempty"`
 	Pagination *ListCalendarEventInstances200ResponsePagination `json:"pagination,omitempty"`
+	Sync       *ListInboxConversations200ResponseSync           `json:"sync,omitempty"`
 	Meta       *ListInboxConversations200ResponseMeta           `json:"meta,omitempty"`
 }
 
@@ -106,6 +107,38 @@ func (o *ListInboxConversations200Response) SetPagination(v ListCalendarEventIns
 	o.Pagination = &v
 }
 
+// GetSync returns the Sync field value if set, zero value otherwise.
+func (o *ListInboxConversations200Response) GetSync() ListInboxConversations200ResponseSync {
+	if o == nil || IsNil(o.Sync) {
+		var ret ListInboxConversations200ResponseSync
+		return ret
+	}
+	return *o.Sync
+}
+
+// GetSyncOk returns a tuple with the Sync field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxConversations200Response) GetSyncOk() (*ListInboxConversations200ResponseSync, bool) {
+	if o == nil || IsNil(o.Sync) {
+		return nil, false
+	}
+	return o.Sync, true
+}
+
+// HasSync returns a boolean if a field has been set.
+func (o *ListInboxConversations200Response) HasSync() bool {
+	if o != nil && !IsNil(o.Sync) {
+		return true
+	}
+
+	return false
+}
+
+// SetSync gets a reference to the given ListInboxConversations200ResponseSync and assigns it to the Sync field.
+func (o *ListInboxConversations200Response) SetSync(v ListInboxConversations200ResponseSync) {
+	o.Sync = &v
+}
+
 // GetMeta returns the Meta field value if set, zero value otherwise.
 func (o *ListInboxConversations200Response) GetMeta() ListInboxConversations200ResponseMeta {
 	if o == nil || IsNil(o.Meta) {
@@ -153,6 +186,9 @@ func (o ListInboxConversations200Response) ToMap() (map[string]interface{}, erro
 	}
 	if !IsNil(o.Pagination) {
 		toSerialize["pagination"] = o.Pagination
+	}
+	if !IsNil(o.Sync) {
+		toSerialize["sync"] = o.Sync
 	}
 	if !IsNil(o.Meta) {
 		toSerialize["meta"] = o.Meta

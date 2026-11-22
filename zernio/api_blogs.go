@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -885,6 +885,7 @@ type BlogsAPIListBlogArticlesRequest struct {
 	blogId     string
 	limit      *int32
 	cursor     *string
+	handle     *string
 }
 
 // Page size (1-50).
@@ -896,6 +897,12 @@ func (r BlogsAPIListBlogArticlesRequest) Limit(limit int32) BlogsAPIListBlogArti
 // Opaque cursor from a previous response. Omit for the first page.
 func (r BlogsAPIListBlogArticlesRequest) Cursor(cursor string) BlogsAPIListBlogArticlesRequest {
 	r.cursor = &cursor
+	return r
+}
+
+// Only the article with this handle, in any status. WordPress and Webflow only.
+func (r BlogsAPIListBlogArticlesRequest) Handle(handle string) BlogsAPIListBlogArticlesRequest {
+	r.handle = &handle
 	return r
 }
 
@@ -911,6 +918,12 @@ Lists the articles of a blog. Supported on Shopify (`shopify`), WordPress (`word
 ### Pagination
 
 Cursor-paginated: pass `limit` (1-50, default 20) and the `cursor` from a previous response's `nextCursor`. `nextCursor` is null when there are no more pages. Treat cursors as opaque and pass them unchanged.
+
+### Find an article by handle
+
+Pass `handle` to get that one article in any status (published, draft or scheduled), or an empty list. WordPress and Webflow only.
+
+Use it after a `502` on create to see whether the article exists.
 
 ### Platform differences
 
@@ -965,6 +978,9 @@ func (a *BlogsAPIService) ListBlogArticlesExecute(r BlogsAPIListBlogArticlesRequ
 	}
 	if r.cursor != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	if r.handle != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "handle", r.handle, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

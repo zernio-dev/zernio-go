@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -1521,6 +1521,280 @@ func (a *ConnectAPIService) ConnectAppLovinAdsCredentialsExecute(r ConnectAPICon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIConnectAttentiveCredentialsRequest struct {
+	ctx                              context.Context
+	ApiService                       *ConnectAPIService
+	connectKlaviyoCredentialsRequest *ConnectKlaviyoCredentialsRequest
+}
+
+func (r ConnectAPIConnectAttentiveCredentialsRequest) ConnectKlaviyoCredentialsRequest(connectKlaviyoCredentialsRequest ConnectKlaviyoCredentialsRequest) ConnectAPIConnectAttentiveCredentialsRequest {
+	r.connectKlaviyoCredentialsRequest = &connectKlaviyoCredentialsRequest
+	return r
+}
+
+func (r ConnectAPIConnectAttentiveCredentialsRequest) Execute() (*ConnectAttentiveCredentials200Response, *http.Response, error) {
+	return r.ApiService.ConnectAttentiveCredentialsExecute(r)
+}
+
+/*
+ConnectAttentiveCredentials Connect an Attentive company
+
+Connect Attentive with the API key of a custom app (Integrations, Custom apps) that can write Custom Events and eCommerce events.
+
+Zernio reads the key's company from Attentive once to check it, then sends the events you forward to it to Attentive. Connecting the same company again replaces its key.
+
+Requires the Ads add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectAttentiveCredentialsRequest
+*/
+func (a *ConnectAPIService) ConnectAttentiveCredentials(ctx context.Context) ConnectAPIConnectAttentiveCredentialsRequest {
+	return ConnectAPIConnectAttentiveCredentialsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ConnectAttentiveCredentials200Response
+func (a *ConnectAPIService) ConnectAttentiveCredentialsExecute(r ConnectAPIConnectAttentiveCredentialsRequest) (*ConnectAttentiveCredentials200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectAttentiveCredentials200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectAttentiveCredentials")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/attentive/credentials"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectKlaviyoCredentialsRequest == nil {
+		return localVarReturnValue, nil, reportError("connectKlaviyoCredentialsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectKlaviyoCredentialsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject5
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIConnectAwinCredentialsRequest struct {
+	ctx                           context.Context
+	ApiService                    *ConnectAPIService
+	connectAwinCredentialsRequest *ConnectAwinCredentialsRequest
+}
+
+func (r ConnectAPIConnectAwinCredentialsRequest) ConnectAwinCredentialsRequest(connectAwinCredentialsRequest ConnectAwinCredentialsRequest) ConnectAPIConnectAwinCredentialsRequest {
+	r.connectAwinCredentialsRequest = &connectAwinCredentialsRequest
+	return r
+}
+
+func (r ConnectAPIConnectAwinCredentialsRequest) Execute() (*ConnectAwinCredentials200Response, *http.Response, error) {
+	return r.ApiService.ConnectAwinCredentialsExecute(r)
+}
+
+/*
+ConnectAwinCredentials Connect an Awin advertiser
+
+Connect Awin with your advertiser id and an API key (Settings, User settings, API credentials).
+
+Zernio checks the key with one test order (`isTest`, not tracked by Awin) before saving it. Events sent with `testCode` reach Awin the same way.
+
+Requires the Ads add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectAwinCredentialsRequest
+*/
+func (a *ConnectAPIService) ConnectAwinCredentials(ctx context.Context) ConnectAPIConnectAwinCredentialsRequest {
+	return ConnectAPIConnectAwinCredentialsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ConnectAwinCredentials200Response
+func (a *ConnectAPIService) ConnectAwinCredentialsExecute(r ConnectAPIConnectAwinCredentialsRequest) (*ConnectAwinCredentials200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectAwinCredentials200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectAwinCredentials")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/awin/credentials"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectAwinCredentialsRequest == nil {
+		return localVarReturnValue, nil, reportError("connectAwinCredentialsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectAwinCredentialsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject5
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIConnectBlueskyCredentialsRequest struct {
 	ctx                              context.Context
 	ApiService                       *ConnectAPIService
@@ -1784,6 +2058,280 @@ func (a *ConnectAPIService) ConnectDiscordChannelExecute(r ConnectAPIConnectDisc
 	}
 
 	return localVarHTTPResponse, nil
+}
+
+type ConnectAPIConnectImpactCredentialsRequest struct {
+	ctx                             context.Context
+	ApiService                      *ConnectAPIService
+	connectImpactCredentialsRequest *ConnectImpactCredentialsRequest
+}
+
+func (r ConnectAPIConnectImpactCredentialsRequest) ConnectImpactCredentialsRequest(connectImpactCredentialsRequest ConnectImpactCredentialsRequest) ConnectAPIConnectImpactCredentialsRequest {
+	r.connectImpactCredentialsRequest = &connectImpactCredentialsRequest
+	return r
+}
+
+func (r ConnectAPIConnectImpactCredentialsRequest) Execute() (*ConnectImpactCredentials200Response, *http.Response, error) {
+	return r.ApiService.ConnectImpactCredentialsExecute(r)
+}
+
+/*
+ConnectImpactCredentials Connect an Impact program
+
+Connect impact.com with an access token (Settings, API) that can read Campaigns and write Conversions, the program the conversions count in and the event type they count as.
+
+Zernio lists the account's programs once to check the token, then sends the conversions you forward to it to `<programId>:<eventTypeId>`. Another event type of the same account is another forwarding rule with that `destinationId`.
+
+Requires the Ads add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectImpactCredentialsRequest
+*/
+func (a *ConnectAPIService) ConnectImpactCredentials(ctx context.Context) ConnectAPIConnectImpactCredentialsRequest {
+	return ConnectAPIConnectImpactCredentialsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ConnectImpactCredentials200Response
+func (a *ConnectAPIService) ConnectImpactCredentialsExecute(r ConnectAPIConnectImpactCredentialsRequest) (*ConnectImpactCredentials200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectImpactCredentials200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectImpactCredentials")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/impact/credentials"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectImpactCredentialsRequest == nil {
+		return localVarReturnValue, nil, reportError("connectImpactCredentialsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectImpactCredentialsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject5
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIConnectKlaviyoCredentialsRequest struct {
+	ctx                              context.Context
+	ApiService                       *ConnectAPIService
+	connectKlaviyoCredentialsRequest *ConnectKlaviyoCredentialsRequest
+}
+
+func (r ConnectAPIConnectKlaviyoCredentialsRequest) ConnectKlaviyoCredentialsRequest(connectKlaviyoCredentialsRequest ConnectKlaviyoCredentialsRequest) ConnectAPIConnectKlaviyoCredentialsRequest {
+	r.connectKlaviyoCredentialsRequest = &connectKlaviyoCredentialsRequest
+	return r
+}
+
+func (r ConnectAPIConnectKlaviyoCredentialsRequest) Execute() (*ConnectKlaviyoCredentials200Response, *http.Response, error) {
+	return r.ApiService.ConnectKlaviyoCredentialsExecute(r)
+}
+
+/*
+ConnectKlaviyoCredentials Connect a Klaviyo account
+
+Connect Klaviyo with a private API key (Settings, API keys) that has the Events (write) and Accounts (read) scopes.
+
+Zernio reads the key's account once to check it, then sends the events you forward to it (`POST /v1/events`, forwarding rules) to Klaviyo's Events API. Connecting the same account again replaces its key.
+
+Requires the Ads add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectKlaviyoCredentialsRequest
+*/
+func (a *ConnectAPIService) ConnectKlaviyoCredentials(ctx context.Context) ConnectAPIConnectKlaviyoCredentialsRequest {
+	return ConnectAPIConnectKlaviyoCredentialsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ConnectKlaviyoCredentials200Response
+func (a *ConnectAPIService) ConnectKlaviyoCredentialsExecute(r ConnectAPIConnectKlaviyoCredentialsRequest) (*ConnectKlaviyoCredentials200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectKlaviyoCredentials200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectKlaviyoCredentials")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/klaviyo/credentials"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectKlaviyoCredentialsRequest == nil {
+		return localVarReturnValue, nil, reportError("connectKlaviyoCredentialsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectKlaviyoCredentialsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject5
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 type ConnectAPIConnectLineCredentialsRequest struct {
@@ -2466,6 +3014,304 @@ func (a *ConnectAPIService) ConnectSnapchatAdsCredentialsExecute(r ConnectAPICon
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject5
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIConnectTaboolaAdsCredentialsRequest struct {
+	ctx                                 context.Context
+	ApiService                          *ConnectAPIService
+	connectTaboolaAdsCredentialsRequest *ConnectTaboolaAdsCredentialsRequest
+}
+
+func (r ConnectAPIConnectTaboolaAdsCredentialsRequest) ConnectTaboolaAdsCredentialsRequest(connectTaboolaAdsCredentialsRequest ConnectTaboolaAdsCredentialsRequest) ConnectAPIConnectTaboolaAdsCredentialsRequest {
+	r.connectTaboolaAdsCredentialsRequest = &connectTaboolaAdsCredentialsRequest
+	return r
+}
+
+func (r ConnectAPIConnectTaboolaAdsCredentialsRequest) Execute() (*ConnectTaboolaAdsCredentials200Response, *http.Response, error) {
+	return r.ApiService.ConnectTaboolaAdsCredentialsExecute(r)
+}
+
+/*
+ConnectTaboolaAdsCredentials Connect a Taboola account
+
+Connect a Taboola advertiser account by its numeric Account ID from Taboola Realize. Taboola's S2S postback takes no credential, so nothing secret is stored and nothing is checked with Taboola.
+
+The account then receives the conversion events you forward to it (`POST /v1/events`, forwarding rules). Each event needs the Taboola click ID (`clickIds.tblci`).
+
+Taboola counts an event only when its name equals the Event Name of a conversion rule in Realize. Rename events in the forwarding rule when they differ.
+
+Requires the Ads add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectTaboolaAdsCredentialsRequest
+*/
+func (a *ConnectAPIService) ConnectTaboolaAdsCredentials(ctx context.Context) ConnectAPIConnectTaboolaAdsCredentialsRequest {
+	return ConnectAPIConnectTaboolaAdsCredentialsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ConnectTaboolaAdsCredentials200Response
+func (a *ConnectAPIService) ConnectTaboolaAdsCredentialsExecute(r ConnectAPIConnectTaboolaAdsCredentialsRequest) (*ConnectTaboolaAdsCredentials200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectTaboolaAdsCredentials200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectTaboolaAdsCredentials")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/taboola-ads/credentials"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectTaboolaAdsCredentialsRequest == nil {
+		return localVarReturnValue, nil, reportError("connectTaboolaAdsCredentialsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectTaboolaAdsCredentialsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject5
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIConnectTradeDeskAdsCredentialsRequest struct {
+	ctx                                   context.Context
+	ApiService                            *ConnectAPIService
+	connectTradeDeskAdsCredentialsRequest *ConnectTradeDeskAdsCredentialsRequest
+}
+
+func (r ConnectAPIConnectTradeDeskAdsCredentialsRequest) ConnectTradeDeskAdsCredentialsRequest(connectTradeDeskAdsCredentialsRequest ConnectTradeDeskAdsCredentialsRequest) ConnectAPIConnectTradeDeskAdsCredentialsRequest {
+	r.connectTradeDeskAdsCredentialsRequest = &connectTradeDeskAdsCredentialsRequest
+	return r
+}
+
+func (r ConnectAPIConnectTradeDeskAdsCredentialsRequest) Execute() (*ConnectTradeDeskAdsCredentials200Response, *http.Response, error) {
+	return r.ApiService.ConnectTradeDeskAdsCredentialsExecute(r)
+}
+
+/*
+ConnectTradeDeskAdsCredentials Connect a Trade Desk tracking tag
+
+Connect a Trade Desk advertiser and the tracking tag your conversions count against, for the Real-Time Conversions API. The API takes no secret, so nothing secret is stored: get the Advertiser ID from Advertiser Preferences and ask your Trade Desk representative for a Real-Time Conversion tracking tag.
+
+The Trade Desk does not check either id when it receives events, so a wrong id loses conversions silently: check the tag's conversions in The Trade Desk after the first sends. Connecting the same tag again replaces its advertiser.
+
+Requires the Ads add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectTradeDeskAdsCredentialsRequest
+*/
+func (a *ConnectAPIService) ConnectTradeDeskAdsCredentials(ctx context.Context) ConnectAPIConnectTradeDeskAdsCredentialsRequest {
+	return ConnectAPIConnectTradeDeskAdsCredentialsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ConnectTradeDeskAdsCredentials200Response
+func (a *ConnectAPIService) ConnectTradeDeskAdsCredentialsExecute(r ConnectAPIConnectTradeDeskAdsCredentialsRequest) (*ConnectTradeDeskAdsCredentials200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectTradeDeskAdsCredentials200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectTradeDeskAdsCredentials")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/tradedesk-ads/credentials"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectTradeDeskAdsCredentialsRequest == nil {
+		return localVarReturnValue, nil, reportError("connectTradeDeskAdsCredentialsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectTradeDeskAdsCredentialsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -4734,6 +5580,387 @@ func (a *ConnectAPIService) DeleteOrgConnectionExecute(r ConnectAPIDeleteOrgConn
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIGetAmazonAdsConnectUrlRequest struct {
+	ctx                context.Context
+	ApiService         *ConnectAPIService
+	profileId          *string
+	redirectUrl        *string
+	reconnectAccountId *string
+}
+
+// Your Zernio profile ID (get from /v1/profiles).
+func (r ConnectAPIGetAmazonAdsConnectUrlRequest) ProfileId(profileId string) ConnectAPIGetAmazonAdsConnectUrlRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme.
+func (r ConnectAPIGetAmazonAdsConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetAmazonAdsConnectUrlRequest {
+	r.redirectUrl = &redirectUrl
+	return r
+}
+
+// Zernio account ID of the Amazon Ads account being reconnected.
+func (r ConnectAPIGetAmazonAdsConnectUrlRequest) ReconnectAccountId(reconnectAccountId string) ConnectAPIGetAmazonAdsConnectUrlRequest {
+	r.reconnectAccountId = &reconnectAccountId
+	return r
+}
+
+func (r ConnectAPIGetAmazonAdsConnectUrlRequest) Execute() (*GetGoogleAnalyticsConnectUrl200Response, *http.Response, error) {
+	return r.ApiService.GetAmazonAdsConnectUrlExecute(r)
+}
+
+/*
+GetAmazonAdsConnectUrl Get Amazon Ads OAuth connect URL
+
+Starts Login with Amazon for Amazon Ads (scope `advertising::campaign_management`). The Amazon login becomes an account with platform `amazonads`; every advertiser profile it reaches, in the NA, EU and FE regions, is a conversions destination (`GET /v1/ads/conversions/destinations`).
+
+Errors on the redirect: `amazonads_no_profiles` (the login reaches no advertiser), `amazonads_no_refresh_token`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIGetAmazonAdsConnectUrlRequest
+*/
+func (a *ConnectAPIService) GetAmazonAdsConnectUrl(ctx context.Context) ConnectAPIGetAmazonAdsConnectUrlRequest {
+	return ConnectAPIGetAmazonAdsConnectUrlRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetGoogleAnalyticsConnectUrl200Response
+func (a *ConnectAPIService) GetAmazonAdsConnectUrlExecute(r ConnectAPIGetAmazonAdsConnectUrlRequest) (*GetGoogleAnalyticsConnectUrl200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetGoogleAnalyticsConnectUrl200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetAmazonAdsConnectUrl")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/amazonads"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.profileId == nil {
+		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.redirectUrl != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	if r.reconnectAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reconnectAccountId", r.reconnectAccountId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject5
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIGetCampaignManagerConnectUrlRequest struct {
+	ctx                context.Context
+	ApiService         *ConnectAPIService
+	profileId          *string
+	redirectUrl        *string
+	reconnectAccountId *string
+}
+
+// Your Zernio profile ID (get from /v1/profiles).
+func (r ConnectAPIGetCampaignManagerConnectUrlRequest) ProfileId(profileId string) ConnectAPIGetCampaignManagerConnectUrlRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme such as &#x60;myapp://callback&#x60;; relative and unsafe URLs return 400.
+func (r ConnectAPIGetCampaignManagerConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetCampaignManagerConnectUrlRequest {
+	r.redirectUrl = &redirectUrl
+	return r
+}
+
+// Zernio account ID of the Campaign Manager 360 account being reconnected. Picking a different CM360 profile then fails instead of adding a second account.
+func (r ConnectAPIGetCampaignManagerConnectUrlRequest) ReconnectAccountId(reconnectAccountId string) ConnectAPIGetCampaignManagerConnectUrlRequest {
+	r.reconnectAccountId = &reconnectAccountId
+	return r
+}
+
+func (r ConnectAPIGetCampaignManagerConnectUrlRequest) Execute() (*GetGoogleAnalyticsConnectUrl200Response, *http.Response, error) {
+	return r.ApiService.GetCampaignManagerConnectUrlExecute(r)
+}
+
+/*
+GetCampaignManagerConnectUrl Get Campaign Manager 360 OAuth connect URL
+
+Starts Google OAuth for Campaign Manager 360 (Floodlight). Each connected CM360 user profile becomes an account with platform `campaignmanager360`; it receives the conversions you forward to its Floodlight activities and does not post.
+
+Requested scopes: `https://www.googleapis.com/auth/datamanager` (conversions go through Google's Data Manager API) and `https://www.googleapis.com/auth/dfatrafficking` (only to list advertisers and Floodlight activities; Campaign Manager has no read-only trafficking scope).
+
+### Flow
+
+Redirect the user to `authUrl`.
+
+- **One CM360 user profile:** Zernio connects it and redirects to `redirect_url` (or the dashboard) with `connected=campaignmanager360`, `profileId`, `accountId` and `username`.
+- **Several:** the user first picks one on a Zernio-hosted page, which then redirects the same way.
+
+Then list the Floodlight activities with `GET /v1/ads/conversions/destinations?accountId=...`.
+
+### Your own picker
+
+Add `headless=true` to `redirect_url`. Zernio then redirects there with `step=select_profile`, `profileId`, `platform=campaignmanager360` and a `pendingDataToken` for `GET /v1/connect/campaignmanager360/profiles` and `POST /v1/connect/campaignmanager360/select-profile`.
+
+### Errors
+
+On failure the redirect carries `error`, `platform=campaignmanager360` and `error_message`. Errors include:
+
+- `campaignmanager360_scope_missing`: the user unticked one of the two permissions.
+- `campaignmanager360_no_profiles`: the Google account has no Campaign Manager 360 user profile.
+- `campaignmanager360_no_refresh_token`: Google returned no refresh token; connect again.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIGetCampaignManagerConnectUrlRequest
+*/
+func (a *ConnectAPIService) GetCampaignManagerConnectUrl(ctx context.Context) ConnectAPIGetCampaignManagerConnectUrlRequest {
+	return ConnectAPIGetCampaignManagerConnectUrlRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetGoogleAnalyticsConnectUrl200Response
+func (a *ConnectAPIService) GetCampaignManagerConnectUrlExecute(r ConnectAPIGetCampaignManagerConnectUrlRequest) (*GetGoogleAnalyticsConnectUrl200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetGoogleAnalyticsConnectUrl200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetCampaignManagerConnectUrl")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/campaignmanager360"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.profileId == nil {
+		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.redirectUrl != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	if r.reconnectAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reconnectAccountId", r.reconnectAccountId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject5
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIGetConnectHandoffRequest struct {
 	ctx        context.Context
 	ApiService *ConnectAPIService
@@ -5821,6 +7048,173 @@ func (a *ConnectAPIService) GetGmbLocationsExecute(r ConnectAPIGetGmbLocationsRe
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIGetGohighlevelConnectUrlRequest struct {
+	ctx         context.Context
+	ApiService  *ConnectAPIService
+	profileId   *string
+	redirectUrl *string
+}
+
+// Your Zernio profile ID (get from /v1/profiles).
+func (r ConnectAPIGetGohighlevelConnectUrlRequest) ProfileId(profileId string) ConnectAPIGetGohighlevelConnectUrlRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme such as &#x60;myapp://callback&#x60;; relative and unsafe URLs return 400.
+func (r ConnectAPIGetGohighlevelConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetGohighlevelConnectUrlRequest {
+	r.redirectUrl = &redirectUrl
+	return r
+}
+
+func (r ConnectAPIGetGohighlevelConnectUrlRequest) Execute() (*GetGoogleAnalyticsConnectUrl200Response, *http.Response, error) {
+	return r.ApiService.GetGohighlevelConnectUrlExecute(r)
+}
+
+/*
+GetGohighlevelConnectUrl Get HighLevel OAuth connect URL
+
+Initiates OAuth (authorization code, no PKCE) for the Zernio HighLevel Marketplace app. Each HighLevel sub-account (location) becomes one connected account with `platform: gohighlevel`. An agency that installs the app across its sub-accounts gets one connected account per installed sub-account.
+
+### Flow
+
+1. Redirect the user to `authUrl` (HighLevel's install screen).
+2. After the install, HighLevel returns the browser to Zernio's callback.
+3. Zernio redirects to `redirect_url` (or the dashboard when omitted).
+
+On success the redirect carries `connected=gohighlevel`, `profileId` and `accountId`. On failure it carries `error` (`gohighlevel_access_denied`, `gohighlevel_invalid_state` or `gohighlevel_connection_failed`), `platform=gohighlevel` and `error_message`.
+
+Reconnecting the same sub-account on the same profile updates the stored connection in place and keeps its settings.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIGetGohighlevelConnectUrlRequest
+*/
+func (a *ConnectAPIService) GetGohighlevelConnectUrl(ctx context.Context) ConnectAPIGetGohighlevelConnectUrlRequest {
+	return ConnectAPIGetGohighlevelConnectUrlRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetGoogleAnalyticsConnectUrl200Response
+func (a *ConnectAPIService) GetGohighlevelConnectUrlExecute(r ConnectAPIGetGohighlevelConnectUrlRequest) (*GetGoogleAnalyticsConnectUrl200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetGoogleAnalyticsConnectUrl200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetGohighlevelConnectUrl")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/gohighlevel"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.profileId == nil {
+		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.redirectUrl != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
@@ -9676,6 +11070,157 @@ func (a *ConnectAPIService) InitiateTelegramConnectExecute(r ConnectAPIInitiateT
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIListCampaignManagerProfilesRequest struct {
+	ctx              context.Context
+	ApiService       *ConnectAPIService
+	pendingDataToken *string
+}
+
+// Token from the headless redirect.
+func (r ConnectAPIListCampaignManagerProfilesRequest) PendingDataToken(pendingDataToken string) ConnectAPIListCampaignManagerProfilesRequest {
+	r.pendingDataToken = &pendingDataToken
+	return r
+}
+
+func (r ConnectAPIListCampaignManagerProfilesRequest) Execute() (*ListCampaignManagerProfiles200Response, *http.Response, error) {
+	return r.ApiService.ListCampaignManagerProfilesExecute(r)
+}
+
+/*
+ListCampaignManagerProfiles List Campaign Manager 360 profiles for a pending connect
+
+For headless flows: lists the Campaign Manager 360 user profiles (one per CM360 account) of a pending connect, so you can show your own picker.
+
+- Listing does not consume the token.
+- A headless token is honored only together with your API key (or connect token) for the same profile.
+- It expires after one hour.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIListCampaignManagerProfilesRequest
+*/
+func (a *ConnectAPIService) ListCampaignManagerProfiles(ctx context.Context) ConnectAPIListCampaignManagerProfilesRequest {
+	return ConnectAPIListCampaignManagerProfilesRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListCampaignManagerProfiles200Response
+func (a *ConnectAPIService) ListCampaignManagerProfilesExecute(r ConnectAPIListCampaignManagerProfilesRequest) (*ListCampaignManagerProfiles200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListCampaignManagerProfiles200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ListCampaignManagerProfiles")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/campaignmanager360/profiles"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.pendingDataToken == nil {
+		return localVarReturnValue, nil, reportError("pendingDataToken is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "pendingDataToken", r.pendingDataToken, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIListFacebookPagesRequest struct {
 	ctx            context.Context
 	ApiService     *ConnectAPIService
@@ -12244,6 +13789,144 @@ func (a *ConnectAPIService) SearchGoogleBusinessLocationsExecute(r ConnectAPISea
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPISelectCampaignManagerProfileRequest struct {
+	ctx                                 context.Context
+	ApiService                          *ConnectAPIService
+	selectCampaignManagerProfileRequest *SelectCampaignManagerProfileRequest
+}
+
+func (r ConnectAPISelectCampaignManagerProfileRequest) SelectCampaignManagerProfileRequest(selectCampaignManagerProfileRequest SelectCampaignManagerProfileRequest) ConnectAPISelectCampaignManagerProfileRequest {
+	r.selectCampaignManagerProfileRequest = &selectCampaignManagerProfileRequest
+	return r
+}
+
+func (r ConnectAPISelectCampaignManagerProfileRequest) Execute() (*SelectGoogleAnalyticsProperty200Response, *http.Response, error) {
+	return r.ApiService.SelectCampaignManagerProfileExecute(r)
+}
+
+/*
+SelectCampaignManagerProfile Connect the chosen Campaign Manager 360 profile
+
+For headless flows. Connects the CM360 user profile the user picked as a `campaignmanager360` account and returns where to send the user next.
+
+Consumes the `pendingDataToken`; a refused or failed attempt leaves it usable for a retry. Send your API key (or connect token) for the same profile with a headless token.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPISelectCampaignManagerProfileRequest
+*/
+func (a *ConnectAPIService) SelectCampaignManagerProfile(ctx context.Context) ConnectAPISelectCampaignManagerProfileRequest {
+	return ConnectAPISelectCampaignManagerProfileRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SelectGoogleAnalyticsProperty200Response
+func (a *ConnectAPIService) SelectCampaignManagerProfileExecute(r ConnectAPISelectCampaignManagerProfileRequest) (*SelectGoogleAnalyticsProperty200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SelectGoogleAnalyticsProperty200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.SelectCampaignManagerProfile")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/campaignmanager360/select-profile"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.selectCampaignManagerProfileRequest == nil {
+		return localVarReturnValue, nil, reportError("selectCampaignManagerProfileRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.selectCampaignManagerProfileRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

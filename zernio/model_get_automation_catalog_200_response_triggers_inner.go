@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -23,14 +23,16 @@ var _ MappedNullable = &GetAutomationCatalog200ResponseTriggersInner{}
 // GetAutomationCatalog200ResponseTriggersInner struct for GetAutomationCatalog200ResponseTriggersInner
 type GetAutomationCatalog200ResponseTriggersInner struct {
 	Kind string `json:"kind"`
-	// `schedule`, or the Zernio event name.
+	// `schedule`, `enrollment`, a comment door such as `comment.keyword` (comment to DM), a flow trigger such as `inbound_message`, or the Zernio event name.
 	Type string `json:"type"`
 	// Event triggers only.
 	Label *string `json:"label,omitempty"`
 	// What an event is about, such as `post` or `account`.
 	Subject *string `json:"subject,omitempty"`
-	// Which of `profileId` and `accountIds` an event trigger needs.
+	// Which of `profileId`, `accountId`, `accountIds` and `platformPostId` the trigger needs.
 	Scope map[string]interface{} `json:"scope,omitempty"`
+	// The platforms a sequence, comment to DM or flow trigger runs on.
+	Platforms []string `json:"platforms,omitempty"`
 	// The facts a `filter` can compare, for an event trigger.
 	Facts []GetAutomationCatalog200ResponseTriggersInnerFactsInner `json:"facts,omitempty"`
 	// Scheduled trigger only: what it can check (`post`), with the facts of each.
@@ -208,6 +210,38 @@ func (o *GetAutomationCatalog200ResponseTriggersInner) HasScope() bool {
 // SetScope gets a reference to the given map[string]interface{} and assigns it to the Scope field.
 func (o *GetAutomationCatalog200ResponseTriggersInner) SetScope(v map[string]interface{}) {
 	o.Scope = v
+}
+
+// GetPlatforms returns the Platforms field value if set, zero value otherwise.
+func (o *GetAutomationCatalog200ResponseTriggersInner) GetPlatforms() []string {
+	if o == nil || IsNil(o.Platforms) {
+		var ret []string
+		return ret
+	}
+	return o.Platforms
+}
+
+// GetPlatformsOk returns a tuple with the Platforms field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAutomationCatalog200ResponseTriggersInner) GetPlatformsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Platforms) {
+		return nil, false
+	}
+	return o.Platforms, true
+}
+
+// HasPlatforms returns a boolean if a field has been set.
+func (o *GetAutomationCatalog200ResponseTriggersInner) HasPlatforms() bool {
+	if o != nil && !IsNil(o.Platforms) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatforms gets a reference to the given []string and assigns it to the Platforms field.
+func (o *GetAutomationCatalog200ResponseTriggersInner) SetPlatforms(v []string) {
+	o.Platforms = v
 }
 
 // GetFacts returns the Facts field value if set, zero value otherwise.
@@ -486,6 +520,9 @@ func (o GetAutomationCatalog200ResponseTriggersInner) ToMap() (map[string]interf
 	}
 	if !IsNil(o.Scope) {
 		toSerialize["scope"] = o.Scope
+	}
+	if !IsNil(o.Platforms) {
+		toSerialize["platforms"] = o.Platforms
 	}
 	if !IsNil(o.Facts) {
 		toSerialize["facts"] = o.Facts

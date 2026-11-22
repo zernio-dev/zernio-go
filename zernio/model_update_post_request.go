@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -41,6 +41,8 @@ type UpdatePostRequest struct {
 	Mentions            []string               `json:"mentions,omitempty"`
 	CrosspostingEnabled *bool                  `json:"crosspostingEnabled,omitempty"`
 	Metadata            map[string]interface{} `json:"metadata,omitempty"`
+	// Your own identifier for this post (see `externalId` on create). Send `null` to clear it. Also accepted on published posts.
+	ExternalId NullableString `json:"externalId,omitempty"`
 	// Profile ID to schedule via queue.
 	QueuedFromProfile *string `json:"queuedFromProfile,omitempty"`
 	// Specific queue ID to use when scheduling via queue.
@@ -556,6 +558,49 @@ func (o *UpdatePostRequest) SetMetadata(v map[string]interface{}) {
 	o.Metadata = v
 }
 
+// GetExternalId returns the ExternalId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdatePostRequest) GetExternalId() string {
+	if o == nil || IsNil(o.ExternalId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ExternalId.Get()
+}
+
+// GetExternalIdOk returns a tuple with the ExternalId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdatePostRequest) GetExternalIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ExternalId.Get(), o.ExternalId.IsSet()
+}
+
+// HasExternalId returns a boolean if a field has been set.
+func (o *UpdatePostRequest) HasExternalId() bool {
+	if o != nil && o.ExternalId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetExternalId gets a reference to the given NullableString and assigns it to the ExternalId field.
+func (o *UpdatePostRequest) SetExternalId(v string) {
+	o.ExternalId.Set(&v)
+}
+
+// SetExternalIdNil sets the value for ExternalId to be an explicit nil
+func (o *UpdatePostRequest) SetExternalIdNil() {
+	o.ExternalId.Set(nil)
+}
+
+// UnsetExternalId ensures that no value is present for ExternalId, not even an explicit nil
+func (o *UpdatePostRequest) UnsetExternalId() {
+	o.ExternalId.Unset()
+}
+
 // GetQueuedFromProfile returns the QueuedFromProfile field value if set, zero value otherwise.
 func (o *UpdatePostRequest) GetQueuedFromProfile() string {
 	if o == nil || IsNil(o.QueuedFromProfile) {
@@ -771,6 +816,9 @@ func (o UpdatePostRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
 	}
+	if o.ExternalId.IsSet() {
+		toSerialize["externalId"] = o.ExternalId.Get()
+	}
 	if !IsNil(o.QueuedFromProfile) {
 		toSerialize["queuedFromProfile"] = o.QueuedFromProfile
 	}
@@ -823,6 +871,7 @@ func (o *UpdatePostRequest) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "mentions")
 		delete(additionalProperties, "crosspostingEnabled")
 		delete(additionalProperties, "metadata")
+		delete(additionalProperties, "externalId")
 		delete(additionalProperties, "queuedFromProfile")
 		delete(additionalProperties, "queueId")
 		delete(additionalProperties, "tiktokSettings")

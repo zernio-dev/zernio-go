@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -29,10 +29,17 @@ type AdCampaignsAPIAddAdKeywordsRequest struct {
 	ctx                  context.Context
 	ApiService           *AdCampaignsAPIService
 	addAdKeywordsRequest *AddAdKeywordsRequest
+	idempotencyKey       *string
 }
 
 func (r AdCampaignsAPIAddAdKeywordsRequest) AddAdKeywordsRequest(addAdKeywordsRequest AddAdKeywordsRequest) AdCampaignsAPIAddAdKeywordsRequest {
 	r.addAdKeywordsRequest = &addAdKeywordsRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIAddAdKeywordsRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIAddAdKeywordsRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -102,6 +109,9 @@ func (a *AdCampaignsAPIService) AddAdKeywordsExecute(r AdCampaignsAPIAddAdKeywor
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.addAdKeywordsRequest
@@ -934,10 +944,17 @@ type AdCampaignsAPIBulkUpdateAdCampaignStatusRequest struct {
 	ctx                               context.Context
 	ApiService                        *AdCampaignsAPIService
 	bulkUpdateAdCampaignStatusRequest *BulkUpdateAdCampaignStatusRequest
+	idempotencyKey                    *string
 }
 
 func (r AdCampaignsAPIBulkUpdateAdCampaignStatusRequest) BulkUpdateAdCampaignStatusRequest(bulkUpdateAdCampaignStatusRequest BulkUpdateAdCampaignStatusRequest) AdCampaignsAPIBulkUpdateAdCampaignStatusRequest {
 	r.bulkUpdateAdCampaignStatusRequest = &bulkUpdateAdCampaignStatusRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIBulkUpdateAdCampaignStatusRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIBulkUpdateAdCampaignStatusRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -1007,6 +1024,9 @@ func (a *AdCampaignsAPIService) BulkUpdateAdCampaignStatusExecute(r AdCampaignsA
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.bulkUpdateAdCampaignStatusRequest
@@ -3482,6 +3502,7 @@ The copy is created paused so callers can review before launching.
 - `statusOption` applies to the ad set and every ad.
 - If an ad copy fails, the partial ad set copy is deleted and the request fails with Meta's error.
 - A sync discovery starts automatically and runs after the response (`syncAfter: false` to skip). The copy is readable through Zernio once it finishes, usually within a few minutes. Until then, calls that take a copied id return 404, so retry them.
+- `websiteOnly: true` rebuilds each ad (new creative on `/adcreatives`, new ad) instead of copying it, so the creative carries `applink_treatment: web_only`.
 
 TikTok: the ad group is read and recreated under the campaign with its targeting, bidding,
 budget and schedule (start reset to now); `deepCopy: true` recreates its ads too (default
@@ -3582,6 +3603,333 @@ func (a *AdCampaignsAPIService) DuplicateAdSetExecute(r AdCampaignsAPIDuplicateA
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIEditCampaignNegativeKeywordListsRequest struct {
+	ctx                                     context.Context
+	ApiService                              *AdCampaignsAPIService
+	campaignId                              string
+	editCampaignNegativeKeywordListsRequest *EditCampaignNegativeKeywordListsRequest
+	idempotencyKey                          *string
+}
+
+func (r AdCampaignsAPIEditCampaignNegativeKeywordListsRequest) EditCampaignNegativeKeywordListsRequest(editCampaignNegativeKeywordListsRequest EditCampaignNegativeKeywordListsRequest) AdCampaignsAPIEditCampaignNegativeKeywordListsRequest {
+	r.editCampaignNegativeKeywordListsRequest = &editCampaignNegativeKeywordListsRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIEditCampaignNegativeKeywordListsRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIEditCampaignNegativeKeywordListsRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
+}
+
+func (r AdCampaignsAPIEditCampaignNegativeKeywordListsRequest) Execute() (*ReplaceAdNegativeKeywordListKeywords200Response, *http.Response, error) {
+	return r.ApiService.EditCampaignNegativeKeywordListsExecute(r)
+}
+
+/*
+EditCampaignNegativeKeywordLists Attach or detach campaign negative lists
+
+Attaches and detaches single shared negative keyword lists on a Google campaign without resending the full set. The lists and their keywords are not changed.
+
+- `remove` wins over `add` for the same list.
+- A list already attached is not attached twice; a list not attached is skipped on remove.
+- Every list in `add` must belong to the campaign customer and have type NEGATIVE_KEYWORDS.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId
+	@return AdCampaignsAPIEditCampaignNegativeKeywordListsRequest
+*/
+func (a *AdCampaignsAPIService) EditCampaignNegativeKeywordLists(ctx context.Context, campaignId string) AdCampaignsAPIEditCampaignNegativeKeywordListsRequest {
+	return AdCampaignsAPIEditCampaignNegativeKeywordListsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ReplaceAdNegativeKeywordListKeywords200Response
+func (a *AdCampaignsAPIService) EditCampaignNegativeKeywordListsExecute(r AdCampaignsAPIEditCampaignNegativeKeywordListsRequest) (*ReplaceAdNegativeKeywordListKeywords200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReplaceAdNegativeKeywordListKeywords200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.EditCampaignNegativeKeywordLists")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/negative-keyword-lists"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.editCampaignNegativeKeywordListsRequest == nil {
+		return localVarReturnValue, nil, reportError("editCampaignNegativeKeywordListsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.editCampaignNegativeKeywordListsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIEditCampaignNegativeKeywordsRequest struct {
+	ctx                                 context.Context
+	ApiService                          *AdCampaignsAPIService
+	campaignId                          string
+	editCampaignNegativeKeywordsRequest *EditCampaignNegativeKeywordsRequest
+	idempotencyKey                      *string
+}
+
+func (r AdCampaignsAPIEditCampaignNegativeKeywordsRequest) EditCampaignNegativeKeywordsRequest(editCampaignNegativeKeywordsRequest EditCampaignNegativeKeywordsRequest) AdCampaignsAPIEditCampaignNegativeKeywordsRequest {
+	r.editCampaignNegativeKeywordsRequest = &editCampaignNegativeKeywordsRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIEditCampaignNegativeKeywordsRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIEditCampaignNegativeKeywordsRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
+}
+
+func (r AdCampaignsAPIEditCampaignNegativeKeywordsRequest) Execute() (*ReplaceCampaignNegativeKeywords200Response, *http.Response, error) {
+	return r.ApiService.EditCampaignNegativeKeywordsExecute(r)
+}
+
+/*
+EditCampaignNegativeKeywords Add or remove campaign-level negative keywords
+
+Adds and removes single campaign-level negative keywords on a Google campaign without resending the full set.
+
+- `remove` matches by text (any case) and match type, and wins over `add` for the same keyword.
+- Keywords already on the campaign are not added twice; keywords not on it are skipped on remove.
+- Changes go to Google in `create`/`remove` mutates of up to 5,000 operations, like the full replace.
+
+The platform is always discovered from the campaign itself; a non-Google
+campaign returns 501 rather than 404, whether or not `platform` was sent.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Platform campaign ID
+	@return AdCampaignsAPIEditCampaignNegativeKeywordsRequest
+*/
+func (a *AdCampaignsAPIService) EditCampaignNegativeKeywords(ctx context.Context, campaignId string) AdCampaignsAPIEditCampaignNegativeKeywordsRequest {
+	return AdCampaignsAPIEditCampaignNegativeKeywordsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ReplaceCampaignNegativeKeywords200Response
+func (a *AdCampaignsAPIService) EditCampaignNegativeKeywordsExecute(r AdCampaignsAPIEditCampaignNegativeKeywordsRequest) (*ReplaceCampaignNegativeKeywords200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReplaceCampaignNegativeKeywords200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.EditCampaignNegativeKeywords")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/negative-keywords"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.editCampaignNegativeKeywordsRequest == nil {
+		return localVarReturnValue, nil, reportError("editCampaignNegativeKeywordsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.editCampaignNegativeKeywordsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -3807,7 +4155,7 @@ Shows one ad with its creative, targeting, status and performance metrics.
 
 ### Google Search ads
 
-Google Search ads include current creative.headlines, creative.descriptions and creative.finalUrls, preserving pinnedField. Top-level cachedAt and stale report cache freshness. Google mutations invalidate this read.
+Google Search ads include current creative.headlines, creative.descriptions, creative.finalUrls and, when set, creative.path1 and creative.path2, preserving pinnedField. Top-level cachedAt and stale report cache freshness. Google mutations invalidate this read.
 
 RSA enrichment requires a stored advertisingChannelType of SEARCH. Ads with an unknown or other channel return their stored details without a Google read. If RSA enrichment fails, the stored ad is returned with HTTP 200 and without cache metadata.
 
@@ -5199,6 +5547,7 @@ Use this for dashboards that draw a daily-spend or daily-conversions chart, inst
 ### Parameters
 
 - `accountId` is required. The lookup is sibling-expanded, so passing the `metaads` ID also includes ads under the linked `facebook` / `instagram` posting account (and vice-versa), the same convention as `/v1/ads/tree` and `/v1/ads`.
+- Without `adAccountId` the timeline sums only the ad accounts the connection reaches: its `scopedAdAccountIds` when it selects some, every reachable one otherwise.
 - Date range defaults to the last 90 days. Capped at 730 days.
 - With adAccountId set to a Google customer id this is the customer-level performance report (clicks, cost, impressions, conversions, all conversions per day).
 
@@ -9983,9 +10332,16 @@ func (a *AdCampaignsAPIService) RemoveAdGroupAssetsExecute(r AdCampaignsAPIRemov
 }
 
 type AdCampaignsAPIRemoveAdKeywordRequest struct {
-	ctx        context.Context
-	ApiService *AdCampaignsAPIService
-	keywordId  string
+	ctx            context.Context
+	ApiService     *AdCampaignsAPIService
+	keywordId      string
+	idempotencyKey *string
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIRemoveAdKeywordRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIRemoveAdKeywordRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
 }
 
 func (r AdCampaignsAPIRemoveAdKeywordRequest) Execute() (*RemoveAdKeyword200Response, *http.Response, error) {
@@ -10050,6 +10406,9 @@ func (a *AdCampaignsAPIService) RemoveAdKeywordExecute(r AdCampaignsAPIRemoveAdK
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
@@ -10544,10 +10903,17 @@ type AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest struct {
 	ApiService                                 *AdCampaignsAPIService
 	campaignId                                 string
 	replaceCampaignNegativeKeywordListsRequest *ReplaceCampaignNegativeKeywordListsRequest
+	idempotencyKey                             *string
 }
 
 func (r AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest) ReplaceCampaignNegativeKeywordListsRequest(replaceCampaignNegativeKeywordListsRequest ReplaceCampaignNegativeKeywordListsRequest) AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest {
 	r.replaceCampaignNegativeKeywordListsRequest = &replaceCampaignNegativeKeywordListsRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -10616,6 +10982,9 @@ func (a *AdCampaignsAPIService) ReplaceCampaignNegativeKeywordListsExecute(r AdC
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.replaceCampaignNegativeKeywordListsRequest
@@ -10694,10 +11063,17 @@ type AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest struct {
 	ApiService                             *AdCampaignsAPIService
 	campaignId                             string
 	replaceCampaignNegativeKeywordsRequest *ReplaceCampaignNegativeKeywordsRequest
+	idempotencyKey                         *string
 }
 
 func (r AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest) ReplaceCampaignNegativeKeywordsRequest(replaceCampaignNegativeKeywordsRequest ReplaceCampaignNegativeKeywordsRequest) AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest {
 	r.replaceCampaignNegativeKeywordsRequest = &replaceCampaignNegativeKeywordsRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -10710,10 +11086,14 @@ ReplaceCampaignNegativeKeywords Replace campaign-level negative keywords
 
 Replaces a Google campaign's full list of campaign-level negative keywords, or clears it.
 
-Replaces the FULL set of campaign-level negative keywords (C.270): the desired
+Replaces the FULL set of campaign-level negative keywords (C.270). The desired
 list is diffed against what Google already has, and the difference is applied
-as one `create`/`remove` mutate. Send an empty array to clear every campaign
-negative.
+in `create`/`remove` mutates of up to 5,000 operations.
+
+- Creates run first, so a failed batch leaves extra negatives rather than missing ones.
+- When the old and new sets together would pass Google's 10,000 cap, removes run first.
+- Send the same request again to finish a failed replace.
+- Send an empty array to clear every campaign negative.
 
 The platform is always discovered from the campaign itself; a non-Google
 campaign returns 501 rather than 404, whether or not `platform` was sent.
@@ -10772,6 +11152,9 @@ func (a *AdCampaignsAPIService) ReplaceCampaignNegativeKeywordsExecute(r AdCampa
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.replaceCampaignNegativeKeywordsRequest
@@ -11018,10 +11401,17 @@ type AdCampaignsAPIUpdateAdRequest struct {
 	ApiService      *AdCampaignsAPIService
 	adId            string
 	updateAdRequest *UpdateAdRequest
+	idempotencyKey  *string
 }
 
 func (r AdCampaignsAPIUpdateAdRequest) UpdateAdRequest(updateAdRequest UpdateAdRequest) AdCampaignsAPIUpdateAdRequest {
 	r.updateAdRequest = &updateAdRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIUpdateAdRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIUpdateAdRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -11060,7 +11450,7 @@ Any other `targeting` field returns 400: Google cannot mutate it post-create wit
 
 Creative edits are dispatched on the ad's `advertisingChannelType`. Every supported field replaces a whole set; a field you omit is preserved.
 
-- **Search**: top-level `headlines`, `descriptions` and `finalUrls`. Use 3-15 headlines (1-30 characters) and 2-4 descriptions (1-90 characters). Omit an asset to remove it; omit pinnedField on an included asset to unpin it. Updates do not pad or truncate text. The legacy creative fields remain unsupported.
+- **Search**: top-level `headlines`, `descriptions`, `finalUrls`, `path1` and `path2`. Use 3-15 headlines (1-30 characters) and 2-4 descriptions (1-90 characters). Omit an asset to remove it; omit pinnedField on an included asset to unpin it. Updates do not pad or truncate text. The legacy creative fields remain unsupported.
 - **Display**: top-level `headlines` (1-5, no pinnedField, display ads have no pinned positions), `descriptions` (1-5) and `finalUrls`, plus `creative.longHeadline`, `creative.businessName`, `creative.imageUrl` (the landscape marketing image) and `creative.squareImageUrl`.
 - **Performance Max**: top-level `assetGroup`, which swaps asset roles on the ad's asset group. The other creative fields return 422 for this channel, and `assetGroup` returns 422 on any other channel.
 - **Demand Gen**: top-level `demandGen` (see GoogleDemandGenUpdate): creative, channel and audience changes in one atomic Google request. The other creative fields return 422 for this channel.
@@ -11176,6 +11566,9 @@ func (a *AdCampaignsAPIService) UpdateAdExecute(r AdCampaignsAPIUpdateAdRequest)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
 	// body params
 	localVarPostBody = r.updateAdRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -11242,10 +11635,17 @@ type AdCampaignsAPIUpdateAdCampaignRequest struct {
 	ApiService              *AdCampaignsAPIService
 	campaignId              string
 	updateAdCampaignRequest *UpdateAdCampaignRequest
+	idempotencyKey          *string
 }
 
 func (r AdCampaignsAPIUpdateAdCampaignRequest) UpdateAdCampaignRequest(updateAdCampaignRequest UpdateAdCampaignRequest) AdCampaignsAPIUpdateAdCampaignRequest {
 	r.updateAdCampaignRequest = &updateAdCampaignRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIUpdateAdCampaignRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIUpdateAdCampaignRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -11381,6 +11781,9 @@ func (a *AdCampaignsAPIService) UpdateAdCampaignExecute(r AdCampaignsAPIUpdateAd
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
 	// body params
 	localVarPostBody = r.updateAdCampaignRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -11447,10 +11850,17 @@ type AdCampaignsAPIUpdateAdCampaignStatusRequest struct {
 	ApiService                    *AdCampaignsAPIService
 	campaignId                    string
 	updateAdCampaignStatusRequest *UpdateAdCampaignStatusRequest
+	idempotencyKey                *string
 }
 
 func (r AdCampaignsAPIUpdateAdCampaignStatusRequest) UpdateAdCampaignStatusRequest(updateAdCampaignStatusRequest UpdateAdCampaignStatusRequest) AdCampaignsAPIUpdateAdCampaignStatusRequest {
 	r.updateAdCampaignStatusRequest = &updateAdCampaignStatusRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIUpdateAdCampaignStatusRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIUpdateAdCampaignStatusRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -11553,6 +11963,9 @@ func (a *AdCampaignsAPIService) UpdateAdCampaignStatusExecute(r AdCampaignsAPIUp
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.updateAdCampaignStatusRequest
@@ -11759,10 +12172,17 @@ type AdCampaignsAPIUpdateAdKeywordRequest struct {
 	ApiService             *AdCampaignsAPIService
 	keywordId              string
 	updateAdKeywordRequest *UpdateAdKeywordRequest
+	idempotencyKey         *string
 }
 
 func (r AdCampaignsAPIUpdateAdKeywordRequest) UpdateAdKeywordRequest(updateAdKeywordRequest UpdateAdKeywordRequest) AdCampaignsAPIUpdateAdKeywordRequest {
 	r.updateAdKeywordRequest = &updateAdKeywordRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIUpdateAdKeywordRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIUpdateAdKeywordRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -11835,6 +12255,9 @@ func (a *AdCampaignsAPIService) UpdateAdKeywordExecute(r AdCampaignsAPIUpdateAdK
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.updateAdKeywordRequest
@@ -11935,10 +12358,17 @@ type AdCampaignsAPIUpdateAdSetRequest struct {
 	ApiService         *AdCampaignsAPIService
 	adSetId            string
 	updateAdSetRequest *UpdateAdSetRequest
+	idempotencyKey     *string
 }
 
 func (r AdCampaignsAPIUpdateAdSetRequest) UpdateAdSetRequest(updateAdSetRequest UpdateAdSetRequest) AdCampaignsAPIUpdateAdSetRequest {
 	r.updateAdSetRequest = &updateAdSetRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIUpdateAdSetRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIUpdateAdSetRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -11999,6 +12429,8 @@ When updating `budget` on an ad set whose campaign holds the budget (CBO), the r
 `placements` and `targeting` take the same shapes as POST /v1/ads/create. Meta replaces an ad set's targeting wholesale, so Zernio reads the live targeting first, changes only what the request names and writes the merged spec back.
 
 Custom audiences, geo, age, interest groups and `targeting_automation` you do not send are kept.
+
+Locations are replaced as a set: sending any location field (countries, countryGroups, regions, cities, zips, metros, customLocations, places, neighborhoods) replaces every included location on the ad set, because Meta ORs them together. Resend the ones to keep. Meta's `location_types` and other geo settings Zernio does not model are always kept.
 
 - `placements` replaces the whole placement set.
 - `placements: null` returns the ad set to automatic placements.
@@ -12093,6 +12525,9 @@ func (a *AdCampaignsAPIService) UpdateAdSetExecute(r AdCampaignsAPIUpdateAdSetRe
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
 	// body params
 	localVarPostBody = r.updateAdSetRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -12148,10 +12583,17 @@ type AdCampaignsAPIUpdateAdSetStatusRequest struct {
 	ApiService                    *AdCampaignsAPIService
 	adSetId                       string
 	updateAdCampaignStatusRequest *UpdateAdCampaignStatusRequest
+	idempotencyKey                *string
 }
 
 func (r AdCampaignsAPIUpdateAdSetStatusRequest) UpdateAdCampaignStatusRequest(updateAdCampaignStatusRequest UpdateAdCampaignStatusRequest) AdCampaignsAPIUpdateAdSetStatusRequest {
 	r.updateAdCampaignStatusRequest = &updateAdCampaignStatusRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIUpdateAdSetStatusRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIUpdateAdSetStatusRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -12250,6 +12692,9 @@ func (a *AdCampaignsAPIService) UpdateAdSetStatusExecute(r AdCampaignsAPIUpdateA
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
 	// body params
 	localVarPostBody = r.updateAdCampaignStatusRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -12305,10 +12750,17 @@ type AdCampaignsAPIUpdateAdStatusRequest struct {
 	ApiService            *AdCampaignsAPIService
 	adId                  string
 	updateAdStatusRequest *UpdateAdStatusRequest
+	idempotencyKey        *string
 }
 
 func (r AdCampaignsAPIUpdateAdStatusRequest) UpdateAdStatusRequest(updateAdStatusRequest UpdateAdStatusRequest) AdCampaignsAPIUpdateAdStatusRequest {
 	r.updateAdStatusRequest = &updateAdStatusRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdCampaignsAPIUpdateAdStatusRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIUpdateAdStatusRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -12415,6 +12867,9 @@ func (a *AdCampaignsAPIService) UpdateAdStatusExecute(r AdCampaignsAPIUpdateAdSt
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
 	// body params
 	localVarPostBody = r.updateAdStatusRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -12459,6 +12914,7 @@ func (a *AdCampaignsAPIService) UpdateAdStatusExecute(r AdCampaignsAPIUpdateAdSt
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -48,12 +48,13 @@ Log something that happened with a person on their CRM record.
 
 - HubSpot: a Communication on the contact's timeline for `channel` `whatsapp` or `sms`, otherwise a Note. The subject and direction lead the text.
 - Salesforce: a completed Task on the Contact or Lead (`WhoId`), dated `occurredAt`, with `body` as its comments. `channel: call` logs a call.
+- HighLevel: a plain-text note on the contact. HighLevel dates a note when it is logged, so the subject (or channel), direction and `occurredAt` lead its text.
 
 To log inbox conversations automatically instead, turn on `logMessages` in the CRM settings.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId The connected HubSpot or Salesforce account (`GET /v1/accounts?platform=hubspot` or `salesforce`).
-	@param contactId The CRM's own id. HubSpot contact id, or Salesforce Contact (`003...`) or Lead (`00Q...`) id.
+	@param accountId The connected HubSpot, Salesforce or HighLevel account (`GET /v1/accounts?platform=hubspot`, `salesforce` or `gohighlevel`).
+	@param contactId The CRM's own id. HubSpot contact id, Salesforce Contact (`003...`) or Lead (`00Q...`) id, or HighLevel contact id.
 	@return CRMAPICreateCrmActivityRequest
 */
 func (a *CRMAPIService) CreateCrmActivity(ctx context.Context, accountId string, contactId string) CRMAPICreateCrmActivityRequest {
@@ -258,10 +259,12 @@ Create a person in the connected CRM. HubSpot creates a contact. Salesforce crea
 
 Salesforce requires `lastName` on both, and `company` on a Lead (`[not provided]` when you send none). A Contact takes its company from its Account: set `properties.AccountId` instead.
 
+HighLevel creates a contact in the connected location. A location that does not allow duplicates answers 409 with the existing contact.
+
 Anything the CRM refuses (a required field, a validation rule, a duplicate rule) comes back as 422 or 409 with the CRM's own errors in `details.errors`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId The connected HubSpot or Salesforce account (`GET /v1/accounts?platform=hubspot` or `salesforce`).
+	@param accountId The connected HubSpot, Salesforce or HighLevel account (`GET /v1/accounts?platform=hubspot`, `salesforce` or `gohighlevel`).
 	@return CRMAPICreateCrmContactRequest
 */
 func (a *CRMAPIService) CreateCrmContact(ctx context.Context, accountId string) CRMAPICreateCrmContactRequest {
@@ -450,7 +453,7 @@ type CRMAPIGetCrmContactRequest struct {
 	includeRaw *bool
 }
 
-// Comma-separated native field names to return in &#x60;properties&#x60; (at most 50), for example &#x60;lifecyclestage,hs_lead_status&#x60; or &#x60;LeadSource,Industry__c&#x60;.
+// Comma-separated native field names to return in &#x60;properties&#x60; (at most 50), for example &#x60;lifecyclestage,hs_lead_status&#x60; or &#x60;LeadSource,Industry__c&#x60;. On HighLevel, a field of the record (&#x60;source&#x60;, &#x60;status&#x60;), or a custom field by id or key.
 func (r CRMAPIGetCrmContactRequest) Properties(properties string) CRMAPIGetCrmContactRequest {
 	r.properties = &properties
 	return r
@@ -472,8 +475,8 @@ GetCrmContact Get a CRM contact
 Read one person from the connected CRM. On Salesforce the id can be a Contact (`003...`) or a Lead (`00Q...`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId The connected HubSpot or Salesforce account (`GET /v1/accounts?platform=hubspot` or `salesforce`).
-	@param contactId The CRM's own id. HubSpot contact id, or Salesforce Contact (`003...`) or Lead (`00Q...`) id.
+	@param accountId The connected HubSpot, Salesforce or HighLevel account (`GET /v1/accounts?platform=hubspot`, `salesforce` or `gohighlevel`).
+	@param contactId The CRM's own id. HubSpot contact id, Salesforce Contact (`003...`) or Lead (`00Q...`) id, or HighLevel contact id.
 	@return CRMAPIGetCrmContactRequest
 */
 func (a *CRMAPIService) GetCrmContact(ctx context.Context, accountId string, contactId string) CRMAPIGetCrmContactRequest {
@@ -658,7 +661,7 @@ type CRMAPIGetCrmDealRequest struct {
 	includeRaw *bool
 }
 
-// Comma-separated native field names to return in &#x60;properties&#x60; (at most 50), for example &#x60;lifecyclestage,hs_lead_status&#x60; or &#x60;LeadSource,Industry__c&#x60;.
+// Comma-separated native field names to return in &#x60;properties&#x60; (at most 50), for example &#x60;lifecyclestage,hs_lead_status&#x60; or &#x60;LeadSource,Industry__c&#x60;. On HighLevel, a field of the record (&#x60;source&#x60;, &#x60;status&#x60;), or a custom field by id or key.
 func (r CRMAPIGetCrmDealRequest) Properties(properties string) CRMAPIGetCrmDealRequest {
 	r.properties = &properties
 	return r
@@ -677,11 +680,11 @@ func (r CRMAPIGetCrmDealRequest) Execute() (*GetCrmDeal200Response, *http.Respon
 /*
 GetCrmDeal Get a CRM deal
 
-Read one deal (HubSpot) or Opportunity (Salesforce) with its contacts.
+Read one deal (HubSpot), Opportunity (Salesforce) or opportunity (HighLevel) with its contacts.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId The connected HubSpot or Salesforce account (`GET /v1/accounts?platform=hubspot` or `salesforce`).
-	@param dealId HubSpot deal id or Salesforce Opportunity id (`006...`).
+	@param accountId The connected HubSpot, Salesforce or HighLevel account (`GET /v1/accounts?platform=hubspot`, `salesforce` or `gohighlevel`).
+	@param dealId HubSpot deal id, Salesforce Opportunity id (`006...`) or HighLevel opportunity id.
 	@return CRMAPIGetCrmDealRequest
 */
 func (a *CRMAPIService) GetCrmDeal(ctx context.Context, accountId string, dealId string) CRMAPIGetCrmDealRequest {
@@ -869,19 +872,19 @@ type CRMAPIListCrmDealsRequest struct {
 	cursor       *string
 }
 
-// Only deals in this stage. HubSpot takes the stage&#39;s internal id (&#x60;closedwon&#x60;, &#x60;appointmentscheduled&#x60;); Salesforce the &#x60;StageName&#x60; (&#x60;Closed Won&#x60;).
+// Only deals in this stage. HubSpot takes the stage&#39;s internal id (&#x60;closedwon&#x60;, &#x60;appointmentscheduled&#x60;); Salesforce the &#x60;StageName&#x60; (&#x60;Closed Won&#x60;); HighLevel the pipeline stage id.
 func (r CRMAPIListCrmDealsRequest) Stage(stage string) CRMAPIListCrmDealsRequest {
 	r.stage = &stage
 	return r
 }
 
-// Only deals changed at or after this time.
+// Only deals changed at or after this time. HubSpot and Salesforce only.
 func (r CRMAPIListCrmDealsRequest) UpdatedSince(updatedSince time.Time) CRMAPIListCrmDealsRequest {
 	r.updatedSince = &updatedSince
 	return r
 }
 
-// Comma-separated native field names to return in &#x60;properties&#x60; (at most 50), for example &#x60;lifecyclestage,hs_lead_status&#x60; or &#x60;LeadSource,Industry__c&#x60;.
+// Comma-separated native field names to return in &#x60;properties&#x60; (at most 50), for example &#x60;lifecyclestage,hs_lead_status&#x60; or &#x60;LeadSource,Industry__c&#x60;. On HighLevel, a field of the record (&#x60;source&#x60;, &#x60;status&#x60;), or a custom field by id or key.
 func (r CRMAPIListCrmDealsRequest) Properties(properties string) CRMAPIListCrmDealsRequest {
 	r.properties = &properties
 	return r
@@ -911,12 +914,12 @@ func (r CRMAPIListCrmDealsRequest) Execute() (*ListCrmDeals200Response, *http.Re
 /*
 ListCrmDeals List CRM deals
 
-List deals (HubSpot) or Opportunities (Salesforce), most recently changed first.
+List deals (HubSpot) or Opportunities (Salesforce), most recently changed first, or a HighLevel location's opportunities in HighLevel's own order.
 
-HubSpot needs the portal to have granted `crm.objects.deals.read`; otherwise 403 `crm_scope_missing`.
+HubSpot needs the portal to have granted `crm.objects.deals.read`; otherwise 403 `crm_scope_missing`. HighLevel cannot filter by update time: `updatedSince` answers 400 there.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId The connected HubSpot or Salesforce account (`GET /v1/accounts?platform=hubspot` or `salesforce`).
+	@param accountId The connected HubSpot, Salesforce or HighLevel account (`GET /v1/accounts?platform=hubspot`, `salesforce` or `gohighlevel`).
 	@return CRMAPIListCrmDealsRequest
 */
 func (a *CRMAPIService) ListCrmDeals(ctx context.Context, accountId string) CRMAPIListCrmDealsRequest {
@@ -1139,12 +1142,12 @@ func (r CRMAPIListCrmOwnersRequest) Execute() (*ListCrmOwners200Response, *http.
 /*
 ListCrmOwners List CRM owners
 
-List the users records can be assigned to: HubSpot owners, or active standard Salesforce users. Use an `id` as `ownerId` on contacts and deals.
+List the users records can be assigned to: HubSpot owners, active standard Salesforce users, or the HighLevel location's users. Use an `id` as `ownerId` on contacts and deals.
 
-HubSpot needs `crm.objects.owners.read`, an optional scope portals approve when they connect; without it, 403 `crm_scope_missing` asks to reconnect HubSpot.
+HubSpot needs `crm.objects.owners.read`, an optional scope portals approve when they connect; without it, 403 `crm_scope_missing` asks to reconnect HubSpot. HighLevel needs `users.readonly`: a location installed before Zernio asked for it answers 403 `crm_scope_missing` until it reconnects.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId The connected HubSpot or Salesforce account (`GET /v1/accounts?platform=hubspot` or `salesforce`).
+	@param accountId The connected HubSpot, Salesforce or HighLevel account (`GET /v1/accounts?platform=hubspot`, `salesforce` or `gohighlevel`).
 	@return CRMAPIListCrmOwnersRequest
 */
 func (a *CRMAPIService) ListCrmOwners(ctx context.Context, accountId string) CRMAPIListCrmOwnersRequest {
@@ -1355,7 +1358,7 @@ func (r CRMAPISearchCrmContactsRequest) Phone(phone string) CRMAPISearchCrmConta
 	return r
 }
 
-// Comma-separated native field names to return in &#x60;properties&#x60; (at most 50), for example &#x60;lifecyclestage,hs_lead_status&#x60; or &#x60;LeadSource,Industry__c&#x60;.
+// Comma-separated native field names to return in &#x60;properties&#x60; (at most 50), for example &#x60;lifecyclestage,hs_lead_status&#x60; or &#x60;LeadSource,Industry__c&#x60;. On HighLevel, a field of the record (&#x60;source&#x60;, &#x60;status&#x60;), or a custom field by id or key.
 func (r CRMAPISearchCrmContactsRequest) Properties(properties string) CRMAPISearchCrmContactsRequest {
 	r.properties = &properties
 	return r
@@ -1387,14 +1390,15 @@ SearchCrmContacts Search CRM contacts
 
 Find people in the connected CRM by free text, email or phone. Send exactly one of `q`, `email` or `phone`.
 
-HubSpot searches contacts. Salesforce searches Contacts and Leads that are not converted (`objectType` tells which), newest change first.
+HubSpot searches contacts. Salesforce searches Contacts and Leads that are not converted (`objectType` tells which), newest change first. HighLevel searches the location's contacts.
 
 - `email` is an exact match.
 - `phone` takes an international number and matches it however the CRM stored it ("+44 7911 123456", "07911 123456").
 - `q` searches names, emails, phones and company. On Salesforce, `q` and `phone` use the search index, so a record saved in the last few minutes may not show yet; `email` never lags.
+- On HighLevel, `email` and `phone` use the location's duplicate check: at most one contact, with no next page.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId The connected HubSpot or Salesforce account (`GET /v1/accounts?platform=hubspot` or `salesforce`).
+	@param accountId The connected HubSpot, Salesforce or HighLevel account (`GET /v1/accounts?platform=hubspot`, `salesforce` or `gohighlevel`).
 	@return CRMAPISearchCrmContactsRequest
 */
 func (a *CRMAPIService) SearchCrmContacts(ctx context.Context, accountId string) CRMAPISearchCrmContactsRequest {
@@ -1612,8 +1616,8 @@ Change fields on a person in the connected CRM. Send only what changes; `null` c
 On Salesforce, `company` applies to Leads only (400 on a Contact).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId The connected HubSpot or Salesforce account (`GET /v1/accounts?platform=hubspot` or `salesforce`).
-	@param contactId The CRM's own id. HubSpot contact id, or Salesforce Contact (`003...`) or Lead (`00Q...`) id.
+	@param accountId The connected HubSpot, Salesforce or HighLevel account (`GET /v1/accounts?platform=hubspot`, `salesforce` or `gohighlevel`).
+	@param contactId The CRM's own id. HubSpot contact id, Salesforce Contact (`003...`) or Lead (`00Q...`) id, or HighLevel contact id.
 	@return CRMAPIUpdateCrmContactRequest
 */
 func (a *CRMAPIService) UpdateCrmContact(ctx context.Context, accountId string, contactId string) CRMAPIUpdateCrmContactRequest {
@@ -1819,9 +1823,13 @@ Move a deal to another stage, or change its amount, close date, owner or native 
 
 HubSpot needs `crm.objects.deals.write`, an optional scope portals approve when they connect; without it, 403 `crm_scope_missing` asks to reconnect HubSpot. `currency` only works on multi-currency HubSpot portals and Salesforce orgs.
 
+HighLevel: `stage` is the pipeline stage id, `amount` the opportunity value, and `properties.status` (`open`, `won`, `lost`, `abandoned`) marks it won or lost. Its opportunities have no close date or currency of their own: `closeDate` and `currency` answer 400.
+
+Updating needs `opportunities.write`, which the Zernio HighLevel app does not request yet, so this call answers 403 `crm_scope_missing` on HighLevel for now.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId The connected HubSpot or Salesforce account (`GET /v1/accounts?platform=hubspot` or `salesforce`).
-	@param dealId HubSpot deal id or Salesforce Opportunity id (`006...`).
+	@param accountId The connected HubSpot, Salesforce or HighLevel account (`GET /v1/accounts?platform=hubspot`, `salesforce` or `gohighlevel`).
+	@param dealId HubSpot deal id, Salesforce Opportunity id (`006...`) or HighLevel opportunity id.
 	@return CRMAPIUpdateCrmDealRequest
 */
 func (a *CRMAPIService) UpdateCrmDeal(ctx context.Context, accountId string, dealId string) CRMAPIUpdateCrmDealRequest {

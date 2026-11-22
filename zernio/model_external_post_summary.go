@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -29,7 +29,7 @@ type ExternalPostSummary struct {
 	PlatformPostUrl *string `json:"platformPostUrl,omitempty"`
 	// Post caption / text
 	Content *string `json:"content,omitempty"`
-	// When the post was published on the platform
+	// When the post was published on the platform. For a YouTube Premiere or live stream it follows the actual start time once it airs.
 	PublishedAt *time.Time `json:"publishedAt,omitempty"`
 	// Media type (e.g. image, video, carousel)
 	MediaType *string `json:"mediaType,omitempty"`
@@ -45,6 +45,8 @@ type ExternalPostSummary struct {
 	IsSharedToFeed *bool `json:"isSharedToFeed,omitempty"`
 	// Instagram only: audio type of the media (MUSIC or ORIGINAL_SOUND). Absent when the platform did not report it.
 	MediaAudioType *string `json:"mediaAudioType,omitempty"`
+	// YouTube only. Start time of an upcoming Premiere or scheduled live stream. Absent once it airs. While it is present, publishedAt is the upload time; after it airs, publishedAt is the time it actually started.
+	UpcomingStartAt *time.Time `json:"upcomingStartAt,omitempty"`
 	// Pinterest: true when the account created the Pin, false when it saved it from another user; keep true to import only its own Pins. Facebook: false for a collab post by another Page. Null when unknown and for other platforms.
 	IsOwner   NullableBool                  `json:"isOwner,omitempty"`
 	Analytics *ExternalPostSummaryAnalytics `json:"analytics,omitempty"`
@@ -451,6 +453,38 @@ func (o *ExternalPostSummary) SetMediaAudioType(v string) {
 	o.MediaAudioType = &v
 }
 
+// GetUpcomingStartAt returns the UpcomingStartAt field value if set, zero value otherwise.
+func (o *ExternalPostSummary) GetUpcomingStartAt() time.Time {
+	if o == nil || IsNil(o.UpcomingStartAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.UpcomingStartAt
+}
+
+// GetUpcomingStartAtOk returns a tuple with the UpcomingStartAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExternalPostSummary) GetUpcomingStartAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.UpcomingStartAt) {
+		return nil, false
+	}
+	return o.UpcomingStartAt, true
+}
+
+// HasUpcomingStartAt returns a boolean if a field has been set.
+func (o *ExternalPostSummary) HasUpcomingStartAt() bool {
+	if o != nil && !IsNil(o.UpcomingStartAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetUpcomingStartAt gets a reference to the given time.Time and assigns it to the UpcomingStartAt field.
+func (o *ExternalPostSummary) SetUpcomingStartAt(v time.Time) {
+	o.UpcomingStartAt = &v
+}
+
 // GetIsOwner returns the IsOwner field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ExternalPostSummary) GetIsOwner() bool {
 	if o == nil || IsNil(o.IsOwner.Get()) {
@@ -571,6 +605,9 @@ func (o ExternalPostSummary) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MediaAudioType) {
 		toSerialize["mediaAudioType"] = o.MediaAudioType
+	}
+	if !IsNil(o.UpcomingStartAt) {
+		toSerialize["upcomingStartAt"] = o.UpcomingStartAt
 	}
 	if o.IsOwner.IsSet() {
 		toSerialize["isOwner"] = o.IsOwner.Get()

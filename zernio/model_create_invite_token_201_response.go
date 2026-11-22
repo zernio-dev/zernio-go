@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,7 @@ type CreateInviteToken201Response struct {
 	InvitedProfileIds      []string   `json:"invitedProfileIds,omitempty"`
 	DisabledResourceGroups []string   `json:"disabledResourceGroups,omitempty"`
 	ExpiresAt              *time.Time `json:"expiresAt,omitempty"`
+	CreatedAt              *time.Time `json:"createdAt,omitempty"`
 	InviteUrl              *string    `json:"inviteUrl,omitempty"`
 }
 
@@ -206,6 +207,38 @@ func (o *CreateInviteToken201Response) SetExpiresAt(v time.Time) {
 	o.ExpiresAt = &v
 }
 
+// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+func (o *CreateInviteToken201Response) GetCreatedAt() time.Time {
+	if o == nil || IsNil(o.CreatedAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.CreatedAt
+}
+
+// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInviteToken201Response) GetCreatedAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.CreatedAt) {
+		return nil, false
+	}
+	return o.CreatedAt, true
+}
+
+// HasCreatedAt returns a boolean if a field has been set.
+func (o *CreateInviteToken201Response) HasCreatedAt() bool {
+	if o != nil && !IsNil(o.CreatedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreatedAt gets a reference to the given time.Time and assigns it to the CreatedAt field.
+func (o *CreateInviteToken201Response) SetCreatedAt(v time.Time) {
+	o.CreatedAt = &v
+}
+
 // GetInviteUrl returns the InviteUrl field value if set, zero value otherwise.
 func (o *CreateInviteToken201Response) GetInviteUrl() string {
 	if o == nil || IsNil(o.InviteUrl) {
@@ -262,6 +295,9 @@ func (o CreateInviteToken201Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ExpiresAt) {
 		toSerialize["expiresAt"] = o.ExpiresAt
+	}
+	if !IsNil(o.CreatedAt) {
+		toSerialize["createdAt"] = o.CreatedAt
 	}
 	if !IsNil(o.InviteUrl) {
 		toSerialize["inviteUrl"] = o.InviteUrl

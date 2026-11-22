@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -28,14 +28,16 @@ type SubmitWhatsAppNumberKycRequest struct {
 	SubmissionId *string `json:"submissionId,omitempty"`
 	// Provision several same-country numbers from one submission (1-5). The single verification covers all of them; each number is billed only when it activates. Numbers that fail to order are skipped (best-effort). With `areaCode`, a quantity above that area's live stock is rejected with a 400.
 	Quantity *int32 `json:"quantity,omitempty"`
-	// Reuse a prior approved verification for this country (skips document/field collection; places the order immediately).
+	// Reuse a prior approved verification held by a number on `profileId` for this country (skips document/field collection; places the order immediately).
 	Reuse *bool `json:"reuse,omitempty"`
-	// Which reusable verification to use (GET reusable.options[].id). The unambiguous selection key. Omitted = the approved default. No match = 409.
+	// Which reusable verification to use (GET reusable.options[].id). The unambiguous selection key. Must come from a number on `profileId`. Omitted = the approved default. No match on this profile = 409.
 	ReuseOptionId *string `json:"reuseOptionId,omitempty"`
-	// Legacy fallback for `reuseOptionId`: the source phone number (GET reusable.options[].fromPhoneNumber). Ambiguous when a number labels two verifications, so prefer `reuseOptionId`. Omitted = the approved default. No match = 409.
+	// Legacy fallback for `reuseOptionId`: the source phone number (GET reusable.options[].fromPhoneNumber). Ambiguous when a number labels two verifications, so prefer `reuseOptionId`. Must be a number on `profileId`. Omitted = the approved default. No match on this profile = 409.
 	ReuseFrom *string `json:"reuseFrom,omitempty"`
 	// Area code (NDC) the number must be in. Omit for any area.  Hard constraint: an empty area pool fails with 409 code AREA_CODE_UNAVAILABLE instead of ordering from another area.  Options come from GET /v1/phone-numbers/availability (areaOptions). The purchase 202 kycUrl echoes the areaCode picked at purchase time so it can be passed here.
 	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
+	// Correlation label copied onto every number this submission creates (a batch shares it) and onto their webhooks. Not an idempotency key: use submissionId for safe retries. Max 100 characters; longer values are truncated.
+	PurchaseIntentId *string `json:"purchaseIntentId,omitempty"`
 	// Exact number to order, in E.164, taken from GET /v1/whatsapp/phone-numbers/available. It is ordered as is or the request fails with 409 code phone_number_unavailable; another number is never substituted and a pre-order is never placed. Requires quantity 1 (or omitted). Omit to let the carrier pick a number in the area.
 	PhoneNumber *string `json:"phoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
 	// Pre-order a number when the area has no stock.  - **With areaCode:** pre-order that area when it has no stock (listed in soldOutAreas with preOrderable true) instead of failing with AREA_CODE_UNAVAILABLE. The carrier sources a number in that area. - **Without areaCode:** accepts the pre-order a previous submit offered with 409 code area_pre_order_available (a geographic-match country whose address area has no stock). Resend the same body with preOrder true and the order is placed for that area.  A whole pair with no stock is pre-ordered without either flag.
@@ -316,6 +318,38 @@ func (o *SubmitWhatsAppNumberKycRequest) SetAreaCode(v string) {
 	o.AreaCode = &v
 }
 
+// GetPurchaseIntentId returns the PurchaseIntentId field value if set, zero value otherwise.
+func (o *SubmitWhatsAppNumberKycRequest) GetPurchaseIntentId() string {
+	if o == nil || IsNil(o.PurchaseIntentId) {
+		var ret string
+		return ret
+	}
+	return *o.PurchaseIntentId
+}
+
+// GetPurchaseIntentIdOk returns a tuple with the PurchaseIntentId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitWhatsAppNumberKycRequest) GetPurchaseIntentIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PurchaseIntentId) {
+		return nil, false
+	}
+	return o.PurchaseIntentId, true
+}
+
+// HasPurchaseIntentId returns a boolean if a field has been set.
+func (o *SubmitWhatsAppNumberKycRequest) HasPurchaseIntentId() bool {
+	if o != nil && !IsNil(o.PurchaseIntentId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPurchaseIntentId gets a reference to the given string and assigns it to the PurchaseIntentId field.
+func (o *SubmitWhatsAppNumberKycRequest) SetPurchaseIntentId(v string) {
+	o.PurchaseIntentId = &v
+}
+
 // GetPhoneNumber returns the PhoneNumber field value if set, zero value otherwise.
 func (o *SubmitWhatsAppNumberKycRequest) GetPhoneNumber() string {
 	if o == nil || IsNil(o.PhoneNumber) {
@@ -569,6 +603,9 @@ func (o SubmitWhatsAppNumberKycRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.AreaCode) {
 		toSerialize["areaCode"] = o.AreaCode
+	}
+	if !IsNil(o.PurchaseIntentId) {
+		toSerialize["purchaseIntentId"] = o.PurchaseIntentId
 	}
 	if !IsNil(o.PhoneNumber) {
 		toSerialize["phoneNumber"] = o.PhoneNumber

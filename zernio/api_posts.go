@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -501,6 +501,17 @@ func (a *PostsAPIService) CreatePostExecute(r PostsAPICreatePostRequest) (*Creat
 		}
 		if localVarHTTPResponse.StatusCode == 409 {
 			var v CreatePost409Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 422 {
+			var v CreatePost422Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1091,6 +1102,7 @@ type PostsAPIListPostsRequest struct {
 	fields        *string
 	view          *string
 	updatedSince  *time.Time
+	externalId    *string
 	source        *string
 	status        *string
 	platform      *string
@@ -1131,21 +1143,27 @@ func (r PostsAPIListPostsRequest) Cursor(cursor string) PostsAPIListPostsRequest
 	return r
 }
 
-// Comma-separated list of post fields to return. Each post then carries &#x60;_id&#x60; plus only these fields, which makes large pages much cheaper: leave out &#x60;platforms&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60; or &#x60;metadata&#x60; when you do not need them.  Accepted: &#x60;userId&#x60;, &#x60;title&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60;, &#x60;platforms&#x60;, &#x60;scheduledFor&#x60;, &#x60;timezone&#x60;, &#x60;status&#x60;, &#x60;tags&#x60;, &#x60;hashtags&#x60;, &#x60;mentions&#x60;, &#x60;visibility&#x60;, &#x60;metadata&#x60;, &#x60;recycling&#x60;, &#x60;recycledFromPostId&#x60;, &#x60;queuedFromProfile&#x60;, &#x60;queueId&#x60;, &#x60;createdAt&#x60;, &#x60;updatedAt&#x60;.  An unknown field returns 400 naming it. &#x60;fields&#x3D;_id&#x60; returns ids only. Omit it (or send it empty) for the full post. Not available with &#x60;source&#x3D;external&#x60;.
+// Comma-separated list of post fields to return. Each post then carries &#x60;_id&#x60; plus only these fields, which makes large pages much cheaper: leave out &#x60;platforms&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60; or &#x60;metadata&#x60; when you do not need them.  Accepted: &#x60;userId&#x60;, &#x60;title&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60;, &#x60;platforms&#x60;, &#x60;scheduledFor&#x60;, &#x60;timezone&#x60;, &#x60;status&#x60;, &#x60;tags&#x60;, &#x60;hashtags&#x60;, &#x60;mentions&#x60;, &#x60;visibility&#x60;, &#x60;metadata&#x60;, &#x60;externalId&#x60;, &#x60;recycling&#x60;, &#x60;recycledFromPostId&#x60;, &#x60;queuedFromProfile&#x60;, &#x60;queueId&#x60;, &#x60;createdAt&#x60;, &#x60;updatedAt&#x60;.  An unknown field returns 400 naming it. &#x60;fields&#x3D;_id&#x60; returns ids only. Omit it (or send it empty) for the full post. Not available with &#x60;source&#x3D;external&#x60;.
 func (r PostsAPIListPostsRequest) Fields(fields string) PostsAPIListPostsRequest {
 	r.fields = &fields
 	return r
 }
 
-// &#x60;full&#x60; returns the whole post. &#x60;summary&#x60; returns only what an agent needs to read a page of posts:  - Post: &#x60;_id&#x60;, &#x60;title&#x60;, &#x60;content&#x60;, &#x60;status&#x60;, &#x60;scheduledFor&#x60;, &#x60;timezone&#x60;, &#x60;tags&#x60;, &#x60;createdAt&#x60;, &#x60;updatedAt&#x60;, and &#x60;contentNotRetained&#x60; when set. - Each platform: &#x60;platform&#x60;, &#x60;status&#x60;, &#x60;accountId&#x60; (the id), &#x60;username&#x60;, &#x60;scheduledFor&#x60;, &#x60;publishedAt&#x60;, &#x60;platformPostId&#x60;, &#x60;platformPostUrl&#x60;, &#x60;errorMessage&#x60;, &#x60;errorCategory&#x60;. - Left out: the author (&#x60;userId&#x60;), &#x60;mediaItems&#x60;, &#x60;metadata&#x60;, &#x60;recycling&#x60;, and each platform&#39;s custom content, custom media and &#x60;platformSpecificData&#x60;. Null values are left out too.  Works with both sources. Send either &#x60;fields&#x60; or &#x60;view&#x3D;summary&#x60;: both together return 400.
+// &#x60;full&#x60; returns the whole post. &#x60;summary&#x60; returns only what an agent needs to read a page of posts:  - Post: &#x60;_id&#x60;, &#x60;title&#x60;, &#x60;content&#x60;, &#x60;externalId&#x60;, &#x60;status&#x60;, &#x60;scheduledFor&#x60;, &#x60;timezone&#x60;, &#x60;tags&#x60;, &#x60;createdAt&#x60;, &#x60;updatedAt&#x60;, and &#x60;contentNotRetained&#x60; when set. - Each platform: &#x60;platform&#x60;, &#x60;status&#x60;, &#x60;accountId&#x60; (the id), &#x60;username&#x60;, &#x60;scheduledFor&#x60;, &#x60;publishedAt&#x60;, &#x60;platformPostId&#x60;, &#x60;platformPostUrl&#x60;, &#x60;errorMessage&#x60;, &#x60;errorCategory&#x60;. - Left out: the author (&#x60;userId&#x60;), &#x60;mediaItems&#x60;, &#x60;metadata&#x60;, &#x60;recycling&#x60;, and each platform&#39;s custom content, custom media and &#x60;platformSpecificData&#x60;. Null values are left out too.  Works with both sources. Send either &#x60;fields&#x60; or &#x60;view&#x3D;summary&#x60;: both together return 400.
 func (r PostsAPIListPostsRequest) View(view string) PostsAPIListPostsRequest {
 	r.view = &view
 	return r
 }
 
-// Only posts whose &#x60;updatedAt&#x60; is at or after this ISO 8601 timestamp (an offset or &#x60;Z&#x60; required).  &#x60;updatedAt&#x60; moves when the post or any of its platforms changes (an edit, a status change, a platform publishing or failing). To keep a copy in sync, send the time of your previous sync instead of reading every page again.  Combines with the other filters and with &#x60;cursor&#x60;. Deleted posts are not returned. Not available with &#x60;source&#x3D;external&#x60;.
+// Only posts whose &#x60;updatedAt&#x60; is at or after this ISO 8601 timestamp (an offset or &#x60;Z&#x60; required).  &#x60;updatedAt&#x60; moves when the post or any of its platforms changes (an edit, a status change, a platform publishing or failing). To keep a copy in sync, send the time your previous sync started instead of reading every page again.  For a stable walk, pair it with &#x60;sortBy&#x3D;created-asc&#x60; and follow &#x60;pagination.nextCursor&#x60; until it is null: the cursor is keyed on (&#x60;createdAt&#x60;, &#x60;_id&#x60;), which never change, so a post edited during the walk is neither skipped nor repeated, and it comes back on the next sync.  Combines with the other filters and with &#x60;cursor&#x60;. Deleted posts are not returned. Not available with &#x60;source&#x3D;external&#x60;.
 func (r PostsAPIListPostsRequest) UpdatedSince(updatedSince time.Time) PostsAPIListPostsRequest {
 	r.updatedSince = &updatedSince
+	return r
+}
+
+// Only posts whose &#x60;externalId&#x60; equals this value exactly (case-sensitive). Returns every matching post, since &#x60;externalId&#x60; is not unique.  Combines with the other filters. Not available with &#x60;source&#x3D;external&#x60;.  Values stored in &#x60;metadata&#x60; cannot be filtered: set &#x60;externalId&#x60; on create or update to look a post up by your own id.
+func (r PostsAPIListPostsRequest) ExternalId(externalId string) PostsAPIListPostsRequest {
+	r.externalId = &externalId
 	return r
 }
 
@@ -1307,6 +1325,9 @@ func (a *PostsAPIService) ListPostsExecute(r PostsAPIListPostsRequest) (*PostsLi
 	}
 	if r.updatedSince != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "updatedSince", r.updatedSince, "form", "")
+	}
+	if r.externalId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "externalId", r.externalId, "form", "")
 	}
 	if r.source != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "source", r.source, "form", "")
@@ -2344,7 +2365,7 @@ func (r PostsAPIUpdatePostRequest) Execute() (*PostUpdateResponse, *http.Respons
 /*
 UpdatePost Update post
 
-Update an existing post. Draft, scheduled, failed, partial, and cancelled posts can be edited. Published posts can only have their recycling config updated: to change the text of a live post, use `POST /v1/posts/{postId}/edit`.
+Update an existing post. Draft, scheduled, failed, partial, and cancelled posts can be edited. Published posts can only have their recycling config and `externalId` updated: to change the text of a live post, use `POST /v1/posts/{postId}/edit`.
 
 To promote a draft to scheduled, send `isDraft: false` together with `scheduledFor` (or `publishNow: true`, or `queuedFromProfile`). If `isDraft` is omitted the post keeps its current draft status, so sending only `scheduledFor` to a draft returns 200 but the post remains a draft.
 

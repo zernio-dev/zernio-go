@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,7 @@ var _ MappedNullable = &GetAccountPosts200Response{}
 type GetAccountPosts200Response struct {
 	Status      *string                                `json:"status,omitempty"`
 	Posts       []GetAccountPosts200ResponsePostsInner `json:"posts,omitempty"`
+	Pagination  *GetAccountPosts200ResponsePagination  `json:"pagination,omitempty"`
 	LastUpdated *time.Time                             `json:"lastUpdated,omitempty"`
 }
 
@@ -107,6 +108,38 @@ func (o *GetAccountPosts200Response) SetPosts(v []GetAccountPosts200ResponsePost
 	o.Posts = v
 }
 
+// GetPagination returns the Pagination field value if set, zero value otherwise.
+func (o *GetAccountPosts200Response) GetPagination() GetAccountPosts200ResponsePagination {
+	if o == nil || IsNil(o.Pagination) {
+		var ret GetAccountPosts200ResponsePagination
+		return ret
+	}
+	return *o.Pagination
+}
+
+// GetPaginationOk returns a tuple with the Pagination field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountPosts200Response) GetPaginationOk() (*GetAccountPosts200ResponsePagination, bool) {
+	if o == nil || IsNil(o.Pagination) {
+		return nil, false
+	}
+	return o.Pagination, true
+}
+
+// HasPagination returns a boolean if a field has been set.
+func (o *GetAccountPosts200Response) HasPagination() bool {
+	if o != nil && !IsNil(o.Pagination) {
+		return true
+	}
+
+	return false
+}
+
+// SetPagination gets a reference to the given GetAccountPosts200ResponsePagination and assigns it to the Pagination field.
+func (o *GetAccountPosts200Response) SetPagination(v GetAccountPosts200ResponsePagination) {
+	o.Pagination = &v
+}
+
 // GetLastUpdated returns the LastUpdated field value if set, zero value otherwise.
 func (o *GetAccountPosts200Response) GetLastUpdated() time.Time {
 	if o == nil || IsNil(o.LastUpdated) {
@@ -154,6 +187,9 @@ func (o GetAccountPosts200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Posts) {
 		toSerialize["posts"] = o.Posts
+	}
+	if !IsNil(o.Pagination) {
+		toSerialize["pagination"] = o.Pagination
 	}
 	if !IsNil(o.LastUpdated) {
 		toSerialize["lastUpdated"] = o.LastUpdated

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &AddUsersToAdAudienceRequest{}
 
 // AddUsersToAdAudienceRequest struct for AddUsersToAdAudienceRequest
 type AddUsersToAdAudienceRequest struct {
-	Users []AddUsersToAdAudienceRequestUsersInner `json:"users"`
+	Users []AudienceUploadUser `json:"users"`
 }
 
 type _AddUsersToAdAudienceRequest AddUsersToAdAudienceRequest
@@ -31,7 +31,7 @@ type _AddUsersToAdAudienceRequest AddUsersToAdAudienceRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAddUsersToAdAudienceRequest(users []AddUsersToAdAudienceRequestUsersInner) *AddUsersToAdAudienceRequest {
+func NewAddUsersToAdAudienceRequest(users []AudienceUploadUser) *AddUsersToAdAudienceRequest {
 	this := AddUsersToAdAudienceRequest{}
 	this.Users = users
 	return &this
@@ -46,9 +46,9 @@ func NewAddUsersToAdAudienceRequestWithDefaults() *AddUsersToAdAudienceRequest {
 }
 
 // GetUsers returns the Users field value
-func (o *AddUsersToAdAudienceRequest) GetUsers() []AddUsersToAdAudienceRequestUsersInner {
+func (o *AddUsersToAdAudienceRequest) GetUsers() []AudienceUploadUser {
 	if o == nil {
-		var ret []AddUsersToAdAudienceRequestUsersInner
+		var ret []AudienceUploadUser
 		return ret
 	}
 
@@ -57,7 +57,7 @@ func (o *AddUsersToAdAudienceRequest) GetUsers() []AddUsersToAdAudienceRequestUs
 
 // GetUsersOk returns a tuple with the Users field value
 // and a boolean to check if the value has been set.
-func (o *AddUsersToAdAudienceRequest) GetUsersOk() ([]AddUsersToAdAudienceRequestUsersInner, bool) {
+func (o *AddUsersToAdAudienceRequest) GetUsersOk() ([]AudienceUploadUser, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -65,7 +65,7 @@ func (o *AddUsersToAdAudienceRequest) GetUsersOk() ([]AddUsersToAdAudienceReques
 }
 
 // SetUsers sets field value
-func (o *AddUsersToAdAudienceRequest) SetUsers(v []AddUsersToAdAudienceRequestUsersInner) {
+func (o *AddUsersToAdAudienceRequest) SetUsers(v []AudienceUploadUser) {
 	o.Users = v
 }
 

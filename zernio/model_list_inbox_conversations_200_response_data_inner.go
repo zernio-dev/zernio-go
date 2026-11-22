@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -41,7 +41,9 @@ type ListInboxConversations200ResponseDataInner struct {
 	WhatsappUsername *string        `json:"whatsappUsername,omitempty"`
 	LastMessage      NullableString `json:"lastMessage,omitempty"`
 	UpdatedTime      *time.Time     `json:"updatedTime,omitempty"`
-	Status           *string        `json:"status,omitempty"`
+	// When Zernio last wrote this conversation (a new message, a status change, participant details). The key `updatedSince` filters and orders on. Absent on a conversation read live from the platform.
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Status    *string    `json:"status,omitempty"`
 	// Number of unread incoming messages, capped at 1000. Read from a replica, so it can trail a conversation you just marked read by a few seconds.
 	UnreadCount NullableInt32 `json:"unreadCount,omitempty"`
 	// Present once a handover has touched the thread (WhatsApp, Facebook, Instagram). ai_agent: Meta Business Agent answers (WhatsApp) and new inbound arrive flagged metadata.standby; app: you hold control; other: another app does (a WhatsApp partner, or a Messenger / Instagram receiver such as Page Inbox). Change it with POST /v1/inbox/conversations/{conversationId}/thread-control.
@@ -577,6 +579,38 @@ func (o *ListInboxConversations200ResponseDataInner) SetUpdatedTime(v time.Time)
 	o.UpdatedTime = &v
 }
 
+// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+func (o *ListInboxConversations200ResponseDataInner) GetUpdatedAt() time.Time {
+	if o == nil || IsNil(o.UpdatedAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.UpdatedAt
+}
+
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxConversations200ResponseDataInner) GetUpdatedAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.UpdatedAt) {
+		return nil, false
+	}
+	return o.UpdatedAt, true
+}
+
+// HasUpdatedAt returns a boolean if a field has been set.
+func (o *ListInboxConversations200ResponseDataInner) HasUpdatedAt() bool {
+	if o != nil && !IsNil(o.UpdatedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetUpdatedAt gets a reference to the given time.Time and assigns it to the UpdatedAt field.
+func (o *ListInboxConversations200ResponseDataInner) SetUpdatedAt(v time.Time) {
+	o.UpdatedAt = &v
+}
+
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *ListInboxConversations200ResponseDataInner) GetStatus() string {
 	if o == nil || IsNil(o.Status) {
@@ -938,6 +972,9 @@ func (o ListInboxConversations200ResponseDataInner) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.UpdatedTime) {
 		toSerialize["updatedTime"] = o.UpdatedTime
+	}
+	if !IsNil(o.UpdatedAt) {
+		toSerialize["updatedAt"] = o.UpdatedAt
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status

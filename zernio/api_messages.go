@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -19,6 +19,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 )
 
 // MessagesAPIService MessagesAPI service
@@ -1588,7 +1589,7 @@ type MessagesAPIGetInboxConversationMessagesRequest struct {
 	sortOrder      *string
 }
 
-// Account ID
+// Account ID. Optional: the account is taken from the conversation. Pass it when the conversation id is an Instagram thread id, or when the call answers 400 &#x60;missing_required_field&#x60; because the id matches conversations on more than one of your accounts.
 func (r MessagesAPIGetInboxConversationMessagesRequest) AccountId(accountId string) MessagesAPIGetInboxConversationMessagesRequest {
 	r.accountId = &accountId
 	return r
@@ -1646,6 +1647,10 @@ The Meta replay covers the 500 most recent messages per conversation: a longer t
 
 This endpoint is read-only and does NOT mark messages as read or send read receipts. To mark a conversation read (and send WhatsApp blue ticks on eligible accounts), call `POST /v1/inbox/conversations/{conversationId}/read`.
 
+### Staying in sync
+
+Do not poll every conversation on a timer. Subscribe to the `message.received` webhook, and reconcile with `GET /v1/inbox/conversations?updatedSince=...`, which returns only the conversations that changed. Then fetch the newest messages of those conversations here with `sortOrder=desc&limit=N`.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param conversationId Opaque conversation identifier, accepted verbatim from the list endpoint or from the conversationId on inbox webhooks. Format not to be assumed.
 	@return MessagesAPIGetInboxConversationMessagesRequest
@@ -1680,11 +1685,10 @@ func (a *MessagesAPIService) GetInboxConversationMessagesExecute(r MessagesAPIGe
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.accountId == nil {
-		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
 	} else {
@@ -1753,6 +1757,17 @@ func (a *MessagesAPIService) GetInboxConversationMessagesExecute(r MessagesAPIGe
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -2127,17 +2142,18 @@ func (a *MessagesAPIService) ListConversationLabelsExecute(r MessagesAPIListConv
 }
 
 type MessagesAPIListInboxConversationsRequest struct {
-	ctx        context.Context
-	ApiService *MessagesAPIService
-	profileId  *string
-	platform   *string
-	status     *string
-	folder     *string
-	sortOrder  *string
-	limit      *int32
-	cursor     *string
-	accountId  *string
-	tags       *string
+	ctx          context.Context
+	ApiService   *MessagesAPIService
+	profileId    *string
+	platform     *string
+	updatedSince *time.Time
+	status       *string
+	folder       *string
+	sortOrder    *string
+	limit        *int32
+	cursor       *string
+	accountId    *string
+	tags         *string
 }
 
 // Filter by profile ID
@@ -2149,6 +2165,12 @@ func (r MessagesAPIListInboxConversationsRequest) ProfileId(profileId string) Me
 // Filter by platform
 func (r MessagesAPIListInboxConversationsRequest) Platform(platform string) MessagesAPIListInboxConversationsRequest {
 	r.platform = &platform
+	return r
+}
+
+// ISO 8601 date-time with a timezone (e.g. &#x60;2026-11-19T10:00:00Z&#x60;). Turns the list into a change feed: only conversations written at or after this instant, ordered by &#x60;updatedAt&#x60; ascending. Feed &#x60;sync.nextUpdatedSince&#x60; from the last page back here. See Incremental sync above.
+func (r MessagesAPIListInboxConversationsRequest) UpdatedSince(updatedSince time.Time) MessagesAPIListInboxConversationsRequest {
+	r.updatedSince = &updatedSince
 	return r
 }
 
@@ -2222,6 +2244,18 @@ When one of these accounts is connected, Zernio replays the DM history the accou
 - Threads that Meta refuses to serve are skipped.
 - An account whose Instagram "connected tools" message access is turned off is not replayed at all.
 
+### Incremental sync (recommended over polling the full list)
+
+Subscribe to the `message.received` webhook for real-time delivery, and use `updatedSince` to reconcile instead of re-reading every conversation:
+
+1. Call with `updatedSince` set to the last time you synced. Only conversations written at or after it are returned (a new message, a status change, participant details), oldest change first, each with its `updatedAt`.
+2. While `pagination.hasMore` is true, call again with the same `updatedSince` plus `cursor` set to `pagination.nextCursor`.
+3. On the last page, store `sync.nextUpdatedSince` and pass it as `updatedSince` next time.
+
+`sync.nextUpdatedSince` trails the read by one minute, so a conversation can be returned again on the next call. Upsert by `id` and refresh the latest messages of every returned conversation (`GET /v1/inbox/conversations/{conversationId}/messages?sortOrder=desc&limit=N`). Nothing is missed at page or call boundaries, including conversations written at the same instant.
+
+With `updatedSince`, `sortOrder` is ignored. Conversations are read only from Zernio's store, never live from a platform, and `folder=requests` cannot be combined with it. When `meta.accountsFailed` is above zero, re-run the same window for each failed account with `accountId`.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagesAPIListInboxConversationsRequest
 */
@@ -2259,6 +2293,9 @@ func (a *MessagesAPIService) ListInboxConversationsExecute(r MessagesAPIListInbo
 	}
 	if r.platform != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.updatedSince != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "updatedSince", r.updatedSince, "form", "")
 	}
 	if r.status != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")

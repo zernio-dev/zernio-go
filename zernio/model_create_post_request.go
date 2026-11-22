@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -49,8 +49,10 @@ type CreatePostRequest struct {
 	Mentions []string `json:"mentions,omitempty"`
 	// Stored on the post and echoed back on reads. Publishing does not branch on it: every entry in `platforms` is published regardless, so treat it as a label for your own tooling.
 	CrosspostingEnabled *bool `json:"crosspostingEnabled,omitempty"`
-	// Free-form key/value pairs of your own, stored on the post and returned on reads and in webhook payloads. Zernio also writes the bookkeeping keys `usageCounted`, `usageRefunded` and `hidden` into this object; do not set them, and they are stripped from webhook payloads.
+	// Free-form key/value pairs of your own, stored on the post and returned on reads and in webhook payloads.  Zernio also writes the bookkeeping keys `usageCounted`, `usageRefunded` and `hidden` into this object; do not set them, and they are stripped from webhook payloads. To look posts up by one of your ids, use `externalId` instead: metadata cannot be filtered.
 	Metadata map[string]interface{} `json:"metadata,omitempty"`
+	// Your own identifier for this post (a CMS id, a job id, a campaign item). Returned on every read and filterable with `GET /v1/posts?externalId=`. Leading and trailing spaces are trimmed.  Not unique: several posts can share one value (for example the same article posted twice), and the filter returns all of them. To avoid creating a post twice on retries, send an `Idempotency-Key` header instead.
+	ExternalId NullableString `json:"externalId,omitempty"`
 	// Root-level TikTok settings applied to the TikTok platforms sent in the same request. Merged into each platform's platformSpecificData, with platform-specific settings taking precedence.
 	TiktokSettings *TikTokPlatformData `json:"tiktokSettings,omitempty"`
 	// Root-level Facebook settings applied to the Facebook platforms sent in the same request. Merged into each platform's platformSpecificData.facebookSettings, with platform-specific settings taking precedence.
@@ -581,6 +583,49 @@ func (o *CreatePostRequest) SetMetadata(v map[string]interface{}) {
 	o.Metadata = v
 }
 
+// GetExternalId returns the ExternalId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreatePostRequest) GetExternalId() string {
+	if o == nil || IsNil(o.ExternalId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ExternalId.Get()
+}
+
+// GetExternalIdOk returns a tuple with the ExternalId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreatePostRequest) GetExternalIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ExternalId.Get(), o.ExternalId.IsSet()
+}
+
+// HasExternalId returns a boolean if a field has been set.
+func (o *CreatePostRequest) HasExternalId() bool {
+	if o != nil && o.ExternalId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetExternalId gets a reference to the given NullableString and assigns it to the ExternalId field.
+func (o *CreatePostRequest) SetExternalId(v string) {
+	o.ExternalId.Set(&v)
+}
+
+// SetExternalIdNil sets the value for ExternalId to be an explicit nil
+func (o *CreatePostRequest) SetExternalIdNil() {
+	o.ExternalId.Set(nil)
+}
+
+// UnsetExternalId ensures that no value is present for ExternalId, not even an explicit nil
+func (o *CreatePostRequest) UnsetExternalId() {
+	o.ExternalId.Unset()
+}
+
 // GetTiktokSettings returns the TiktokSettings field value if set, zero value otherwise.
 func (o *CreatePostRequest) GetTiktokSettings() TikTokPlatformData {
 	if o == nil || IsNil(o.TiktokSettings) {
@@ -827,6 +872,9 @@ func (o CreatePostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
+	}
+	if o.ExternalId.IsSet() {
+		toSerialize["externalId"] = o.ExternalId.Get()
 	}
 	if !IsNil(o.TiktokSettings) {
 		toSerialize["tiktokSettings"] = o.TiktokSettings

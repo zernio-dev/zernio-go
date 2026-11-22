@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,8 @@ type ApiKey struct {
 	Scope *string `json:"scope,omitempty"`
 	// Profiles this key can access (populated with name and color). Only present when scope is 'profiles'.
 	ProfileIds []ApiKeyProfileIdsInner `json:"profileIds,omitempty"`
+	// Listed keys only. How many of the profiles this key is limited to were deleted: they are left out of profileIds but still limit the key, so a key with scope 'profiles' and an empty profileIds reaches no profile.
+	DeletedProfileCount *int32 `json:"deletedProfileCount,omitempty"`
 	// 'read-write' allows all operations, 'read' restricts to GET requests only
 	Permission *string `json:"permission,omitempty"`
 	// Resource groups this key can NOT access (opt-out denylist). Absent or empty means legacy full access. Each operation's group is published as x-resource-group.  A key with any group disabled is a restricted key (zrk_ prefix) and can never manage API keys, invites, or member identity.  With 'messages' disabled, the key cannot read or send direct messages through any API surface. It also cannot create or edit a webhook subscription broader than itself: no subscribing to, test-firing, redelivering, or reading delivery logs for message events.  Subscriptions created earlier, from the dashboard, or with a full-access key keep delivering whatever their own `disabledResourceGroups` allows. To restrict an existing integration end to end, restrict the subscription too.  OAuth connector tokens (AI assistants and MCP clients) resolve against the same registry, but their groups are not settable yet: treat an authorized connector as full access.
@@ -320,6 +322,38 @@ func (o *ApiKey) SetProfileIds(v []ApiKeyProfileIdsInner) {
 	o.ProfileIds = v
 }
 
+// GetDeletedProfileCount returns the DeletedProfileCount field value if set, zero value otherwise.
+func (o *ApiKey) GetDeletedProfileCount() int32 {
+	if o == nil || IsNil(o.DeletedProfileCount) {
+		var ret int32
+		return ret
+	}
+	return *o.DeletedProfileCount
+}
+
+// GetDeletedProfileCountOk returns a tuple with the DeletedProfileCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApiKey) GetDeletedProfileCountOk() (*int32, bool) {
+	if o == nil || IsNil(o.DeletedProfileCount) {
+		return nil, false
+	}
+	return o.DeletedProfileCount, true
+}
+
+// HasDeletedProfileCount returns a boolean if a field has been set.
+func (o *ApiKey) HasDeletedProfileCount() bool {
+	if o != nil && !IsNil(o.DeletedProfileCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeletedProfileCount gets a reference to the given int32 and assigns it to the DeletedProfileCount field.
+func (o *ApiKey) SetDeletedProfileCount(v int32) {
+	o.DeletedProfileCount = &v
+}
+
 // GetPermission returns the Permission field value if set, zero value otherwise.
 func (o *ApiKey) GetPermission() string {
 	if o == nil || IsNil(o.Permission) {
@@ -449,6 +483,9 @@ func (o ApiKey) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ProfileIds) {
 		toSerialize["profileIds"] = o.ProfileIds
+	}
+	if !IsNil(o.DeletedProfileCount) {
+		toSerialize["deletedProfileCount"] = o.DeletedProfileCount
 	}
 	if !IsNil(o.Permission) {
 		toSerialize["permission"] = o.Permission

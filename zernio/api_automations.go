@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -696,11 +696,14 @@ func (r AutomationsAPICreateAutomationRequest) Execute() (*CreateAutomation201Re
 /*
 CreateAutomation Create an automation
 
-Creates an automation. Its shape picks the kind:
+Creates an automation. Its trigger picks the kind:
 
 - **Ad rule**: a `schedule` over campaigns, ad sets, ads, Google keywords or Google search terms, with metric `conditions` and ad `steps`. It stays paused unless `status` is `active`; preview it first with `POST /v1/automations/preview`.
 - **Event**: a Zernio event in `trigger.type`, such as `post.failed`, with notify steps. It is on unless `status` is `paused`.
 - **Scheduled**: a `schedule` over a profile's posts, with notify steps and an optional boost. It is on unless `status` is `paused`.
+- **Sequence**: an `enrollment` trigger on one messaging account, with message steps sent over time. It is on unless `status` is `draft`. It needs what `/v1/sequences` needs: the inbox add-on and a key with the `messages` group.
+- **Comment to DM**: a comment door in `trigger.type`, such as `comment.keyword`, with a `graph` of the shapes `/v1/comment-automations` holds. It is on unless `status` is `paused`, and needs what `/v1/comment-automations` needs. A post that already has an active automation is a 409.
+- **Flow** (`kind` is `workflow`): a flow trigger such as `inbound_message` (or a `graph` whose trigger node names it) on one account, with the builder's `graph`. It is a draft unless `status` is `active`, which needs a complete graph; `paused` is refused. It needs the inbox add-on and a full-access key.
 
 Everything an automation cannot hold is refused at once: the 400 lists every problem with its JSON path in `details.problems`.
 
@@ -3404,11 +3407,13 @@ type AutomationsAPIListAutomationsRequest struct {
 	ApiService  *AutomationsAPIService
 	accountId   *string
 	adAccountId *string
+	q           *string
+	kind        *string
 	limit       *int32
 	cursor      *string
 }
 
-// Only automations on this account: the ads connection of an ad rule, or one of the &#x60;accountIds&#x60; of an event or scheduled automation.
+// Only automations on this account: the ads connection of an ad rule, one of the &#x60;accountIds&#x60; of an event or scheduled automation, or the account a sequence, comment to DM or flow runs on.
 func (r AutomationsAPIListAutomationsRequest) AccountId(accountId string) AutomationsAPIListAutomationsRequest {
 	r.accountId = &accountId
 	return r
@@ -3420,12 +3425,24 @@ func (r AutomationsAPIListAutomationsRequest) AdAccountId(adAccountId string) Au
 	return r
 }
 
+// Only automations whose name contains this text, ignoring case. &#x60;%&#x60; and &#x60;_&#x60; match themselves.
+func (r AutomationsAPIListAutomationsRequest) Q(q string) AutomationsAPIListAutomationsRequest {
+	r.q = &q
+	return r
+}
+
+// Only these kinds, comma separated: &#x60;ad_rule&#x60;, &#x60;event&#x60;, &#x60;scheduled&#x60;, &#x60;sequence&#x60;, &#x60;comment&#x60;, &#x60;workflow&#x60;.
+func (r AutomationsAPIListAutomationsRequest) Kind(kind string) AutomationsAPIListAutomationsRequest {
+	r.kind = &kind
+	return r
+}
+
 func (r AutomationsAPIListAutomationsRequest) Limit(limit int32) AutomationsAPIListAutomationsRequest {
 	r.limit = &limit
 	return r
 }
 
-// &#x60;nextCursor&#x60; from the previous page.
+// &#x60;nextCursor&#x60; from the previous page, sent back unchanged with the same &#x60;q&#x60;, &#x60;kind&#x60;, &#x60;accountId&#x60; and &#x60;adAccountId&#x60;.  Opaque: it holds the creation time and id of the page&#39;s last automation, and the next page is every kind&#39;s automations strictly older than it, so an automation created meanwhile never shifts or repeats a page.
 func (r AutomationsAPIListAutomationsRequest) Cursor(cursor string) AutomationsAPIListAutomationsRequest {
 	r.cursor = &cursor
 	return r
@@ -3438,7 +3455,13 @@ func (r AutomationsAPIListAutomationsRequest) Execute() (*ListAutomations200Resp
 /*
 ListAutomations List automations
 
-Lists the automations on the profiles your key can reach, newest first, across every kind: ad rules, event automations and scheduled automations.
+Lists the automations on the profiles your key can reach, newest first, across every kind: ad rules, event automations, scheduled automations, sequences, comment to DM and flows. One `cursor` pages them all.
+
+Each kind is listed only for callers its own route lets read it; the others are left out, never an error:
+
+- **Sequences and comment to DM** need the inbox add-on and a key with the `messages` group, as `/v1/sequences` and `/v1/comment-automations` do.
+- **Flows** need the inbox add-on and a full-access key, as `/v1/workflows` does.
+- **Ad rules, event and scheduled automations** need only access to their profile, as reading, pausing and deleting them does. Creating, editing, activating or previewing an ad rule needs the ads add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AutomationsAPIListAutomationsRequest
@@ -3477,6 +3500,12 @@ func (a *AutomationsAPIService) ListAutomationsExecute(r AutomationsAPIListAutom
 	}
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.q != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "q", r.q, "form", "")
+	}
+	if r.kind != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "kind", r.kind, "form", "")
 	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
@@ -4190,6 +4219,144 @@ func (a *AutomationsAPIService) RejectAutomationApprovalExecute(r AutomationsAPI
 		}
 		if localVarHTTPResponse.StatusCode == 409 {
 			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AutomationsAPITakeOverAutomationRequest struct {
+	ctx          context.Context
+	ApiService   *AutomationsAPIService
+	automationId string
+}
+
+func (r AutomationsAPITakeOverAutomationRequest) Execute() (*TakeOverAutomation200Response, *http.Response, error) {
+	return r.ApiService.TakeOverAutomationExecute(r)
+}
+
+/*
+TakeOverAutomation Take over an automation
+
+Makes the caller the automation's owner, so its AI steps use the caller's own AI key. Only the owner or an admin of the active workspace can take over, from the dashboard.
+
+When the member who made an automation leaves the workspace, its AI steps pause until it is taken over; every other step keeps running.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param automationId
+	@return AutomationsAPITakeOverAutomationRequest
+*/
+func (a *AutomationsAPIService) TakeOverAutomation(ctx context.Context, automationId string) AutomationsAPITakeOverAutomationRequest {
+	return AutomationsAPITakeOverAutomationRequest{
+		ApiService:   a,
+		ctx:          ctx,
+		automationId: automationId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return TakeOverAutomation200Response
+func (a *AutomationsAPIService) TakeOverAutomationExecute(r AutomationsAPITakeOverAutomationRequest) (*TakeOverAutomation200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TakeOverAutomation200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AutomationsAPIService.TakeOverAutomation")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/automations/{automationId}/take-over"
+	localVarPath = strings.Replace(localVarPath, "{"+"automationId"+"}", url.PathEscape(parameterValueToString(r.automationId, "automationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

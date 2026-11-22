@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,10 @@ type GetAccountHealth200ResponsePlatformConnection struct {
 	MetaError   *GetAccountHealth200ResponsePlatformConnectionMetaError `json:"metaError,omitempty"`
 	// From the phone number's Meta health_status, overridden to `false` when subscribing the number's WhatsApp Business Account to Zernio's webhooks failed at connect.  - `false`: Meta says Zernio is not subscribed to the message webhook for this number, or the subscribe failed when the number was connected, so inbound messages are not delivered, though the number is CONNECTED and can still send. - `false`, fix: re-subscribe (reconnect the number). If it stays `false`, the number is routed to a different WhatsApp Business Account (typically after linking it to a Facebook Page). - `true`: Meta reports no such problem. - `null`: Meta did not report it (read failed or no health_status); not evidence either way.
 	InboundWebhookSubscribed NullableBool `json:"inboundWebhookSubscribed,omitempty"`
+	// Top-level `can_send_message` from the phone number's Meta health_status: `AVAILABLE`, `LIMITED` or `BLOCKED`. `BLOCKED` adds an issue and raises `status` to at least `warning`. `null` when Meta did not report it.
+	CanSendMessage NullableString `json:"canSendMessage,omitempty"`
+	// The health_status entities that are not `AVAILABLE`, one item per Meta error, with calling-only signals (138024, 138025) removed. `null` when the read failed.
+	MessagingBlockers []GetAccountHealth200ResponsePlatformConnectionMessagingBlockersInner `json:"messagingBlockers,omitempty"`
 }
 
 // NewGetAccountHealth200ResponsePlatformConnection instantiates a new GetAccountHealth200ResponsePlatformConnection object
@@ -231,6 +235,82 @@ func (o *GetAccountHealth200ResponsePlatformConnection) UnsetInboundWebhookSubsc
 	o.InboundWebhookSubscribed.Unset()
 }
 
+// GetCanSendMessage returns the CanSendMessage field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAccountHealth200ResponsePlatformConnection) GetCanSendMessage() string {
+	if o == nil || IsNil(o.CanSendMessage.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CanSendMessage.Get()
+}
+
+// GetCanSendMessageOk returns a tuple with the CanSendMessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAccountHealth200ResponsePlatformConnection) GetCanSendMessageOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CanSendMessage.Get(), o.CanSendMessage.IsSet()
+}
+
+// HasCanSendMessage returns a boolean if a field has been set.
+func (o *GetAccountHealth200ResponsePlatformConnection) HasCanSendMessage() bool {
+	if o != nil && o.CanSendMessage.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCanSendMessage gets a reference to the given NullableString and assigns it to the CanSendMessage field.
+func (o *GetAccountHealth200ResponsePlatformConnection) SetCanSendMessage(v string) {
+	o.CanSendMessage.Set(&v)
+}
+
+// SetCanSendMessageNil sets the value for CanSendMessage to be an explicit nil
+func (o *GetAccountHealth200ResponsePlatformConnection) SetCanSendMessageNil() {
+	o.CanSendMessage.Set(nil)
+}
+
+// UnsetCanSendMessage ensures that no value is present for CanSendMessage, not even an explicit nil
+func (o *GetAccountHealth200ResponsePlatformConnection) UnsetCanSendMessage() {
+	o.CanSendMessage.Unset()
+}
+
+// GetMessagingBlockers returns the MessagingBlockers field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAccountHealth200ResponsePlatformConnection) GetMessagingBlockers() []GetAccountHealth200ResponsePlatformConnectionMessagingBlockersInner {
+	if o == nil {
+		var ret []GetAccountHealth200ResponsePlatformConnectionMessagingBlockersInner
+		return ret
+	}
+	return o.MessagingBlockers
+}
+
+// GetMessagingBlockersOk returns a tuple with the MessagingBlockers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAccountHealth200ResponsePlatformConnection) GetMessagingBlockersOk() ([]GetAccountHealth200ResponsePlatformConnectionMessagingBlockersInner, bool) {
+	if o == nil || IsNil(o.MessagingBlockers) {
+		return nil, false
+	}
+	return o.MessagingBlockers, true
+}
+
+// HasMessagingBlockers returns a boolean if a field has been set.
+func (o *GetAccountHealth200ResponsePlatformConnection) HasMessagingBlockers() bool {
+	if o != nil && !IsNil(o.MessagingBlockers) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessagingBlockers gets a reference to the given []GetAccountHealth200ResponsePlatformConnectionMessagingBlockersInner and assigns it to the MessagingBlockers field.
+func (o *GetAccountHealth200ResponsePlatformConnection) SetMessagingBlockers(v []GetAccountHealth200ResponsePlatformConnectionMessagingBlockersInner) {
+	o.MessagingBlockers = v
+}
+
 func (o GetAccountHealth200ResponsePlatformConnection) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -255,6 +335,12 @@ func (o GetAccountHealth200ResponsePlatformConnection) ToMap() (map[string]inter
 	}
 	if o.InboundWebhookSubscribed.IsSet() {
 		toSerialize["inboundWebhookSubscribed"] = o.InboundWebhookSubscribed.Get()
+	}
+	if o.CanSendMessage.IsSet() {
+		toSerialize["canSendMessage"] = o.CanSendMessage.Get()
+	}
+	if o.MessagingBlockers != nil {
+		toSerialize["messagingBlockers"] = o.MessagingBlockers
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -51,10 +51,11 @@ type GetAccountHealth200Response struct {
 	UnhealthySince NullableTime                                               `json:"unhealthySince,omitempty"`
 	AnalyticsSync  *GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync `json:"analyticsSync,omitempty"`
 	// Present on WhatsApp, Instagram and Facebook accounts. An active WhatsApp number with no inbound message or comment 24 hours after its latest connect gets an entry in issues, which never changes status. Null for accounts connected before tracking shipped, until their first inbound event or next connect.
-	InboundActivity      NullableInboundActivity                                           `json:"inboundActivity,omitempty"`
-	MessagingRestriction *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction `json:"messagingRestriction,omitempty"`
-	PlatformConnection   *GetAccountHealth200ResponsePlatformConnection                    `json:"platformConnection,omitempty"`
-	LineWebhook          *GetAccountHealth200ResponseLineWebhook                           `json:"lineWebhook,omitempty"`
+	InboundActivity       NullableInboundActivity                                            `json:"inboundActivity,omitempty"`
+	PublishingRestriction *GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction `json:"publishingRestriction,omitempty"`
+	MessagingRestriction  *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction  `json:"messagingRestriction,omitempty"`
+	PlatformConnection    *GetAccountHealth200ResponsePlatformConnection                     `json:"platformConnection,omitempty"`
+	LineWebhook           *GetAccountHealth200ResponseLineWebhook                            `json:"lineWebhook,omitempty"`
 }
 
 // NewGetAccountHealth200Response instantiates a new GetAccountHealth200Response object
@@ -758,6 +759,38 @@ func (o *GetAccountHealth200Response) UnsetInboundActivity() {
 	o.InboundActivity.Unset()
 }
 
+// GetPublishingRestriction returns the PublishingRestriction field value if set, zero value otherwise.
+func (o *GetAccountHealth200Response) GetPublishingRestriction() GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction {
+	if o == nil || IsNil(o.PublishingRestriction) {
+		var ret GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction
+		return ret
+	}
+	return *o.PublishingRestriction
+}
+
+// GetPublishingRestrictionOk returns a tuple with the PublishingRestriction field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200Response) GetPublishingRestrictionOk() (*GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction, bool) {
+	if o == nil || IsNil(o.PublishingRestriction) {
+		return nil, false
+	}
+	return o.PublishingRestriction, true
+}
+
+// HasPublishingRestriction returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasPublishingRestriction() bool {
+	if o != nil && !IsNil(o.PublishingRestriction) {
+		return true
+	}
+
+	return false
+}
+
+// SetPublishingRestriction gets a reference to the given GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction and assigns it to the PublishingRestriction field.
+func (o *GetAccountHealth200Response) SetPublishingRestriction(v GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction) {
+	o.PublishingRestriction = &v
+}
+
 // GetMessagingRestriction returns the MessagingRestriction field value if set, zero value otherwise.
 func (o *GetAccountHealth200Response) GetMessagingRestriction() GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction {
 	if o == nil || IsNil(o.MessagingRestriction) {
@@ -923,6 +956,9 @@ func (o GetAccountHealth200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if o.InboundActivity.IsSet() {
 		toSerialize["inboundActivity"] = o.InboundActivity.Get()
+	}
+	if !IsNil(o.PublishingRestriction) {
+		toSerialize["publishingRestriction"] = o.PublishingRestriction
 	}
 	if !IsNil(o.MessagingRestriction) {
 		toSerialize["messagingRestriction"] = o.MessagingRestriction

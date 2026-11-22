@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -51,6 +51,8 @@ type AnalyticsListResponsePostsInner struct {
 	IsSharedToFeed *bool `json:"isSharedToFeed,omitempty"`
 	// Instagram only: audio type of the media (MUSIC or ORIGINAL_SOUND). Absent when the platform did not report it.
 	MediaAudioType *string `json:"mediaAudioType,omitempty"`
+	// YouTube only. Start time of an upcoming Premiere or scheduled live stream. Absent once it airs. While it is present, publishedAt is the upload time; after it airs, publishedAt is the time it actually started.
+	UpcomingStartAt *time.Time `json:"upcomingStartAt,omitempty"`
 }
 
 // NewAnalyticsListResponsePostsInner instantiates a new AnalyticsListResponsePostsInner object
@@ -775,6 +777,38 @@ func (o *AnalyticsListResponsePostsInner) SetMediaAudioType(v string) {
 	o.MediaAudioType = &v
 }
 
+// GetUpcomingStartAt returns the UpcomingStartAt field value if set, zero value otherwise.
+func (o *AnalyticsListResponsePostsInner) GetUpcomingStartAt() time.Time {
+	if o == nil || IsNil(o.UpcomingStartAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.UpcomingStartAt
+}
+
+// GetUpcomingStartAtOk returns a tuple with the UpcomingStartAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsListResponsePostsInner) GetUpcomingStartAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.UpcomingStartAt) {
+		return nil, false
+	}
+	return o.UpcomingStartAt, true
+}
+
+// HasUpcomingStartAt returns a boolean if a field has been set.
+func (o *AnalyticsListResponsePostsInner) HasUpcomingStartAt() bool {
+	if o != nil && !IsNil(o.UpcomingStartAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetUpcomingStartAt gets a reference to the given time.Time and assigns it to the UpcomingStartAt field.
+func (o *AnalyticsListResponsePostsInner) SetUpcomingStartAt(v time.Time) {
+	o.UpcomingStartAt = &v
+}
+
 func (o AnalyticsListResponsePostsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -847,6 +881,9 @@ func (o AnalyticsListResponsePostsInner) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.MediaAudioType) {
 		toSerialize["mediaAudioType"] = o.MediaAudioType
+	}
+	if !IsNil(o.UpcomingStartAt) {
+		toSerialize["upcomingStartAt"] = o.UpcomingStartAt
 	}
 	return toSerialize, nil
 }

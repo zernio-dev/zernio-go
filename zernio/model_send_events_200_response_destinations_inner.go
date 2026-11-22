@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -24,9 +24,12 @@ type SendEvents200ResponseDestinationsInner struct {
 	DestinationId *string `json:"destinationId,omitempty"`
 	Platform      *string `json:"platform,omitempty"`
 	// Events the platform accepted.
-	EventsSent   *int32                                                `json:"eventsSent,omitempty"`
-	EventsFailed *int32                                                `json:"eventsFailed,omitempty"`
-	Failures     []SendEvents200ResponseDestinationsInnerFailuresInner `json:"failures,omitempty"`
+	EventsSent   *int32 `json:"eventsSent,omitempty"`
+	EventsFailed *int32 `json:"eventsFailed,omitempty"`
+	// Events this destination did not get because the visitor did not consent (see Consent above).
+	EventsDropped *int32                                                `json:"eventsDropped,omitempty"`
+	Drops         []ConsentDrop                                         `json:"drops,omitempty"`
+	Failures      []SendEvents200ResponseDestinationsInnerFailuresInner `json:"failures,omitempty"`
 	// Set when the destination could not be reached at all (account disconnected, unsupported platform, platform error).
 	Error *string `json:"error,omitempty"`
 	// The destination failed for now (platform error, timeout, rate limit) and the send is queued for retries; its outcome shows on GET /v1/events/{eventId}.
@@ -214,6 +217,70 @@ func (o *SendEvents200ResponseDestinationsInner) SetEventsFailed(v int32) {
 	o.EventsFailed = &v
 }
 
+// GetEventsDropped returns the EventsDropped field value if set, zero value otherwise.
+func (o *SendEvents200ResponseDestinationsInner) GetEventsDropped() int32 {
+	if o == nil || IsNil(o.EventsDropped) {
+		var ret int32
+		return ret
+	}
+	return *o.EventsDropped
+}
+
+// GetEventsDroppedOk returns a tuple with the EventsDropped field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEvents200ResponseDestinationsInner) GetEventsDroppedOk() (*int32, bool) {
+	if o == nil || IsNil(o.EventsDropped) {
+		return nil, false
+	}
+	return o.EventsDropped, true
+}
+
+// HasEventsDropped returns a boolean if a field has been set.
+func (o *SendEvents200ResponseDestinationsInner) HasEventsDropped() bool {
+	if o != nil && !IsNil(o.EventsDropped) {
+		return true
+	}
+
+	return false
+}
+
+// SetEventsDropped gets a reference to the given int32 and assigns it to the EventsDropped field.
+func (o *SendEvents200ResponseDestinationsInner) SetEventsDropped(v int32) {
+	o.EventsDropped = &v
+}
+
+// GetDrops returns the Drops field value if set, zero value otherwise.
+func (o *SendEvents200ResponseDestinationsInner) GetDrops() []ConsentDrop {
+	if o == nil || IsNil(o.Drops) {
+		var ret []ConsentDrop
+		return ret
+	}
+	return o.Drops
+}
+
+// GetDropsOk returns a tuple with the Drops field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEvents200ResponseDestinationsInner) GetDropsOk() ([]ConsentDrop, bool) {
+	if o == nil || IsNil(o.Drops) {
+		return nil, false
+	}
+	return o.Drops, true
+}
+
+// HasDrops returns a boolean if a field has been set.
+func (o *SendEvents200ResponseDestinationsInner) HasDrops() bool {
+	if o != nil && !IsNil(o.Drops) {
+		return true
+	}
+
+	return false
+}
+
+// SetDrops gets a reference to the given []ConsentDrop and assigns it to the Drops field.
+func (o *SendEvents200ResponseDestinationsInner) SetDrops(v []ConsentDrop) {
+	o.Drops = v
+}
+
 // GetFailures returns the Failures field value if set, zero value otherwise.
 func (o *SendEvents200ResponseDestinationsInner) GetFailures() []SendEvents200ResponseDestinationsInnerFailuresInner {
 	if o == nil || IsNil(o.Failures) {
@@ -398,6 +465,12 @@ func (o SendEvents200ResponseDestinationsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.EventsFailed) {
 		toSerialize["eventsFailed"] = o.EventsFailed
+	}
+	if !IsNil(o.EventsDropped) {
+		toSerialize["eventsDropped"] = o.EventsDropped
+	}
+	if !IsNil(o.Drops) {
+		toSerialize["drops"] = o.Drops
 	}
 	if !IsNil(o.Failures) {
 		toSerialize["failures"] = o.Failures

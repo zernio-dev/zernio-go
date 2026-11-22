@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &AdLead{}
 type AdLead struct {
 	// Zernio lead id.
 	Id *string `json:"id,omitempty"`
-	// The ad network the lead came from.
+	// The ad network the lead came from. `web` is a lead from your own form: a tracked website with lead capture on, or `POST /v1/leads`.
 	Platform NullableString `json:"platform,omitempty"`
 	// Meta lead id. On Google, the lead form submission id; on LinkedIn, the leadFormResponse id.
 	LeadgenId *string        `json:"leadgenId,omitempty"`
@@ -57,7 +57,8 @@ type AdLead struct {
 	// The Inbox conversation a lead_received workflow opened with the lead.
 	ConversationId NullableString `json:"conversationId,omitempty"`
 	// Meta leads only. When the `lead.received` webhook was delivered; null while it has not been.
-	WebhookDeliveredAt NullableTime `json:"webhookDeliveredAt,omitempty"`
+	WebhookDeliveredAt NullableTime       `json:"webhookDeliveredAt,omitempty"`
+	Attribution        *AdLeadAttribution `json:"attribution,omitempty"`
 }
 
 // NewAdLead instantiates a new AdLead object
@@ -957,6 +958,38 @@ func (o *AdLead) UnsetWebhookDeliveredAt() {
 	o.WebhookDeliveredAt.Unset()
 }
 
+// GetAttribution returns the Attribution field value if set, zero value otherwise.
+func (o *AdLead) GetAttribution() AdLeadAttribution {
+	if o == nil || IsNil(o.Attribution) {
+		var ret AdLeadAttribution
+		return ret
+	}
+	return *o.Attribution
+}
+
+// GetAttributionOk returns a tuple with the Attribution field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdLead) GetAttributionOk() (*AdLeadAttribution, bool) {
+	if o == nil || IsNil(o.Attribution) {
+		return nil, false
+	}
+	return o.Attribution, true
+}
+
+// HasAttribution returns a boolean if a field has been set.
+func (o *AdLead) HasAttribution() bool {
+	if o != nil && !IsNil(o.Attribution) {
+		return true
+	}
+
+	return false
+}
+
+// SetAttribution gets a reference to the given AdLeadAttribution and assigns it to the Attribution field.
+func (o *AdLead) SetAttribution(v AdLeadAttribution) {
+	o.Attribution = &v
+}
+
 func (o AdLead) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -1035,6 +1068,9 @@ func (o AdLead) ToMap() (map[string]interface{}, error) {
 	}
 	if o.WebhookDeliveredAt.IsSet() {
 		toSerialize["webhookDeliveredAt"] = o.WebhookDeliveredAt.Get()
+	}
+	if !IsNil(o.Attribution) {
+		toSerialize["attribution"] = o.Attribution
 	}
 	return toSerialize, nil
 }

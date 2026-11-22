@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -1282,6 +1282,7 @@ type PhoneNumbersAPIGetPhoneNumberKycFormRequest struct {
 	ApiService *PhoneNumbersAPIService
 	country    *string
 	numberType *string
+	profileId  *string
 }
 
 func (r PhoneNumbersAPIGetPhoneNumberKycFormRequest) Country(country string) PhoneNumbersAPIGetPhoneNumberKycFormRequest {
@@ -1292,6 +1293,12 @@ func (r PhoneNumbersAPIGetPhoneNumberKycFormRequest) Country(country string) Pho
 // Requirements and reuse eligibility are per (country, type). Omitted &#x3D; the country&#39;s default type. Pass the same value on the POST.
 func (r PhoneNumbersAPIGetPhoneNumberKycFormRequest) NumberType(numberType string) PhoneNumbersAPIGetPhoneNumberKycFormRequest {
 	r.numberType = &numberType
+	return r
+}
+
+// Profile the order is for. When given, &#x60;reusable.options&#x60; only lists verifications held by numbers on this profile. A key or team member limited to some profiles must pass it to get any options.
+func (r PhoneNumbersAPIGetPhoneNumberKycFormRequest) ProfileId(profileId string) PhoneNumbersAPIGetPhoneNumberKycFormRequest {
+	r.profileId = &profileId
 	return r
 }
 
@@ -1345,6 +1352,9 @@ func (a *PhoneNumbersAPIService) GetPhoneNumberKycFormExecute(r PhoneNumbersAPIG
 	if r.numberType != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "numberType", r.numberType, "form", "")
 	}
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1384,6 +1394,17 @@ func (a *PhoneNumbersAPIService) GetPhoneNumberKycFormExecute(r PhoneNumbersAPIG
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -1393,6 +1414,7 @@ func (a *PhoneNumbersAPIService) GetPhoneNumberKycFormExecute(r PhoneNumbersAPIG
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

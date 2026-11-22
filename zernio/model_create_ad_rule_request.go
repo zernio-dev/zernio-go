@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -28,13 +28,13 @@ type CreateAdRuleRequest struct {
 	// Platform ad account ID, from `GET /v1/ads/accounts`.
 	AdAccountId string      `json:"adAccountId"`
 	Level       AdRuleLevel `json:"level"`
-	// Only check these platform campaign IDs (or what sits in them). Leave out to check the whole ad account.
+	// Only check these platform campaign IDs (or what sits in them). Leave out or send null to check the whole ad account.
 	CampaignIds []string `json:"campaignIds,omitempty"`
 	// Narrows the objects the rule checks. Every filter must hold. A campaign rule reads `name`, `campaign_id`, `goal`, `days_live`, `days_since_change`, `budget_level` and `channel_type`; an ad set rule all but `days_since_change`, plus `campaign_name` and `adset_id`; an ad rule also `adset_name` and `ad_id`.  A keyword rule reads `name` (the keyword text), `campaign_name`, `adset_name`, `campaign_id`, `adset_id`, `match_type` and `blocked_by_negative`. A search term rule reads those (`name` is the term) plus `search_term_status`.
 	Filters []AdRuleFiltersInner `json:"filters,omitempty"`
 	// Campaigns judged together, campaign rules only. Each group's numbers and your results are added up across its campaigns, and rates and formulas are computed on the totals: a group's `result:cac_percent` is its total spend over its total revenue.  The conditions are judged once per group, and a matching group acts on each of its campaigns, each with its own cooldown and daily cap. Paused campaigns count toward a group's totals; only the ones the rule may act on are changed.  A group with no filters holds every campaign the rule checks: the whole ad account. A campaign in several groups is acted on once per run, by the first matching group.  Reach, frequency and the Google impression shares cannot be added up across campaigns, so a rule with groups cannot use them. It cannot use hourly windows either.  A campaign with no results sent for the window adds its spend and no results to its group. A result sent as a rate (kind `percent` or `ratio`, no formula) reads as unknown for a group; define it as a formula over counts.
 	Groups []AdRuleGroupsInner `json:"groups,omitempty"`
-	// Null removes it; every matching run then acts and notifies again.
+	// Leave out or send null for none.
 	Lifecycle  NullableAdRuleLifecycle `json:"lifecycle,omitempty"`
 	Conditions AdRuleConditions        `json:"conditions"`
 	// Each type at most once, and at most one of `pause`, `activate`, `adjust_budget`, `adjust_bid`, `adjust_target`, `reallocate_budget`, `duplicate` and `edit_name`.
@@ -175,9 +175,9 @@ func (o *CreateAdRuleRequest) SetLevel(v AdRuleLevel) {
 	o.Level = v
 }
 
-// GetCampaignIds returns the CampaignIds field value if set, zero value otherwise.
+// GetCampaignIds returns the CampaignIds field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CreateAdRuleRequest) GetCampaignIds() []string {
-	if o == nil || IsNil(o.CampaignIds) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
@@ -186,6 +186,7 @@ func (o *CreateAdRuleRequest) GetCampaignIds() []string {
 
 // GetCampaignIdsOk returns a tuple with the CampaignIds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *CreateAdRuleRequest) GetCampaignIdsOk() ([]string, bool) {
 	if o == nil || IsNil(o.CampaignIds) {
 		return nil, false
@@ -473,7 +474,7 @@ func (o CreateAdRuleRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["level"] = o.Level
-	if !IsNil(o.CampaignIds) {
+	if o.CampaignIds != nil {
 		toSerialize["campaignIds"] = o.CampaignIds
 	}
 	if !IsNil(o.Filters) {

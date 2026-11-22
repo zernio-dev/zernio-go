@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -36,6 +36,10 @@ type TargetingSpec struct {
 	Metros []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf `json:"metros,omitempty"`
 	// Meta only. Continents and trade blocs (`geo_locations.country_groups`), for targeting a whole region without listing its countries. Combines with `countries` rather than replacing it, and is also accepted under `excludedLocations`. Discoverable via `GET /v1/ads/targeting/search?dimension=geo&geoType=country_group`.
 	CountryGroups []string `json:"countryGroups,omitempty"`
+	// Meta only. Named points of interest to target. `key` from /v1/ads/targeting/search.
+	Places []CreateStandaloneAdRequestRegionsInnerOneOf `json:"places,omitempty"`
+	// Meta only. Named neighbourhood areas to target. `key` from /v1/ads/targeting/search.
+	Neighborhoods []CreateStandaloneAdRequestRegionsInnerOneOf `json:"neighborhoods,omitempty"`
 	// Point-radius (lat/lng) targeting (Meta custom_locations / Google proximity). Honoured on Meta and Google; ignored on platforms without radius support.
 	CustomLocations   []BoostPostRequestTargetingCustomLocationsInner `json:"customLocations,omitempty"`
 	ExcludedLocations *TargetingSpecExcludedLocations                 `json:"excludedLocations,omitempty"`
@@ -354,6 +358,70 @@ func (o *TargetingSpec) HasCountryGroups() bool {
 // SetCountryGroups gets a reference to the given []string and assigns it to the CountryGroups field.
 func (o *TargetingSpec) SetCountryGroups(v []string) {
 	o.CountryGroups = v
+}
+
+// GetPlaces returns the Places field value if set, zero value otherwise.
+func (o *TargetingSpec) GetPlaces() []CreateStandaloneAdRequestRegionsInnerOneOf {
+	if o == nil || IsNil(o.Places) {
+		var ret []CreateStandaloneAdRequestRegionsInnerOneOf
+		return ret
+	}
+	return o.Places
+}
+
+// GetPlacesOk returns a tuple with the Places field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetPlacesOk() ([]CreateStandaloneAdRequestRegionsInnerOneOf, bool) {
+	if o == nil || IsNil(o.Places) {
+		return nil, false
+	}
+	return o.Places, true
+}
+
+// HasPlaces returns a boolean if a field has been set.
+func (o *TargetingSpec) HasPlaces() bool {
+	if o != nil && !IsNil(o.Places) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlaces gets a reference to the given []CreateStandaloneAdRequestRegionsInnerOneOf and assigns it to the Places field.
+func (o *TargetingSpec) SetPlaces(v []CreateStandaloneAdRequestRegionsInnerOneOf) {
+	o.Places = v
+}
+
+// GetNeighborhoods returns the Neighborhoods field value if set, zero value otherwise.
+func (o *TargetingSpec) GetNeighborhoods() []CreateStandaloneAdRequestRegionsInnerOneOf {
+	if o == nil || IsNil(o.Neighborhoods) {
+		var ret []CreateStandaloneAdRequestRegionsInnerOneOf
+		return ret
+	}
+	return o.Neighborhoods
+}
+
+// GetNeighborhoodsOk returns a tuple with the Neighborhoods field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetNeighborhoodsOk() ([]CreateStandaloneAdRequestRegionsInnerOneOf, bool) {
+	if o == nil || IsNil(o.Neighborhoods) {
+		return nil, false
+	}
+	return o.Neighborhoods, true
+}
+
+// HasNeighborhoods returns a boolean if a field has been set.
+func (o *TargetingSpec) HasNeighborhoods() bool {
+	if o != nil && !IsNil(o.Neighborhoods) {
+		return true
+	}
+
+	return false
+}
+
+// SetNeighborhoods gets a reference to the given []CreateStandaloneAdRequestRegionsInnerOneOf and assigns it to the Neighborhoods field.
+func (o *TargetingSpec) SetNeighborhoods(v []CreateStandaloneAdRequestRegionsInnerOneOf) {
+	o.Neighborhoods = v
 }
 
 // GetCustomLocations returns the CustomLocations field value if set, zero value otherwise.
@@ -1125,6 +1193,12 @@ func (o TargetingSpec) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CountryGroups) {
 		toSerialize["countryGroups"] = o.CountryGroups
+	}
+	if !IsNil(o.Places) {
+		toSerialize["places"] = o.Places
+	}
+	if !IsNil(o.Neighborhoods) {
+		toSerialize["neighborhoods"] = o.Neighborhoods
 	}
 	if !IsNil(o.CustomLocations) {
 		toSerialize["customLocations"] = o.CustomLocations

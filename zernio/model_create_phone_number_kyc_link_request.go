@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type CreatePhoneNumberKycLinkRequest struct {
 	Country string `json:"country"`
 	// Area code (NDC) the eventual number must be in. Hard constraint carried by the link; the end customer filling the form makes no area choice. Options come from GET /v1/phone-numbers/availability (areaOptions).
 	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
+	// Correlation label stamped on the numbers when the end customer submits the hosted form, and copied onto their webhooks. Max 100 characters; longer values are truncated.
+	PurchaseIntentId *string `json:"purchaseIntentId,omitempty"`
 	// Language of the hosted page: its copy, the carrier requirement texts (translated once per country and cached), the pre-submit review notes and the status emails to the end customer.  Omitted: the browser language of the end customer, falling back to English. The end customer can also switch with `?lang=` on the page.
 	Language *string                                  `json:"language,omitempty"`
 	Branding *CreatePhoneNumberKycLinkRequestBranding `json:"branding,omitempty"`
@@ -133,6 +135,38 @@ func (o *CreatePhoneNumberKycLinkRequest) HasAreaCode() bool {
 // SetAreaCode gets a reference to the given string and assigns it to the AreaCode field.
 func (o *CreatePhoneNumberKycLinkRequest) SetAreaCode(v string) {
 	o.AreaCode = &v
+}
+
+// GetPurchaseIntentId returns the PurchaseIntentId field value if set, zero value otherwise.
+func (o *CreatePhoneNumberKycLinkRequest) GetPurchaseIntentId() string {
+	if o == nil || IsNil(o.PurchaseIntentId) {
+		var ret string
+		return ret
+	}
+	return *o.PurchaseIntentId
+}
+
+// GetPurchaseIntentIdOk returns a tuple with the PurchaseIntentId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePhoneNumberKycLinkRequest) GetPurchaseIntentIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PurchaseIntentId) {
+		return nil, false
+	}
+	return o.PurchaseIntentId, true
+}
+
+// HasPurchaseIntentId returns a boolean if a field has been set.
+func (o *CreatePhoneNumberKycLinkRequest) HasPurchaseIntentId() bool {
+	if o != nil && !IsNil(o.PurchaseIntentId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPurchaseIntentId gets a reference to the given string and assigns it to the PurchaseIntentId field.
+func (o *CreatePhoneNumberKycLinkRequest) SetPurchaseIntentId(v string) {
+	o.PurchaseIntentId = &v
 }
 
 // GetLanguage returns the Language field value if set, zero value otherwise.
@@ -245,6 +279,9 @@ func (o CreatePhoneNumberKycLinkRequest) ToMap() (map[string]interface{}, error)
 	toSerialize["country"] = o.Country
 	if !IsNil(o.AreaCode) {
 		toSerialize["areaCode"] = o.AreaCode
+	}
+	if !IsNil(o.PurchaseIntentId) {
+		toSerialize["purchaseIntentId"] = o.PurchaseIntentId
 	}
 	if !IsNil(o.Language) {
 		toSerialize["language"] = o.Language

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,8 @@ var _ MappedNullable = &CreateApiKey201Response{}
 // CreateApiKey201Response struct for CreateApiKey201Response
 type CreateApiKey201Response struct {
 	Message *string `json:"message,omitempty"`
-	ApiKey  *ApiKey `json:"apiKey,omitempty"`
+	// The key requested with `apiKey`. Null when the workspace was created but the key was not; `apiKeyError` then says so.
+	ApiKey NullableApiKey `json:"apiKey,omitempty"`
 }
 
 // NewCreateApiKey201Response instantiates a new CreateApiKey201Response object
@@ -73,36 +74,47 @@ func (o *CreateApiKey201Response) SetMessage(v string) {
 	o.Message = &v
 }
 
-// GetApiKey returns the ApiKey field value if set, zero value otherwise.
+// GetApiKey returns the ApiKey field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CreateApiKey201Response) GetApiKey() ApiKey {
-	if o == nil || IsNil(o.ApiKey) {
+	if o == nil || IsNil(o.ApiKey.Get()) {
 		var ret ApiKey
 		return ret
 	}
-	return *o.ApiKey
+	return *o.ApiKey.Get()
 }
 
 // GetApiKeyOk returns a tuple with the ApiKey field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *CreateApiKey201Response) GetApiKeyOk() (*ApiKey, bool) {
-	if o == nil || IsNil(o.ApiKey) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ApiKey, true
+	return o.ApiKey.Get(), o.ApiKey.IsSet()
 }
 
 // HasApiKey returns a boolean if a field has been set.
 func (o *CreateApiKey201Response) HasApiKey() bool {
-	if o != nil && !IsNil(o.ApiKey) {
+	if o != nil && o.ApiKey.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetApiKey gets a reference to the given ApiKey and assigns it to the ApiKey field.
+// SetApiKey gets a reference to the given NullableApiKey and assigns it to the ApiKey field.
 func (o *CreateApiKey201Response) SetApiKey(v ApiKey) {
-	o.ApiKey = &v
+	o.ApiKey.Set(&v)
+}
+
+// SetApiKeyNil sets the value for ApiKey to be an explicit nil
+func (o *CreateApiKey201Response) SetApiKeyNil() {
+	o.ApiKey.Set(nil)
+}
+
+// UnsetApiKey ensures that no value is present for ApiKey, not even an explicit nil
+func (o *CreateApiKey201Response) UnsetApiKey() {
+	o.ApiKey.Unset()
 }
 
 func (o CreateApiKey201Response) MarshalJSON() ([]byte, error) {
@@ -118,8 +130,8 @@ func (o CreateApiKey201Response) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Message) {
 		toSerialize["message"] = o.Message
 	}
-	if !IsNil(o.ApiKey) {
-		toSerialize["apiKey"] = o.ApiKey
+	if o.ApiKey.IsSet() {
+		toSerialize["apiKey"] = o.ApiKey.Get()
 	}
 	return toSerialize, nil
 }

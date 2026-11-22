@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -529,14 +529,14 @@ func (a *ReachAndFrequencyAPIService) GetRfPredictionExecute(r ReachAndFrequency
 }
 
 type ReachAndFrequencyAPIReserveRfPredictionRequest struct {
-	ctx                        context.Context
-	ApiService                 *ReachAndFrequencyAPIService
-	predictionId               string
-	reserveRfPredictionRequest *ReserveRfPredictionRequest
+	ctx                                             context.Context
+	ApiService                                      *ReachAndFrequencyAPIService
+	predictionId                                    string
+	startGohighlevelAudienceSyncRequestTargetsInner *StartGohighlevelAudienceSyncRequestTargetsInner
 }
 
-func (r ReachAndFrequencyAPIReserveRfPredictionRequest) ReserveRfPredictionRequest(reserveRfPredictionRequest ReserveRfPredictionRequest) ReachAndFrequencyAPIReserveRfPredictionRequest {
-	r.reserveRfPredictionRequest = &reserveRfPredictionRequest
+func (r ReachAndFrequencyAPIReserveRfPredictionRequest) StartGohighlevelAudienceSyncRequestTargetsInner(startGohighlevelAudienceSyncRequestTargetsInner StartGohighlevelAudienceSyncRequestTargetsInner) ReachAndFrequencyAPIReserveRfPredictionRequest {
+	r.startGohighlevelAudienceSyncRequestTargetsInner = &startGohighlevelAudienceSyncRequestTargetsInner
 	return r
 }
 
@@ -587,8 +587,8 @@ func (a *ReachAndFrequencyAPIService) ReserveRfPredictionExecute(r ReachAndFrequ
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.reserveRfPredictionRequest == nil {
-		return localVarReturnValue, nil, reportError("reserveRfPredictionRequest is required and must be specified")
+	if r.startGohighlevelAudienceSyncRequestTargetsInner == nil {
+		return localVarReturnValue, nil, reportError("startGohighlevelAudienceSyncRequestTargetsInner is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -609,7 +609,7 @@ func (a *ReachAndFrequencyAPIService) ReserveRfPredictionExecute(r ReachAndFrequ
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.reserveRfPredictionRequest
+	localVarPostBody = r.startGohighlevelAudienceSyncRequestTargetsInner
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -67,6 +67,18 @@ type WebhookPayloadMessageMetadata struct {
 	NoRenderableContent *bool `json:"noRenderableContent,omitempty"`
 	// TikTok only. The message type as TikTok reports it, forwarded verbatim (for example image, video, sticker, share_post, emoji, reaction, template).  Present on every TikTok DM that is not plain text. Those arrive with text empty and, for image, video, share_post, sticker and emoji, an attachment:  - share_post: type share, with the embed url and payload.videoId. - sticker/emoji: type sticker, url signed and expiring.
 	TiktokMessageType *string `json:"tiktokMessageType,omitempty"`
+	// iMessage only. Delivery channel the message arrived on (imessage, sms, rcs or whatsapp).
+	Channel *string `json:"channel,omitempty"`
+	// iMessage only. Provider message type (for example text, audio, sticker).
+	MessageType *string `json:"messageType,omitempty"`
+	// iMessage only. Id of the reply thread the message belongs to.
+	ThreadId *string `json:"threadId,omitempty"`
+	// iMessage only. Language detected by the provider.
+	LanguageCode *string `json:"languageCode,omitempty"`
+	// iMessage only. Provider transcription of a voice message.
+	Transcript *string `json:"transcript,omitempty"`
+	// iMessage only. Rich-text markup rendered to markdown; `text` stays plain.
+	MarkdownText *string `json:"markdownText,omitempty"`
 }
 
 // NewWebhookPayloadMessageMetadata instantiates a new WebhookPayloadMessageMetadata object
@@ -950,6 +962,198 @@ func (o *WebhookPayloadMessageMetadata) SetTiktokMessageType(v string) {
 	o.TiktokMessageType = &v
 }
 
+// GetChannel returns the Channel field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetChannel() string {
+	if o == nil || IsNil(o.Channel) {
+		var ret string
+		return ret
+	}
+	return *o.Channel
+}
+
+// GetChannelOk returns a tuple with the Channel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetChannelOk() (*string, bool) {
+	if o == nil || IsNil(o.Channel) {
+		return nil, false
+	}
+	return o.Channel, true
+}
+
+// HasChannel returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasChannel() bool {
+	if o != nil && !IsNil(o.Channel) {
+		return true
+	}
+
+	return false
+}
+
+// SetChannel gets a reference to the given string and assigns it to the Channel field.
+func (o *WebhookPayloadMessageMetadata) SetChannel(v string) {
+	o.Channel = &v
+}
+
+// GetMessageType returns the MessageType field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetMessageType() string {
+	if o == nil || IsNil(o.MessageType) {
+		var ret string
+		return ret
+	}
+	return *o.MessageType
+}
+
+// GetMessageTypeOk returns a tuple with the MessageType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetMessageTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MessageType) {
+		return nil, false
+	}
+	return o.MessageType, true
+}
+
+// HasMessageType returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasMessageType() bool {
+	if o != nil && !IsNil(o.MessageType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageType gets a reference to the given string and assigns it to the MessageType field.
+func (o *WebhookPayloadMessageMetadata) SetMessageType(v string) {
+	o.MessageType = &v
+}
+
+// GetThreadId returns the ThreadId field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetThreadId() string {
+	if o == nil || IsNil(o.ThreadId) {
+		var ret string
+		return ret
+	}
+	return *o.ThreadId
+}
+
+// GetThreadIdOk returns a tuple with the ThreadId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetThreadIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ThreadId) {
+		return nil, false
+	}
+	return o.ThreadId, true
+}
+
+// HasThreadId returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasThreadId() bool {
+	if o != nil && !IsNil(o.ThreadId) {
+		return true
+	}
+
+	return false
+}
+
+// SetThreadId gets a reference to the given string and assigns it to the ThreadId field.
+func (o *WebhookPayloadMessageMetadata) SetThreadId(v string) {
+	o.ThreadId = &v
+}
+
+// GetLanguageCode returns the LanguageCode field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetLanguageCode() string {
+	if o == nil || IsNil(o.LanguageCode) {
+		var ret string
+		return ret
+	}
+	return *o.LanguageCode
+}
+
+// GetLanguageCodeOk returns a tuple with the LanguageCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetLanguageCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.LanguageCode) {
+		return nil, false
+	}
+	return o.LanguageCode, true
+}
+
+// HasLanguageCode returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasLanguageCode() bool {
+	if o != nil && !IsNil(o.LanguageCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetLanguageCode gets a reference to the given string and assigns it to the LanguageCode field.
+func (o *WebhookPayloadMessageMetadata) SetLanguageCode(v string) {
+	o.LanguageCode = &v
+}
+
+// GetTranscript returns the Transcript field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetTranscript() string {
+	if o == nil || IsNil(o.Transcript) {
+		var ret string
+		return ret
+	}
+	return *o.Transcript
+}
+
+// GetTranscriptOk returns a tuple with the Transcript field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetTranscriptOk() (*string, bool) {
+	if o == nil || IsNil(o.Transcript) {
+		return nil, false
+	}
+	return o.Transcript, true
+}
+
+// HasTranscript returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasTranscript() bool {
+	if o != nil && !IsNil(o.Transcript) {
+		return true
+	}
+
+	return false
+}
+
+// SetTranscript gets a reference to the given string and assigns it to the Transcript field.
+func (o *WebhookPayloadMessageMetadata) SetTranscript(v string) {
+	o.Transcript = &v
+}
+
+// GetMarkdownText returns the MarkdownText field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetMarkdownText() string {
+	if o == nil || IsNil(o.MarkdownText) {
+		var ret string
+		return ret
+	}
+	return *o.MarkdownText
+}
+
+// GetMarkdownTextOk returns a tuple with the MarkdownText field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetMarkdownTextOk() (*string, bool) {
+	if o == nil || IsNil(o.MarkdownText) {
+		return nil, false
+	}
+	return o.MarkdownText, true
+}
+
+// HasMarkdownText returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasMarkdownText() bool {
+	if o != nil && !IsNil(o.MarkdownText) {
+		return true
+	}
+
+	return false
+}
+
+// SetMarkdownText gets a reference to the given string and assigns it to the MarkdownText field.
+func (o *WebhookPayloadMessageMetadata) SetMarkdownText(v string) {
+	o.MarkdownText = &v
+}
+
 func (o WebhookPayloadMessageMetadata) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -1040,6 +1244,24 @@ func (o WebhookPayloadMessageMetadata) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.TiktokMessageType) {
 		toSerialize["tiktokMessageType"] = o.TiktokMessageType
+	}
+	if !IsNil(o.Channel) {
+		toSerialize["channel"] = o.Channel
+	}
+	if !IsNil(o.MessageType) {
+		toSerialize["messageType"] = o.MessageType
+	}
+	if !IsNil(o.ThreadId) {
+		toSerialize["threadId"] = o.ThreadId
+	}
+	if !IsNil(o.LanguageCode) {
+		toSerialize["languageCode"] = o.LanguageCode
+	}
+	if !IsNil(o.Transcript) {
+		toSerialize["transcript"] = o.Transcript
+	}
+	if !IsNil(o.MarkdownText) {
+		toSerialize["markdownText"] = o.MarkdownText
 	}
 	return toSerialize, nil
 }

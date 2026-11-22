@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &ListSequences200Response{}
 type ListSequences200Response struct {
 	Success    *bool                                    `json:"success,omitempty"`
 	Sequences  []ListSequences200ResponseSequencesInner `json:"sequences,omitempty"`
-	Pagination *ListContacts200ResponsePagination       `json:"pagination,omitempty"`
+	Pagination *ListWorkspaces200ResponsePagination     `json:"pagination,omitempty"`
 }
 
 // NewListSequences200Response instantiates a new ListSequences200Response object
@@ -107,9 +107,9 @@ func (o *ListSequences200Response) SetSequences(v []ListSequences200ResponseSequ
 }
 
 // GetPagination returns the Pagination field value if set, zero value otherwise.
-func (o *ListSequences200Response) GetPagination() ListContacts200ResponsePagination {
+func (o *ListSequences200Response) GetPagination() ListWorkspaces200ResponsePagination {
 	if o == nil || IsNil(o.Pagination) {
-		var ret ListContacts200ResponsePagination
+		var ret ListWorkspaces200ResponsePagination
 		return ret
 	}
 	return *o.Pagination
@@ -117,7 +117,7 @@ func (o *ListSequences200Response) GetPagination() ListContacts200ResponsePagina
 
 // GetPaginationOk returns a tuple with the Pagination field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListSequences200Response) GetPaginationOk() (*ListContacts200ResponsePagination, bool) {
+func (o *ListSequences200Response) GetPaginationOk() (*ListWorkspaces200ResponsePagination, bool) {
 	if o == nil || IsNil(o.Pagination) {
 		return nil, false
 	}
@@ -133,8 +133,8 @@ func (o *ListSequences200Response) HasPagination() bool {
 	return false
 }
 
-// SetPagination gets a reference to the given ListContacts200ResponsePagination and assigns it to the Pagination field.
-func (o *ListSequences200Response) SetPagination(v ListContacts200ResponsePagination) {
+// SetPagination gets a reference to the given ListWorkspaces200ResponsePagination and assigns it to the Pagination field.
+func (o *ListSequences200Response) SetPagination(v ListWorkspaces200ResponsePagination) {
 	o.Pagination = &v
 }
 

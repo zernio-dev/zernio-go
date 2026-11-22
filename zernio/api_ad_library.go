@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -135,7 +135,7 @@ func (r AdLibraryAPISearchAdLibraryRequest) Fields(fields string) AdLibraryAPISe
 	return r
 }
 
-// Meta only. When &#x60;true&#x60;, each row also carries &#x60;media&#x60;: the ad&#39;s rendered creative (images, videos, carousel cards) as direct file URLs, so you don&#39;t have to open &#x60;ad_snapshot_url&#x60; yourself.  - Meta CDN links are signed and expire: download what you need before each item&#39;s &#x60;expires_at&#x60;. - &#x60;media&#x60; is &#x60;null&#x60; when Meta would not render the snapshot for that ad, and &#x60;[]&#x60; for a text-only ad. - Every ad is rendered in a browser, so responses take several seconds longer, and &#x60;limit&#x60; is capped at 25 (&#x60;limit&#x60; &gt; 25 is a 400). - With a &#x60;fields&#x60; override, include &#x60;ad_snapshot_url&#x60; or no row gets &#x60;media&#x60;.
+// Meta only. When &#x60;true&#x60;, each row also carries &#x60;media&#x60;: the ad&#39;s rendered creative (images, videos, carousel cards) as direct file URLs, so you don&#39;t have to open &#x60;ad_snapshot_url&#x60; yourself.  It also carries &#x60;destination_urls&#x60;: where the ad sends people (landing page, WhatsApp, app store), unwrapped from Facebook&#39;s redirect, in the order the ad shows them. Meta&#39;s archive does not return these itself.  - Meta CDN links are signed and expire: download what you need before each item&#39;s &#x60;expires_at&#x60;. - &#x60;media&#x60; and &#x60;destination_urls&#x60; are &#x60;null&#x60; when Meta would not render the snapshot for that ad. &#x60;media&#x60; is &#x60;[]&#x60; for a text-only ad, &#x60;destination_urls&#x60; is &#x60;[]&#x60; for an ad with no outbound link (lead forms, messages). - Every ad is rendered in a browser, so responses take several seconds longer, and &#x60;limit&#x60; is capped at 25 (&#x60;limit&#x60; &gt; 25 is a 400). - With a &#x60;fields&#x60; override, include &#x60;ad_snapshot_url&#x60; or no row gets &#x60;media&#x60; or &#x60;destination_urls&#x60;.
 func (r AdLibraryAPISearchAdLibraryRequest) IncludeMedia(includeMedia bool) AdLibraryAPISearchAdLibraryRequest {
 	r.includeMedia = &includeMedia
 	return r

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -46,12 +46,26 @@ type ConversionEventUserClickIds struct {
 	Axwrt *string `json:"axwrt,omitempty"`
 	// X click ID (the `twclid` URL param X adds to ad clicks). Sent to X as a `twclid` identifier, not hashed.
 	Twclid *string `json:"twclid,omitempty"`
-	// Microsoft Advertising click ID (the `msclkid` URL param Microsoft adds to ad clicks). Sent to Microsoft as `MicrosoftClickId`, not hashed.
+	// Microsoft Advertising click ID (the `msclkid` URL param Microsoft adds to ad clicks). Sent to Microsoft as `MicrosoftClickId` (offline goals) or `userData.msclkid` (UET tags), not hashed.
 	Msclkid *string `json:"msclkid,omitempty"`
 	// Snapchat click ID (the `ScCid` URL param Snap adds to ad clicks). Sent to Snapchat as `sc_click_id`, not hashed.
 	Sccid *string `json:"sccid,omitempty"`
 	// Snap Pixel browser id (the `_scid` cookie). Sent to Snapchat as `sc_cookie1`, not hashed.
 	Scid *string `json:"scid,omitempty"`
+	// Taboola click ID (the `tblci` URL param Taboola adds to ad clicks with its `{click_id}` macro). Sent to Taboola as `click-id`, not hashed.
+	Tblci *string `json:"tblci,omitempty"`
+	// Impact partner click id (the `irclickid` URL param Impact adds to partner links). Sent to Impact as `ClickId`.
+	Irclickid *string `json:"irclickid,omitempty"`
+	// Awin click id (the `awc` URL param Awin adds to publisher links). Sent to Awin as the order's `awc`.
+	Awc *string `json:"awc,omitempty"`
+	// Campaign Manager 360 / Display & Video 360 click ID (the `dclid` URL param). Sent to Floodlight as is.
+	Dclid *string `json:"dclid,omitempty"`
+	// The Trade Desk browser id (TDID) from a TTD cookie sync. Sent to The Trade Desk as `adid` of type `TDID`.
+	Tdid *string `json:"tdid,omitempty"`
+	// A raw UID2 for the person, from your UID2 integration. Sent to The Trade Desk as `adid` of type `UID2`.
+	Uid2 *string `json:"uid2,omitempty"`
+	// A UID2 token (encrypted, from the UID2 SDK on your site). Sent to The Trade Desk as `uid2_token`.
+	Uid2Token *string `json:"uid2Token,omitempty"`
 }
 
 // NewConversionEventUserClickIds instantiates a new ConversionEventUserClickIds object
@@ -583,6 +597,230 @@ func (o *ConversionEventUserClickIds) SetScid(v string) {
 	o.Scid = &v
 }
 
+// GetTblci returns the Tblci field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetTblci() string {
+	if o == nil || IsNil(o.Tblci) {
+		var ret string
+		return ret
+	}
+	return *o.Tblci
+}
+
+// GetTblciOk returns a tuple with the Tblci field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetTblciOk() (*string, bool) {
+	if o == nil || IsNil(o.Tblci) {
+		return nil, false
+	}
+	return o.Tblci, true
+}
+
+// HasTblci returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasTblci() bool {
+	if o != nil && !IsNil(o.Tblci) {
+		return true
+	}
+
+	return false
+}
+
+// SetTblci gets a reference to the given string and assigns it to the Tblci field.
+func (o *ConversionEventUserClickIds) SetTblci(v string) {
+	o.Tblci = &v
+}
+
+// GetIrclickid returns the Irclickid field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetIrclickid() string {
+	if o == nil || IsNil(o.Irclickid) {
+		var ret string
+		return ret
+	}
+	return *o.Irclickid
+}
+
+// GetIrclickidOk returns a tuple with the Irclickid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetIrclickidOk() (*string, bool) {
+	if o == nil || IsNil(o.Irclickid) {
+		return nil, false
+	}
+	return o.Irclickid, true
+}
+
+// HasIrclickid returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasIrclickid() bool {
+	if o != nil && !IsNil(o.Irclickid) {
+		return true
+	}
+
+	return false
+}
+
+// SetIrclickid gets a reference to the given string and assigns it to the Irclickid field.
+func (o *ConversionEventUserClickIds) SetIrclickid(v string) {
+	o.Irclickid = &v
+}
+
+// GetAwc returns the Awc field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetAwc() string {
+	if o == nil || IsNil(o.Awc) {
+		var ret string
+		return ret
+	}
+	return *o.Awc
+}
+
+// GetAwcOk returns a tuple with the Awc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetAwcOk() (*string, bool) {
+	if o == nil || IsNil(o.Awc) {
+		return nil, false
+	}
+	return o.Awc, true
+}
+
+// HasAwc returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasAwc() bool {
+	if o != nil && !IsNil(o.Awc) {
+		return true
+	}
+
+	return false
+}
+
+// SetAwc gets a reference to the given string and assigns it to the Awc field.
+func (o *ConversionEventUserClickIds) SetAwc(v string) {
+	o.Awc = &v
+}
+
+// GetDclid returns the Dclid field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetDclid() string {
+	if o == nil || IsNil(o.Dclid) {
+		var ret string
+		return ret
+	}
+	return *o.Dclid
+}
+
+// GetDclidOk returns a tuple with the Dclid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetDclidOk() (*string, bool) {
+	if o == nil || IsNil(o.Dclid) {
+		return nil, false
+	}
+	return o.Dclid, true
+}
+
+// HasDclid returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasDclid() bool {
+	if o != nil && !IsNil(o.Dclid) {
+		return true
+	}
+
+	return false
+}
+
+// SetDclid gets a reference to the given string and assigns it to the Dclid field.
+func (o *ConversionEventUserClickIds) SetDclid(v string) {
+	o.Dclid = &v
+}
+
+// GetTdid returns the Tdid field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetTdid() string {
+	if o == nil || IsNil(o.Tdid) {
+		var ret string
+		return ret
+	}
+	return *o.Tdid
+}
+
+// GetTdidOk returns a tuple with the Tdid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetTdidOk() (*string, bool) {
+	if o == nil || IsNil(o.Tdid) {
+		return nil, false
+	}
+	return o.Tdid, true
+}
+
+// HasTdid returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasTdid() bool {
+	if o != nil && !IsNil(o.Tdid) {
+		return true
+	}
+
+	return false
+}
+
+// SetTdid gets a reference to the given string and assigns it to the Tdid field.
+func (o *ConversionEventUserClickIds) SetTdid(v string) {
+	o.Tdid = &v
+}
+
+// GetUid2 returns the Uid2 field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetUid2() string {
+	if o == nil || IsNil(o.Uid2) {
+		var ret string
+		return ret
+	}
+	return *o.Uid2
+}
+
+// GetUid2Ok returns a tuple with the Uid2 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetUid2Ok() (*string, bool) {
+	if o == nil || IsNil(o.Uid2) {
+		return nil, false
+	}
+	return o.Uid2, true
+}
+
+// HasUid2 returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasUid2() bool {
+	if o != nil && !IsNil(o.Uid2) {
+		return true
+	}
+
+	return false
+}
+
+// SetUid2 gets a reference to the given string and assigns it to the Uid2 field.
+func (o *ConversionEventUserClickIds) SetUid2(v string) {
+	o.Uid2 = &v
+}
+
+// GetUid2Token returns the Uid2Token field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetUid2Token() string {
+	if o == nil || IsNil(o.Uid2Token) {
+		var ret string
+		return ret
+	}
+	return *o.Uid2Token
+}
+
+// GetUid2TokenOk returns a tuple with the Uid2Token field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetUid2TokenOk() (*string, bool) {
+	if o == nil || IsNil(o.Uid2Token) {
+		return nil, false
+	}
+	return o.Uid2Token, true
+}
+
+// HasUid2Token returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasUid2Token() bool {
+	if o != nil && !IsNil(o.Uid2Token) {
+		return true
+	}
+
+	return false
+}
+
+// SetUid2Token gets a reference to the given string and assigns it to the Uid2Token field.
+func (o *ConversionEventUserClickIds) SetUid2Token(v string) {
+	o.Uid2Token = &v
+}
+
 func (o ConversionEventUserClickIds) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -640,6 +878,27 @@ func (o ConversionEventUserClickIds) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Scid) {
 		toSerialize["scid"] = o.Scid
+	}
+	if !IsNil(o.Tblci) {
+		toSerialize["tblci"] = o.Tblci
+	}
+	if !IsNil(o.Irclickid) {
+		toSerialize["irclickid"] = o.Irclickid
+	}
+	if !IsNil(o.Awc) {
+		toSerialize["awc"] = o.Awc
+	}
+	if !IsNil(o.Dclid) {
+		toSerialize["dclid"] = o.Dclid
+	}
+	if !IsNil(o.Tdid) {
+		toSerialize["tdid"] = o.Tdid
+	}
+	if !IsNil(o.Uid2) {
+		toSerialize["uid2"] = o.Uid2
+	}
+	if !IsNil(o.Uid2Token) {
+		toSerialize["uid2Token"] = o.Uid2Token
 	}
 	return toSerialize, nil
 }

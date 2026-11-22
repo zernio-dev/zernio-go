@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -28,8 +28,9 @@ type SendConversionsRequest struct {
 	DestinationId string            `json:"destinationId"`
 	Events        []ConversionEvent `json:"events"`
 	// Test event code. Send it at the request root, never inside an event. A root-level `test_event_code` (Meta's own name) is accepted as an alias and must be a non-empty string; sending both with different values is a 400.  - Meta: sent as `test_event_code`. Events show in Events Manager's Test Events tab for the pixel whose current test code matches (Meta rotates the code, so copy it again from that tab). Meta still processes them like any other event, so remove it in production. - Pinterest: any value sends the batch with `test=true` (validated, not recorded). - Reddit: sent as `test_id`, so the events show in the pixel's test view. - Google, LinkedIn and OpenAI Ads: ignored.
-	TestCode *string                        `json:"testCode,omitempty"`
-	Consent  *SendConversionsRequestConsent `json:"consent,omitempty"`
+	TestCode *string `json:"testCode,omitempty"`
+	// Every event's consent, unless the event sets its own. For visitors in the EEA, UK and CH it decides whether the destination gets the event at all, as described under Consent on `POST /v1/events`; events left out are listed in `drops`.  How the platforms read the signals of the events they get:  - **Google:** sent as the request's consent. Google does not use EEA, UK or CH conversions without `adUserData: GRANTED`. - **Meta:** any `DENIED` flag enables Limited Data Use on the events (data_processing_options [\"LDU\"] with geolocation, country 0 / state 0). LDU applies to US state privacy laws, not to the EEA, UK or CH. - **Reddit:** `adUserData: DENIED` drops every user field from the events. - **LinkedIn:** the signals are not sent; LinkedIn matches only members who allow it in their own LinkedIn settings.
+	Consent *EventConsent `json:"consent,omitempty"`
 }
 
 type _SendConversionsRequest SendConversionsRequest
@@ -159,9 +160,9 @@ func (o *SendConversionsRequest) SetTestCode(v string) {
 }
 
 // GetConsent returns the Consent field value if set, zero value otherwise.
-func (o *SendConversionsRequest) GetConsent() SendConversionsRequestConsent {
+func (o *SendConversionsRequest) GetConsent() EventConsent {
 	if o == nil || IsNil(o.Consent) {
-		var ret SendConversionsRequestConsent
+		var ret EventConsent
 		return ret
 	}
 	return *o.Consent
@@ -169,7 +170,7 @@ func (o *SendConversionsRequest) GetConsent() SendConversionsRequestConsent {
 
 // GetConsentOk returns a tuple with the Consent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SendConversionsRequest) GetConsentOk() (*SendConversionsRequestConsent, bool) {
+func (o *SendConversionsRequest) GetConsentOk() (*EventConsent, bool) {
 	if o == nil || IsNil(o.Consent) {
 		return nil, false
 	}
@@ -185,8 +186,8 @@ func (o *SendConversionsRequest) HasConsent() bool {
 	return false
 }
 
-// SetConsent gets a reference to the given SendConversionsRequestConsent and assigns it to the Consent field.
-func (o *SendConversionsRequest) SetConsent(v SendConversionsRequestConsent) {
+// SetConsent gets a reference to the given EventConsent and assigns it to the Consent field.
+func (o *SendConversionsRequest) SetConsent(v EventConsent) {
 	o.Consent = &v
 }
 

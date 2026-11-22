@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,8 @@ type GetEventsOverview200ResponsePlatformsInner struct {
 	// Events the platform accepted today.
 	SentToday *int32 `json:"sentToday,omitempty"`
 	// Events that failed for good today.
-	FailedToday *int32 `json:"failedToday,omitempty"`
+	FailedToday  *int32                                                  `json:"failedToday,omitempty"`
+	DroppedToday *GetEventsOverview200ResponsePlatformsInnerDroppedToday `json:"droppedToday,omitempty"`
 	// Last accepted send in the last 30 days.
 	LastSentAt NullableTime `json:"lastSentAt,omitempty"`
 	// Name of the event in that send.
@@ -318,6 +319,38 @@ func (o *GetEventsOverview200ResponsePlatformsInner) SetFailedToday(v int32) {
 	o.FailedToday = &v
 }
 
+// GetDroppedToday returns the DroppedToday field value if set, zero value otherwise.
+func (o *GetEventsOverview200ResponsePlatformsInner) GetDroppedToday() GetEventsOverview200ResponsePlatformsInnerDroppedToday {
+	if o == nil || IsNil(o.DroppedToday) {
+		var ret GetEventsOverview200ResponsePlatformsInnerDroppedToday
+		return ret
+	}
+	return *o.DroppedToday
+}
+
+// GetDroppedTodayOk returns a tuple with the DroppedToday field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverview200ResponsePlatformsInner) GetDroppedTodayOk() (*GetEventsOverview200ResponsePlatformsInnerDroppedToday, bool) {
+	if o == nil || IsNil(o.DroppedToday) {
+		return nil, false
+	}
+	return o.DroppedToday, true
+}
+
+// HasDroppedToday returns a boolean if a field has been set.
+func (o *GetEventsOverview200ResponsePlatformsInner) HasDroppedToday() bool {
+	if o != nil && !IsNil(o.DroppedToday) {
+		return true
+	}
+
+	return false
+}
+
+// SetDroppedToday gets a reference to the given GetEventsOverview200ResponsePlatformsInnerDroppedToday and assigns it to the DroppedToday field.
+func (o *GetEventsOverview200ResponsePlatformsInner) SetDroppedToday(v GetEventsOverview200ResponsePlatformsInnerDroppedToday) {
+	o.DroppedToday = &v
+}
+
 // GetLastSentAt returns the LastSentAt field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetEventsOverview200ResponsePlatformsInner) GetLastSentAt() time.Time {
 	if o == nil || IsNil(o.LastSentAt.Get()) {
@@ -523,6 +556,9 @@ func (o GetEventsOverview200ResponsePlatformsInner) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.FailedToday) {
 		toSerialize["failedToday"] = o.FailedToday
+	}
+	if !IsNil(o.DroppedToday) {
+		toSerialize["droppedToday"] = o.DroppedToday
 	}
 	if o.LastSentAt.IsSet() {
 		toSerialize["lastSentAt"] = o.LastSentAt.Get()

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -38,6 +38,8 @@ type ConversionEvent struct {
 	// URL where the conversion originated (used by Meta).
 	SourceUrl *string                  `json:"sourceUrl,omitempty"`
 	Campaign  *ConversionEventCampaign `json:"campaign,omitempty"`
+	// This event's consent. Each signal given here wins over the request's `consent`.
+	Consent *EventConsent `json:"consent,omitempty"`
 	// Where the conversion happened. Used by Meta. Google also requires an event source internally; omitting this field sends OTHER to Google. Send an explicit value for accurate origin reporting. `business_messaging` (Meta) marks an event from a WhatsApp, Messenger or Instagram Direct conversation and needs `messaging`.
 	ActionSource *string                   `json:"actionSource,omitempty"`
 	Messaging    *ConversionEventMessaging `json:"messaging,omitempty"`
@@ -324,6 +326,38 @@ func (o *ConversionEvent) SetCampaign(v ConversionEventCampaign) {
 	o.Campaign = &v
 }
 
+// GetConsent returns the Consent field value if set, zero value otherwise.
+func (o *ConversionEvent) GetConsent() EventConsent {
+	if o == nil || IsNil(o.Consent) {
+		var ret EventConsent
+		return ret
+	}
+	return *o.Consent
+}
+
+// GetConsentOk returns a tuple with the Consent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEvent) GetConsentOk() (*EventConsent, bool) {
+	if o == nil || IsNil(o.Consent) {
+		return nil, false
+	}
+	return o.Consent, true
+}
+
+// HasConsent returns a boolean if a field has been set.
+func (o *ConversionEvent) HasConsent() bool {
+	if o != nil && !IsNil(o.Consent) {
+		return true
+	}
+
+	return false
+}
+
+// SetConsent gets a reference to the given EventConsent and assigns it to the Consent field.
+func (o *ConversionEvent) SetConsent(v EventConsent) {
+	o.Consent = &v
+}
+
 // GetActionSource returns the ActionSource field value if set, zero value otherwise.
 func (o *ConversionEvent) GetActionSource() string {
 	if o == nil || IsNil(o.ActionSource) {
@@ -448,6 +482,9 @@ func (o ConversionEvent) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Campaign) {
 		toSerialize["campaign"] = o.Campaign
+	}
+	if !IsNil(o.Consent) {
+		toSerialize["consent"] = o.Consent
 	}
 	if !IsNil(o.ActionSource) {
 		toSerialize["actionSource"] = o.ActionSource

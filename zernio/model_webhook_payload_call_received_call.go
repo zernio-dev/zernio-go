@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -34,10 +34,14 @@ type WebhookPayloadCallReceivedCall struct {
 	// Business number (E.164)
 	To *string `json:"to,omitempty"`
 	// Destination snapshot at routing time
-	ForwardTo      *string    `json:"forwardTo,omitempty"`
-	ContactId      *string    `json:"contactId,omitempty"`
-	ConversationId *string    `json:"conversationId,omitempty"`
-	StartedAt      *time.Time `json:"startedAt,omitempty"`
+	ForwardTo *string `json:"forwardTo,omitempty"`
+	// Carrier call_control_id of this call leg. Equals start.call_control_id of the media stream a wss:// forwardTo receives.
+	TelnyxCallControlId *string `json:"telnyxCallControlId,omitempty"`
+	// Carrier call_session_id of this call. Equals start.call_session_id of the media stream a wss:// forwardTo receives.
+	TelnyxCallSessionId *string    `json:"telnyxCallSessionId,omitempty"`
+	ContactId           *string    `json:"contactId,omitempty"`
+	ConversationId      *string    `json:"conversationId,omitempty"`
+	StartedAt           *time.Time `json:"startedAt,omitempty"`
 }
 
 // NewWebhookPayloadCallReceivedCall instantiates a new WebhookPayloadCallReceivedCall object
@@ -324,6 +328,70 @@ func (o *WebhookPayloadCallReceivedCall) SetForwardTo(v string) {
 	o.ForwardTo = &v
 }
 
+// GetTelnyxCallControlId returns the TelnyxCallControlId field value if set, zero value otherwise.
+func (o *WebhookPayloadCallReceivedCall) GetTelnyxCallControlId() string {
+	if o == nil || IsNil(o.TelnyxCallControlId) {
+		var ret string
+		return ret
+	}
+	return *o.TelnyxCallControlId
+}
+
+// GetTelnyxCallControlIdOk returns a tuple with the TelnyxCallControlId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadCallReceivedCall) GetTelnyxCallControlIdOk() (*string, bool) {
+	if o == nil || IsNil(o.TelnyxCallControlId) {
+		return nil, false
+	}
+	return o.TelnyxCallControlId, true
+}
+
+// HasTelnyxCallControlId returns a boolean if a field has been set.
+func (o *WebhookPayloadCallReceivedCall) HasTelnyxCallControlId() bool {
+	if o != nil && !IsNil(o.TelnyxCallControlId) {
+		return true
+	}
+
+	return false
+}
+
+// SetTelnyxCallControlId gets a reference to the given string and assigns it to the TelnyxCallControlId field.
+func (o *WebhookPayloadCallReceivedCall) SetTelnyxCallControlId(v string) {
+	o.TelnyxCallControlId = &v
+}
+
+// GetTelnyxCallSessionId returns the TelnyxCallSessionId field value if set, zero value otherwise.
+func (o *WebhookPayloadCallReceivedCall) GetTelnyxCallSessionId() string {
+	if o == nil || IsNil(o.TelnyxCallSessionId) {
+		var ret string
+		return ret
+	}
+	return *o.TelnyxCallSessionId
+}
+
+// GetTelnyxCallSessionIdOk returns a tuple with the TelnyxCallSessionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadCallReceivedCall) GetTelnyxCallSessionIdOk() (*string, bool) {
+	if o == nil || IsNil(o.TelnyxCallSessionId) {
+		return nil, false
+	}
+	return o.TelnyxCallSessionId, true
+}
+
+// HasTelnyxCallSessionId returns a boolean if a field has been set.
+func (o *WebhookPayloadCallReceivedCall) HasTelnyxCallSessionId() bool {
+	if o != nil && !IsNil(o.TelnyxCallSessionId) {
+		return true
+	}
+
+	return false
+}
+
+// SetTelnyxCallSessionId gets a reference to the given string and assigns it to the TelnyxCallSessionId field.
+func (o *WebhookPayloadCallReceivedCall) SetTelnyxCallSessionId(v string) {
+	o.TelnyxCallSessionId = &v
+}
+
 // GetContactId returns the ContactId field value if set, zero value otherwise.
 func (o *WebhookPayloadCallReceivedCall) GetContactId() string {
 	if o == nil || IsNil(o.ContactId) {
@@ -453,6 +521,12 @@ func (o WebhookPayloadCallReceivedCall) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.ForwardTo) {
 		toSerialize["forwardTo"] = o.ForwardTo
+	}
+	if !IsNil(o.TelnyxCallControlId) {
+		toSerialize["telnyxCallControlId"] = o.TelnyxCallControlId
+	}
+	if !IsNil(o.TelnyxCallSessionId) {
+		toSerialize["telnyxCallSessionId"] = o.TelnyxCallSessionId
 	}
 	if !IsNil(o.ContactId) {
 		toSerialize["contactId"] = o.ContactId

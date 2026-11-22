@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -934,6 +934,214 @@ func (a *WebhookEventsAPIService) OnAccountRateLimitedExecute(r WebhookEventsAPI
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnAccountRecoveredRequest struct {
+	ctx                            context.Context
+	ApiService                     *WebhookEventsAPIService
+	webhookPayloadAccountRecovered *WebhookPayloadAccountRecovered
+}
+
+func (r WebhookEventsAPIOnAccountRecoveredRequest) WebhookPayloadAccountRecovered(webhookPayloadAccountRecovered WebhookPayloadAccountRecovered) WebhookEventsAPIOnAccountRecoveredRequest {
+	r.webhookPayloadAccountRecovered = &webhookPayloadAccountRecovered
+	return r
+}
+
+func (r WebhookEventsAPIOnAccountRecoveredRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAccountRecoveredExecute(r)
+}
+
+/*
+OnAccountRecovered Account publishing again
+
+A publish succeeded on an account that `account.restricted` reported, so the restriction is lifted and publish-now posts to it are accepted again. A reconnect also lifts it; that sends `account.connected` instead.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAccountRecoveredRequest
+*/
+func (a *WebhookEventsAPIService) OnAccountRecovered(ctx context.Context) WebhookEventsAPIOnAccountRecoveredRequest {
+	return WebhookEventsAPIOnAccountRecoveredRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAccountRecoveredExecute(r WebhookEventsAPIOnAccountRecoveredRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAccountRecovered")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/account.recovered"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAccountRecovered == nil {
+		return nil, reportError("webhookPayloadAccountRecovered is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAccountRecovered
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAccountRestrictedRequest struct {
+	ctx                             context.Context
+	ApiService                      *WebhookEventsAPIService
+	webhookPayloadAccountRestricted *WebhookPayloadAccountRestricted
+}
+
+func (r WebhookEventsAPIOnAccountRestrictedRequest) WebhookPayloadAccountRestricted(webhookPayloadAccountRestricted WebhookPayloadAccountRestricted) WebhookEventsAPIOnAccountRestrictedRequest {
+	r.webhookPayloadAccountRestricted = &webhookPayloadAccountRestricted
+	return r
+}
+
+func (r WebhookEventsAPIOnAccountRestrictedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAccountRestrictedExecute(r)
+}
+
+/*
+OnAccountRestricted Account restricted from publishing
+
+A social account failed its last three publishes with the same account-level error: the platform suspended or banned it, restricted or locked it, asks for an identity or security check, or stopped accepting its login.
+
+### When it fires
+
+Once per restriction, on the third identical failure in a row. Further failures do not fire it again.
+
+### What changes
+
+`POST /v1/posts` with `publishNow` (or a time already past) to this account answers 422 `account_restricted`, because it would fail the same way. Scheduled posts are still accepted.
+
+Fix the account on the platform, then reconnect it to lift the check at once; otherwise the next successful publish lifts it (`account.recovered`). 24 hours after the last failure one publish-now is let through again.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAccountRestrictedRequest
+*/
+func (a *WebhookEventsAPIService) OnAccountRestricted(ctx context.Context) WebhookEventsAPIOnAccountRestrictedRequest {
+	return WebhookEventsAPIOnAccountRestrictedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAccountRestrictedExecute(r WebhookEventsAPIOnAccountRestrictedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAccountRestricted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/account.restricted"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAccountRestricted == nil {
+		return nil, reportError("webhookPayloadAccountRestricted is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAccountRestricted
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnAdAccountStatusChangedRequest struct {
 	ctx                                  context.Context
 	ApiService                           *WebhookEventsAPIService
@@ -1297,7 +1505,7 @@ Fires within one sync cycle of the platform's decision, not instantly; on Meta t
 
 ### When it does not fire
 
-Ads seen for the first time by a sync never fire it, including history loaded at connect. On Meta, Google, TikTok and Reddit an ad that leaves review while paused sends no `approved`.
+Ads seen for the first time by a sync never fire it, including history loaded at connect. On Google, TikTok and Reddit an ad that leaves review while paused sends no `approved`. On Meta it does when the ad was paused before review ended.
 
 ### Platform notes
 
@@ -3439,6 +3647,222 @@ func (a *WebhookEventsAPIService) OnBalanceLowExecute(r WebhookEventsAPIOnBalanc
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadBalanceLow
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnBillingPublishingBlockedRequest struct {
+	ctx                                    context.Context
+	ApiService                             *WebhookEventsAPIService
+	webhookPayloadBillingPublishingBlocked *WebhookPayloadBillingPublishingBlocked
+}
+
+func (r WebhookEventsAPIOnBillingPublishingBlockedRequest) WebhookPayloadBillingPublishingBlocked(webhookPayloadBillingPublishingBlocked WebhookPayloadBillingPublishingBlocked) WebhookEventsAPIOnBillingPublishingBlockedRequest {
+	r.webhookPayloadBillingPublishingBlocked = &webhookPayloadBillingPublishingBlocked
+	return r
+}
+
+func (r WebhookEventsAPIOnBillingPublishingBlockedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnBillingPublishingBlockedExecute(r)
+}
+
+/*
+OnBillingPublishingBlocked Publishing paused for a failed payment
+
+A failed payment paused the billing owner's account. Until it is paid, every API call answers 402 `PAYMENT_REQUIRED`.
+
+### Scheduled posts during the pause
+
+Posts that come due are held, not failed: `platforms[].status` stays `pending` and `errorMessage` says the post waits for the payment. No platform is called.
+
+- Paid within 24 hours of a post's scheduled time: the post publishes within minutes of `billing.publishing_unblocked`.
+- Not paid by then: the post fails with "Publishing blocked: payment failed" and `post.failed` (or `post.partial`) fires as usual. Retry it once paid.
+- A Terms of Service hold is not a billing pause: its posts fail at once, as before.
+
+### When it fires
+
+Once per pause. `billing.reason` says why: the card was declined (`payment_failed`), there is no card (`no_payment_method`), or the billing address was refused (`invalid_billing_address`). Pay or replace the card at `billingUrl`.
+
+### Who receives it
+
+The billing owner's endpoints. Restricted keys need the `money` resource group.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnBillingPublishingBlockedRequest
+*/
+func (a *WebhookEventsAPIService) OnBillingPublishingBlocked(ctx context.Context) WebhookEventsAPIOnBillingPublishingBlockedRequest {
+	return WebhookEventsAPIOnBillingPublishingBlockedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnBillingPublishingBlockedExecute(r WebhookEventsAPIOnBillingPublishingBlockedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnBillingPublishingBlocked")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/billing.publishing_blocked"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadBillingPublishingBlocked == nil {
+		return nil, reportError("webhookPayloadBillingPublishingBlocked is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadBillingPublishingBlocked
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnBillingPublishingUnblockedRequest struct {
+	ctx                                      context.Context
+	ApiService                               *WebhookEventsAPIService
+	webhookPayloadBillingPublishingUnblocked *WebhookPayloadBillingPublishingUnblocked
+}
+
+func (r WebhookEventsAPIOnBillingPublishingUnblockedRequest) WebhookPayloadBillingPublishingUnblocked(webhookPayloadBillingPublishingUnblocked WebhookPayloadBillingPublishingUnblocked) WebhookEventsAPIOnBillingPublishingUnblockedRequest {
+	r.webhookPayloadBillingPublishingUnblocked = &webhookPayloadBillingPublishingUnblocked
+	return r
+}
+
+func (r WebhookEventsAPIOnBillingPublishingUnblockedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnBillingPublishingUnblockedExecute(r)
+}
+
+/*
+OnBillingPublishingUnblocked Publishing resumed after payment
+
+The account paused by `billing.publishing_blocked` was paid: the API accepts calls again and scheduled posts publish.
+
+Posts held during the pause publish within minutes, unless their scheduled time is more than 24 hours past: those fail with "Publishing blocked: payment failed" instead of going out late. Posts that failed stay failed; retry them with `POST /v1/posts/{postId}/retry`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnBillingPublishingUnblockedRequest
+*/
+func (a *WebhookEventsAPIService) OnBillingPublishingUnblocked(ctx context.Context) WebhookEventsAPIOnBillingPublishingUnblockedRequest {
+	return WebhookEventsAPIOnBillingPublishingUnblockedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnBillingPublishingUnblockedExecute(r WebhookEventsAPIOnBillingPublishingUnblockedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnBillingPublishingUnblocked")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/billing.publishing_unblocked"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadBillingPublishingUnblocked == nil {
+		return nil, reportError("webhookPayloadBillingPublishingUnblocked is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadBillingPublishingUnblocked
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

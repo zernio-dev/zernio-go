@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,10 @@ type UpdateAdRequest struct {
 	Descriptions []GoogleRsaDescription `json:"descriptions,omitempty"`
 	// Google Search and Display only. Replaces final URLs. Omitted lists stay unchanged. For Performance Max use assetGroup.finalUrl.
 	FinalUrls []string `json:"finalUrls,omitempty"`
+	// Google Search only. First display path shown after the domain in the ad URL. Send an empty string to clear it.
+	Path1 *string `json:"path1,omitempty"`
+	// Google Search only. Second display path, shown after path1. Google requires path1 when path2 is set. Send an empty string to clear it.
+	Path2 *string `json:"path2,omitempty"`
 	// Google Performance Max only. Replaces whole asset roles on the ad's asset group. Returns 422 on any other platform or channel.
 	AssetGroup *GooglePmaxAssetGroupUpdate `json:"assetGroup,omitempty"`
 	// Google Demand Gen only. Returns 422 on any other platform or channel.
@@ -149,6 +153,70 @@ func (o *UpdateAdRequest) HasFinalUrls() bool {
 // SetFinalUrls gets a reference to the given []string and assigns it to the FinalUrls field.
 func (o *UpdateAdRequest) SetFinalUrls(v []string) {
 	o.FinalUrls = v
+}
+
+// GetPath1 returns the Path1 field value if set, zero value otherwise.
+func (o *UpdateAdRequest) GetPath1() string {
+	if o == nil || IsNil(o.Path1) {
+		var ret string
+		return ret
+	}
+	return *o.Path1
+}
+
+// GetPath1Ok returns a tuple with the Path1 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequest) GetPath1Ok() (*string, bool) {
+	if o == nil || IsNil(o.Path1) {
+		return nil, false
+	}
+	return o.Path1, true
+}
+
+// HasPath1 returns a boolean if a field has been set.
+func (o *UpdateAdRequest) HasPath1() bool {
+	if o != nil && !IsNil(o.Path1) {
+		return true
+	}
+
+	return false
+}
+
+// SetPath1 gets a reference to the given string and assigns it to the Path1 field.
+func (o *UpdateAdRequest) SetPath1(v string) {
+	o.Path1 = &v
+}
+
+// GetPath2 returns the Path2 field value if set, zero value otherwise.
+func (o *UpdateAdRequest) GetPath2() string {
+	if o == nil || IsNil(o.Path2) {
+		var ret string
+		return ret
+	}
+	return *o.Path2
+}
+
+// GetPath2Ok returns a tuple with the Path2 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequest) GetPath2Ok() (*string, bool) {
+	if o == nil || IsNil(o.Path2) {
+		return nil, false
+	}
+	return o.Path2, true
+}
+
+// HasPath2 returns a boolean if a field has been set.
+func (o *UpdateAdRequest) HasPath2() bool {
+	if o != nil && !IsNil(o.Path2) {
+		return true
+	}
+
+	return false
+}
+
+// SetPath2 gets a reference to the given string and assigns it to the Path2 field.
+func (o *UpdateAdRequest) SetPath2(v string) {
+	o.Path2 = &v
 }
 
 // GetAssetGroup returns the AssetGroup field value if set, zero value otherwise.
@@ -393,6 +461,12 @@ func (o UpdateAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.FinalUrls) {
 		toSerialize["finalUrls"] = o.FinalUrls
+	}
+	if !IsNil(o.Path1) {
+		toSerialize["path1"] = o.Path1
+	}
+	if !IsNil(o.Path2) {
+		toSerialize["path2"] = o.Path2
 	}
 	if !IsNil(o.AssetGroup) {
 		toSerialize["assetGroup"] = o.AssetGroup

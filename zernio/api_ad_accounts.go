@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.697.0
+API version: 1.761.0
 Contact: support@zernio.com
 */
 
@@ -1405,10 +1405,17 @@ type AdAccountsAPICreateAdNegativeKeywordListRequest struct {
 	ctx                                context.Context
 	ApiService                         *AdAccountsAPIService
 	createAdNegativeKeywordListRequest *CreateAdNegativeKeywordListRequest
+	idempotencyKey                     *string
 }
 
 func (r AdAccountsAPICreateAdNegativeKeywordListRequest) CreateAdNegativeKeywordListRequest(createAdNegativeKeywordListRequest CreateAdNegativeKeywordListRequest) AdAccountsAPICreateAdNegativeKeywordListRequest {
 	r.createAdNegativeKeywordListRequest = &createAdNegativeKeywordListRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdAccountsAPICreateAdNegativeKeywordListRequest) IdempotencyKey(idempotencyKey string) AdAccountsAPICreateAdNegativeKeywordListRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -1474,6 +1481,9 @@ func (a *AdAccountsAPIService) CreateAdNegativeKeywordListExecute(r AdAccountsAP
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.createAdNegativeKeywordListRequest
@@ -2225,17 +2235,24 @@ func (a *AdAccountsAPIService) DeleteAdCommentExecute(r AdAccountsAPIDeleteAdCom
 }
 
 type AdAccountsAPIDeleteAdNegativeKeywordListRequest struct {
-	ctx         context.Context
-	ApiService  *AdAccountsAPIService
-	listId      string
-	accountId   *string
-	adAccountId *string
-	customerId  *string
-	platform    *string
+	ctx            context.Context
+	ApiService     *AdAccountsAPIService
+	listId         string
+	accountId      *string
+	idempotencyKey *string
+	adAccountId    *string
+	customerId     *string
+	platform       *string
 }
 
 func (r AdAccountsAPIDeleteAdNegativeKeywordListRequest) AccountId(accountId string) AdAccountsAPIDeleteAdNegativeKeywordListRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdAccountsAPIDeleteAdNegativeKeywordListRequest) IdempotencyKey(idempotencyKey string) AdAccountsAPIDeleteAdNegativeKeywordListRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -2330,6 +2347,9 @@ func (a *AdAccountsAPIService) DeleteAdNegativeKeywordListExecute(r AdAccountsAP
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
@@ -2783,6 +2803,172 @@ func (a *AdAccountsAPIService) DetachAdLabelExecute(r AdAccountsAPIDetachAdLabel
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAccountsAPIEditAdNegativeKeywordListKeywordsRequest struct {
+	ctx                                      context.Context
+	ApiService                               *AdAccountsAPIService
+	listId                                   string
+	editAdNegativeKeywordListKeywordsRequest *EditAdNegativeKeywordListKeywordsRequest
+	idempotencyKey                           *string
+}
+
+func (r AdAccountsAPIEditAdNegativeKeywordListKeywordsRequest) EditAdNegativeKeywordListKeywordsRequest(editAdNegativeKeywordListKeywordsRequest EditAdNegativeKeywordListKeywordsRequest) AdAccountsAPIEditAdNegativeKeywordListKeywordsRequest {
+	r.editAdNegativeKeywordListKeywordsRequest = &editAdNegativeKeywordListKeywordsRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdAccountsAPIEditAdNegativeKeywordListKeywordsRequest) IdempotencyKey(idempotencyKey string) AdAccountsAPIEditAdNegativeKeywordListKeywordsRequest {
+	r.idempotencyKey = &idempotencyKey
+	return r
+}
+
+func (r AdAccountsAPIEditAdNegativeKeywordListKeywordsRequest) Execute() (*ReplaceAdNegativeKeywordListKeywords200Response, *http.Response, error) {
+	return r.ApiService.EditAdNegativeKeywordListKeywordsExecute(r)
+}
+
+/*
+EditAdNegativeKeywordListKeywords Add or remove negative list keywords
+
+Adds and removes single keywords in a shared Google Ads negative keyword list without resending the full set, affecting every campaign that uses the list.
+
+- `remove` matches by normalized text and match type, and wins over `add` for the same keyword.
+- Keywords already in the list are not added twice; keywords not in it are skipped on remove.
+- Creates and removals are applied atomically in one mutation.
+
+### Quota
+
+Each create or removal consumes one daily operation; the entire batch must fit the remaining quota.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param listId
+	@return AdAccountsAPIEditAdNegativeKeywordListKeywordsRequest
+*/
+func (a *AdAccountsAPIService) EditAdNegativeKeywordListKeywords(ctx context.Context, listId string) AdAccountsAPIEditAdNegativeKeywordListKeywordsRequest {
+	return AdAccountsAPIEditAdNegativeKeywordListKeywordsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		listId:     listId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ReplaceAdNegativeKeywordListKeywords200Response
+func (a *AdAccountsAPIService) EditAdNegativeKeywordListKeywordsExecute(r AdAccountsAPIEditAdNegativeKeywordListKeywordsRequest) (*ReplaceAdNegativeKeywordListKeywords200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReplaceAdNegativeKeywordListKeywords200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.EditAdNegativeKeywordListKeywords")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/accounts/negative-keyword-lists/{listId}/keywords"
+	localVarPath = strings.Replace(localVarPath, "{"+"listId"+"}", url.PathEscape(parameterValueToString(r.listId, "listId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.editAdNegativeKeywordListKeywordsRequest == nil {
+		return localVarReturnValue, nil, reportError("editAdNegativeKeywordListKeywordsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.editAdNegativeKeywordListKeywordsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -10667,10 +10853,17 @@ type AdAccountsAPIReplaceAdNegativeKeywordListKeywordsRequest struct {
 	ApiService                                  *AdAccountsAPIService
 	listId                                      string
 	replaceAdNegativeKeywordListKeywordsRequest *ReplaceAdNegativeKeywordListKeywordsRequest
+	idempotencyKey                              *string
 }
 
 func (r AdAccountsAPIReplaceAdNegativeKeywordListKeywordsRequest) ReplaceAdNegativeKeywordListKeywordsRequest(replaceAdNegativeKeywordListKeywordsRequest ReplaceAdNegativeKeywordListKeywordsRequest) AdAccountsAPIReplaceAdNegativeKeywordListKeywordsRequest {
 	r.replaceAdNegativeKeywordListKeywordsRequest = &replaceAdNegativeKeywordListKeywordsRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdAccountsAPIReplaceAdNegativeKeywordListKeywordsRequest) IdempotencyKey(idempotencyKey string) AdAccountsAPIReplaceAdNegativeKeywordListKeywordsRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -10746,6 +10939,9 @@ func (a *AdAccountsAPIService) ReplaceAdNegativeKeywordListKeywordsExecute(r AdA
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.replaceAdNegativeKeywordListKeywordsRequest
@@ -11900,6 +12096,7 @@ Pass any combination of fields. On Google Ads, only URL tracking fields apply (s
 
 - `spendCap: null` removes the cap.
 - `resetAmountSpent: true` restarts the amount counted against it from zero.
+- Meta allows 10 spend cap changes per ad account per day (`spendCap`, `resetAmountSpent` and `spendCap: null` all count). Past that the call answers 429 `spend_cap_change_limit_reached` at once, and retrying fails until Meta's window resets.
 
 When `name`, `spendCap` or `resetAmountSpent` is passed, the response carries `settings`: the account's finances re-read after the write (same shape as `GET /v1/ads/accounts/finance`). The effective cap can be confirmed in one call.
 
@@ -12399,10 +12596,17 @@ type AdAccountsAPIUpdateAdNegativeKeywordListRequest struct {
 	ApiService                         *AdAccountsAPIService
 	listId                             string
 	updateAdNegativeKeywordListRequest *UpdateAdNegativeKeywordListRequest
+	idempotencyKey                     *string
 }
 
 func (r AdAccountsAPIUpdateAdNegativeKeywordListRequest) UpdateAdNegativeKeywordListRequest(updateAdNegativeKeywordListRequest UpdateAdNegativeKeywordListRequest) AdAccountsAPIUpdateAdNegativeKeywordListRequest {
 	r.updateAdNegativeKeywordListRequest = &updateAdNegativeKeywordListRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r AdAccountsAPIUpdateAdNegativeKeywordListRequest) IdempotencyKey(idempotencyKey string) AdAccountsAPIUpdateAdNegativeKeywordListRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -12471,6 +12675,9 @@ func (a *AdAccountsAPIService) UpdateAdNegativeKeywordListExecute(r AdAccountsAP
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.updateAdNegativeKeywordListRequest
