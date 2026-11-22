@@ -1409,6 +1409,8 @@ model_food_menu_label.go
 model_food_menu_section.go
 model_forward_email_request.go
 model_forwarding_rule.go
+model_forwarding_rule_value_condition.go
+model_forwarding_rule_value_override.go
 model_free_busy_error.go
 model_from_a_shared_template.go
 model_from_a_zernio_template.go

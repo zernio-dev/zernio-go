@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.763.1
+API version: 1.764.0
 Contact: support@zernio.com
 */
 
@@ -13,7 +13,6 @@ package zernio
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the UpdateForwardingRuleRequest type satisfies the MappedNullable interface at compile time
@@ -21,7 +20,11 @@ var _ MappedNullable = &UpdateForwardingRuleRequest{}
 
 // UpdateForwardingRuleRequest struct for UpdateForwardingRuleRequest
 type UpdateForwardingRuleRequest struct {
-	ApiSecret            string `json:"apiSecret"`
+	ApiSecret *string `json:"apiSecret,omitempty"`
+	// Your event name to the name this destination gets, such as `{ \"Lead\": \"Purchase\" }`. Names not in the map are sent unchanged.  A target spelled like a standard event in another case or form (`purchase`, `generate_lead`) is saved as the standard name (`Purchase`, `Lead`), so each platform gets its own standard event.  `eventNames` and `valueCondition` are checked against the name and value as received, before renaming. The event id is never changed, so deduplication still works.
+	EventNameMap         map[string]string                    `json:"eventNameMap,omitempty"`
+	ValueOverride        *ForwardingRuleValueOverride         `json:"valueOverride,omitempty"`
+	ValueCondition       NullableForwardingRuleValueCondition `json:"valueCondition,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -31,9 +34,8 @@ type _UpdateForwardingRuleRequest UpdateForwardingRuleRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpdateForwardingRuleRequest(apiSecret string) *UpdateForwardingRuleRequest {
+func NewUpdateForwardingRuleRequest() *UpdateForwardingRuleRequest {
 	this := UpdateForwardingRuleRequest{}
-	this.ApiSecret = apiSecret
 	return &this
 }
 
@@ -45,28 +47,144 @@ func NewUpdateForwardingRuleRequestWithDefaults() *UpdateForwardingRuleRequest {
 	return &this
 }
 
-// GetApiSecret returns the ApiSecret field value
+// GetApiSecret returns the ApiSecret field value if set, zero value otherwise.
 func (o *UpdateForwardingRuleRequest) GetApiSecret() string {
-	if o == nil {
+	if o == nil || IsNil(o.ApiSecret) {
 		var ret string
 		return ret
 	}
-
-	return o.ApiSecret
+	return *o.ApiSecret
 }
 
-// GetApiSecretOk returns a tuple with the ApiSecret field value
+// GetApiSecretOk returns a tuple with the ApiSecret field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UpdateForwardingRuleRequest) GetApiSecretOk() (*string, bool) {
+	if o == nil || IsNil(o.ApiSecret) {
+		return nil, false
+	}
+	return o.ApiSecret, true
+}
+
+// HasApiSecret returns a boolean if a field has been set.
+func (o *UpdateForwardingRuleRequest) HasApiSecret() bool {
+	if o != nil && !IsNil(o.ApiSecret) {
+		return true
+	}
+
+	return false
+}
+
+// SetApiSecret gets a reference to the given string and assigns it to the ApiSecret field.
+func (o *UpdateForwardingRuleRequest) SetApiSecret(v string) {
+	o.ApiSecret = &v
+}
+
+// GetEventNameMap returns the EventNameMap field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateForwardingRuleRequest) GetEventNameMap() map[string]string {
+	if o == nil {
+		var ret map[string]string
+		return ret
+	}
+	return o.EventNameMap
+}
+
+// GetEventNameMapOk returns a tuple with the EventNameMap field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateForwardingRuleRequest) GetEventNameMapOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.EventNameMap) {
+		return map[string]string{}, false
+	}
+	return o.EventNameMap, true
+}
+
+// HasEventNameMap returns a boolean if a field has been set.
+func (o *UpdateForwardingRuleRequest) HasEventNameMap() bool {
+	if o != nil && !IsNil(o.EventNameMap) {
+		return true
+	}
+
+	return false
+}
+
+// SetEventNameMap gets a reference to the given map[string]string and assigns it to the EventNameMap field.
+func (o *UpdateForwardingRuleRequest) SetEventNameMap(v map[string]string) {
+	o.EventNameMap = v
+}
+
+// GetValueOverride returns the ValueOverride field value if set, zero value otherwise.
+func (o *UpdateForwardingRuleRequest) GetValueOverride() ForwardingRuleValueOverride {
+	if o == nil || IsNil(o.ValueOverride) {
+		var ret ForwardingRuleValueOverride
+		return ret
+	}
+	return *o.ValueOverride
+}
+
+// GetValueOverrideOk returns a tuple with the ValueOverride field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateForwardingRuleRequest) GetValueOverrideOk() (*ForwardingRuleValueOverride, bool) {
+	if o == nil || IsNil(o.ValueOverride) {
+		return nil, false
+	}
+	return o.ValueOverride, true
+}
+
+// HasValueOverride returns a boolean if a field has been set.
+func (o *UpdateForwardingRuleRequest) HasValueOverride() bool {
+	if o != nil && !IsNil(o.ValueOverride) {
+		return true
+	}
+
+	return false
+}
+
+// SetValueOverride gets a reference to the given ForwardingRuleValueOverride and assigns it to the ValueOverride field.
+func (o *UpdateForwardingRuleRequest) SetValueOverride(v ForwardingRuleValueOverride) {
+	o.ValueOverride = &v
+}
+
+// GetValueCondition returns the ValueCondition field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateForwardingRuleRequest) GetValueCondition() ForwardingRuleValueCondition {
+	if o == nil || IsNil(o.ValueCondition.Get()) {
+		var ret ForwardingRuleValueCondition
+		return ret
+	}
+	return *o.ValueCondition.Get()
+}
+
+// GetValueConditionOk returns a tuple with the ValueCondition field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateForwardingRuleRequest) GetValueConditionOk() (*ForwardingRuleValueCondition, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.ApiSecret, true
+	return o.ValueCondition.Get(), o.ValueCondition.IsSet()
 }
 
-// SetApiSecret sets field value
-func (o *UpdateForwardingRuleRequest) SetApiSecret(v string) {
-	o.ApiSecret = v
+// HasValueCondition returns a boolean if a field has been set.
+func (o *UpdateForwardingRuleRequest) HasValueCondition() bool {
+	if o != nil && o.ValueCondition.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetValueCondition gets a reference to the given NullableForwardingRuleValueCondition and assigns it to the ValueCondition field.
+func (o *UpdateForwardingRuleRequest) SetValueCondition(v ForwardingRuleValueCondition) {
+	o.ValueCondition.Set(&v)
+}
+
+// SetValueConditionNil sets the value for ValueCondition to be an explicit nil
+func (o *UpdateForwardingRuleRequest) SetValueConditionNil() {
+	o.ValueCondition.Set(nil)
+}
+
+// UnsetValueCondition ensures that no value is present for ValueCondition, not even an explicit nil
+func (o *UpdateForwardingRuleRequest) UnsetValueCondition() {
+	o.ValueCondition.Unset()
 }
 
 func (o UpdateForwardingRuleRequest) MarshalJSON() ([]byte, error) {
@@ -79,7 +197,18 @@ func (o UpdateForwardingRuleRequest) MarshalJSON() ([]byte, error) {
 
 func (o UpdateForwardingRuleRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["apiSecret"] = o.ApiSecret
+	if !IsNil(o.ApiSecret) {
+		toSerialize["apiSecret"] = o.ApiSecret
+	}
+	if o.EventNameMap != nil {
+		toSerialize["eventNameMap"] = o.EventNameMap
+	}
+	if !IsNil(o.ValueOverride) {
+		toSerialize["valueOverride"] = o.ValueOverride
+	}
+	if o.ValueCondition.IsSet() {
+		toSerialize["valueCondition"] = o.ValueCondition.Get()
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -89,27 +218,6 @@ func (o UpdateForwardingRuleRequest) ToMap() (map[string]interface{}, error) {
 }
 
 func (o *UpdateForwardingRuleRequest) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"apiSecret",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
 	varUpdateForwardingRuleRequest := _UpdateForwardingRuleRequest{}
 
 	err = json.Unmarshal(data, &varUpdateForwardingRuleRequest)
@@ -124,6 +232,9 @@ func (o *UpdateForwardingRuleRequest) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "apiSecret")
+		delete(additionalProperties, "eventNameMap")
+		delete(additionalProperties, "valueOverride")
+		delete(additionalProperties, "valueCondition")
 		o.AdditionalProperties = additionalProperties
 	}
 

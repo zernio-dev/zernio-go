@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.763.1
+API version: 1.764.0
 Contact: support@zernio.com
 */
 
@@ -1611,6 +1611,12 @@ CreateForwardingRule Add a forwarding rule
 Saves where a profile's events go: every event sent to `POST /v1/events` for that profile is then forwarded to this destination.
 
 Pick `destinationId` from `GET /v1/ads/conversions/destinations`. Set `eventNames` to forward only those events, such as only `Purchase`; leave it out to forward every event.
+
+- `eventNameMap` renames events for this destination (send your `Lead` as its `Purchase`).
+- `valueOverride` changes the value it gets (a fixed amount or a percent of the event's value).
+- `valueCondition` forwards only events above, below or equal to a value.
+
+Each applies to this rule only: the event is stored, and sent to other rules, as received.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConversionsAPICreateForwardingRuleRequest
@@ -9196,9 +9202,11 @@ func (r ConversionsAPIUpdateForwardingRuleRequest) Execute() (*CreateForwardingR
 }
 
 /*
-UpdateForwardingRule Change a forwarding rule's API secret
+UpdateForwardingRule Update a forwarding rule
 
-Replaces the `apiSecret` of a rule whose destination needs one, such as a Google Analytics data stream's Measurement Protocol API secret. Before saving, Zernio sends one hit to Google's validation server; Google does not confirm the secret itself, so check GA4 Realtime after the next events.
+Changes the fields you send and keeps the others. Send `eventNameMap: null` to stop renaming, `valueOverride: { "mode": "original" }` to send the event's own value again, and `valueCondition: null` to forward whatever the value.
+
+`apiSecret` replaces the secret of a rule whose destination needs one, such as a Google Analytics data stream's Measurement Protocol API secret. Before saving, Zernio sends one hit to Google's validation server; Google does not confirm the secret itself, so check GA4 Realtime after the next events.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param ruleId The rule `id`.
