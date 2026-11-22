@@ -60,6 +60,15 @@ jobs:
           curl -f --retry 5 --retry-delay 2 --retry-all-errors --max-time 60 -o openapi.yaml https://zernio.com/openapi.json
           echo "Fetched OpenAPI spec"
 
+      # The go generator turns an anyOf member that $refs a map-only schema
+      # (PostMetricRow.breakdowns -> PostMetricBreakdown) into an undefined
+      # ModelMap type. Inlining those refs restores the map[string]float32
+      # member the SDK shipped before the schema was named.
+      - name: Inline map-alias refs inside anyOf
+        run: |
+          jq -f scripts/inline-map-alias-refs.jq openapi.yaml > openapi.inlined.json
+          mv openapi.inlined.json openapi.yaml
+
       - name: Generate SDK
         run: |
           # Version is pinned in openapitools.json.
