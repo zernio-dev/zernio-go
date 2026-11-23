@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.767.0
+API version: 1.768.0
 Contact: support@zernio.com
 */
 
@@ -31,8 +31,10 @@ type ConversionAuditReport struct {
 	// Letter grade for the score.
 	Grade      string                           `json:"grade"`
 	ScoreRange *ConversionAuditReportScoreRange `json:"scoreRange,omitempty"`
-	// Average share of conversions at risk on the networks with no visible server-side path, 0-100.
+	// Share of the conversions across every network that fires which is at risk if the networks without a verified server path run browser-only, 0-100. A verified network counts as 0. Consent checks and tags that never fire are not counted here; `gradeReason` says how they affect the grade.
 	EstimatedSignalLossPct float32 `json:"estimatedSignalLossPct"`
+	// One plain line tying the grade to `estimatedSignalLossPct`: whether the grade comes mostly from the conversions at risk or from what that share leaves out (consent, tags not firing, matching), named. Absent when the score lost no points.
+	GradeReason *string `json:"gradeReason,omitempty"`
 	// One finding per ad platform the scan looked for.
 	Platforms []ConversionAuditReportPlatformsInner `json:"platforms"`
 	// True when every active platform is tracked browser-only.
@@ -248,6 +250,38 @@ func (o *ConversionAuditReport) GetEstimatedSignalLossPctOk() (*float32, bool) {
 // SetEstimatedSignalLossPct sets field value
 func (o *ConversionAuditReport) SetEstimatedSignalLossPct(v float32) {
 	o.EstimatedSignalLossPct = v
+}
+
+// GetGradeReason returns the GradeReason field value if set, zero value otherwise.
+func (o *ConversionAuditReport) GetGradeReason() string {
+	if o == nil || IsNil(o.GradeReason) {
+		var ret string
+		return ret
+	}
+	return *o.GradeReason
+}
+
+// GetGradeReasonOk returns a tuple with the GradeReason field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionAuditReport) GetGradeReasonOk() (*string, bool) {
+	if o == nil || IsNil(o.GradeReason) {
+		return nil, false
+	}
+	return o.GradeReason, true
+}
+
+// HasGradeReason returns a boolean if a field has been set.
+func (o *ConversionAuditReport) HasGradeReason() bool {
+	if o != nil && !IsNil(o.GradeReason) {
+		return true
+	}
+
+	return false
+}
+
+// SetGradeReason gets a reference to the given string and assigns it to the GradeReason field.
+func (o *ConversionAuditReport) SetGradeReason(v string) {
+	o.GradeReason = &v
 }
 
 // GetPlatforms returns the Platforms field value
@@ -790,6 +824,9 @@ func (o ConversionAuditReport) ToMap() (map[string]interface{}, error) {
 		toSerialize["scoreRange"] = o.ScoreRange
 	}
 	toSerialize["estimatedSignalLossPct"] = o.EstimatedSignalLossPct
+	if !IsNil(o.GradeReason) {
+		toSerialize["gradeReason"] = o.GradeReason
+	}
 	toSerialize["platforms"] = o.Platforms
 	toSerialize["browserOnly"] = o.BrowserOnly
 	toSerialize["consentManager"] = o.ConsentManager.Get()
