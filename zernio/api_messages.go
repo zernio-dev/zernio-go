@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.792.0
+API version: 1.792.1
 Contact: support@zernio.com
 */
 
@@ -3266,6 +3266,8 @@ Send an `Idempotency-Key` header to make retries safe (e.g. after a client-side 
 - A key still in flight: returns 409.
 
 Only successful (2xx) responses are stored for replay. If the request throws or returns a non-2xx status, the key is released so the same key can be retried once the problem is fixed. The header therefore protects the "request succeeded but the response was lost" case.
+
+Exception: a WhatsApp send that Meta answers with a server error (5xx, e.g. code 131000) is stored and replayed as its `502`, since the message may have been delivered. Send it again with a new key only if a duplicate is acceptable.
 
 For an ambiguous failure (a 5xx or a network timeout), reconcile before retrying. A failure after the platform already accepted the message also releases the key, so a blind retry could send it twice.
 
