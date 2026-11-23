@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.782.2
+API version: 1.783.0
 Contact: support@zernio.com
 */
 
@@ -741,15 +741,16 @@ type VoiceAPIDeleteSipTrunkRequest struct {
 	id         string
 }
 
-func (r VoiceAPIDeleteSipTrunkRequest) Execute() (*DeleteSmsSenderId200Response, *http.Response, error) {
+func (r VoiceAPIDeleteSipTrunkRequest) Execute() (*DeleteSipTrunk200Response, *http.Response, error) {
 	return r.ApiService.DeleteSipTrunkExecute(r)
 }
 
 /*
 DeleteSipTrunk Delete a SIP trunk
 
-Tears down the trunk and its carrier-side objects. Refused while any
-number is still attached: detach them first.
+Detaches every number still attached to the trunk (their inbound calls
+go back to Zernio calling), then tears down the trunk and its
+carrier-side objects. Its credentials stop working immediately.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id
@@ -765,13 +766,13 @@ func (a *VoiceAPIService) DeleteSipTrunk(ctx context.Context, id string) VoiceAP
 
 // Execute executes the request
 //
-//	@return DeleteSmsSenderId200Response
-func (a *VoiceAPIService) DeleteSipTrunkExecute(r VoiceAPIDeleteSipTrunkRequest) (*DeleteSmsSenderId200Response, *http.Response, error) {
+//	@return DeleteSipTrunk200Response
+func (a *VoiceAPIService) DeleteSipTrunkExecute(r VoiceAPIDeleteSipTrunkRequest) (*DeleteSipTrunk200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *DeleteSmsSenderId200Response
+		localVarReturnValue *DeleteSipTrunk200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VoiceAPIService.DeleteSipTrunk")
