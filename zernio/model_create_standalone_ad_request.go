@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.789.0
+API version: 1.789.1
 Contact: support@zernio.com
 */
 
@@ -242,7 +242,7 @@ type CreateStandaloneAdRequest struct {
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
 	DsaPayor      *string                                 `json:"dsaPayor,omitempty"`
 	BrandIdentity *CreateStandaloneAdRequestBrandIdentity `json:"brandIdentity,omitempty"`
-	// TikTok: the identity the ad runs as, from GET /v1/ads/tiktok-identities. Overrides the connected account's own identity; must be authorized on the advertiser.
+	// The profile the ad runs as.  - TikTok: the identity from GET /v1/ads/tiktok-identities. Overrides the connected account's own identity; must be authorized on the advertiser. - Snapchat: the Public Profile ID (a UUID), required on most organizations. Without it the create answers 422 on identityId and uploads nothing. - To find a Snapchat Public Profile ID: in Snapchat Business Manager, open Public Profiles, select the profile and copy its ID.
 	IdentityId *string `json:"identityId,omitempty"`
 	// TikTok only. Forces the identity attribution on the ad:    - `TT_USER`: the posting account's open_id (real @username     branding). Requires a connected TikTok posting account     on the same profile.   - `CUSTOMIZED_USER`: synthetic Brand Identity (display     name + avatar). Requires a configured Brand Identity     (cached on the `tiktokads` SocialAccount via     `PATCH /v1/connect/tiktok-ads`) or an inline     `brandIdentity` to create one on the fly.  When omitted, defaults to `TT_USER` if a posting account is connected on this profile, else `CUSTOMIZED_USER`. Spark Ads (`POST /v1/ads/boost`) always use `TT_USER` regardless of this field, because TikTok requires the original organic post's author identity for Spark.
 	IdentityType *string `json:"identityType,omitempty"`
