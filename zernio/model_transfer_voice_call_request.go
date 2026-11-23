@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.791.0
+API version: 1.792.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ var _ MappedNullable = &TransferVoiceCallRequest{}
 type TransferVoiceCallRequest struct {
 	// +E164 phone number (tel: prefix optional) or a sip: URI. wss:// is not a valid transfer target.
 	To string `json:"to"`
+	// Caller ID shown on the transfer leg. `business` is your own number. `caller` is the original caller's number, for inbound calls only. The carrier may refuse `caller` on some routes: you get a 422, then retry with `business`.
+	CallerId *string `json:"callerId,omitempty"`
 }
 
 type _TransferVoiceCallRequest TransferVoiceCallRequest
@@ -35,6 +37,8 @@ type _TransferVoiceCallRequest TransferVoiceCallRequest
 func NewTransferVoiceCallRequest(to string) *TransferVoiceCallRequest {
 	this := TransferVoiceCallRequest{}
 	this.To = to
+	var callerId string = "business"
+	this.CallerId = &callerId
 	return &this
 }
 
@@ -43,6 +47,8 @@ func NewTransferVoiceCallRequest(to string) *TransferVoiceCallRequest {
 // but it doesn't guarantee that properties required by API are set
 func NewTransferVoiceCallRequestWithDefaults() *TransferVoiceCallRequest {
 	this := TransferVoiceCallRequest{}
+	var callerId string = "business"
+	this.CallerId = &callerId
 	return &this
 }
 
@@ -70,6 +76,38 @@ func (o *TransferVoiceCallRequest) SetTo(v string) {
 	o.To = v
 }
 
+// GetCallerId returns the CallerId field value if set, zero value otherwise.
+func (o *TransferVoiceCallRequest) GetCallerId() string {
+	if o == nil || IsNil(o.CallerId) {
+		var ret string
+		return ret
+	}
+	return *o.CallerId
+}
+
+// GetCallerIdOk returns a tuple with the CallerId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TransferVoiceCallRequest) GetCallerIdOk() (*string, bool) {
+	if o == nil || IsNil(o.CallerId) {
+		return nil, false
+	}
+	return o.CallerId, true
+}
+
+// HasCallerId returns a boolean if a field has been set.
+func (o *TransferVoiceCallRequest) HasCallerId() bool {
+	if o != nil && !IsNil(o.CallerId) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallerId gets a reference to the given string and assigns it to the CallerId field.
+func (o *TransferVoiceCallRequest) SetCallerId(v string) {
+	o.CallerId = &v
+}
+
 func (o TransferVoiceCallRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -81,6 +119,9 @@ func (o TransferVoiceCallRequest) MarshalJSON() ([]byte, error) {
 func (o TransferVoiceCallRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["to"] = o.To
+	if !IsNil(o.CallerId) {
+		toSerialize["callerId"] = o.CallerId
+	}
 	return toSerialize, nil
 }
 
