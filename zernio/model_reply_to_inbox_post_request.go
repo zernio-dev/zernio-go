@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.797.0
+API version: 1.798.0
 Contact: support@zernio.com
 */
 
@@ -25,9 +25,9 @@ type ReplyToInboxPostRequest struct {
 	AccountId string `json:"accountId"`
 	// Reply text. On LinkedIn, mention with @[https://www.linkedin.com/in/vanity] (resolved to LinkedIn's live name, same rules and errors as post content) or @[Name](urn:li:person|organization:ID); a hand-written name must match LinkedIn's exactly or it renders as plain text.
 	Message string `json:"message"`
-	// (Facebook, Bluesky, LinkedIn and Threads) URL of an image to attach to the comment or reply. The URL must be publicly fetchable. Returns 400 for other platforms.
+	// (Facebook, Bluesky, LinkedIn, Threads and X) URL of an image to attach to the comment or reply. The URL must be publicly fetchable. Returns 400 for other platforms.
 	AttachmentUrl *string `json:"attachmentUrl,omitempty"`
-	// (Facebook and Threads, optional) How `attachmentUrl` is published. Requires `attachmentUrl`; returns 400 on other platforms.  - Omitted: a GIF is detected and posted animated. Detection uses GIPHY links (page, media, embed, sticker; `gph.is` on Threads), `.gif` paths, and an `image/gif` response on Threads. - `image`: forces a still photo. Threads converts a GIF or WebP to JPEG or PNG. - `gif`: forces an animated GIF. - Threads GIFs must come from GIPHY, otherwise the request returns 400 `invalid_field_value`. - Facebook gets a GIPHY link as its direct GIF.
+	// (Facebook, Threads and X, optional) How `attachmentUrl` is published. Requires `attachmentUrl`; returns 400 on other platforms.  - Omitted: a GIF is detected and posted animated. Detection uses GIPHY links (page, media, embed, sticker; `gph.is` on Threads and X), `.gif` paths, and an `image/gif` response on Threads and X. - `image`: forces a still photo. Threads converts a GIF or WebP to JPEG or PNG. - `gif`: forces an animated GIF. - Threads GIFs must come from GIPHY, otherwise the request returns 400 `invalid_field_value`. - Facebook and X get a GIPHY link as their direct GIF. - X takes one image or GIF from any host, and returns 400 for video or HTML URLs. - On X, images over 5 MB are compressed and a GIF over 15 MB posts as a still image. - On X, a GIF always posts animated, even with `attachmentType: image`.
 	AttachmentType *string `json:"attachmentType,omitempty"`
 	// Reply to specific comment (optional)
 	CommentId *string `json:"commentId,omitempty"`
