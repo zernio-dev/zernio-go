@@ -2005,7 +2005,7 @@ CreateStandaloneAd Create standalone ad
 
 Creates a paid ad with your own creative, building the campaign and ad set it needs or adding it to existing ones.
 
-Works across Meta, Google Ads, Pinterest, TikTok, X, LinkedIn, OpenAI Ads (ChatGPT Ads), Reddit Ads, Microsoft Ads and Amazon Ads (Sponsored Products, Sponsored Brands and Sponsored Display, see `AmazonAdsPlatformData`). Per-platform required fields, budget minimums, and video-ad rules are documented on each property below.
+Works across Meta, Google Ads, Pinterest, TikTok, X, LinkedIn, OpenAI Ads (ChatGPT Ads), Reddit Ads, Microsoft Ads, Snapchat Ads and Amazon Ads (Sponsored Products, Sponsored Brands and Sponsored Display, see `AmazonAdsPlatformData`). Per-platform required fields, budget minimums, and video-ad rules are documented on each property below.
 
 ### Request shapes
 
@@ -2148,6 +2148,19 @@ Use the `accountId` of a `microsoftads` connection and its numeric `adAccountId`
 - Bid fields, `negativeKeywords`, `campaignNegativeKeywords`, sitelinks, callouts, structured snippets, `businessName`, `longHeadline` and a `campaignType` other than `search` return 422.
 
 Without `status`, every level is switched on and the campaign spends once Microsoft approves the ad: send `status: PAUSED` to create it paused. A failed step deletes the campaign the call created.
+
+### Snapchat Ads
+
+Use the `accountId` of a `snapchatads` connection signed in through GET /v1/connect/snapchatads/ads and an ad account UUID as `adAccountId`. A connection that only holds a pasted Snap Pixel token returns 422 `ads_connection_required`. Zernio creates a campaign, an ad squad carrying the budget, schedule, bid and targeting, and a Snap Ad.
+
+- `goal`: `awareness`, `engagement`, `video_views`, `traffic` or `conversions` (needs a Snap Pixel, `promotedObject.pixelId` or the ad account's first).
+- `headline` (34 characters) is required; `businessName` is the brand name (32 characters). `body` is ignored: a Snap Ad has no body text.
+- One image (`imageUrl`, JPEG or PNG up to 5 MB) or video (`video.url`, up to 1 GB); no `creatives[]`. `linkUrl` must be https.
+- The budget sits on the ad squad: daily at least 5 in the account currency, lifetime needs `endDate`.
+- `bidStrategy` `LOWEST_COST_WITH_BID_CAP` or `COST_CAP` takes `bidAmount` (at least 0.01).
+- `existingCampaignId` adds a new ad squad and ad to a campaign; `adSetId` adds the ad to an existing ad squad. `validateOnly` returns 501.
+
+Without `status`, every level is switched on: send `status: PAUSED` to create it paused. A failed step deletes what the call created.
 
 ### Idempotency
 

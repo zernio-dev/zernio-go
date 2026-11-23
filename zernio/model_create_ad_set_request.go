@@ -24,7 +24,7 @@ var _ MappedNullable = &CreateAdSetRequest{}
 type CreateAdSetRequest struct {
 	// Zernio SocialAccount id owning the Google Ads or Reddit Ads connection.
 	AccountId string `json:"accountId"`
-	// \"google\" and \"reddit\" are implemented; every other value returns 501.
+	// \"google\", \"reddit\" and \"snapchat\" are implemented; every other value returns 501.
 	Platform string `json:"platform"`
 	// Platform campaign ID the ad group is created under (numeric on Google).
 	CampaignId string  `json:"campaignId"`
