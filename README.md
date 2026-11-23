@@ -637,6 +637,7 @@ func main() {
 | `client.AutomationsAPI.ListAutomationActions(ctx)` | List automation actions |
 | `client.AutomationsAPI.ListAutomationApprovals(ctx)` | List an automation's approval requests |
 | `client.AutomationsAPI.ListAutomationChecks(ctx)` | List an automation's checks |
+| `client.AutomationsAPI.ListAutomationRuns(ctx)` | List an automation's runs |
 | `client.AutomationsAPI.ListAutomationTemplates(ctx)` | List automation templates |
 | `client.AutomationsAPI.ListAutomations(ctx)` | List automations |
 | `client.AutomationsAPI.CreateAutomation(ctx)` | Create an automation |
@@ -645,6 +646,7 @@ func main() {
 | `client.AutomationsAPI.GetAutomationApproval(ctx)` | Get an approval request |
 | `client.AutomationsAPI.GetAutomationCatalog(ctx)` | Get the automations catalog |
 | `client.AutomationsAPI.GetAutomationControls(ctx)` | Get automation controls |
+| `client.AutomationsAPI.GetAutomationRun(ctx)` | Get one run of an automation |
 | `client.AutomationsAPI.GetAutomationTemplate(ctx)` | Get an automation template |
 | `client.AutomationsAPI.GetSharedAutomationTemplate(ctx)` | Get a shared automation template |
 | `client.AutomationsAPI.GetZernioAutomationTemplate(ctx)` | Get a Zernio automation template |
