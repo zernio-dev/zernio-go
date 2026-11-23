@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.796.0
+API version: 1.796.1
 Contact: support@zernio.com
 */
 
@@ -35,11 +35,15 @@ type ListBroadcasts200ResponseBroadcastsInner struct {
 	StartedAt      *time.Time `json:"startedAt,omitempty"`
 	CompletedAt    *time.Time `json:"completedAt,omitempty"`
 	RecipientCount *int32     `json:"recipientCount,omitempty"`
-	SentCount      *int32     `json:"sentCount,omitempty"`
-	DeliveredCount *int32     `json:"deliveredCount,omitempty"`
-	ReadCount      *int32     `json:"readCount,omitempty"`
-	FailedCount    *int32     `json:"failedCount,omitempty"`
-	CreatedAt      *time.Time `json:"createdAt,omitempty"`
+	// Recipients whose latest status is `sent`: the platform accepted the message and has not confirmed delivery yet. Each recipient counts once, under its latest status, so everyone the broadcast went out to is sentCount + deliveredCount + readCount.
+	SentCount *int32 `json:"sentCount,omitempty"`
+	// Recipients whose latest status is `delivered`, not read yet. Everyone it was delivered to is deliveredCount + readCount.
+	DeliveredCount *int32 `json:"deliveredCount,omitempty"`
+	// Recipients whose latest status is `read`.
+	ReadCount *int32 `json:"readCount,omitempty"`
+	// Recipients whose send failed.
+	FailedCount *int32     `json:"failedCount,omitempty"`
+	CreatedAt   *time.Time `json:"createdAt,omitempty"`
 }
 
 // NewListBroadcasts200ResponseBroadcastsInner instantiates a new ListBroadcasts200ResponseBroadcastsInner object
