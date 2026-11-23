@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.794.0
+API version: 1.795.0
 Contact: support@zernio.com
 */
 
@@ -20,13 +20,13 @@ var _ MappedNullable = &GetAccountHealth200ResponsePlatformConnectionMessagingBl
 
 // GetAccountHealth200ResponsePlatformConnectionMessagingBlockersInner struct for GetAccountHealth200ResponsePlatformConnectionMessagingBlockersInner
 type GetAccountHealth200ResponsePlatformConnectionMessagingBlockersInner struct {
-	// Meta entity the error is on (for example WABA, BUSINESS)
+	// Meta entity the reason is on (for example PHONE_NUMBER, WABA, BUSINESS)
 	EntityType NullableString `json:"entityType,omitempty"`
 	// That entity's state (LIMITED or BLOCKED)
 	CanSendMessage *string `json:"canSendMessage,omitempty"`
-	// Meta error code
+	// Meta error code. `null` for an `additional_info` line.
 	Code NullableInt32 `json:"code,omitempty"`
-	// Meta's error description
+	// Meta's error description, or the `additional_info` line as Meta wrote it
 	Description *string `json:"description,omitempty"`
 	// Meta's suggested fix, when it gives one
 	PossibleSolution NullableString `json:"possibleSolution,omitempty"`

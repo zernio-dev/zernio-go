@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.794.0
+API version: 1.795.0
 Contact: support@zernio.com
 */
 
@@ -32,7 +32,7 @@ type GetAccountHealth200ResponsePlatformConnection struct {
 	InboundWebhookSubscribed NullableBool `json:"inboundWebhookSubscribed,omitempty"`
 	// Top-level `can_send_message` from the phone number's Meta health_status: `AVAILABLE`, `LIMITED` or `BLOCKED`. `BLOCKED` adds an issue and raises `status` to at least `warning`. `null` when Meta did not report it.
 	CanSendMessage NullableString `json:"canSendMessage,omitempty"`
-	// The health_status entities that are not `AVAILABLE`, one item per Meta error, with calling-only signals (138024, 138025) removed. `null` when the read failed.
+	// The reasons on health_status entities that are not `AVAILABLE`. `null` when the read failed.  - One item per Meta error, with calling-only signals (138024, 138025) removed. - A `LIMITED` entity also gets one item per line of its `additional_info`, where Meta writes most reasons for a limit (for example a quality warning). These have `code` null.
 	MessagingBlockers []GetAccountHealth200ResponsePlatformConnectionMessagingBlockersInner `json:"messagingBlockers,omitempty"`
 }
 
