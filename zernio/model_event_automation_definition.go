@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.799.0
+API version: 1.800.0
 Contact: support@zernio.com
 */
 
@@ -20,15 +20,15 @@ import (
 // checks if the EventAutomationDefinition type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &EventAutomationDefinition{}
 
-// EventAutomationDefinition Runs when something happens in Zernio, such as a post failing, and notifies. Unknown fields are refused.
+// EventAutomationDefinition Runs when something happens in Zernio, such as a post failing or a call missed: it notifies, messages the person, starts a flow, and more. Unknown fields are refused.
 type EventAutomationDefinition struct {
 	Name string `json:"name"`
 	// A new event automation is on unless `paused`.
 	Status  *string                `json:"status,omitempty"`
 	Trigger AutomationEventTrigger `json:"trigger"`
 	// May be empty: an automation with no steps only records each event it matches as a check with outcome `triggered` and no action. `limits.cooldown` and `limits.maxChangesPerDay` count actions, so they do nothing for it.
-	Steps  []AutomationNotifyStep `json:"steps"`
-	Limits *AutomationEventLimits `json:"limits,omitempty"`
+	Steps  []EventAutomationDefinitionStepsInner `json:"steps"`
+	Limits *AutomationEventLimits                `json:"limits,omitempty"`
 }
 
 type _EventAutomationDefinition EventAutomationDefinition
@@ -37,7 +37,7 @@ type _EventAutomationDefinition EventAutomationDefinition
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEventAutomationDefinition(name string, trigger AutomationEventTrigger, steps []AutomationNotifyStep) *EventAutomationDefinition {
+func NewEventAutomationDefinition(name string, trigger AutomationEventTrigger, steps []EventAutomationDefinitionStepsInner) *EventAutomationDefinition {
 	this := EventAutomationDefinition{}
 	this.Name = name
 	var status string = "active"
@@ -138,9 +138,9 @@ func (o *EventAutomationDefinition) SetTrigger(v AutomationEventTrigger) {
 }
 
 // GetSteps returns the Steps field value
-func (o *EventAutomationDefinition) GetSteps() []AutomationNotifyStep {
+func (o *EventAutomationDefinition) GetSteps() []EventAutomationDefinitionStepsInner {
 	if o == nil {
-		var ret []AutomationNotifyStep
+		var ret []EventAutomationDefinitionStepsInner
 		return ret
 	}
 
@@ -149,7 +149,7 @@ func (o *EventAutomationDefinition) GetSteps() []AutomationNotifyStep {
 
 // GetStepsOk returns a tuple with the Steps field value
 // and a boolean to check if the value has been set.
-func (o *EventAutomationDefinition) GetStepsOk() ([]AutomationNotifyStep, bool) {
+func (o *EventAutomationDefinition) GetStepsOk() ([]EventAutomationDefinitionStepsInner, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -157,7 +157,7 @@ func (o *EventAutomationDefinition) GetStepsOk() ([]AutomationNotifyStep, bool) 
 }
 
 // SetSteps sets field value
-func (o *EventAutomationDefinition) SetSteps(v []AutomationNotifyStep) {
+func (o *EventAutomationDefinition) SetSteps(v []EventAutomationDefinitionStepsInner) {
 	o.Steps = v
 }
 

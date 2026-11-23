@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.799.0
+API version: 1.800.0
 Contact: support@zernio.com
 */
 
@@ -28,10 +28,10 @@ type AutomationOneOf1 struct {
 	Status  string                 `json:"status"`
 	Trigger AutomationEventTrigger `json:"trigger"`
 	// May be empty: an automation with no steps only records each event it matches as a check with outcome `triggered` and no action. `limits.cooldown` and `limits.maxChangesPerDay` count actions, so they do nothing for it.
-	Steps  []AutomationNotifyStep `json:"steps"`
-	Limits *AutomationEventLimits `json:"limits,omitempty"`
-	Id     string                 `json:"id"`
-	Kind   string                 `json:"kind"`
+	Steps  []EventAutomationDefinitionStepsInner `json:"steps"`
+	Limits *AutomationEventLimits                `json:"limits,omitempty"`
+	Id     string                                `json:"id"`
+	Kind   string                                `json:"kind"`
 	// Send it back as `If-Match` when editing, so an edit made after someone else saved is refused.
 	Version string `json:"version"`
 	// Null until an ad rule first checks. Always null for every other kind; the checks of event and scheduled automations list when they ran.
@@ -49,7 +49,7 @@ type _AutomationOneOf1 AutomationOneOf1
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAutomationOneOf1(name string, status string, trigger AutomationEventTrigger, steps []AutomationNotifyStep, id string, kind string, version string, lastCheckAt time.Time, nextCheckAt time.Time, createdAt time.Time, updatedAt time.Time) *AutomationOneOf1 {
+func NewAutomationOneOf1(name string, status string, trigger AutomationEventTrigger, steps []EventAutomationDefinitionStepsInner, id string, kind string, version string, lastCheckAt time.Time, nextCheckAt time.Time, createdAt time.Time, updatedAt time.Time) *AutomationOneOf1 {
 	this := AutomationOneOf1{}
 	this.Name = name
 	this.Status = status
@@ -146,9 +146,9 @@ func (o *AutomationOneOf1) SetTrigger(v AutomationEventTrigger) {
 }
 
 // GetSteps returns the Steps field value
-func (o *AutomationOneOf1) GetSteps() []AutomationNotifyStep {
+func (o *AutomationOneOf1) GetSteps() []EventAutomationDefinitionStepsInner {
 	if o == nil {
-		var ret []AutomationNotifyStep
+		var ret []EventAutomationDefinitionStepsInner
 		return ret
 	}
 
@@ -157,7 +157,7 @@ func (o *AutomationOneOf1) GetSteps() []AutomationNotifyStep {
 
 // GetStepsOk returns a tuple with the Steps field value
 // and a boolean to check if the value has been set.
-func (o *AutomationOneOf1) GetStepsOk() ([]AutomationNotifyStep, bool) {
+func (o *AutomationOneOf1) GetStepsOk() ([]EventAutomationDefinitionStepsInner, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -165,7 +165,7 @@ func (o *AutomationOneOf1) GetStepsOk() ([]AutomationNotifyStep, bool) {
 }
 
 // SetSteps sets field value
-func (o *AutomationOneOf1) SetSteps(v []AutomationNotifyStep) {
+func (o *AutomationOneOf1) SetSteps(v []EventAutomationDefinitionStepsInner) {
 	o.Steps = v
 }
 

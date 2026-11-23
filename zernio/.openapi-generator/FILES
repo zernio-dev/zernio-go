@@ -395,6 +395,12 @@ model_automation_check.go
 model_automation_condition_result.go
 model_automation_controls.go
 model_automation_definition.go
+model_automation_event_action_step.go
+model_automation_event_action_step_one_of.go
+model_automation_event_action_step_one_of_1.go
+model_automation_event_action_step_one_of_2.go
+model_automation_event_action_step_one_of_3.go
+model_automation_event_action_step_one_of_4.go
 model_automation_event_limits.go
 model_automation_event_trigger.go
 model_automation_fact_condition.go
@@ -1419,6 +1425,7 @@ model_estimate_ad_reach_request.go
 model_event_automation_check.go
 model_event_automation_check_subject.go
 model_event_automation_definition.go
+model_event_automation_definition_steps_inner.go
 model_event_consent.go
 model_event_correction.go
 model_event_destination.go
