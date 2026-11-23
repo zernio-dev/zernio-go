@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.766.0
+API version: 1.767.0
 Contact: support@zernio.com
 */
 
@@ -43,6 +43,8 @@ type ConversionAuditReport struct {
 	ActivePlatformCount int32 `json:"activePlatformCount"`
 	// `full` = pixels were visible, `limited` = tags load dynamically so not all are visible, `none` = nothing found.
 	Visibility string `json:"visibility"`
+	// Always `true` when present: set when the site served our page fetch a bot wall and showed no pixel. The report is a partial, source-only read, so `score` and `grade` are placeholders, not a verdict, and `networks` is empty.
+	ScannerBlocked *bool `json:"scannerBlocked,omitempty"`
 	// Site tech recognized (Shopify, WooCommerce, ...).
 	SiteSignals []string `json:"siteSignals"`
 	// `rendered` when a headless browser ran the page and its requests were checked, `static` for the page source only.
@@ -368,6 +370,38 @@ func (o *ConversionAuditReport) GetVisibilityOk() (*string, bool) {
 // SetVisibility sets field value
 func (o *ConversionAuditReport) SetVisibility(v string) {
 	o.Visibility = v
+}
+
+// GetScannerBlocked returns the ScannerBlocked field value if set, zero value otherwise.
+func (o *ConversionAuditReport) GetScannerBlocked() bool {
+	if o == nil || IsNil(o.ScannerBlocked) {
+		var ret bool
+		return ret
+	}
+	return *o.ScannerBlocked
+}
+
+// GetScannerBlockedOk returns a tuple with the ScannerBlocked field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionAuditReport) GetScannerBlockedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ScannerBlocked) {
+		return nil, false
+	}
+	return o.ScannerBlocked, true
+}
+
+// HasScannerBlocked returns a boolean if a field has been set.
+func (o *ConversionAuditReport) HasScannerBlocked() bool {
+	if o != nil && !IsNil(o.ScannerBlocked) {
+		return true
+	}
+
+	return false
+}
+
+// SetScannerBlocked gets a reference to the given bool and assigns it to the ScannerBlocked field.
+func (o *ConversionAuditReport) SetScannerBlocked(v bool) {
+	o.ScannerBlocked = &v
 }
 
 // GetSiteSignals returns the SiteSignals field value
@@ -761,6 +795,9 @@ func (o ConversionAuditReport) ToMap() (map[string]interface{}, error) {
 	toSerialize["consentManager"] = o.ConsentManager.Get()
 	toSerialize["activePlatformCount"] = o.ActivePlatformCount
 	toSerialize["visibility"] = o.Visibility
+	if !IsNil(o.ScannerBlocked) {
+		toSerialize["scannerBlocked"] = o.ScannerBlocked
+	}
 	toSerialize["siteSignals"] = o.SiteSignals
 	if !IsNil(o.ScanMode) {
 		toSerialize["scanMode"] = o.ScanMode
