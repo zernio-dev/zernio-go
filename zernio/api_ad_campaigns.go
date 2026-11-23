@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.770.0
+API version: 1.772.0
 Contact: support@zernio.com
 */
 
@@ -57,6 +57,10 @@ without touching the keywords already there (unlike the whole-set diff on
 `PUT /v1/ads/{adId}`, `keywords`/`negativeKeywords` in `platformSpecificData`,
 which replaces the set). Set `negative: true` to add ad-group-level negatives
 instead of positive keywords.
+
+### Amazon
+
+On an Amazon Ads connection the keywords go to a Sponsored Products or Sponsored Brands ad group (a Sponsored Display ad group returns 422). Positives bid the ad group default. Negatives match exact or phrase: a negative sent without `matchType` is exact, and a broad negative returns 422.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIAddAdKeywordsRequest
@@ -1132,6 +1136,10 @@ Created `PAUSED` (TikTok `DISABLE`) unless `status: ACTIVE` where the platform s
 - `startDate` / `endDate` set the campaign's schedule and need that campaign budget (400 without one).
 - Without a budget, each ad set carries its own budget and dates.
 
+### Amazon Ads
+
+`platformSpecificData` (required) names the ad product and its campaign settings (`AmazonAdsCampaignPlatformData`), and the campaign needs a budget. `goal` must fit the product. `startDate` / `endDate` are calendar days in the profile time zone. Ad groups join it with `existingCampaignId` on POST /v1/ads/create.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPICreateAdCampaignRequest
 */
@@ -1995,7 +2003,7 @@ CreateStandaloneAd Create standalone ad
 
 Creates a paid ad with your own creative, building the campaign and ad set it needs or adding it to existing ones.
 
-Works across Meta, Google Ads, Pinterest, TikTok, X, LinkedIn, OpenAI Ads (ChatGPT Ads), Reddit Ads and Microsoft Ads. Per-platform required fields, budget minimums, and video-ad rules are documented on each property below.
+Works across Meta, Google Ads, Pinterest, TikTok, X, LinkedIn, OpenAI Ads (ChatGPT Ads), Reddit Ads, Microsoft Ads and Amazon Ads (Sponsored Products, Sponsored Brands and Sponsored Display, see `AmazonAdsPlatformData`). Per-platform required fields, budget minimums, and video-ad rules are documented on each property below.
 
 ### Request shapes
 
@@ -2318,6 +2326,8 @@ The ad is deleted on the platform and marked as cancelled in the database. It is
 - OpenAI Ads has no delete API: the ad is archived instead (a terminal state, the closest equivalent).
 - Reddit Ads has no delete either: the ad is archived (`configured_status` ARCHIVED).
 
+- Amazon Ads archives the ad (state ARCHIVED). Archiving is permanent.
+
 To delete a whole campaign on purpose use `DELETE /v1/ads/campaigns/{campaignId}`.
 
 ### Parents
@@ -2494,6 +2504,8 @@ Only the campaign itself is sent to the platform:
 
 - Meta, Google, TikTok, LinkedIn and X delete it.
 - OpenAI, Reddit and Pinterest have no campaign delete and archive it instead (see below).
+
+- Amazon archives the campaign: archiving is Amazon's delete, it is permanent, and the campaign stays in reports.
 
 Locally, all Ad documents for this campaign are marked `status: cancelled`.
 
@@ -2699,7 +2711,7 @@ Locally, every Ad document under the ad set is marked
 `status: cancelled`.
 
 Delete is soft on platforms that have no hard delete: LinkedIn moves the
-campaign to `PENDING_DELETION`, Pinterest and Reddit archive the ad group, and X
+campaign to `PENDING_DELETION`, Pinterest, Reddit and Amazon archive the ad group (permanent on Amazon), and X
 soft-flags the line item. Google removes the ad group. All remain readable
 for reporting.
 
@@ -3822,8 +3834,12 @@ Adds and removes single campaign-level negative keywords on a Google campaign wi
 - Keywords already on the campaign are not added twice; keywords not on it are skipped on remove.
 - Changes go to Google in `create`/`remove` mutates of up to 5,000 operations, like the full replace.
 
-The platform is always discovered from the campaign itself; a non-Google
-campaign returns 501 rather than 404, whether or not `platform` was sent.
+The platform is always discovered from the campaign itself; a campaign on another
+platform than Google or Amazon returns 501 rather than 404, whether or not `platform` was sent.
+
+### Amazon
+
+On an Amazon Sponsored Products campaign `add` creates the missing negatives and `remove` archives the matching ones (text and match type, case-insensitive). A negative without `matchType` is exact; broad returns 422.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Platform campaign ID
@@ -4951,11 +4967,11 @@ func (r AdCampaignsAPIGetAdSetTargetingRequest) Execute() (*GetAdSetTargeting200
 }
 
 /*
-GetAdSetTargeting Read a Reddit ad group's targeting and schedule
+GetAdSetTargeting Read an ad group's targeting and schedule
 
 Shows a Reddit ad group's live targeting and schedule in the same shape PUT /v1/ads/ad-sets/{adSetId} takes, so you can prefill an editor.
 
-It is read live from Reddit on every call. Reddit only; every other platform returns 501.
+It is read live from the platform on every call. Reddit and Amazon only; every other platform returns 501.
 
 ### How fields come back
 
@@ -4963,6 +4979,10 @@ It is read live from Reddit on every call. Reddit only; every other platform ret
 - Excluded DMAs are listed under `excludedLocations.regions`, since excluded locations have no metro list.
 - Languages come back as lowercase ISO 639-1 codes.
 - Targeting Zernio cannot edit (devices, platforms, carriers, automated expansion) is left out and kept on every edit.
+
+### Amazon
+
+On Amazon it reads the ad group's live targets and negative targets in Amazon's own expression shape: `targeting` is `{ product, targets, negativeTargets }`, each target with `targetId`, `state`, `expressionType`, `expression` and `bid`. Keywords are read through `GET /v1/ads/keywords`. Editing Amazon targets is not available yet.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Reddit ad group ID
@@ -7375,6 +7395,10 @@ Keywords are refreshed about once a day per Google Ads customer (the keyword swe
 - A customer synced for the first time is populated on the next discovery pass rather than waiting for its daily slot.
 - Connecting an account or triggering a manual sync refreshes it immediately.
 
+### Amazon
+
+Amazon Sponsored Products and Sponsored Brands keywords and ad group negatives are listed too (`platform: amazon`), refreshed about every six hours with their trailing 30-day metrics from the targeting reports. `resourceName` is `{adGroupId}~{keywordId}` there. Campaign-level negatives are under `GET /v1/ads/campaigns/{campaignId}/negative-keywords`.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIListAdKeywordsRequest
 */
@@ -9121,7 +9145,11 @@ The response carries `cachedAt` and `stale`, set when a quota-exhausted call fal
 
 ### Platform
 
-The platform is always discovered from the campaign itself. A non-Google campaign returns 501 rather than 404, whether or not `platform` was passed.
+The platform is always discovered from the campaign itself. A campaign on another platform than Google or Amazon returns 501 rather than 404, whether or not `platform` was passed.
+
+### Amazon
+
+Amazon Sponsored Products campaigns hold campaign-level negative keywords (exact or phrase), read live with no cache (`cachedAt` null). Sponsored Brands and Sponsored Display campaigns have none and return 422.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Platform campaign ID
@@ -10355,6 +10383,10 @@ Removes a single keyword or negative keyword from a Google Search ad group.
 
 Removes one keyword criterion (positive or negative) from its ad group (M.140).
 
+### Amazon
+
+On Amazon the keyword is archived, which is Amazon's delete: it stays in reports and can never be enabled again.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param keywordId Zernio keyword ID (`id`), or Google's native `{adSetId}~{platformCriterionId}` (the tail of `resourceName`, e.g. 1234567890~987654321). A bare criterion id is rejected because it is only unique within its ad group.
 	@return AdCampaignsAPIRemoveAdKeywordRequest
@@ -11095,8 +11127,12 @@ in `create`/`remove` mutates of up to 5,000 operations.
 - Send the same request again to finish a failed replace.
 - Send an empty array to clear every campaign negative.
 
-The platform is always discovered from the campaign itself; a non-Google
-campaign returns 501 rather than 404, whether or not `platform` was sent.
+The platform is always discovered from the campaign itself; a campaign on another
+platform than Google or Amazon returns 501 rather than 404, whether or not `platform` was sent.
+
+### Amazon
+
+On an Amazon Sponsored Products campaign the missing negatives are created and the rest archived. A negative without `matchType` is exact; broad returns 422.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Platform campaign ID
@@ -11670,8 +11706,8 @@ Send at least one of `budget`, `bidStrategy`, `portfolioBidStrategyId`, `targetI
 | `networkSettings` | 400 | Search only | 400 |
 | `trackingUrlTemplate`, `finalUrlSuffix` | 400 | Yes | 400 |
 | `sharedBudgetId` | 400 | Yes | 400 |
-| `budget` (CBO; ABO returns 409) | Yes | Daily only | OpenAI and Reddit: daily or lifetime; others 501 |
-| `name` | Yes | 501 | Reddit: Yes; others 501 |
+| `budget` (CBO; ABO returns 409) | Yes | Daily only | OpenAI and Reddit: daily or lifetime; Amazon: daily, or the lifetime type a Sponsored Brands campaign was created with; others 501 |
+| `name` | Yes | 501 | Reddit and Amazon: Yes; others 501 |
 | `platformSpecificData.spendCap` | Yes | 400 | 400 |
 | `accountId` (empty campaigns) | Yes | - | - |
 
@@ -12200,6 +12236,10 @@ Changes `ad_group_criterion.status` (M.140) and `ad_group_criterion.cpc_bid_micr
 `cpcBid` is in the ad account currency and takes effect only under Manual CPC bidding. A keyword with no bid of its own reads back `cpcBid: null` and uses its ad group bid.
 
 Negative keywords have no status or bid on Google and cannot be paused, enabled or given a bid.
+
+### Amazon
+
+Amazon keywords take `status` and `cpcBid`. Amazon negative keywords take `status` only (a `cpcBid` on one returns 422), and a Sponsored Brands negative cannot be paused (422).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param keywordId Zernio keyword ID (`id`), or Google's native `{adSetId}~{platformCriterionId}` (the tail of `resourceName`, e.g. 1234567890~987654321). A bare criterion id is rejected because it is only unique within its ad group.

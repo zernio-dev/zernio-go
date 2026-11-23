@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.770.0
+API version: 1.772.0
 Contact: support@zernio.com
 */
 
@@ -5586,6 +5586,7 @@ type ConnectAPIGetAmazonAdsConnectUrlRequest struct {
 	profileId          *string
 	redirectUrl        *string
 	reconnectAccountId *string
+	region             *string
 }
 
 // Your Zernio profile ID (get from /v1/profiles).
@@ -5606,6 +5607,12 @@ func (r ConnectAPIGetAmazonAdsConnectUrlRequest) ReconnectAccountId(reconnectAcc
 	return r
 }
 
+// Amazon region whose consent page the user signs in on: NA (amazon.com), EU (Europe, Middle East, India) or FE (Japan, Australia, Singapore).
+func (r ConnectAPIGetAmazonAdsConnectUrlRequest) Region(region string) ConnectAPIGetAmazonAdsConnectUrlRequest {
+	r.region = &region
+	return r
+}
+
 func (r ConnectAPIGetAmazonAdsConnectUrlRequest) Execute() (*GetGoogleAnalyticsConnectUrl200Response, *http.Response, error) {
 	return r.ApiService.GetAmazonAdsConnectUrlExecute(r)
 }
@@ -5613,7 +5620,11 @@ func (r ConnectAPIGetAmazonAdsConnectUrlRequest) Execute() (*GetGoogleAnalyticsC
 /*
 GetAmazonAdsConnectUrl Get Amazon Ads OAuth connect URL
 
-Starts Login with Amazon for Amazon Ads (scope `advertising::campaign_management`). The Amazon login becomes an account with platform `amazonads`; every advertiser profile it reaches, in the NA, EU and FE regions, is a conversions destination (`GET /v1/ads/conversions/destinations`).
+Starts Login with Amazon for Amazon Ads (scope `advertising::campaign_management`). The Amazon login becomes an account with platform `amazonads`.
+
+Every seller and vendor advertiser profile it reaches, in the NA, EU and FE regions, is an ad account (`GET /v1/ads/accounts`) and a conversions destination (`GET /v1/ads/conversions/destinations`).
+
+Pass `region` so the user signs in on their own region's Amazon consent page; the connection still reaches the profiles of every region.
 
 Errors on the redirect: `amazonads_no_profiles` (the login reaches no advertiser), `amazonads_no_refresh_token`.
 
@@ -5658,6 +5669,13 @@ func (a *ConnectAPIService) GetAmazonAdsConnectUrlExecute(r ConnectAPIGetAmazonA
 	}
 	if r.reconnectAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "reconnectAccountId", r.reconnectAccountId, "form", "")
+	}
+	if r.region != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "region", r.region, "form", "")
+	} else {
+		var defaultValue string = "NA"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "region", defaultValue, "form", "")
+		r.region = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

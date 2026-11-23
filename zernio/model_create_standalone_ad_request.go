@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.770.0
+API version: 1.772.0
 Contact: support@zernio.com
 */
 
@@ -192,11 +192,11 @@ type CreateStandaloneAdRequest struct {
 	AssetGroup            *GooglePmaxAssetGroupInput               `json:"assetGroup,omitempty"`
 	MerchantCenter        *CreateStandaloneAdRequestMerchantCenter `json:"merchantCenter,omitempty"`
 	DemandGen             *GoogleDemandGenInput                    `json:"demandGen,omitempty"`
-	// Google Search only. Keywords on the new ad group; entries are strings (BROAD) or { text, matchType }. Editable later via PUT /v1/ads/{adId} targeting.keywords.
+	// Google Search, Microsoft Ads, and Amazon Sponsored Products (MANUAL campaigns) and Sponsored Brands. Keywords on the new ad group; entries are strings (BROAD) or { text, matchType }. Editable later via PUT /v1/ads/{adId} targeting.keywords.
 	Keywords []KeywordEntry `json:"keywords,omitempty"`
-	// Google Search only; other platforms return 400. Ad-group-level negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
+	// Google Search and Amazon Sponsored Products and Sponsored Brands (EXACT or PHRASE only); other platforms return 400. Ad-group-level negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
 	NegativeKeywords []KeywordEntry `json:"negativeKeywords,omitempty"`
-	// Google Search only; other platforms return 400. Campaign-level negative keywords (campaign_criterion.negative), created alongside the ad group. Editable later via PUT /v1/ads/campaigns/{campaignId}/negative-keywords.
+	// Google Search and Amazon Sponsored Products; other platforms return 400. Campaign-level negative keywords (campaign_criterion.negative on Google), created alongside the ad group. Editable later via PUT /v1/ads/campaigns/{campaignId}/negative-keywords.
 	CampaignNegativeKeywords []KeywordEntry `json:"campaignNegativeKeywords,omitempty"`
 	// Google Search RSA only. Extra text assets, as strings or objects with text and optional pinnedField. String input remains supported.  - The effective create lists, including primary text and after deduplication, must contain 3-15 headlines and 2-4 descriptions. Excess entries return 400. - Each headline is at most 30 characters (Google's limit). A longer one returns 400 naming the field and index (e.g. `additionalHeadlines[2]`); it is never truncated. - On Search the same limit applies to `headline` and `longHeadline` (30) and to `body` (90).
 	AdditionalHeadlines []CreateStandaloneAdRequestAdditionalHeadlinesInner `json:"additionalHeadlines,omitempty"`
@@ -233,8 +233,8 @@ type CreateStandaloneAdRequest struct {
 	// Meta only (facebook, instagram; other platforms return 400). Value rule set to attach to the new ad set, from `/v1/ads/value-rule-sets`. Attachment is driven by this id, so `valueRulesApplied` is optional alongside it.  Rejected with 400 in `adSetId` attach mode: that shape inherits the existing ad set's attachment, so the field would be silently ignored. Use `PUT /v1/ads/ad-sets/{adSetId}` there instead.  Ignored (stripped before the ad-set create) when `buyingType` is `RESERVED`: value rules only apply to auction ad sets on `LOWEST_COST_WITHOUT_CAP` or `COST_CAP`, and a Reach & Frequency reservation has no auction bid strategy.  Read back with `GET /v1/ads/ad-sets/{adSetId}?fields=value_rule_set_id`; the attachment is not mirrored onto Zernio's ad documents.
 	ValueRuleSetId *string `json:"valueRuleSetId,omitempty" validate:"regexp=^\\\\d+$"`
 	// Meta only (facebook, instagram; other platforms return 400). Optional when attaching, and requires `valueRuleSetId`. `false` is REJECTED here with 400: a newly created ad set has nothing to detach, so detaching lives on `PUT /v1/ads/ad-sets/{adSetId}`.
-	ValueRulesApplied    *bool                                 `json:"valueRulesApplied,omitempty"`
-	PlatformSpecificData *BoostPostRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
+	ValueRulesApplied    *bool                                          `json:"valueRulesApplied,omitempty"`
+	PlatformSpecificData *CreateStandaloneAdRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
 	// Legal entity that benefits from the ad. Required when targeting EU users (EU DSA, Article 26). Optional if the ad account has a default beneficiary: set it once via `PATCH /v1/ads/accounts` or in Meta Ads Manager, and Meta fills it in whenever the field is omitted.
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
@@ -3844,9 +3844,9 @@ func (o *CreateStandaloneAdRequest) SetValueRulesApplied(v bool) {
 }
 
 // GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetPlatformSpecificData() BoostPostRequestPlatformSpecificData {
+func (o *CreateStandaloneAdRequest) GetPlatformSpecificData() CreateStandaloneAdRequestPlatformSpecificData {
 	if o == nil || IsNil(o.PlatformSpecificData) {
-		var ret BoostPostRequestPlatformSpecificData
+		var ret CreateStandaloneAdRequestPlatformSpecificData
 		return ret
 	}
 	return *o.PlatformSpecificData
@@ -3854,7 +3854,7 @@ func (o *CreateStandaloneAdRequest) GetPlatformSpecificData() BoostPostRequestPl
 
 // GetPlatformSpecificDataOk returns a tuple with the PlatformSpecificData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetPlatformSpecificDataOk() (*BoostPostRequestPlatformSpecificData, bool) {
+func (o *CreateStandaloneAdRequest) GetPlatformSpecificDataOk() (*CreateStandaloneAdRequestPlatformSpecificData, bool) {
 	if o == nil || IsNil(o.PlatformSpecificData) {
 		return nil, false
 	}
@@ -3870,8 +3870,8 @@ func (o *CreateStandaloneAdRequest) HasPlatformSpecificData() bool {
 	return false
 }
 
-// SetPlatformSpecificData gets a reference to the given BoostPostRequestPlatformSpecificData and assigns it to the PlatformSpecificData field.
-func (o *CreateStandaloneAdRequest) SetPlatformSpecificData(v BoostPostRequestPlatformSpecificData) {
+// SetPlatformSpecificData gets a reference to the given CreateStandaloneAdRequestPlatformSpecificData and assigns it to the PlatformSpecificData field.
+func (o *CreateStandaloneAdRequest) SetPlatformSpecificData(v CreateStandaloneAdRequestPlatformSpecificData) {
 	o.PlatformSpecificData = &v
 }
 

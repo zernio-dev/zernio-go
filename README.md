@@ -514,7 +514,7 @@ func main() {
 | `client.AdCampaignsAPI.GetAdCampaignDetails(ctx)` | Get live campaign details |
 | `client.AdCampaignsAPI.GetAdReview(ctx)` | Read the platform's review verdict for an ad |
 | `client.AdCampaignsAPI.GetAdSetDetails(ctx)` | Get live ad-set details |
-| `client.AdCampaignsAPI.GetAdSetTargeting(ctx)` | Read a Reddit ad group's targeting and schedule |
+| `client.AdCampaignsAPI.GetAdSetTargeting(ctx)` | Read an ad group's targeting and schedule |
 | `client.AdCampaignsAPI.GetAdTree(ctx)` | Get campaign tree |
 | `client.AdCampaignsAPI.GetAdsTimeline(ctx)` | Get daily account metrics |
 | `client.AdCampaignsAPI.GetCampaignAdSchedule(ctx)` | Read a campaign's ad schedule (dayparting) |
