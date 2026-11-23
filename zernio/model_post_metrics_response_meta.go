@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.784.0
+API version: 1.785.0
 Contact: support@zernio.com
 */
 
@@ -33,8 +33,10 @@ type PostMetricsResponseMeta struct {
 	// Ids asked that match no published post the caller can read.
 	MissingIds []string `json:"missingIds"`
 	// With include=total: the posts the list holds, counted on the first page and carried by the cursor.
-	Total         NullableInt32                              `json:"total"`
-	MetricsSample *PostMetricsResponseMetaAllOfMetricsSample `json:"metricsSample,omitempty"`
+	Total NullableInt32 `json:"total"`
+	// On a list of posts: the accounts this read queued for a fresh sync, because they were never synced or their stored numbers are over 90 minutes old. The answer holds the stored numbers; the synced ones arrive within minutes.
+	SyncRequestedAccountIds []string                                   `json:"syncRequestedAccountIds,omitempty"`
+	MetricsSample           *PostMetricsResponseMetaAllOfMetricsSample `json:"metricsSample,omitempty"`
 }
 
 type _PostMetricsResponseMeta PostMetricsResponseMeta
@@ -262,6 +264,38 @@ func (o *PostMetricsResponseMeta) SetTotal(v int32) {
 	o.Total.Set(&v)
 }
 
+// GetSyncRequestedAccountIds returns the SyncRequestedAccountIds field value if set, zero value otherwise.
+func (o *PostMetricsResponseMeta) GetSyncRequestedAccountIds() []string {
+	if o == nil || IsNil(o.SyncRequestedAccountIds) {
+		var ret []string
+		return ret
+	}
+	return o.SyncRequestedAccountIds
+}
+
+// GetSyncRequestedAccountIdsOk returns a tuple with the SyncRequestedAccountIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostMetricsResponseMeta) GetSyncRequestedAccountIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.SyncRequestedAccountIds) {
+		return nil, false
+	}
+	return o.SyncRequestedAccountIds, true
+}
+
+// HasSyncRequestedAccountIds returns a boolean if a field has been set.
+func (o *PostMetricsResponseMeta) HasSyncRequestedAccountIds() bool {
+	if o != nil && !IsNil(o.SyncRequestedAccountIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetSyncRequestedAccountIds gets a reference to the given []string and assigns it to the SyncRequestedAccountIds field.
+func (o *PostMetricsResponseMeta) SetSyncRequestedAccountIds(v []string) {
+	o.SyncRequestedAccountIds = v
+}
+
 // GetMetricsSample returns the MetricsSample field value if set, zero value otherwise.
 func (o *PostMetricsResponseMeta) GetMetricsSample() PostMetricsResponseMetaAllOfMetricsSample {
 	if o == nil || IsNil(o.MetricsSample) {
@@ -312,6 +346,9 @@ func (o PostMetricsResponseMeta) ToMap() (map[string]interface{}, error) {
 	toSerialize["toDate"] = o.ToDate.Get()
 	toSerialize["missingIds"] = o.MissingIds
 	toSerialize["total"] = o.Total.Get()
+	if !IsNil(o.SyncRequestedAccountIds) {
+		toSerialize["syncRequestedAccountIds"] = o.SyncRequestedAccountIds
+	}
 	if !IsNil(o.MetricsSample) {
 		toSerialize["metricsSample"] = o.MetricsSample
 	}
