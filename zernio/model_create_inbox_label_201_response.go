@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.776.1
+API version: 1.777.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &CreateInboxLabel201Response{}
 
 // CreateInboxLabel201Response struct for CreateInboxLabel201Response
 type CreateInboxLabel201Response struct {
-	Label *UpdateFacebookPage200ResponseSelectedPage `json:"label,omitempty"`
+	Label *ConnectTradeDeskAdsPartner200ResponseAdvertisersInner `json:"label,omitempty"`
 }
 
 // NewCreateInboxLabel201Response instantiates a new CreateInboxLabel201Response object
@@ -41,9 +41,9 @@ func NewCreateInboxLabel201ResponseWithDefaults() *CreateInboxLabel201Response {
 }
 
 // GetLabel returns the Label field value if set, zero value otherwise.
-func (o *CreateInboxLabel201Response) GetLabel() UpdateFacebookPage200ResponseSelectedPage {
+func (o *CreateInboxLabel201Response) GetLabel() ConnectTradeDeskAdsPartner200ResponseAdvertisersInner {
 	if o == nil || IsNil(o.Label) {
-		var ret UpdateFacebookPage200ResponseSelectedPage
+		var ret ConnectTradeDeskAdsPartner200ResponseAdvertisersInner
 		return ret
 	}
 	return *o.Label
@@ -51,7 +51,7 @@ func (o *CreateInboxLabel201Response) GetLabel() UpdateFacebookPage200ResponseSe
 
 // GetLabelOk returns a tuple with the Label field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateInboxLabel201Response) GetLabelOk() (*UpdateFacebookPage200ResponseSelectedPage, bool) {
+func (o *CreateInboxLabel201Response) GetLabelOk() (*ConnectTradeDeskAdsPartner200ResponseAdvertisersInner, bool) {
 	if o == nil || IsNil(o.Label) {
 		return nil, false
 	}
@@ -67,8 +67,8 @@ func (o *CreateInboxLabel201Response) HasLabel() bool {
 	return false
 }
 
-// SetLabel gets a reference to the given UpdateFacebookPage200ResponseSelectedPage and assigns it to the Label field.
-func (o *CreateInboxLabel201Response) SetLabel(v UpdateFacebookPage200ResponseSelectedPage) {
+// SetLabel gets a reference to the given ConnectTradeDeskAdsPartner200ResponseAdvertisersInner and assigns it to the Label field.
+func (o *CreateInboxLabel201Response) SetLabel(v ConnectTradeDeskAdsPartner200ResponseAdvertisersInner) {
 	o.Label = &v
 }
 

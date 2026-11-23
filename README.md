@@ -324,6 +324,7 @@ func main() {
 | `client.ConnectAPI.ConnectSnapchatAdsCredentials(ctx)` | Connect a Snapchat Ads pixel |
 | `client.ConnectAPI.ConnectTaboolaAdsCredentials(ctx)` | Connect a Taboola account |
 | `client.ConnectAPI.ConnectTradeDeskAdsCredentials(ctx)` | Connect a Trade Desk tracking tag |
+| `client.ConnectAPI.ConnectTradeDeskAdsPartner(ctx)` | Connect a Trade Desk partner for ads management |
 | `client.ConnectAPI.ConnectWebflowWithSiteToken(ctx)` | Connect Webflow with a site API token |
 | `client.ConnectAPI.ConnectWechatCredentials(ctx)` | Connect WeChat Official Account |
 | `client.ConnectAPI.ConnectWhatsAppCredentials(ctx)` | Connect WhatsApp via credentials |

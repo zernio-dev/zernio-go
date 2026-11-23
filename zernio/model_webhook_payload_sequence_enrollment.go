@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.776.1
+API version: 1.777.0
 Contact: support@zernio.com
 */
 
@@ -28,12 +28,12 @@ type WebhookPayloadSequenceEnrollment struct {
 	// Event id, the dedupe key.
 	Id string `json:"id"`
 	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Use it to route the event to your tenant without storing Zernio profile ids.  Present on every event tied to a profile, absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once.
-	Profiles   []WebhookProfilesInner                    `json:"profiles,omitempty"`
-	Event      string                                    `json:"event"`
-	Timestamp  time.Time                                 `json:"timestamp"`
-	Sequence   UpdateFacebookPage200ResponseSelectedPage `json:"sequence"`
-	Contact    CreateTestLead200ResponseTestLead         `json:"contact"`
-	Enrollment CreateTestLead200ResponseTestLead         `json:"enrollment"`
+	Profiles   []WebhookProfilesInner                                `json:"profiles,omitempty"`
+	Event      string                                                `json:"event"`
+	Timestamp  time.Time                                             `json:"timestamp"`
+	Sequence   ConnectTradeDeskAdsPartner200ResponseAdvertisersInner `json:"sequence"`
+	Contact    CreateTestLead200ResponseTestLead                     `json:"contact"`
+	Enrollment CreateTestLead200ResponseTestLead                     `json:"enrollment"`
 	// sequence.exited only. completed: the last step was sent; replied: the contact replied and the sequence exits on reply; manual: unenrolled through the API; failed: the step kept failing to send; unsubscribed: the contact opted out.
 	ExitReason *string `json:"exitReason,omitempty"`
 }
@@ -44,7 +44,7 @@ type _WebhookPayloadSequenceEnrollment WebhookPayloadSequenceEnrollment
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadSequenceEnrollment(id string, event string, timestamp time.Time, sequence UpdateFacebookPage200ResponseSelectedPage, contact CreateTestLead200ResponseTestLead, enrollment CreateTestLead200ResponseTestLead) *WebhookPayloadSequenceEnrollment {
+func NewWebhookPayloadSequenceEnrollment(id string, event string, timestamp time.Time, sequence ConnectTradeDeskAdsPartner200ResponseAdvertisersInner, contact CreateTestLead200ResponseTestLead, enrollment CreateTestLead200ResponseTestLead) *WebhookPayloadSequenceEnrollment {
 	this := WebhookPayloadSequenceEnrollment{}
 	this.Id = id
 	this.Event = event
@@ -200,9 +200,9 @@ func (o *WebhookPayloadSequenceEnrollment) SetTimestamp(v time.Time) {
 }
 
 // GetSequence returns the Sequence field value
-func (o *WebhookPayloadSequenceEnrollment) GetSequence() UpdateFacebookPage200ResponseSelectedPage {
+func (o *WebhookPayloadSequenceEnrollment) GetSequence() ConnectTradeDeskAdsPartner200ResponseAdvertisersInner {
 	if o == nil {
-		var ret UpdateFacebookPage200ResponseSelectedPage
+		var ret ConnectTradeDeskAdsPartner200ResponseAdvertisersInner
 		return ret
 	}
 
@@ -211,7 +211,7 @@ func (o *WebhookPayloadSequenceEnrollment) GetSequence() UpdateFacebookPage200Re
 
 // GetSequenceOk returns a tuple with the Sequence field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadSequenceEnrollment) GetSequenceOk() (*UpdateFacebookPage200ResponseSelectedPage, bool) {
+func (o *WebhookPayloadSequenceEnrollment) GetSequenceOk() (*ConnectTradeDeskAdsPartner200ResponseAdvertisersInner, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -219,7 +219,7 @@ func (o *WebhookPayloadSequenceEnrollment) GetSequenceOk() (*UpdateFacebookPage2
 }
 
 // SetSequence sets field value
-func (o *WebhookPayloadSequenceEnrollment) SetSequence(v UpdateFacebookPage200ResponseSelectedPage) {
+func (o *WebhookPayloadSequenceEnrollment) SetSequence(v ConnectTradeDeskAdsPartner200ResponseAdvertisersInner) {
 	o.Sequence = v
 }
 

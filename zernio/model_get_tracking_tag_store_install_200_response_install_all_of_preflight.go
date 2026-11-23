@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.776.1
+API version: 1.777.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,7 @@ type GetTrackingTagStoreInstall200ResponseInstallAllOfPreflight struct {
 	// A TrackingTagInstallBlockedReason when an install would be blocked, else null.
 	Reason NullableString `json:"reason,omitempty"`
 	// Active widget areas of the theme.
-	Sidebars []UpdateFacebookPage200ResponseSelectedPage `json:"sidebars,omitempty"`
+	Sidebars []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner `json:"sidebars,omitempty"`
 }
 
 // NewGetTrackingTagStoreInstall200ResponseInstallAllOfPreflight instantiates a new GetTrackingTagStoreInstall200ResponseInstallAllOfPreflight object
@@ -121,9 +121,9 @@ func (o *GetTrackingTagStoreInstall200ResponseInstallAllOfPreflight) UnsetReason
 }
 
 // GetSidebars returns the Sidebars field value if set, zero value otherwise.
-func (o *GetTrackingTagStoreInstall200ResponseInstallAllOfPreflight) GetSidebars() []UpdateFacebookPage200ResponseSelectedPage {
+func (o *GetTrackingTagStoreInstall200ResponseInstallAllOfPreflight) GetSidebars() []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner {
 	if o == nil || IsNil(o.Sidebars) {
-		var ret []UpdateFacebookPage200ResponseSelectedPage
+		var ret []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner
 		return ret
 	}
 	return o.Sidebars
@@ -131,7 +131,7 @@ func (o *GetTrackingTagStoreInstall200ResponseInstallAllOfPreflight) GetSidebars
 
 // GetSidebarsOk returns a tuple with the Sidebars field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetTrackingTagStoreInstall200ResponseInstallAllOfPreflight) GetSidebarsOk() ([]UpdateFacebookPage200ResponseSelectedPage, bool) {
+func (o *GetTrackingTagStoreInstall200ResponseInstallAllOfPreflight) GetSidebarsOk() ([]ConnectTradeDeskAdsPartner200ResponseAdvertisersInner, bool) {
 	if o == nil || IsNil(o.Sidebars) {
 		return nil, false
 	}
@@ -147,8 +147,8 @@ func (o *GetTrackingTagStoreInstall200ResponseInstallAllOfPreflight) HasSidebars
 	return false
 }
 
-// SetSidebars gets a reference to the given []UpdateFacebookPage200ResponseSelectedPage and assigns it to the Sidebars field.
-func (o *GetTrackingTagStoreInstall200ResponseInstallAllOfPreflight) SetSidebars(v []UpdateFacebookPage200ResponseSelectedPage) {
+// SetSidebars gets a reference to the given []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner and assigns it to the Sidebars field.
+func (o *GetTrackingTagStoreInstall200ResponseInstallAllOfPreflight) SetSidebars(v []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner) {
 	o.Sidebars = v
 }
 

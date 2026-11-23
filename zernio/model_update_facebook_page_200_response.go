@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.776.1
+API version: 1.777.0
 Contact: support@zernio.com
 */
 
@@ -20,8 +20,8 @@ var _ MappedNullable = &UpdateFacebookPage200Response{}
 
 // UpdateFacebookPage200Response struct for UpdateFacebookPage200Response
 type UpdateFacebookPage200Response struct {
-	Message      *string                                    `json:"message,omitempty"`
-	SelectedPage *UpdateFacebookPage200ResponseSelectedPage `json:"selectedPage,omitempty"`
+	Message      *string                                                `json:"message,omitempty"`
+	SelectedPage *ConnectTradeDeskAdsPartner200ResponseAdvertisersInner `json:"selectedPage,omitempty"`
 }
 
 // NewUpdateFacebookPage200Response instantiates a new UpdateFacebookPage200Response object
@@ -74,9 +74,9 @@ func (o *UpdateFacebookPage200Response) SetMessage(v string) {
 }
 
 // GetSelectedPage returns the SelectedPage field value if set, zero value otherwise.
-func (o *UpdateFacebookPage200Response) GetSelectedPage() UpdateFacebookPage200ResponseSelectedPage {
+func (o *UpdateFacebookPage200Response) GetSelectedPage() ConnectTradeDeskAdsPartner200ResponseAdvertisersInner {
 	if o == nil || IsNil(o.SelectedPage) {
-		var ret UpdateFacebookPage200ResponseSelectedPage
+		var ret ConnectTradeDeskAdsPartner200ResponseAdvertisersInner
 		return ret
 	}
 	return *o.SelectedPage
@@ -84,7 +84,7 @@ func (o *UpdateFacebookPage200Response) GetSelectedPage() UpdateFacebookPage200R
 
 // GetSelectedPageOk returns a tuple with the SelectedPage field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateFacebookPage200Response) GetSelectedPageOk() (*UpdateFacebookPage200ResponseSelectedPage, bool) {
+func (o *UpdateFacebookPage200Response) GetSelectedPageOk() (*ConnectTradeDeskAdsPartner200ResponseAdvertisersInner, bool) {
 	if o == nil || IsNil(o.SelectedPage) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *UpdateFacebookPage200Response) HasSelectedPage() bool {
 	return false
 }
 
-// SetSelectedPage gets a reference to the given UpdateFacebookPage200ResponseSelectedPage and assigns it to the SelectedPage field.
-func (o *UpdateFacebookPage200Response) SetSelectedPage(v UpdateFacebookPage200ResponseSelectedPage) {
+// SetSelectedPage gets a reference to the given ConnectTradeDeskAdsPartner200ResponseAdvertisersInner and assigns it to the SelectedPage field.
+func (o *UpdateFacebookPage200Response) SetSelectedPage(v ConnectTradeDeskAdsPartner200ResponseAdvertisersInner) {
 	o.SelectedPage = &v
 }
 

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.776.1
+API version: 1.777.0
 Contact: support@zernio.com
 */
 
@@ -20,8 +20,8 @@ var _ MappedNullable = &ListWhatsAppCatalogs200Response{}
 
 // ListWhatsAppCatalogs200Response struct for ListWhatsAppCatalogs200Response
 type ListWhatsAppCatalogs200Response struct {
-	WabaId   *string                                     `json:"wabaId,omitempty"`
-	Catalogs []UpdateFacebookPage200ResponseSelectedPage `json:"catalogs,omitempty"`
+	WabaId   *string                                                 `json:"wabaId,omitempty"`
+	Catalogs []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner `json:"catalogs,omitempty"`
 }
 
 // NewListWhatsAppCatalogs200Response instantiates a new ListWhatsAppCatalogs200Response object
@@ -74,9 +74,9 @@ func (o *ListWhatsAppCatalogs200Response) SetWabaId(v string) {
 }
 
 // GetCatalogs returns the Catalogs field value if set, zero value otherwise.
-func (o *ListWhatsAppCatalogs200Response) GetCatalogs() []UpdateFacebookPage200ResponseSelectedPage {
+func (o *ListWhatsAppCatalogs200Response) GetCatalogs() []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner {
 	if o == nil || IsNil(o.Catalogs) {
-		var ret []UpdateFacebookPage200ResponseSelectedPage
+		var ret []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner
 		return ret
 	}
 	return o.Catalogs
@@ -84,7 +84,7 @@ func (o *ListWhatsAppCatalogs200Response) GetCatalogs() []UpdateFacebookPage200R
 
 // GetCatalogsOk returns a tuple with the Catalogs field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListWhatsAppCatalogs200Response) GetCatalogsOk() ([]UpdateFacebookPage200ResponseSelectedPage, bool) {
+func (o *ListWhatsAppCatalogs200Response) GetCatalogsOk() ([]ConnectTradeDeskAdsPartner200ResponseAdvertisersInner, bool) {
 	if o == nil || IsNil(o.Catalogs) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *ListWhatsAppCatalogs200Response) HasCatalogs() bool {
 	return false
 }
 
-// SetCatalogs gets a reference to the given []UpdateFacebookPage200ResponseSelectedPage and assigns it to the Catalogs field.
-func (o *ListWhatsAppCatalogs200Response) SetCatalogs(v []UpdateFacebookPage200ResponseSelectedPage) {
+// SetCatalogs gets a reference to the given []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner and assigns it to the Catalogs field.
+func (o *ListWhatsAppCatalogs200Response) SetCatalogs(v []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner) {
 	o.Catalogs = v
 }
 

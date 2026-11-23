@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.776.1
+API version: 1.777.0
 Contact: support@zernio.com
 */
 
@@ -20,8 +20,8 @@ var _ MappedNullable = &UpdateGmbLocation200Response{}
 
 // UpdateGmbLocation200Response struct for UpdateGmbLocation200Response
 type UpdateGmbLocation200Response struct {
-	Message          *string                                    `json:"message,omitempty"`
-	SelectedLocation *UpdateFacebookPage200ResponseSelectedPage `json:"selectedLocation,omitempty"`
+	Message          *string                                                `json:"message,omitempty"`
+	SelectedLocation *ConnectTradeDeskAdsPartner200ResponseAdvertisersInner `json:"selectedLocation,omitempty"`
 }
 
 // NewUpdateGmbLocation200Response instantiates a new UpdateGmbLocation200Response object
@@ -74,9 +74,9 @@ func (o *UpdateGmbLocation200Response) SetMessage(v string) {
 }
 
 // GetSelectedLocation returns the SelectedLocation field value if set, zero value otherwise.
-func (o *UpdateGmbLocation200Response) GetSelectedLocation() UpdateFacebookPage200ResponseSelectedPage {
+func (o *UpdateGmbLocation200Response) GetSelectedLocation() ConnectTradeDeskAdsPartner200ResponseAdvertisersInner {
 	if o == nil || IsNil(o.SelectedLocation) {
-		var ret UpdateFacebookPage200ResponseSelectedPage
+		var ret ConnectTradeDeskAdsPartner200ResponseAdvertisersInner
 		return ret
 	}
 	return *o.SelectedLocation
@@ -84,7 +84,7 @@ func (o *UpdateGmbLocation200Response) GetSelectedLocation() UpdateFacebookPage2
 
 // GetSelectedLocationOk returns a tuple with the SelectedLocation field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateGmbLocation200Response) GetSelectedLocationOk() (*UpdateFacebookPage200ResponseSelectedPage, bool) {
+func (o *UpdateGmbLocation200Response) GetSelectedLocationOk() (*ConnectTradeDeskAdsPartner200ResponseAdvertisersInner, bool) {
 	if o == nil || IsNil(o.SelectedLocation) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *UpdateGmbLocation200Response) HasSelectedLocation() bool {
 	return false
 }
 
-// SetSelectedLocation gets a reference to the given UpdateFacebookPage200ResponseSelectedPage and assigns it to the SelectedLocation field.
-func (o *UpdateGmbLocation200Response) SetSelectedLocation(v UpdateFacebookPage200ResponseSelectedPage) {
+// SetSelectedLocation gets a reference to the given ConnectTradeDeskAdsPartner200ResponseAdvertisersInner and assigns it to the SelectedLocation field.
+func (o *UpdateGmbLocation200Response) SetSelectedLocation(v ConnectTradeDeskAdsPartner200ResponseAdvertisersInner) {
 	o.SelectedLocation = &v
 }
 

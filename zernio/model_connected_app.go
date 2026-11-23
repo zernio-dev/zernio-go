@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.776.1
+API version: 1.777.0
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,7 @@ type ConnectedApp struct {
 	// Live tokens held by the client (an active session is typically one access plus one refresh token).
 	TokenCount *int32 `json:"tokenCount,omitempty"`
 	// The workspaces chosen when the app was authorized. Present only for accounts with workspaces enabled; empty for an app authorized before the choice existed.
-	Workspaces []UpdateFacebookPage200ResponseSelectedPage `json:"workspaces,omitempty"`
+	Workspaces []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner `json:"workspaces,omitempty"`
 }
 
 // NewConnectedApp instantiates a new ConnectedApp object
@@ -312,9 +312,9 @@ func (o *ConnectedApp) SetTokenCount(v int32) {
 }
 
 // GetWorkspaces returns the Workspaces field value if set, zero value otherwise.
-func (o *ConnectedApp) GetWorkspaces() []UpdateFacebookPage200ResponseSelectedPage {
+func (o *ConnectedApp) GetWorkspaces() []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner {
 	if o == nil || IsNil(o.Workspaces) {
-		var ret []UpdateFacebookPage200ResponseSelectedPage
+		var ret []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner
 		return ret
 	}
 	return o.Workspaces
@@ -322,7 +322,7 @@ func (o *ConnectedApp) GetWorkspaces() []UpdateFacebookPage200ResponseSelectedPa
 
 // GetWorkspacesOk returns a tuple with the Workspaces field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConnectedApp) GetWorkspacesOk() ([]UpdateFacebookPage200ResponseSelectedPage, bool) {
+func (o *ConnectedApp) GetWorkspacesOk() ([]ConnectTradeDeskAdsPartner200ResponseAdvertisersInner, bool) {
 	if o == nil || IsNil(o.Workspaces) {
 		return nil, false
 	}
@@ -338,8 +338,8 @@ func (o *ConnectedApp) HasWorkspaces() bool {
 	return false
 }
 
-// SetWorkspaces gets a reference to the given []UpdateFacebookPage200ResponseSelectedPage and assigns it to the Workspaces field.
-func (o *ConnectedApp) SetWorkspaces(v []UpdateFacebookPage200ResponseSelectedPage) {
+// SetWorkspaces gets a reference to the given []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner and assigns it to the Workspaces field.
+func (o *ConnectedApp) SetWorkspaces(v []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner) {
 	o.Workspaces = v
 }
 

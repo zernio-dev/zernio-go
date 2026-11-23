@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.776.1
+API version: 1.777.0
 Contact: support@zernio.com
 */
 
@@ -41,7 +41,7 @@ type GetInboxConversation200ResponseData struct {
 	LastMessage      NullableString                                              `json:"lastMessage,omitempty"`
 	LastMessageAt    *time.Time                                                  `json:"lastMessageAt,omitempty"`
 	UpdatedTime      *time.Time                                                  `json:"updatedTime,omitempty"`
-	Participants     []UpdateFacebookPage200ResponseSelectedPage                 `json:"participants,omitempty"`
+	Participants     []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner     `json:"participants,omitempty"`
 	InstagramProfile *ListInboxConversations200ResponseDataInnerInstagramProfile `json:"instagramProfile,omitempty"`
 	Metadata         *InboxConversationAdMetadata                                `json:"metadata,omitempty"`
 	AdAttribution    *ConversationAdAttribution                                  `json:"adAttribution,omitempty"`
@@ -589,9 +589,9 @@ func (o *GetInboxConversation200ResponseData) SetUpdatedTime(v time.Time) {
 }
 
 // GetParticipants returns the Participants field value if set, zero value otherwise.
-func (o *GetInboxConversation200ResponseData) GetParticipants() []UpdateFacebookPage200ResponseSelectedPage {
+func (o *GetInboxConversation200ResponseData) GetParticipants() []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner {
 	if o == nil || IsNil(o.Participants) {
-		var ret []UpdateFacebookPage200ResponseSelectedPage
+		var ret []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner
 		return ret
 	}
 	return o.Participants
@@ -599,7 +599,7 @@ func (o *GetInboxConversation200ResponseData) GetParticipants() []UpdateFacebook
 
 // GetParticipantsOk returns a tuple with the Participants field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetInboxConversation200ResponseData) GetParticipantsOk() ([]UpdateFacebookPage200ResponseSelectedPage, bool) {
+func (o *GetInboxConversation200ResponseData) GetParticipantsOk() ([]ConnectTradeDeskAdsPartner200ResponseAdvertisersInner, bool) {
 	if o == nil || IsNil(o.Participants) {
 		return nil, false
 	}
@@ -615,8 +615,8 @@ func (o *GetInboxConversation200ResponseData) HasParticipants() bool {
 	return false
 }
 
-// SetParticipants gets a reference to the given []UpdateFacebookPage200ResponseSelectedPage and assigns it to the Participants field.
-func (o *GetInboxConversation200ResponseData) SetParticipants(v []UpdateFacebookPage200ResponseSelectedPage) {
+// SetParticipants gets a reference to the given []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner and assigns it to the Participants field.
+func (o *GetInboxConversation200ResponseData) SetParticipants(v []ConnectTradeDeskAdsPartner200ResponseAdvertisersInner) {
 	o.Participants = v
 }
 
