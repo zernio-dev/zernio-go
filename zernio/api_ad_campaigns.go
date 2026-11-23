@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.777.0
+API version: 1.778.0
 Contact: support@zernio.com
 */
 
@@ -973,7 +973,7 @@ Pauses or resumes up to 50 campaigns in one call, with a separate result per cam
 
 Each campaign is updated concurrently, and the response contains a per-campaign result so a single bad row does not fail the whole batch.
 
-Each campaign is read, written and re-read exactly as PUT /v1/ads/campaigns/{campaignId}/status describes: only the campaign's own switch is written, never its ad sets' or ads'.
+Each campaign is read, written and re-read exactly as PUT /v1/ads/campaigns/{campaignId}/status describes: only the campaign's own switch is written, never its ad sets' or ads' (The Trade Desk excepted: pausing switches off its ad groups and resuming answers 422).
 
 `updated` / `skipped` count campaigns.
 
@@ -1127,6 +1127,8 @@ Created `PAUSED` (TikTok `DISABLE`) unless `status: ACTIVE` where the platform s
 - OpenAI: `goal` sets the campaign objective, and `conversions` needs an active standard conversion event on the account.
 - Reddit: see below.
 - LinkedIn: creates the campaign GROUP (our campaign level) and rejects a budget, which lives on the campaign (ad set) level there. It comes back `status: DRAFT`.
+- The Trade Desk: `goal` is `awareness` (Display) or `video_views` (Video), 422 otherwise. The campaign maximizes reach and takes an optional lifetime budget (paced evenly) and dates.
+- The Trade Desk creates it with no ad groups, so it always comes back `PAUSED` and spends nothing until an ad group is enabled in The Trade Desk.
 
 ### Reddit
 
@@ -2327,6 +2329,7 @@ The ad is deleted on the platform and marked as cancelled in the database. It is
 - Reddit Ads has no delete either: the ad is archived (`configured_status` ARCHIVED).
 
 - Amazon Ads archives the ad (state ARCHIVED). Archiving is permanent.
+- The Trade Desk has no ad entity: the ad is the creative an ad group serves, so deleting it takes that creative off the ad group. The creative itself is kept.
 
 To delete a whole campaign on purpose use `DELETE /v1/ads/campaigns/{campaignId}`.
 
@@ -2506,6 +2509,7 @@ Only the campaign itself is sent to the platform:
 - OpenAI, Reddit and Pinterest have no campaign delete and archive it instead (see below).
 
 - Amazon archives the campaign: archiving is Amazon's delete, it is permanent, and the campaign stays in reports.
+- The Trade Desk archives the campaign, which cannot be undone.
 
 Locally, all Ad documents for this campaign are marked `status: cancelled`.
 
@@ -2711,7 +2715,7 @@ Locally, every Ad document under the ad set is marked
 `status: cancelled`.
 
 Delete is soft on platforms that have no hard delete: LinkedIn moves the
-campaign to `PENDING_DELETION`, Pinterest, Reddit and Amazon archive the ad group (permanent on Amazon), and X
+campaign to `PENDING_DELETION`, Pinterest, Reddit, Amazon and The Trade Desk archive the ad group (permanent on Amazon and The Trade Desk), and X
 soft-flags the line item. Google removes the ad group. All remain readable
 for reporting.
 
@@ -11706,8 +11710,8 @@ Send at least one of `budget`, `bidStrategy`, `portfolioBidStrategyId`, `targetI
 | `networkSettings` | 400 | Search only | 400 |
 | `trackingUrlTemplate`, `finalUrlSuffix` | 400 | Yes | 400 |
 | `sharedBudgetId` | 400 | Yes | 400 |
-| `budget` (CBO; ABO returns 409) | Yes | Daily only | OpenAI and Reddit: daily or lifetime; Amazon: daily, or the lifetime type a Sponsored Brands campaign was created with; others 501 |
-| `name` | Yes | 501 | Reddit and Amazon: Yes; others 501 |
+| `budget` (CBO; ABO returns 409) | Yes | Daily only | OpenAI and Reddit: daily or lifetime; Amazon: daily, or the lifetime type a Sponsored Brands campaign was created with; The Trade Desk: lifetime, on the running flight (or the next one before the campaign starts); others 501 |
+| `name` | Yes | 501 | Reddit, Amazon and The Trade Desk: Yes; others 501 |
 | `platformSpecificData.spendCap` | Yes | 400 | 400 |
 | `accountId` (empty campaigns) | Yes | - | - |
 
@@ -11910,6 +11914,8 @@ UpdateAdCampaignStatus Pause or resume a campaign
 Pauses or resumes a campaign, leaving the on/off switches of its ad sets and ads as they are.
 
 It writes the campaign's own on/off switch and nothing else, on every platform: Meta, TikTok, Google, LinkedIn campaign group, Pinterest, X, ChatGPT (OpenAI).
+
+The Trade Desk is the exception: its campaigns have no switch of their own and deliver through their ad groups. Pausing a Trade Desk campaign switches off every enabled ad group in it, and `status: active` answers 422: turn the ad groups you want back on with PUT /v1/ads/ad-sets/{adSetId}/status.
 
 Its ad sets and ads keep their own switches:
 
