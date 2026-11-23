@@ -56,6 +56,8 @@ type UpdateAdRequestCreative struct {
 	LeadGenFormId *string `json:"leadGenFormId,omitempty" validate:"regexp=^\\\\d+$"`
 	// Meta only. The display link shown on link (image) ads, Meta link_data.caption. Returns 422 on video creatives and on asset feeds without a link.
 	Caption *string `json:"caption,omitempty"`
+	// Meta only. The map location the `GET_DIRECTIONS` button opens, while the ad link stays as it is. Send it with `callToAction: GET_DIRECTIONS`.  - 400 with any other `callToAction`, with a value that is not an `fbgeo://` location, and on other networks. - 422 on video ads (their only link is the button, so change `linkUrl`), on lead ads, and on asset feed creatives that list their calls to action in the feed. - Required with `callToAction: GET_DIRECTIONS` on a full image creative (headline, body, callToAction, linkUrl, imageUrl), and on a partial edit of an image ad whose button has no location yet. Without it the request is a 400, and no other field of it reaches Meta.
+	CallToActionLink *string `json:"callToActionLink,omitempty"`
 }
 
 // NewUpdateAdRequestCreative instantiates a new UpdateAdRequestCreative object
@@ -716,6 +718,38 @@ func (o *UpdateAdRequestCreative) SetCaption(v string) {
 	o.Caption = &v
 }
 
+// GetCallToActionLink returns the CallToActionLink field value if set, zero value otherwise.
+func (o *UpdateAdRequestCreative) GetCallToActionLink() string {
+	if o == nil || IsNil(o.CallToActionLink) {
+		var ret string
+		return ret
+	}
+	return *o.CallToActionLink
+}
+
+// GetCallToActionLinkOk returns a tuple with the CallToActionLink field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestCreative) GetCallToActionLinkOk() (*string, bool) {
+	if o == nil || IsNil(o.CallToActionLink) {
+		return nil, false
+	}
+	return o.CallToActionLink, true
+}
+
+// HasCallToActionLink returns a boolean if a field has been set.
+func (o *UpdateAdRequestCreative) HasCallToActionLink() bool {
+	if o != nil && !IsNil(o.CallToActionLink) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallToActionLink gets a reference to the given string and assigns it to the CallToActionLink field.
+func (o *UpdateAdRequestCreative) SetCallToActionLink(v string) {
+	o.CallToActionLink = &v
+}
+
 func (o UpdateAdRequestCreative) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -785,6 +819,9 @@ func (o UpdateAdRequestCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Caption) {
 		toSerialize["caption"] = o.Caption
+	}
+	if !IsNil(o.CallToActionLink) {
+		toSerialize["callToActionLink"] = o.CallToActionLink
 	}
 	return toSerialize, nil
 }

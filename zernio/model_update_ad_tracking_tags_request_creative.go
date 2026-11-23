@@ -28,6 +28,8 @@ type UpdateAdTrackingTagsRequestCreative struct {
 	LinkUrl      string  `json:"linkUrl"`
 	ImageUrl     string  `json:"imageUrl"`
 	VideoUrl     *string `json:"videoUrl,omitempty"`
+	// The Get Directions button location, required to rebuild a `GET_DIRECTIONS` image creative (400 without it). Only with `callToAction: GET_DIRECTIONS`.
+	CallToActionLink *string `json:"callToActionLink,omitempty"`
 }
 
 type _UpdateAdTrackingTagsRequestCreative UpdateAdTrackingTagsRequestCreative
@@ -206,6 +208,38 @@ func (o *UpdateAdTrackingTagsRequestCreative) SetVideoUrl(v string) {
 	o.VideoUrl = &v
 }
 
+// GetCallToActionLink returns the CallToActionLink field value if set, zero value otherwise.
+func (o *UpdateAdTrackingTagsRequestCreative) GetCallToActionLink() string {
+	if o == nil || IsNil(o.CallToActionLink) {
+		var ret string
+		return ret
+	}
+	return *o.CallToActionLink
+}
+
+// GetCallToActionLinkOk returns a tuple with the CallToActionLink field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdTrackingTagsRequestCreative) GetCallToActionLinkOk() (*string, bool) {
+	if o == nil || IsNil(o.CallToActionLink) {
+		return nil, false
+	}
+	return o.CallToActionLink, true
+}
+
+// HasCallToActionLink returns a boolean if a field has been set.
+func (o *UpdateAdTrackingTagsRequestCreative) HasCallToActionLink() bool {
+	if o != nil && !IsNil(o.CallToActionLink) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallToActionLink gets a reference to the given string and assigns it to the CallToActionLink field.
+func (o *UpdateAdTrackingTagsRequestCreative) SetCallToActionLink(v string) {
+	o.CallToActionLink = &v
+}
+
 func (o UpdateAdTrackingTagsRequestCreative) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -223,6 +257,9 @@ func (o UpdateAdTrackingTagsRequestCreative) ToMap() (map[string]interface{}, er
 	toSerialize["imageUrl"] = o.ImageUrl
 	if !IsNil(o.VideoUrl) {
 		toSerialize["videoUrl"] = o.VideoUrl
+	}
+	if !IsNil(o.CallToActionLink) {
+		toSerialize["callToActionLink"] = o.CallToActionLink
 	}
 	return toSerialize, nil
 }
