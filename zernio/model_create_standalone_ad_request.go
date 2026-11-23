@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.788.0
+API version: 1.789.0
 Contact: support@zernio.com
 */
 
@@ -97,6 +97,8 @@ type CreateStandaloneAdRequest struct {
 	CallToAction *string `json:"callToAction,omitempty"`
 	// The ad's destination URL. Required on legacy + attach shapes (skip for multi-creative). NOT required when `goal` is `lead_generation` (the ad opens a Lead Gen form instead).  - **LinkedIn:** required for `traffic` ads, optional for `engagement` / `awareness`. `imageUrl` + `linkUrl` publishes an ARTICLE-content creative (LinkedIn's article ad format), with the image as thumbnail and `longHeadline` as description. - **OpenAI Ads:** required (the chat card's target_url). - **Reddit:** required on image and video ads (the post's destination and the ad's click URL), the fallback for carousel cards without their own, and refused with 400 on text ads.
 	LinkUrl *string `json:"linkUrl,omitempty"`
+	// Meta only. The map location a `GET_DIRECTIONS` button opens, while `linkUrl` stays the ad's website link.  - Single image ads, with or without `bodies` / `headlines`, also on the adSetId attach shape and with `validateOnly`. Required on a `GET_DIRECTIONS` image ad (400 without it). - 400 with any other `callToAction`, with `video`, `carouselCards`, `creatives[]`, `dynamicCreative`, `placementAssets`, `translations`, catalog ads, `leadGenFormId`, goal `page_likes` or `existingCreativeId`, and on other networks. - Stored on the ad and returned as `creative.callToActionLink`.
+	CallToActionLink *string `json:"callToActionLink,omitempty"`
 	// Lead Gen form ID to attach to the ad's creative. REQUIRED when `goal` is `lead_generation`. Create one via POST /v1/ads/lead-forms.  - Meta (facebook/instagram): the leadgen_forms ID. The ad set's promoted_object.page_id, LEAD_GENERATION optimization and destination_type ON_AD are derived automatically from the goal. - Meta: also required on every ATTACH (`adSetId`) call targeting an Instant Form lead ad set (the form attaches per-ad; Meta rejects a formless ad in a lead ad set, so Zernio returns a 400 naming `leadGenFormId` before uploading anything). This includes a carousel attached with `carouselCards`. - Meta: `placementAssets`, `dynamicCreative` and `carouselCards` (multi-card Instant-Form lead ad) ARE supported on instant-form lead ads. `linkUrl` and per-card `linkUrl` are optional, forwarded as real destinations when sent, else falling back to Meta's lead-form link. - LinkedIn: the adForm ID. The creative's `leadgenCallToAction.destination` is set to `urn:li:adForm:{id}` and the campaign objective to MAX_LEAD. Forms must be owned by the sponsoredAccount (not the organization) for the URN to resolve. - Reddit: rejected with 400 on every goal (Reddit retired its native lead forms).
 	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
 	// Image creative for Meta/Google/Pinterest/LinkedIn on legacy + attach shapes. Mutually exclusive with `video`.  - LinkedIn: required unless `video` is set. Uploaded to LinkedIn under the authoring Company Page (see `organizationId`); recommended ratio 1.91:1 (e.g. 1200×627). - Google: not required for Search campaigns. For Display, treated as the landscape image (alias of `images.landscape`); supply `images.square` alongside or the request is rejected. - TikTok: this field carries the VIDEO URL (the TikTok ads endpoint is video-only; the `imageUrl` name is kept for cross-platform consistency). - X: imageUrl + headline + linkUrl together build a website card (image, title and destination under the post; the URL is not added to the post text). Sending only some of them is a 400. - X: description, video and callToAction are rejected with 400 (promote a post that carries a video with POST /v1/ads/boost). - OpenAI Ads: required, uploaded as the chat card's image (OpenAI has no video ad format). - Reddit: builds an image ad (requires `linkUrl`). On a Reddit video ad it is the fallback for `video.thumbnailUrl`.
@@ -1517,6 +1519,38 @@ func (o *CreateStandaloneAdRequest) HasLinkUrl() bool {
 // SetLinkUrl gets a reference to the given string and assigns it to the LinkUrl field.
 func (o *CreateStandaloneAdRequest) SetLinkUrl(v string) {
 	o.LinkUrl = &v
+}
+
+// GetCallToActionLink returns the CallToActionLink field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetCallToActionLink() string {
+	if o == nil || IsNil(o.CallToActionLink) {
+		var ret string
+		return ret
+	}
+	return *o.CallToActionLink
+}
+
+// GetCallToActionLinkOk returns a tuple with the CallToActionLink field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetCallToActionLinkOk() (*string, bool) {
+	if o == nil || IsNil(o.CallToActionLink) {
+		return nil, false
+	}
+	return o.CallToActionLink, true
+}
+
+// HasCallToActionLink returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasCallToActionLink() bool {
+	if o != nil && !IsNil(o.CallToActionLink) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallToActionLink gets a reference to the given string and assigns it to the CallToActionLink field.
+func (o *CreateStandaloneAdRequest) SetCallToActionLink(v string) {
+	o.CallToActionLink = &v
 }
 
 // GetLeadGenFormId returns the LeadGenFormId field value if set, zero value otherwise.
@@ -4349,6 +4383,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.LinkUrl) {
 		toSerialize["linkUrl"] = o.LinkUrl
+	}
+	if !IsNil(o.CallToActionLink) {
+		toSerialize["callToActionLink"] = o.CallToActionLink
 	}
 	if !IsNil(o.LeadGenFormId) {
 		toSerialize["leadGenFormId"] = o.LeadGenFormId

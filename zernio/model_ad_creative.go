@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.788.0
+API version: 1.789.0
 Contact: support@zernio.com
 */
 
@@ -48,6 +48,8 @@ type AdCreative struct {
 	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
 	// Meta: the display link of a link (image) ad (`link_data.caption`). Absent when the creative has none.
 	Caption *string `json:"caption,omitempty"`
+	// Meta: the `GET_DIRECTIONS` map location sent as `callToActionLink` on POST /v1/ads/create, the same value as that input. Absent on ads created without it; null once PUT /v1/ads/{adId} changed the call to action, which points the button back at `linkUrl`.
+	CallToActionLink NullableString `json:"callToActionLink,omitempty"`
 	// Meta: the ad image hash (`image_hash`), reusable as `imageHash` on POST /v1/ads/create within the same ad account. `thumbnailUrl` and `mediaUrls` carry its stable full resolution permalink when Meta resolves it.
 	ImageHash *string `json:"imageHash,omitempty"`
 	// Meta: the creative's `url_tags` query string appended to the destination URL.
@@ -576,6 +578,49 @@ func (o *AdCreative) HasCaption() bool {
 // SetCaption gets a reference to the given string and assigns it to the Caption field.
 func (o *AdCreative) SetCaption(v string) {
 	o.Caption = &v
+}
+
+// GetCallToActionLink returns the CallToActionLink field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdCreative) GetCallToActionLink() string {
+	if o == nil || IsNil(o.CallToActionLink.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CallToActionLink.Get()
+}
+
+// GetCallToActionLinkOk returns a tuple with the CallToActionLink field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdCreative) GetCallToActionLinkOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CallToActionLink.Get(), o.CallToActionLink.IsSet()
+}
+
+// HasCallToActionLink returns a boolean if a field has been set.
+func (o *AdCreative) HasCallToActionLink() bool {
+	if o != nil && o.CallToActionLink.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCallToActionLink gets a reference to the given NullableString and assigns it to the CallToActionLink field.
+func (o *AdCreative) SetCallToActionLink(v string) {
+	o.CallToActionLink.Set(&v)
+}
+
+// SetCallToActionLinkNil sets the value for CallToActionLink to be an explicit nil
+func (o *AdCreative) SetCallToActionLinkNil() {
+	o.CallToActionLink.Set(nil)
+}
+
+// UnsetCallToActionLink ensures that no value is present for CallToActionLink, not even an explicit nil
+func (o *AdCreative) UnsetCallToActionLink() {
+	o.CallToActionLink.Unset()
 }
 
 // GetImageHash returns the ImageHash field value if set, zero value otherwise.
@@ -1892,6 +1937,9 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Caption) {
 		toSerialize["caption"] = o.Caption
+	}
+	if o.CallToActionLink.IsSet() {
+		toSerialize["callToActionLink"] = o.CallToActionLink.Get()
 	}
 	if !IsNil(o.ImageHash) {
 		toSerialize["imageHash"] = o.ImageHash

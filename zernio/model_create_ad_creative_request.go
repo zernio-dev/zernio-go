@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.788.0
+API version: 1.789.0
 Contact: support@zernio.com
 */
 
@@ -34,6 +34,8 @@ type CreateAdCreativeRequest struct {
 	// CTA type (same whitelist as POST /v1/ads/create).
 	CallToAction *string `json:"callToAction,omitempty"`
 	LinkUrl      string  `json:"linkUrl"`
+	// The map location a `GET_DIRECTIONS` button opens, while `linkUrl` stays the creative's website link. Requires `callToAction: GET_DIRECTIONS` and an image creative (`imageUrl` or `imageHash`), 400 otherwise; a `GET_DIRECTIONS` image creative without it is a 400 too.
+	CallToActionLink *string `json:"callToActionLink,omitempty"`
 	// Publicly reachable image; uploaded to the account's library server-side.
 	ImageUrl *string `json:"imageUrl,omitempty"`
 	// Existing library image hash (POST /v1/ads/images or GET /v1/ads/images).
@@ -265,6 +267,38 @@ func (o *CreateAdCreativeRequest) GetLinkUrlOk() (*string, bool) {
 // SetLinkUrl sets field value
 func (o *CreateAdCreativeRequest) SetLinkUrl(v string) {
 	o.LinkUrl = v
+}
+
+// GetCallToActionLink returns the CallToActionLink field value if set, zero value otherwise.
+func (o *CreateAdCreativeRequest) GetCallToActionLink() string {
+	if o == nil || IsNil(o.CallToActionLink) {
+		var ret string
+		return ret
+	}
+	return *o.CallToActionLink
+}
+
+// GetCallToActionLinkOk returns a tuple with the CallToActionLink field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCreativeRequest) GetCallToActionLinkOk() (*string, bool) {
+	if o == nil || IsNil(o.CallToActionLink) {
+		return nil, false
+	}
+	return o.CallToActionLink, true
+}
+
+// HasCallToActionLink returns a boolean if a field has been set.
+func (o *CreateAdCreativeRequest) HasCallToActionLink() bool {
+	if o != nil && !IsNil(o.CallToActionLink) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallToActionLink gets a reference to the given string and assigns it to the CallToActionLink field.
+func (o *CreateAdCreativeRequest) SetCallToActionLink(v string) {
+	o.CallToActionLink = &v
 }
 
 // GetImageUrl returns the ImageUrl field value if set, zero value otherwise.
@@ -609,6 +643,9 @@ func (o CreateAdCreativeRequest) ToMap() (map[string]interface{}, error) {
 		toSerialize["callToAction"] = o.CallToAction
 	}
 	toSerialize["linkUrl"] = o.LinkUrl
+	if !IsNil(o.CallToActionLink) {
+		toSerialize["callToActionLink"] = o.CallToActionLink
+	}
 	if !IsNil(o.ImageUrl) {
 		toSerialize["imageUrl"] = o.ImageUrl
 	}
