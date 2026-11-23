@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.769.0
+API version: 1.770.0
 Contact: support@zernio.com
 */
 
@@ -34,15 +34,15 @@ type UpdateAdRequestCreative struct {
 	BusinessName *string `json:"businessName,omitempty"`
 	// Google Display only. Uploaded as a new square (1:1) marketing image asset that replaces the current one.
 	SquareImageUrl *string `json:"squareImageUrl,omitempty"`
-	// Primary text. On a Meta asset_feed creative it replaces the feed's only body option (422 when it has several: send `bodies`).
+	// Primary text. On a Meta asset_feed creative it replaces the feed's only body option and the story text (422 when it has several: send `bodies`). Sent with `bodies`, it sets the story's fallback primary text (`link_data.message` or `video_data.message`) while `bodies` replaces the options.
 	Body *string `json:"body,omitempty"`
-	// Meta only. The primary text options of an asset_feed creative, one text per option in the order GET /v1/ads/{adId} returns them. Each replaces the option in its position and keeps its rule. A different count returns 422, as does a single-text creative (send `body`). Not with `body`.
+	// Meta only. The primary text options of an asset_feed creative, one text per option in the order GET /v1/ads/{adId} returns them. Each replaces the option in its position and keeps its rule.  A different count returns 422, as does a single-text creative (send `body`). Add `body` to set the story's fallback text as well.
 	Bodies []string `json:"bodies,omitempty"`
-	// Meta only. Same as `bodies`, for the headline options (Meta `asset_feed_spec.titles`). Cannot be sent with `headline`. Not the top-level Google `headlines`.
+	// Meta only. Same as `bodies`, for the headline options (Meta `asset_feed_spec.titles`). Add `headline` to set the story's fallback title. Not the top-level Google `headlines`.
 	Headlines []string `json:"headlines,omitempty"`
 	// Link description slot (Meta `link_data.description` / `video_data.link_description`, LinkedIn creative description).
 	Description *string `json:"description,omitempty"`
-	// Meta only. Same as `bodies`, for the description options. Cannot be sent with `description`. Not the top-level Google `descriptions`.
+	// Meta only. Same as `bodies`, for the description options. Add `description` to set the story's fallback description. Not the top-level Google `descriptions`.
 	Descriptions []string `json:"descriptions,omitempty"`
 	CallToAction *string  `json:"callToAction,omitempty"`
 	LinkUrl      *string  `json:"linkUrl,omitempty"`
