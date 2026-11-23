@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.775.1
+API version: 1.776.1
 Contact: support@zernio.com
 */
 
@@ -731,13 +731,15 @@ func (a *MetricsAPIService) GetAdMetricsExecute(r MetricsAPIGetAdMetricsRequest)
 }
 
 type MetricsAPIGetCampaignMetricsRequest struct {
-	ctx        context.Context
-	ApiService *MetricsAPIService
-	fromDate   *string
-	toDate     *string
-	limit      *int32
-	cursor     *string
-	campaignId *string
+	ctx         context.Context
+	ApiService  *MetricsAPIService
+	fromDate    *string
+	toDate      *string
+	limit       *int32
+	cursor      *string
+	campaignId  *string
+	metrics     *string
+	granularity *string
 }
 
 // First day, inclusive.
@@ -764,9 +766,21 @@ func (r MetricsAPIGetCampaignMetricsRequest) Cursor(cursor string) MetricsAPIGet
 	return r
 }
 
-// Comma-separated platform campaign ids.
+// Comma-separated platform campaign ids. Required with metrics, up to 100.
 func (r MetricsAPIGetCampaignMetricsRequest) CampaignId(campaignId string) MetricsAPIGetCampaignMetricsRequest {
 	r.campaignId = &campaignId
+	return r
+}
+
+// Comma-separated delivery metrics, as GET /v1/metrics/catalog?entity&#x3D;campaigns lists them (spend, impressions, reach, clicks, ctr, cpc, cpm, conversions, roas, actions, funnel, video counts...).
+func (r MetricsAPIGetCampaignMetricsRequest) Metrics(metrics string) MetricsAPIGetCampaignMetricsRequest {
+	r.metrics = &metrics
+	return r
+}
+
+// day adds one point per day to each campaign. Needs metrics.
+func (r MetricsAPIGetCampaignMetricsRequest) Granularity(granularity string) MetricsAPIGetCampaignMetricsRequest {
+	r.granularity = &granularity
 	return r
 }
 
@@ -775,11 +789,13 @@ func (r MetricsAPIGetCampaignMetricsRequest) Execute() (*CampaignMetricsResponse
 }
 
 /*
-GetCampaignMetrics Read the uploaded results of each campaign over a window
+GetCampaignMetrics Read the delivery metrics or the uploaded results of each campaign over a window
 
-Sums, per campaign, each result metric you uploaded (one key per metric, as `GET /v1/ads/campaign-results/metrics` lists them), with `cac_percent`, `cost_per_sale`, `cost_per_qualified_lead`, `lead_to_sale` and `qualified_rate` next to them, over `fromDate` to `toDate` (both required, at most 400 days).
+Without `metrics`, sums per campaign each result metric you uploaded (one key per metric, as `GET /v1/ads/campaign-results/metrics` lists them), with `cac_percent`, `cost_per_sale`, `cost_per_qualified_lead`, `lead_to_sale` and `qualified_rate` next to them, over `fromDate` to `toDate` (both required, at most 400 days). Filter with `campaignId` (platform campaign ids); pages with `cursor`.
 
-Filter with `campaignId` (platform campaign ids); pages with `cursor`.
+With `metrics` (for example `metrics=spend,impressions,clicks,ctr`), sums the delivery metrics of every ad of each campaign in `campaignId` (required, up to 100) from the stored daily rows. Every campaign comes on one page with its `currency`, and `granularity=day` adds one point per day.
+
+A query reads at most 9,200 campaign days (100 campaigns for 92 days, 23 for 400) and answers 422 `query_too_large` beyond that. Breakdowns stay live in the platform queries, such as `POST /v1/metrics/platform-queries/meta-ads`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MetricsAPIGetCampaignMetricsRequest
@@ -833,6 +849,16 @@ func (a *MetricsAPIService) GetCampaignMetricsExecute(r MetricsAPIGetCampaignMet
 	parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
 	if r.campaignId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
+	}
+	if r.metrics != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
+	}
+	if r.granularity != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", r.granularity, "form", "")
+	} else {
+		var defaultValue string = "total"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", defaultValue, "form", "")
+		r.granularity = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -896,6 +922,17 @@ func (a *MetricsAPIService) GetCampaignMetricsExecute(r MetricsAPIGetCampaignMet
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 422 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

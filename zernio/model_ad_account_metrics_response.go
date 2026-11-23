@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.775.1
+API version: 1.776.1
 Contact: support@zernio.com
 */
 
@@ -23,8 +23,8 @@ var _ MappedNullable = &AdAccountMetricsResponse{}
 // AdAccountMetricsResponse struct for AdAccountMetricsResponse
 type AdAccountMetricsResponse struct {
 	// Each uploaded result metric summed over the range, by metric key.
-	Results map[string]float32          `json:"results"`
-	Meta    CampaignMetricsResponseMeta `json:"meta"`
+	Results map[string]float32           `json:"results"`
+	Meta    AdAccountMetricsResponseMeta `json:"meta"`
 }
 
 type _AdAccountMetricsResponse AdAccountMetricsResponse
@@ -33,7 +33,7 @@ type _AdAccountMetricsResponse AdAccountMetricsResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdAccountMetricsResponse(results map[string]float32, meta CampaignMetricsResponseMeta) *AdAccountMetricsResponse {
+func NewAdAccountMetricsResponse(results map[string]float32, meta AdAccountMetricsResponseMeta) *AdAccountMetricsResponse {
 	this := AdAccountMetricsResponse{}
 	this.Results = results
 	this.Meta = meta
@@ -73,9 +73,9 @@ func (o *AdAccountMetricsResponse) SetResults(v map[string]float32) {
 }
 
 // GetMeta returns the Meta field value
-func (o *AdAccountMetricsResponse) GetMeta() CampaignMetricsResponseMeta {
+func (o *AdAccountMetricsResponse) GetMeta() AdAccountMetricsResponseMeta {
 	if o == nil {
-		var ret CampaignMetricsResponseMeta
+		var ret AdAccountMetricsResponseMeta
 		return ret
 	}
 
@@ -84,7 +84,7 @@ func (o *AdAccountMetricsResponse) GetMeta() CampaignMetricsResponseMeta {
 
 // GetMetaOk returns a tuple with the Meta field value
 // and a boolean to check if the value has been set.
-func (o *AdAccountMetricsResponse) GetMetaOk() (*CampaignMetricsResponseMeta, bool) {
+func (o *AdAccountMetricsResponse) GetMetaOk() (*AdAccountMetricsResponseMeta, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -92,7 +92,7 @@ func (o *AdAccountMetricsResponse) GetMetaOk() (*CampaignMetricsResponseMeta, bo
 }
 
 // SetMeta sets field value
-func (o *AdAccountMetricsResponse) SetMeta(v CampaignMetricsResponseMeta) {
+func (o *AdAccountMetricsResponse) SetMeta(v AdAccountMetricsResponseMeta) {
 	o.Meta = v
 }
 

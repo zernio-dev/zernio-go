@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.775.1
+API version: 1.776.1
 Contact: support@zernio.com
 */
 
@@ -25,8 +25,18 @@ type CampaignMetricRow struct {
 	Platform    string `json:"platform"`
 	AdAccountId string `json:"adAccountId"`
 	CampaignId  string `json:"campaignId"`
-	// Each uploaded result metric summed over the range, by metric key.
-	Results map[string]float32 `json:"results"`
+	// Without metrics, each uploaded result metric summed over the range, by metric key.
+	Results map[string]float32 `json:"results,omitempty"`
+	// With metrics, the campaign name. null before its first sync.
+	Name NullableString `json:"name,omitempty"`
+	// With metrics, the ad account currency every money metric of this campaign is in. Campaigns of different ad accounts are never summed together.
+	Currency NullableString `json:"currency,omitempty"`
+	// With metrics, only the asked metrics, summed over every ad of the campaign with rates recomputed from the sums. reach is deduplicated across the range for Meta and TikTok when the platform returns it.
+	Metrics *AdMetrics `json:"metrics,omitempty"`
+	// With granularity=day, one point per day with delivery, each carrying date and the asked metrics.
+	Daily []CampaignMetricRowDailyInner `json:"daily,omitempty"`
+	// With metrics, when the newest daily row of the campaign was synced.
+	LastSyncedAt NullableString `json:"lastSyncedAt,omitempty"`
 }
 
 type _CampaignMetricRow CampaignMetricRow
@@ -35,12 +45,11 @@ type _CampaignMetricRow CampaignMetricRow
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCampaignMetricRow(platform string, adAccountId string, campaignId string, results map[string]float32) *CampaignMetricRow {
+func NewCampaignMetricRow(platform string, adAccountId string, campaignId string) *CampaignMetricRow {
 	this := CampaignMetricRow{}
 	this.Platform = platform
 	this.AdAccountId = adAccountId
 	this.CampaignId = campaignId
-	this.Results = results
 	return &this
 }
 
@@ -124,28 +133,229 @@ func (o *CampaignMetricRow) SetCampaignId(v string) {
 	o.CampaignId = v
 }
 
-// GetResults returns the Results field value
+// GetResults returns the Results field value if set, zero value otherwise.
 func (o *CampaignMetricRow) GetResults() map[string]float32 {
-	if o == nil {
+	if o == nil || IsNil(o.Results) {
 		var ret map[string]float32
 		return ret
 	}
-
 	return o.Results
 }
 
-// GetResultsOk returns a tuple with the Results field value
+// GetResultsOk returns a tuple with the Results field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CampaignMetricRow) GetResultsOk() (map[string]float32, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Results) {
 		return map[string]float32{}, false
 	}
 	return o.Results, true
 }
 
-// SetResults sets field value
+// HasResults returns a boolean if a field has been set.
+func (o *CampaignMetricRow) HasResults() bool {
+	if o != nil && !IsNil(o.Results) {
+		return true
+	}
+
+	return false
+}
+
+// SetResults gets a reference to the given map[string]float32 and assigns it to the Results field.
 func (o *CampaignMetricRow) SetResults(v map[string]float32) {
 	o.Results = v
+}
+
+// GetName returns the Name field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CampaignMetricRow) GetName() string {
+	if o == nil || IsNil(o.Name.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Name.Get()
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CampaignMetricRow) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Name.Get(), o.Name.IsSet()
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *CampaignMetricRow) HasName() bool {
+	if o != nil && o.Name.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given NullableString and assigns it to the Name field.
+func (o *CampaignMetricRow) SetName(v string) {
+	o.Name.Set(&v)
+}
+
+// SetNameNil sets the value for Name to be an explicit nil
+func (o *CampaignMetricRow) SetNameNil() {
+	o.Name.Set(nil)
+}
+
+// UnsetName ensures that no value is present for Name, not even an explicit nil
+func (o *CampaignMetricRow) UnsetName() {
+	o.Name.Unset()
+}
+
+// GetCurrency returns the Currency field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CampaignMetricRow) GetCurrency() string {
+	if o == nil || IsNil(o.Currency.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Currency.Get()
+}
+
+// GetCurrencyOk returns a tuple with the Currency field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CampaignMetricRow) GetCurrencyOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Currency.Get(), o.Currency.IsSet()
+}
+
+// HasCurrency returns a boolean if a field has been set.
+func (o *CampaignMetricRow) HasCurrency() bool {
+	if o != nil && o.Currency.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCurrency gets a reference to the given NullableString and assigns it to the Currency field.
+func (o *CampaignMetricRow) SetCurrency(v string) {
+	o.Currency.Set(&v)
+}
+
+// SetCurrencyNil sets the value for Currency to be an explicit nil
+func (o *CampaignMetricRow) SetCurrencyNil() {
+	o.Currency.Set(nil)
+}
+
+// UnsetCurrency ensures that no value is present for Currency, not even an explicit nil
+func (o *CampaignMetricRow) UnsetCurrency() {
+	o.Currency.Unset()
+}
+
+// GetMetrics returns the Metrics field value if set, zero value otherwise.
+func (o *CampaignMetricRow) GetMetrics() AdMetrics {
+	if o == nil || IsNil(o.Metrics) {
+		var ret AdMetrics
+		return ret
+	}
+	return *o.Metrics
+}
+
+// GetMetricsOk returns a tuple with the Metrics field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CampaignMetricRow) GetMetricsOk() (*AdMetrics, bool) {
+	if o == nil || IsNil(o.Metrics) {
+		return nil, false
+	}
+	return o.Metrics, true
+}
+
+// HasMetrics returns a boolean if a field has been set.
+func (o *CampaignMetricRow) HasMetrics() bool {
+	if o != nil && !IsNil(o.Metrics) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetrics gets a reference to the given AdMetrics and assigns it to the Metrics field.
+func (o *CampaignMetricRow) SetMetrics(v AdMetrics) {
+	o.Metrics = &v
+}
+
+// GetDaily returns the Daily field value if set, zero value otherwise.
+func (o *CampaignMetricRow) GetDaily() []CampaignMetricRowDailyInner {
+	if o == nil || IsNil(o.Daily) {
+		var ret []CampaignMetricRowDailyInner
+		return ret
+	}
+	return o.Daily
+}
+
+// GetDailyOk returns a tuple with the Daily field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CampaignMetricRow) GetDailyOk() ([]CampaignMetricRowDailyInner, bool) {
+	if o == nil || IsNil(o.Daily) {
+		return nil, false
+	}
+	return o.Daily, true
+}
+
+// HasDaily returns a boolean if a field has been set.
+func (o *CampaignMetricRow) HasDaily() bool {
+	if o != nil && !IsNil(o.Daily) {
+		return true
+	}
+
+	return false
+}
+
+// SetDaily gets a reference to the given []CampaignMetricRowDailyInner and assigns it to the Daily field.
+func (o *CampaignMetricRow) SetDaily(v []CampaignMetricRowDailyInner) {
+	o.Daily = v
+}
+
+// GetLastSyncedAt returns the LastSyncedAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CampaignMetricRow) GetLastSyncedAt() string {
+	if o == nil || IsNil(o.LastSyncedAt.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.LastSyncedAt.Get()
+}
+
+// GetLastSyncedAtOk returns a tuple with the LastSyncedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CampaignMetricRow) GetLastSyncedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LastSyncedAt.Get(), o.LastSyncedAt.IsSet()
+}
+
+// HasLastSyncedAt returns a boolean if a field has been set.
+func (o *CampaignMetricRow) HasLastSyncedAt() bool {
+	if o != nil && o.LastSyncedAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLastSyncedAt gets a reference to the given NullableString and assigns it to the LastSyncedAt field.
+func (o *CampaignMetricRow) SetLastSyncedAt(v string) {
+	o.LastSyncedAt.Set(&v)
+}
+
+// SetLastSyncedAtNil sets the value for LastSyncedAt to be an explicit nil
+func (o *CampaignMetricRow) SetLastSyncedAtNil() {
+	o.LastSyncedAt.Set(nil)
+}
+
+// UnsetLastSyncedAt ensures that no value is present for LastSyncedAt, not even an explicit nil
+func (o *CampaignMetricRow) UnsetLastSyncedAt() {
+	o.LastSyncedAt.Unset()
 }
 
 func (o CampaignMetricRow) MarshalJSON() ([]byte, error) {
@@ -161,7 +371,24 @@ func (o CampaignMetricRow) ToMap() (map[string]interface{}, error) {
 	toSerialize["platform"] = o.Platform
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["campaignId"] = o.CampaignId
-	toSerialize["results"] = o.Results
+	if !IsNil(o.Results) {
+		toSerialize["results"] = o.Results
+	}
+	if o.Name.IsSet() {
+		toSerialize["name"] = o.Name.Get()
+	}
+	if o.Currency.IsSet() {
+		toSerialize["currency"] = o.Currency.Get()
+	}
+	if !IsNil(o.Metrics) {
+		toSerialize["metrics"] = o.Metrics
+	}
+	if !IsNil(o.Daily) {
+		toSerialize["daily"] = o.Daily
+	}
+	if o.LastSyncedAt.IsSet() {
+		toSerialize["lastSyncedAt"] = o.LastSyncedAt.Get()
+	}
 	return toSerialize, nil
 }
 
@@ -173,7 +400,6 @@ func (o *CampaignMetricRow) UnmarshalJSON(data []byte) (err error) {
 		"platform",
 		"adAccountId",
 		"campaignId",
-		"results",
 	}
 
 	allProperties := make(map[string]interface{})

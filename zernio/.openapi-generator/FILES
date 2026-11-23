@@ -112,6 +112,7 @@ model_activate_workflow_200_response.go
 model_activate_workflow_200_response_workflow.go
 model_ad.go
 model_ad_account_metrics_response.go
+model_ad_account_metrics_response_meta.go
 model_ad_activation_status.go
 model_ad_analytics_response.go
 model_ad_analytics_response_ad.go
@@ -598,6 +599,7 @@ model_campaign_draft_comments_inner.go
 model_campaign_draft_counts.go
 model_campaign_ledger_entry.go
 model_campaign_metric_row.go
+model_campaign_metric_row_daily_inner.go
 model_campaign_metrics_response.go
 model_campaign_metrics_response_meta.go
 model_campaign_participant.go
