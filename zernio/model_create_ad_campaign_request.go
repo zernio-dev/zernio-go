@@ -42,12 +42,17 @@ type CreateAdCampaignRequest struct {
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	BudgetType   *string  `json:"budgetType,omitempty"`
 	Status       *string  `json:"status,omitempty"`
-	// Reddit and Amazon only (400 elsewhere). Campaign start (ISO 8601); a value without an offset is read in the ad account time zone. Requires a campaign budget (`budgetAmount` + `budgetType`, 400 otherwise). Defaults to now.
+	// Reddit, Amazon and AppLovin only (400 elsewhere). Campaign start (ISO 8601); a value without an offset is read in the ad account time zone. Requires a campaign budget (`budgetAmount` + `budgetType`, 400 otherwise). AppLovin reads it in UTC and refuses a start before today. Defaults to now.
 	StartDate *time.Time `json:"startDate,omitempty"`
-	// Reddit and Amazon only (400 elsewhere). Campaign end (ISO 8601); a value without an offset is read in the ad account time zone. Requires a campaign budget (400 otherwise), and is required for `budgetType: lifetime`.
+	// Reddit, Amazon and AppLovin only (400 elsewhere). Campaign end (ISO 8601); a value without an offset is read in the ad account time zone. Requires a campaign budget (400 otherwise), and is required for `budgetType: lifetime`. On AppLovin no endDate means continuous delivery.
 	EndDate *time.Time `json:"endDate,omitempty"`
-	// Amazon Ads only (400 elsewhere), and required there: the ad product and its campaign settings.
-	PlatformSpecificData *AmazonAdsCampaignPlatformData `json:"platformSpecificData,omitempty"`
+	// AppLovin only (400 elsewhere), where the campaign carries the targeting: the countries it serves, at least one.
+	Countries []string `json:"countries,omitempty"`
+	// AppLovin only (400 elsewhere). US state codes (`CA` or `US-CA`), with `US` in countries. Never together with metros.
+	Regions []CreateAdCampaignRequestRegionsInner `json:"regions,omitempty"`
+	// AppLovin only (400 elsewhere). AppLovin metro names, with `US` in countries. Never together with regions.
+	Metros               []CreateAdCampaignRequestRegionsInner        `json:"metros,omitempty"`
+	PlatformSpecificData *CreateAdCampaignRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
 	// Google only (400 elsewhere). Written on the new campaign.
 	LocationTargetingType *GoogleLocationTargetingType `json:"locationTargetingType,omitempty"`
 	// Campaign bid strategy.  **Meta** stores `bid_strategy` alongside the budget, so this REQUIRES `budgetAmount` + `budgetType` on the same request (400 without a campaign budget).  A campaign carrying a strategy without its `bid_amount` makes every ad set under it fail (code 100, subcode 1815857), so that state is rejected up front. To bid at ad-set level, set the strategy there instead.  **Google:**  - LOWEST_COST_WITHOUT_CAP = Maximize Conversions - COST_CAP + bidAmount = Target CPA - LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS - LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling - portfolioBidStrategyId attaches a portfolio strategy instead.
@@ -507,10 +512,106 @@ func (o *CreateAdCampaignRequest) SetEndDate(v time.Time) {
 	o.EndDate = &v
 }
 
+// GetCountries returns the Countries field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetCountries() []string {
+	if o == nil || IsNil(o.Countries) {
+		var ret []string
+		return ret
+	}
+	return o.Countries
+}
+
+// GetCountriesOk returns a tuple with the Countries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetCountriesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Countries) {
+		return nil, false
+	}
+	return o.Countries, true
+}
+
+// HasCountries returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasCountries() bool {
+	if o != nil && !IsNil(o.Countries) {
+		return true
+	}
+
+	return false
+}
+
+// SetCountries gets a reference to the given []string and assigns it to the Countries field.
+func (o *CreateAdCampaignRequest) SetCountries(v []string) {
+	o.Countries = v
+}
+
+// GetRegions returns the Regions field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetRegions() []CreateAdCampaignRequestRegionsInner {
+	if o == nil || IsNil(o.Regions) {
+		var ret []CreateAdCampaignRequestRegionsInner
+		return ret
+	}
+	return o.Regions
+}
+
+// GetRegionsOk returns a tuple with the Regions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetRegionsOk() ([]CreateAdCampaignRequestRegionsInner, bool) {
+	if o == nil || IsNil(o.Regions) {
+		return nil, false
+	}
+	return o.Regions, true
+}
+
+// HasRegions returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasRegions() bool {
+	if o != nil && !IsNil(o.Regions) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegions gets a reference to the given []CreateAdCampaignRequestRegionsInner and assigns it to the Regions field.
+func (o *CreateAdCampaignRequest) SetRegions(v []CreateAdCampaignRequestRegionsInner) {
+	o.Regions = v
+}
+
+// GetMetros returns the Metros field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetMetros() []CreateAdCampaignRequestRegionsInner {
+	if o == nil || IsNil(o.Metros) {
+		var ret []CreateAdCampaignRequestRegionsInner
+		return ret
+	}
+	return o.Metros
+}
+
+// GetMetrosOk returns a tuple with the Metros field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetMetrosOk() ([]CreateAdCampaignRequestRegionsInner, bool) {
+	if o == nil || IsNil(o.Metros) {
+		return nil, false
+	}
+	return o.Metros, true
+}
+
+// HasMetros returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasMetros() bool {
+	if o != nil && !IsNil(o.Metros) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetros gets a reference to the given []CreateAdCampaignRequestRegionsInner and assigns it to the Metros field.
+func (o *CreateAdCampaignRequest) SetMetros(v []CreateAdCampaignRequestRegionsInner) {
+	o.Metros = v
+}
+
 // GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
-func (o *CreateAdCampaignRequest) GetPlatformSpecificData() AmazonAdsCampaignPlatformData {
+func (o *CreateAdCampaignRequest) GetPlatformSpecificData() CreateAdCampaignRequestPlatformSpecificData {
 	if o == nil || IsNil(o.PlatformSpecificData) {
-		var ret AmazonAdsCampaignPlatformData
+		var ret CreateAdCampaignRequestPlatformSpecificData
 		return ret
 	}
 	return *o.PlatformSpecificData
@@ -518,7 +619,7 @@ func (o *CreateAdCampaignRequest) GetPlatformSpecificData() AmazonAdsCampaignPla
 
 // GetPlatformSpecificDataOk returns a tuple with the PlatformSpecificData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateAdCampaignRequest) GetPlatformSpecificDataOk() (*AmazonAdsCampaignPlatformData, bool) {
+func (o *CreateAdCampaignRequest) GetPlatformSpecificDataOk() (*CreateAdCampaignRequestPlatformSpecificData, bool) {
 	if o == nil || IsNil(o.PlatformSpecificData) {
 		return nil, false
 	}
@@ -534,8 +635,8 @@ func (o *CreateAdCampaignRequest) HasPlatformSpecificData() bool {
 	return false
 }
 
-// SetPlatformSpecificData gets a reference to the given AmazonAdsCampaignPlatformData and assigns it to the PlatformSpecificData field.
-func (o *CreateAdCampaignRequest) SetPlatformSpecificData(v AmazonAdsCampaignPlatformData) {
+// SetPlatformSpecificData gets a reference to the given CreateAdCampaignRequestPlatformSpecificData and assigns it to the PlatformSpecificData field.
+func (o *CreateAdCampaignRequest) SetPlatformSpecificData(v CreateAdCampaignRequestPlatformSpecificData) {
 	o.PlatformSpecificData = &v
 }
 
@@ -838,6 +939,15 @@ func (o CreateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.EndDate) {
 		toSerialize["endDate"] = o.EndDate
+	}
+	if !IsNil(o.Countries) {
+		toSerialize["countries"] = o.Countries
+	}
+	if !IsNil(o.Regions) {
+		toSerialize["regions"] = o.Regions
+	}
+	if !IsNil(o.Metros) {
+		toSerialize["metros"] = o.Metros
 	}
 	if !IsNil(o.PlatformSpecificData) {
 		toSerialize["platformSpecificData"] = o.PlatformSpecificData

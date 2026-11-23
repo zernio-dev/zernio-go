@@ -37,9 +37,9 @@ type TargetingSpec struct {
 	// Meta only. Continents and trade blocs (`geo_locations.country_groups`), for targeting a whole region without listing its countries. Combines with `countries` rather than replacing it, and is also accepted under `excludedLocations`. Discoverable via `GET /v1/ads/targeting/search?dimension=geo&geoType=country_group`.
 	CountryGroups []string `json:"countryGroups,omitempty"`
 	// Meta only. Named points of interest to target. `key` from /v1/ads/targeting/search.
-	Places []CreateStandaloneAdRequestRegionsInnerOneOf `json:"places,omitempty"`
+	Places []CreateAdCampaignRequestRegionsInner `json:"places,omitempty"`
 	// Meta only. Named neighbourhood areas to target. `key` from /v1/ads/targeting/search.
-	Neighborhoods []CreateStandaloneAdRequestRegionsInnerOneOf `json:"neighborhoods,omitempty"`
+	Neighborhoods []CreateAdCampaignRequestRegionsInner `json:"neighborhoods,omitempty"`
 	// Point-radius (lat/lng) targeting (Meta custom_locations / Google proximity). Honoured on Meta and Google; ignored on platforms without radius support.
 	CustomLocations   []BoostPostRequestTargetingCustomLocationsInner `json:"customLocations,omitempty"`
 	ExcludedLocations *TargetingSpecExcludedLocations                 `json:"excludedLocations,omitempty"`
@@ -361,9 +361,9 @@ func (o *TargetingSpec) SetCountryGroups(v []string) {
 }
 
 // GetPlaces returns the Places field value if set, zero value otherwise.
-func (o *TargetingSpec) GetPlaces() []CreateStandaloneAdRequestRegionsInnerOneOf {
+func (o *TargetingSpec) GetPlaces() []CreateAdCampaignRequestRegionsInner {
 	if o == nil || IsNil(o.Places) {
-		var ret []CreateStandaloneAdRequestRegionsInnerOneOf
+		var ret []CreateAdCampaignRequestRegionsInner
 		return ret
 	}
 	return o.Places
@@ -371,7 +371,7 @@ func (o *TargetingSpec) GetPlaces() []CreateStandaloneAdRequestRegionsInnerOneOf
 
 // GetPlacesOk returns a tuple with the Places field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TargetingSpec) GetPlacesOk() ([]CreateStandaloneAdRequestRegionsInnerOneOf, bool) {
+func (o *TargetingSpec) GetPlacesOk() ([]CreateAdCampaignRequestRegionsInner, bool) {
 	if o == nil || IsNil(o.Places) {
 		return nil, false
 	}
@@ -387,15 +387,15 @@ func (o *TargetingSpec) HasPlaces() bool {
 	return false
 }
 
-// SetPlaces gets a reference to the given []CreateStandaloneAdRequestRegionsInnerOneOf and assigns it to the Places field.
-func (o *TargetingSpec) SetPlaces(v []CreateStandaloneAdRequestRegionsInnerOneOf) {
+// SetPlaces gets a reference to the given []CreateAdCampaignRequestRegionsInner and assigns it to the Places field.
+func (o *TargetingSpec) SetPlaces(v []CreateAdCampaignRequestRegionsInner) {
 	o.Places = v
 }
 
 // GetNeighborhoods returns the Neighborhoods field value if set, zero value otherwise.
-func (o *TargetingSpec) GetNeighborhoods() []CreateStandaloneAdRequestRegionsInnerOneOf {
+func (o *TargetingSpec) GetNeighborhoods() []CreateAdCampaignRequestRegionsInner {
 	if o == nil || IsNil(o.Neighborhoods) {
-		var ret []CreateStandaloneAdRequestRegionsInnerOneOf
+		var ret []CreateAdCampaignRequestRegionsInner
 		return ret
 	}
 	return o.Neighborhoods
@@ -403,7 +403,7 @@ func (o *TargetingSpec) GetNeighborhoods() []CreateStandaloneAdRequestRegionsInn
 
 // GetNeighborhoodsOk returns a tuple with the Neighborhoods field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TargetingSpec) GetNeighborhoodsOk() ([]CreateStandaloneAdRequestRegionsInnerOneOf, bool) {
+func (o *TargetingSpec) GetNeighborhoodsOk() ([]CreateAdCampaignRequestRegionsInner, bool) {
 	if o == nil || IsNil(o.Neighborhoods) {
 		return nil, false
 	}
@@ -419,8 +419,8 @@ func (o *TargetingSpec) HasNeighborhoods() bool {
 	return false
 }
 
-// SetNeighborhoods gets a reference to the given []CreateStandaloneAdRequestRegionsInnerOneOf and assigns it to the Neighborhoods field.
-func (o *TargetingSpec) SetNeighborhoods(v []CreateStandaloneAdRequestRegionsInnerOneOf) {
+// SetNeighborhoods gets a reference to the given []CreateAdCampaignRequestRegionsInner and assigns it to the Neighborhoods field.
+func (o *TargetingSpec) SetNeighborhoods(v []CreateAdCampaignRequestRegionsInner) {
 	o.Neighborhoods = v
 }
 

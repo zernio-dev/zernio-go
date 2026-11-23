@@ -105,9 +105,9 @@ type CreateCallAdRequest struct {
 	// Audience languages (Meta `locales`). A bare ISO 639-1 code targets all regional variants (\"en\" = all English), a region-qualified code a specific one (\"en_GB\", \"pt_BR\"). Meta numeric locale ids (e.g. \"24\" for English UK) are also accepted. Unknown values are rejected. Same format as `targeting.languages` on POST /v1/ads/boost.
 	Languages []string `json:"languages,omitempty"`
 	// Meta place keys (from GET /v1/ads/targeting/search).
-	Places []CreateStandaloneAdRequestRegionsInnerOneOf `json:"places,omitempty"`
+	Places []CreateAdCampaignRequestRegionsInner `json:"places,omitempty"`
 	// Meta neighborhood keys (from GET /v1/ads/targeting/search).
-	Neighborhoods []CreateStandaloneAdRequestRegionsInnerOneOf `json:"neighborhoods,omitempty"`
+	Neighborhoods []CreateAdCampaignRequestRegionsInner `json:"neighborhoods,omitempty"`
 	// Geo to exclude, same shape as POST /v1/ads/create (countries, countryGroups, regions, cities, zips, places, neighborhoods, customLocations).
 	ExcludedLocations map[string]interface{} `json:"excludedLocations,omitempty"`
 	// Behavior ids from /v1/ads/targeting/search?dimension=behavior. Meta: each dimension is its own flexible_spec entry (OR within, AND across). TikTok: video/creator interaction categories, sent as the ad group's actions.
@@ -1583,9 +1583,9 @@ func (o *CreateCallAdRequest) SetLanguages(v []string) {
 }
 
 // GetPlaces returns the Places field value if set, zero value otherwise.
-func (o *CreateCallAdRequest) GetPlaces() []CreateStandaloneAdRequestRegionsInnerOneOf {
+func (o *CreateCallAdRequest) GetPlaces() []CreateAdCampaignRequestRegionsInner {
 	if o == nil || IsNil(o.Places) {
-		var ret []CreateStandaloneAdRequestRegionsInnerOneOf
+		var ret []CreateAdCampaignRequestRegionsInner
 		return ret
 	}
 	return o.Places
@@ -1593,7 +1593,7 @@ func (o *CreateCallAdRequest) GetPlaces() []CreateStandaloneAdRequestRegionsInne
 
 // GetPlacesOk returns a tuple with the Places field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateCallAdRequest) GetPlacesOk() ([]CreateStandaloneAdRequestRegionsInnerOneOf, bool) {
+func (o *CreateCallAdRequest) GetPlacesOk() ([]CreateAdCampaignRequestRegionsInner, bool) {
 	if o == nil || IsNil(o.Places) {
 		return nil, false
 	}
@@ -1609,15 +1609,15 @@ func (o *CreateCallAdRequest) HasPlaces() bool {
 	return false
 }
 
-// SetPlaces gets a reference to the given []CreateStandaloneAdRequestRegionsInnerOneOf and assigns it to the Places field.
-func (o *CreateCallAdRequest) SetPlaces(v []CreateStandaloneAdRequestRegionsInnerOneOf) {
+// SetPlaces gets a reference to the given []CreateAdCampaignRequestRegionsInner and assigns it to the Places field.
+func (o *CreateCallAdRequest) SetPlaces(v []CreateAdCampaignRequestRegionsInner) {
 	o.Places = v
 }
 
 // GetNeighborhoods returns the Neighborhoods field value if set, zero value otherwise.
-func (o *CreateCallAdRequest) GetNeighborhoods() []CreateStandaloneAdRequestRegionsInnerOneOf {
+func (o *CreateCallAdRequest) GetNeighborhoods() []CreateAdCampaignRequestRegionsInner {
 	if o == nil || IsNil(o.Neighborhoods) {
-		var ret []CreateStandaloneAdRequestRegionsInnerOneOf
+		var ret []CreateAdCampaignRequestRegionsInner
 		return ret
 	}
 	return o.Neighborhoods
@@ -1625,7 +1625,7 @@ func (o *CreateCallAdRequest) GetNeighborhoods() []CreateStandaloneAdRequestRegi
 
 // GetNeighborhoodsOk returns a tuple with the Neighborhoods field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateCallAdRequest) GetNeighborhoodsOk() ([]CreateStandaloneAdRequestRegionsInnerOneOf, bool) {
+func (o *CreateCallAdRequest) GetNeighborhoodsOk() ([]CreateAdCampaignRequestRegionsInner, bool) {
 	if o == nil || IsNil(o.Neighborhoods) {
 		return nil, false
 	}
@@ -1641,8 +1641,8 @@ func (o *CreateCallAdRequest) HasNeighborhoods() bool {
 	return false
 }
 
-// SetNeighborhoods gets a reference to the given []CreateStandaloneAdRequestRegionsInnerOneOf and assigns it to the Neighborhoods field.
-func (o *CreateCallAdRequest) SetNeighborhoods(v []CreateStandaloneAdRequestRegionsInnerOneOf) {
+// SetNeighborhoods gets a reference to the given []CreateAdCampaignRequestRegionsInner and assigns it to the Neighborhoods field.
+func (o *CreateCallAdRequest) SetNeighborhoods(v []CreateAdCampaignRequestRegionsInner) {
 	o.Neighborhoods = v
 }
 

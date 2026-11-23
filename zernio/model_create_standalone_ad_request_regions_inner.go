@@ -19,14 +19,14 @@ import (
 
 // CreateStandaloneAdRequestRegionsInner - struct for CreateStandaloneAdRequestRegionsInner
 type CreateStandaloneAdRequestRegionsInner struct {
-	CreateStandaloneAdRequestRegionsInnerOneOf *CreateStandaloneAdRequestRegionsInnerOneOf
-	String                                     *string
+	CreateAdCampaignRequestRegionsInner *CreateAdCampaignRequestRegionsInner
+	String                              *string
 }
 
-// CreateStandaloneAdRequestRegionsInnerOneOfAsCreateStandaloneAdRequestRegionsInner is a convenience function that returns CreateStandaloneAdRequestRegionsInnerOneOf wrapped in CreateStandaloneAdRequestRegionsInner
-func CreateStandaloneAdRequestRegionsInnerOneOfAsCreateStandaloneAdRequestRegionsInner(v *CreateStandaloneAdRequestRegionsInnerOneOf) CreateStandaloneAdRequestRegionsInner {
+// CreateAdCampaignRequestRegionsInnerAsCreateStandaloneAdRequestRegionsInner is a convenience function that returns CreateAdCampaignRequestRegionsInner wrapped in CreateStandaloneAdRequestRegionsInner
+func CreateAdCampaignRequestRegionsInnerAsCreateStandaloneAdRequestRegionsInner(v *CreateAdCampaignRequestRegionsInner) CreateStandaloneAdRequestRegionsInner {
 	return CreateStandaloneAdRequestRegionsInner{
-		CreateStandaloneAdRequestRegionsInnerOneOf: v,
+		CreateAdCampaignRequestRegionsInner: v,
 	}
 }
 
@@ -41,21 +41,21 @@ func StringAsCreateStandaloneAdRequestRegionsInner(v *string) CreateStandaloneAd
 func (dst *CreateStandaloneAdRequestRegionsInner) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
-	// try to unmarshal data into CreateStandaloneAdRequestRegionsInnerOneOf
-	err = newStrictDecoder(data).Decode(&dst.CreateStandaloneAdRequestRegionsInnerOneOf)
+	// try to unmarshal data into CreateAdCampaignRequestRegionsInner
+	err = newStrictDecoder(data).Decode(&dst.CreateAdCampaignRequestRegionsInner)
 	if err == nil {
-		jsonCreateStandaloneAdRequestRegionsInnerOneOf, _ := json.Marshal(dst.CreateStandaloneAdRequestRegionsInnerOneOf)
-		if string(jsonCreateStandaloneAdRequestRegionsInnerOneOf) == "{}" { // empty struct
-			dst.CreateStandaloneAdRequestRegionsInnerOneOf = nil
+		jsonCreateAdCampaignRequestRegionsInner, _ := json.Marshal(dst.CreateAdCampaignRequestRegionsInner)
+		if string(jsonCreateAdCampaignRequestRegionsInner) == "{}" { // empty struct
+			dst.CreateAdCampaignRequestRegionsInner = nil
 		} else {
-			if err = validator.Validate(dst.CreateStandaloneAdRequestRegionsInnerOneOf); err != nil {
-				dst.CreateStandaloneAdRequestRegionsInnerOneOf = nil
+			if err = validator.Validate(dst.CreateAdCampaignRequestRegionsInner); err != nil {
+				dst.CreateAdCampaignRequestRegionsInner = nil
 			} else {
 				match++
 			}
 		}
 	} else {
-		dst.CreateStandaloneAdRequestRegionsInnerOneOf = nil
+		dst.CreateAdCampaignRequestRegionsInner = nil
 	}
 
 	// try to unmarshal data into String
@@ -77,7 +77,7 @@ func (dst *CreateStandaloneAdRequestRegionsInner) UnmarshalJSON(data []byte) err
 
 	if match > 1 { // more than 1 match
 		// reset to nil
-		dst.CreateStandaloneAdRequestRegionsInnerOneOf = nil
+		dst.CreateAdCampaignRequestRegionsInner = nil
 		dst.String = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(CreateStandaloneAdRequestRegionsInner)")
@@ -90,8 +90,8 @@ func (dst *CreateStandaloneAdRequestRegionsInner) UnmarshalJSON(data []byte) err
 
 // Marshal data from the first non-nil pointers in the struct to JSON
 func (src CreateStandaloneAdRequestRegionsInner) MarshalJSON() ([]byte, error) {
-	if src.CreateStandaloneAdRequestRegionsInnerOneOf != nil {
-		return json.Marshal(&src.CreateStandaloneAdRequestRegionsInnerOneOf)
+	if src.CreateAdCampaignRequestRegionsInner != nil {
+		return json.Marshal(&src.CreateAdCampaignRequestRegionsInner)
 	}
 
 	if src.String != nil {
@@ -106,8 +106,8 @@ func (obj *CreateStandaloneAdRequestRegionsInner) GetActualInstance() interface{
 	if obj == nil {
 		return nil
 	}
-	if obj.CreateStandaloneAdRequestRegionsInnerOneOf != nil {
-		return obj.CreateStandaloneAdRequestRegionsInnerOneOf
+	if obj.CreateAdCampaignRequestRegionsInner != nil {
+		return obj.CreateAdCampaignRequestRegionsInner
 	}
 
 	if obj.String != nil {
@@ -120,8 +120,8 @@ func (obj *CreateStandaloneAdRequestRegionsInner) GetActualInstance() interface{
 
 // Get the actual instance value
 func (obj CreateStandaloneAdRequestRegionsInner) GetActualInstanceValue() interface{} {
-	if obj.CreateStandaloneAdRequestRegionsInnerOneOf != nil {
-		return *obj.CreateStandaloneAdRequestRegionsInnerOneOf
+	if obj.CreateAdCampaignRequestRegionsInner != nil {
+		return *obj.CreateAdCampaignRequestRegionsInner
 	}
 
 	if obj.String != nil {

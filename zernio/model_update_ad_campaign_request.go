@@ -26,11 +26,11 @@ type UpdateAdCampaignRequest struct {
 	Platform string `json:"platform"`
 	// **Meta only.** Zernio SocialAccount id owning the ad account. Needed only for an EMPTY campaign (zero ads); ignored otherwise.
 	AccountId *string `json:"accountId,omitempty"`
-	// **Meta + Google.**  - Meta: the campaign default that ad sets inherit unless they override it. - Google: the campaign's own bidding strategy. LOWEST_COST_WITHOUT_CAP = Maximize Conversions, COST_CAP + bidAmount = Target CPA, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS, LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling. - Google: portfolioBidStrategyId attaches a portfolio strategy instead.
+	// **Meta, Google and AppLovin.**  - Meta: the campaign default that ad sets inherit unless they override it. - Google: the campaign's own bidding strategy. LOWEST_COST_WITHOUT_CAP = Maximize Conversions, COST_CAP + bidAmount = Target CPA, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS, LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling. - Google: portfolioBidStrategyId attaches a portfolio strategy instead. - AppLovin: sets the campaign goal value; the goal type itself cannot change. COST_CAP + bidAmount for a CPI, CPE or CPP goal, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor for a ROAS goal. - AppLovin app limits, checked before AppLovin is called: CPI below 200, CPE and CPP below 500, AD_ROAS at least 0.1, CHK_ROAS at least 0.01, BLD_ROAS at least 0.05. - AppLovin: a goal set per country, or the other goal family, is a 422.
 	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
-	// **Google only.** Whole currency units (USD: 12 = $12.00). Max CPC for LOWEST_COST_WITH_BID_CAP, CPA target for COST_CAP; required for both.
+	// **Google and AppLovin.** Whole currency units (USD: 12 = $12.00). Google: max CPC for LOWEST_COST_WITH_BID_CAP, CPA target for COST_CAP; required for both. AppLovin: the CPI, CPE or CPP goal value, with COST_CAP.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
-	// **Google only.** Decimal ROAS multiplier (2.0 = 2.0x), required for LOWEST_COST_WITH_MIN_ROAS.
+	// **Google and AppLovin.** Decimal ROAS multiplier (2.0 = 2.0x), required for LOWEST_COST_WITH_MIN_ROAS. AppLovin: the ROAS goal value.
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 	// **Google only.** Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) instead of setting bidStrategy. Exclusive with bidStrategy.
 	PortfolioBidStrategyId *string `json:"portfolioBidStrategyId,omitempty" validate:"regexp=^\\\\d+$"`
@@ -47,7 +47,7 @@ type UpdateAdCampaignRequest struct {
 	// **Google only.** Move the campaign onto this shared budget (id from GET /v1/ads/shared-budgets), or null to move it back onto a budget of its own sized by `budget`.
 	SharedBudgetId NullableString                 `json:"sharedBudgetId,omitempty" validate:"regexp=^\\\\d+$"`
 	Budget         *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
-	// **Meta and Reddit.** Rename the campaign.
+	// **Meta, Reddit and AppLovin.** Rename the campaign.
 	Name                 *string                                      `json:"name,omitempty"`
 	PlatformSpecificData *UpdateAdCampaignRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
 }

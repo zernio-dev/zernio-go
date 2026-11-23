@@ -17,9 +17,10 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// CreateStandaloneAdRequestPlatformSpecificData - Platform-specific options. The platform is derived from `accountId`; options for a different platform return a 400. LinkedIn (campaign bidding and delivery controls), Meta (the bid trio) and Amazon Ads (required: the ad product, products, creative and targeting) have options today.  **Amazon Ads**: see `AmazonAdsPlatformData`. Amazon has no dry run, so `validateOnly` returns a 501.  **Meta**  - `bidStrategy`, `bidAmount` and `roasAverageFloor` may be sent here instead of at the root (the preferred home going forward). Sending them in BOTH places returns a 400 (`mutually_exclusive_fields`). - Sending any bid field in `adSetId` attach mode is a 400 (the ad set already has its bid). - `dailyMinSpendTarget` / `lifetimeMinSpendTarget` set the new ad set's minimum spend and live here only; also rejected in `adSetId` attach mode.
+// CreateStandaloneAdRequestPlatformSpecificData - Platform-specific options. The platform is derived from `accountId`; options for a different platform return a 400. LinkedIn (campaign bidding and delivery controls), Meta (the bid trio) Amazon Ads (required: the ad product, products, creative and targeting) and AppLovin (the campaign and creative set) have options today.  **Amazon Ads**: see `AmazonAdsPlatformData`. Amazon has no dry run, so `validateOnly` returns a 501.  **AppLovin**  - A new campaign needs `campaignType` (`APP` or `WEB`), the goal and, for an app, `os`, `packageName` and `tracking`. With `existingCampaignId`, only the creative set fields (`assets`, `languages`, `brandInfo`) apply. - Zernio checks every documented AppLovin rule (goal value limits, ROAS day targets, US-only regions and metros, the asset combination, brand info lengths) before calling AppLovin, because 100 refused calls in five minutes lock the AppLovin account for a day. `validateOnly` runs those checks and calls nothing.  **Meta**  - `bidStrategy`, `bidAmount` and `roasAverageFloor` may be sent here instead of at the root (the preferred home going forward). Sending them in BOTH places returns a 400 (`mutually_exclusive_fields`). - Sending any bid field in `adSetId` attach mode is a 400 (the ad set already has its bid). - `dailyMinSpendTarget` / `lifetimeMinSpendTarget` set the new ad set's minimum spend and live here only; also rejected in `adSetId` attach mode.
 type CreateStandaloneAdRequestPlatformSpecificData struct {
 	AmazonAdsPlatformData   *AmazonAdsPlatformData
+	AppLovinAdsPlatformData *AppLovinAdsPlatformData
 	LinkedInAdsPlatformData *LinkedInAdsPlatformData
 	MetaAdsPlatformData     *MetaAdsPlatformData
 }
@@ -28,6 +29,13 @@ type CreateStandaloneAdRequestPlatformSpecificData struct {
 func AmazonAdsPlatformDataAsCreateStandaloneAdRequestPlatformSpecificData(v *AmazonAdsPlatformData) CreateStandaloneAdRequestPlatformSpecificData {
 	return CreateStandaloneAdRequestPlatformSpecificData{
 		AmazonAdsPlatformData: v,
+	}
+}
+
+// AppLovinAdsPlatformDataAsCreateStandaloneAdRequestPlatformSpecificData is a convenience function that returns AppLovinAdsPlatformData wrapped in CreateStandaloneAdRequestPlatformSpecificData
+func AppLovinAdsPlatformDataAsCreateStandaloneAdRequestPlatformSpecificData(v *AppLovinAdsPlatformData) CreateStandaloneAdRequestPlatformSpecificData {
+	return CreateStandaloneAdRequestPlatformSpecificData{
+		AppLovinAdsPlatformData: v,
 	}
 }
 
@@ -64,6 +72,23 @@ func (dst *CreateStandaloneAdRequestPlatformSpecificData) UnmarshalJSON(data []b
 		}
 	} else {
 		dst.AmazonAdsPlatformData = nil
+	}
+
+	// try to unmarshal data into AppLovinAdsPlatformData
+	err = newStrictDecoder(data).Decode(&dst.AppLovinAdsPlatformData)
+	if err == nil {
+		jsonAppLovinAdsPlatformData, _ := json.Marshal(dst.AppLovinAdsPlatformData)
+		if string(jsonAppLovinAdsPlatformData) == "{}" { // empty struct
+			dst.AppLovinAdsPlatformData = nil
+		} else {
+			if err = validator.Validate(dst.AppLovinAdsPlatformData); err != nil {
+				dst.AppLovinAdsPlatformData = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.AppLovinAdsPlatformData = nil
 	}
 
 	// try to unmarshal data into LinkedInAdsPlatformData
@@ -103,6 +128,7 @@ func (dst *CreateStandaloneAdRequestPlatformSpecificData) UnmarshalJSON(data []b
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.AmazonAdsPlatformData = nil
+		dst.AppLovinAdsPlatformData = nil
 		dst.LinkedInAdsPlatformData = nil
 		dst.MetaAdsPlatformData = nil
 
@@ -118,6 +144,10 @@ func (dst *CreateStandaloneAdRequestPlatformSpecificData) UnmarshalJSON(data []b
 func (src CreateStandaloneAdRequestPlatformSpecificData) MarshalJSON() ([]byte, error) {
 	if src.AmazonAdsPlatformData != nil {
 		return json.Marshal(&src.AmazonAdsPlatformData)
+	}
+
+	if src.AppLovinAdsPlatformData != nil {
+		return json.Marshal(&src.AppLovinAdsPlatformData)
 	}
 
 	if src.LinkedInAdsPlatformData != nil {
@@ -140,6 +170,10 @@ func (obj *CreateStandaloneAdRequestPlatformSpecificData) GetActualInstance() in
 		return obj.AmazonAdsPlatformData
 	}
 
+	if obj.AppLovinAdsPlatformData != nil {
+		return obj.AppLovinAdsPlatformData
+	}
+
 	if obj.LinkedInAdsPlatformData != nil {
 		return obj.LinkedInAdsPlatformData
 	}
@@ -156,6 +190,10 @@ func (obj *CreateStandaloneAdRequestPlatformSpecificData) GetActualInstance() in
 func (obj CreateStandaloneAdRequestPlatformSpecificData) GetActualInstanceValue() interface{} {
 	if obj.AmazonAdsPlatformData != nil {
 		return *obj.AmazonAdsPlatformData
+	}
+
+	if obj.AppLovinAdsPlatformData != nil {
+		return *obj.AppLovinAdsPlatformData
 	}
 
 	if obj.LinkedInAdsPlatformData != nil {

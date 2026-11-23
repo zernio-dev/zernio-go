@@ -20,12 +20,18 @@ import (
 // checks if the ConnectAppLovinAdsCredentialsRequest type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ConnectAppLovinAdsCredentialsRequest{}
 
-// ConnectAppLovinAdsCredentialsRequest struct for ConnectAppLovinAdsCredentialsRequest
+// ConnectAppLovinAdsCredentialsRequest Send apiKey with eventKey, campaignApiKey with accountId, or all four. Each pair goes together (400 otherwise).
 type ConnectAppLovinAdsCredentialsRequest struct {
-	// Conversion API key from the Keys page of Axon Ads Manager.
-	ApiKey string `json:"apiKey"`
-	// Event Key from the Keys page of Axon Ads Manager: 8 to 128 letters, digits, dots, dashes or underscores.
-	EventKey string `json:"eventKey"`
+	// Conversion API key from the Keys page of AppLovin Axon Ads Manager. Sent with eventKey.
+	ApiKey *string `json:"apiKey,omitempty"`
+	// Event Key from the Keys page of AppLovin Axon Ads Manager: 8 to 128 letters, digits, dots, dashes or underscores. Sent with apiKey.
+	EventKey *string `json:"eventKey,omitempty"`
+	// Campaign Management API key from the Keys page of ads.axon.ai (visible to account Admins only). Sent with accountId. Lets Zernio read, create and manage campaigns and creative sets.
+	CampaignApiKey *string `json:"campaignApiKey,omitempty"`
+	// Numeric AppLovin account id (Account menu, then Go to settings, in ads.axon.ai). Sent with campaignApiKey.
+	AccountId *string `json:"accountId,omitempty" validate:"regexp=^\\\\d{1,20}$"`
+	// The Zernio id of the AppLovin connection being reconnected (a connection on this profile). The keys sent update that connection, which keeps its identity, instead of creating one: send it to add or replace keys on an existing connection.
+	ReconnectAccountId *string `json:"reconnectAccountId,omitempty"`
 	// Optional Report Key from the Keys page of your AppLovin account. With it, Zernio syncs AppLovin spend per campaign.
 	ReportKey *string `json:"reportKey,omitempty"`
 	// Optional display name for the account.
@@ -44,10 +50,8 @@ type _ConnectAppLovinAdsCredentialsRequest ConnectAppLovinAdsCredentialsRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConnectAppLovinAdsCredentialsRequest(apiKey string, eventKey string, profileId string) *ConnectAppLovinAdsCredentialsRequest {
+func NewConnectAppLovinAdsCredentialsRequest(profileId string) *ConnectAppLovinAdsCredentialsRequest {
 	this := ConnectAppLovinAdsCredentialsRequest{}
-	this.ApiKey = apiKey
-	this.EventKey = eventKey
 	this.ProfileId = profileId
 	return &this
 }
@@ -60,52 +64,164 @@ func NewConnectAppLovinAdsCredentialsRequestWithDefaults() *ConnectAppLovinAdsCr
 	return &this
 }
 
-// GetApiKey returns the ApiKey field value
+// GetApiKey returns the ApiKey field value if set, zero value otherwise.
 func (o *ConnectAppLovinAdsCredentialsRequest) GetApiKey() string {
-	if o == nil {
+	if o == nil || IsNil(o.ApiKey) {
 		var ret string
 		return ret
 	}
-
-	return o.ApiKey
+	return *o.ApiKey
 }
 
-// GetApiKeyOk returns a tuple with the ApiKey field value
+// GetApiKeyOk returns a tuple with the ApiKey field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectAppLovinAdsCredentialsRequest) GetApiKeyOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.ApiKey) {
 		return nil, false
 	}
-	return &o.ApiKey, true
+	return o.ApiKey, true
 }
 
-// SetApiKey sets field value
+// HasApiKey returns a boolean if a field has been set.
+func (o *ConnectAppLovinAdsCredentialsRequest) HasApiKey() bool {
+	if o != nil && !IsNil(o.ApiKey) {
+		return true
+	}
+
+	return false
+}
+
+// SetApiKey gets a reference to the given string and assigns it to the ApiKey field.
 func (o *ConnectAppLovinAdsCredentialsRequest) SetApiKey(v string) {
-	o.ApiKey = v
+	o.ApiKey = &v
 }
 
-// GetEventKey returns the EventKey field value
+// GetEventKey returns the EventKey field value if set, zero value otherwise.
 func (o *ConnectAppLovinAdsCredentialsRequest) GetEventKey() string {
-	if o == nil {
+	if o == nil || IsNil(o.EventKey) {
 		var ret string
 		return ret
 	}
-
-	return o.EventKey
+	return *o.EventKey
 }
 
-// GetEventKeyOk returns a tuple with the EventKey field value
+// GetEventKeyOk returns a tuple with the EventKey field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectAppLovinAdsCredentialsRequest) GetEventKeyOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.EventKey) {
 		return nil, false
 	}
-	return &o.EventKey, true
+	return o.EventKey, true
 }
 
-// SetEventKey sets field value
+// HasEventKey returns a boolean if a field has been set.
+func (o *ConnectAppLovinAdsCredentialsRequest) HasEventKey() bool {
+	if o != nil && !IsNil(o.EventKey) {
+		return true
+	}
+
+	return false
+}
+
+// SetEventKey gets a reference to the given string and assigns it to the EventKey field.
 func (o *ConnectAppLovinAdsCredentialsRequest) SetEventKey(v string) {
-	o.EventKey = v
+	o.EventKey = &v
+}
+
+// GetCampaignApiKey returns the CampaignApiKey field value if set, zero value otherwise.
+func (o *ConnectAppLovinAdsCredentialsRequest) GetCampaignApiKey() string {
+	if o == nil || IsNil(o.CampaignApiKey) {
+		var ret string
+		return ret
+	}
+	return *o.CampaignApiKey
+}
+
+// GetCampaignApiKeyOk returns a tuple with the CampaignApiKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectAppLovinAdsCredentialsRequest) GetCampaignApiKeyOk() (*string, bool) {
+	if o == nil || IsNil(o.CampaignApiKey) {
+		return nil, false
+	}
+	return o.CampaignApiKey, true
+}
+
+// HasCampaignApiKey returns a boolean if a field has been set.
+func (o *ConnectAppLovinAdsCredentialsRequest) HasCampaignApiKey() bool {
+	if o != nil && !IsNil(o.CampaignApiKey) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignApiKey gets a reference to the given string and assigns it to the CampaignApiKey field.
+func (o *ConnectAppLovinAdsCredentialsRequest) SetCampaignApiKey(v string) {
+	o.CampaignApiKey = &v
+}
+
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *ConnectAppLovinAdsCredentialsRequest) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectAppLovinAdsCredentialsRequest) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *ConnectAppLovinAdsCredentialsRequest) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *ConnectAppLovinAdsCredentialsRequest) SetAccountId(v string) {
+	o.AccountId = &v
+}
+
+// GetReconnectAccountId returns the ReconnectAccountId field value if set, zero value otherwise.
+func (o *ConnectAppLovinAdsCredentialsRequest) GetReconnectAccountId() string {
+	if o == nil || IsNil(o.ReconnectAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.ReconnectAccountId
+}
+
+// GetReconnectAccountIdOk returns a tuple with the ReconnectAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectAppLovinAdsCredentialsRequest) GetReconnectAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ReconnectAccountId) {
+		return nil, false
+	}
+	return o.ReconnectAccountId, true
+}
+
+// HasReconnectAccountId returns a boolean if a field has been set.
+func (o *ConnectAppLovinAdsCredentialsRequest) HasReconnectAccountId() bool {
+	if o != nil && !IsNil(o.ReconnectAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetReconnectAccountId gets a reference to the given string and assigns it to the ReconnectAccountId field.
+func (o *ConnectAppLovinAdsCredentialsRequest) SetReconnectAccountId(v string) {
+	o.ReconnectAccountId = &v
 }
 
 // GetReportKey returns the ReportKey field value if set, zero value otherwise.
@@ -270,8 +386,21 @@ func (o ConnectAppLovinAdsCredentialsRequest) MarshalJSON() ([]byte, error) {
 
 func (o ConnectAppLovinAdsCredentialsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["apiKey"] = o.ApiKey
-	toSerialize["eventKey"] = o.EventKey
+	if !IsNil(o.ApiKey) {
+		toSerialize["apiKey"] = o.ApiKey
+	}
+	if !IsNil(o.EventKey) {
+		toSerialize["eventKey"] = o.EventKey
+	}
+	if !IsNil(o.CampaignApiKey) {
+		toSerialize["campaignApiKey"] = o.CampaignApiKey
+	}
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
+	}
+	if !IsNil(o.ReconnectAccountId) {
+		toSerialize["reconnectAccountId"] = o.ReconnectAccountId
+	}
 	if !IsNil(o.ReportKey) {
 		toSerialize["reportKey"] = o.ReportKey
 	}
@@ -293,8 +422,6 @@ func (o *ConnectAppLovinAdsCredentialsRequest) UnmarshalJSON(data []byte) (err e
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"apiKey",
-		"eventKey",
 		"profileId",
 	}
 

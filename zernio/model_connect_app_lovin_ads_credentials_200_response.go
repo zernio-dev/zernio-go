@@ -20,10 +20,13 @@ var _ MappedNullable = &ConnectAppLovinAdsCredentials200Response{}
 
 // ConnectAppLovinAdsCredentials200Response struct for ConnectAppLovinAdsCredentials200Response
 type ConnectAppLovinAdsCredentials200Response struct {
-	AccountId   *string `json:"accountId,omitempty"`
-	EventKey    *string `json:"eventKey,omitempty"`
-	AccountName *string `json:"accountName,omitempty"`
-	RedirectUrl *string `json:"redirectUrl,omitempty"`
+	AccountId *string `json:"accountId,omitempty"`
+	// Present when the request sent the conversion keys.
+	EventKey *string `json:"eventKey,omitempty"`
+	// The AppLovin account id. Present when the request sent the Campaign Management keys.
+	AxonAccountId *string `json:"axonAccountId,omitempty"`
+	AccountName   *string `json:"accountName,omitempty"`
+	RedirectUrl   *string `json:"redirectUrl,omitempty"`
 }
 
 // NewConnectAppLovinAdsCredentials200Response instantiates a new ConnectAppLovinAdsCredentials200Response object
@@ -107,6 +110,38 @@ func (o *ConnectAppLovinAdsCredentials200Response) SetEventKey(v string) {
 	o.EventKey = &v
 }
 
+// GetAxonAccountId returns the AxonAccountId field value if set, zero value otherwise.
+func (o *ConnectAppLovinAdsCredentials200Response) GetAxonAccountId() string {
+	if o == nil || IsNil(o.AxonAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AxonAccountId
+}
+
+// GetAxonAccountIdOk returns a tuple with the AxonAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectAppLovinAdsCredentials200Response) GetAxonAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AxonAccountId) {
+		return nil, false
+	}
+	return o.AxonAccountId, true
+}
+
+// HasAxonAccountId returns a boolean if a field has been set.
+func (o *ConnectAppLovinAdsCredentials200Response) HasAxonAccountId() bool {
+	if o != nil && !IsNil(o.AxonAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAxonAccountId gets a reference to the given string and assigns it to the AxonAccountId field.
+func (o *ConnectAppLovinAdsCredentials200Response) SetAxonAccountId(v string) {
+	o.AxonAccountId = &v
+}
+
 // GetAccountName returns the AccountName field value if set, zero value otherwise.
 func (o *ConnectAppLovinAdsCredentials200Response) GetAccountName() string {
 	if o == nil || IsNil(o.AccountName) {
@@ -186,6 +221,9 @@ func (o ConnectAppLovinAdsCredentials200Response) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.EventKey) {
 		toSerialize["eventKey"] = o.EventKey
+	}
+	if !IsNil(o.AxonAccountId) {
+		toSerialize["axonAccountId"] = o.AxonAccountId
 	}
 	if !IsNil(o.AccountName) {
 		toSerialize["accountName"] = o.AccountName
