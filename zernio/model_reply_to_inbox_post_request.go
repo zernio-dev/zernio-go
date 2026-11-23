@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.772.0
+API version: 1.774.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type ReplyToInboxPostRequest struct {
 	Message string `json:"message"`
 	// (Facebook only) URL of an image to attach, publishing a photo comment alongside the text. The URL must be publicly accessible so Meta can fetch it. Returns 400 for other platforms.
 	AttachmentUrl *string `json:"attachmentUrl,omitempty"`
+	// (Facebook only) How Facebook publishes `attachmentUrl`: `image` (default) as a photo comment, `gif` as an animated GIF comment. A GIF sent as `image` is stored as a still photo. Requires `attachmentUrl`.
+	AttachmentType *string `json:"attachmentType,omitempty"`
 	// Reply to specific comment (optional)
 	CommentId *string `json:"commentId,omitempty"`
 	// (LinkedIn only) When true, the reply starts with an @mention of the author of `commentId` (a member or a page), tagged with their URN and the name LinkedIn returns for them. Requires `commentId`.  - Returns 400 `platform_not_supported` on other platforms. - Returns 400 `linkedin_mention_name_unavailable` with `details.authorUrn` when LinkedIn does not return the author's name (for example a page the account does not administer); mention them in `message` as @[Name](urn) instead. - If LinkedIn rejects any mention in the reply, it is posted once more with every mention as plain text.
@@ -138,6 +140,38 @@ func (o *ReplyToInboxPostRequest) HasAttachmentUrl() bool {
 // SetAttachmentUrl gets a reference to the given string and assigns it to the AttachmentUrl field.
 func (o *ReplyToInboxPostRequest) SetAttachmentUrl(v string) {
 	o.AttachmentUrl = &v
+}
+
+// GetAttachmentType returns the AttachmentType field value if set, zero value otherwise.
+func (o *ReplyToInboxPostRequest) GetAttachmentType() string {
+	if o == nil || IsNil(o.AttachmentType) {
+		var ret string
+		return ret
+	}
+	return *o.AttachmentType
+}
+
+// GetAttachmentTypeOk returns a tuple with the AttachmentType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ReplyToInboxPostRequest) GetAttachmentTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.AttachmentType) {
+		return nil, false
+	}
+	return o.AttachmentType, true
+}
+
+// HasAttachmentType returns a boolean if a field has been set.
+func (o *ReplyToInboxPostRequest) HasAttachmentType() bool {
+	if o != nil && !IsNil(o.AttachmentType) {
+		return true
+	}
+
+	return false
+}
+
+// SetAttachmentType gets a reference to the given string and assigns it to the AttachmentType field.
+func (o *ReplyToInboxPostRequest) SetAttachmentType(v string) {
+	o.AttachmentType = &v
 }
 
 // GetCommentId returns the CommentId field value if set, zero value otherwise.
@@ -314,6 +348,9 @@ func (o ReplyToInboxPostRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["message"] = o.Message
 	if !IsNil(o.AttachmentUrl) {
 		toSerialize["attachmentUrl"] = o.AttachmentUrl
+	}
+	if !IsNil(o.AttachmentType) {
+		toSerialize["attachmentType"] = o.AttachmentType
 	}
 	if !IsNil(o.CommentId) {
 		toSerialize["commentId"] = o.CommentId

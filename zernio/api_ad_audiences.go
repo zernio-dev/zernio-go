@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.772.0
+API version: 1.774.0
 Contact: support@zernio.com
 */
 
@@ -62,10 +62,11 @@ Keys a platform does not use are ignored. A row with none of the keys that platf
 
 ### Large lists
 
-Send lists over 10,000 people as several requests to the same audience: each one adds to it, except on LinkedIn.
+Send lists over 10,000 people as several requests to the same audience: each one adds to it.
 
 - **TikTok and Pinterest**: the first upload creates the audience on the platform, later uploads add to it. TikTok allows 24 updates per audience per day.
-- **LinkedIn**: each upload replaces the whole list (a list-upload segment holds one list), so send the full list in one request.
+- **LinkedIn**: LinkedIn takes a list as one file, so Zernio keeps the hashed emails sent to each list and uploads the whole list about a minute after the requests stop (every 15 minutes while they keep coming).
+- **LinkedIn limits**: a list holds at most 300,000 contacts (more returns 422 and changes nothing). LinkedIn matches each upload in up to 48 hours. A list last uploaded before 2026-11-23 starts again from its next upload.
 
 ### Reddit
 
@@ -853,13 +854,14 @@ func (r AdAudiencesAPIRemoveUsersFromAdAudienceRequest) Execute() (*RemoveUsersF
 /*
 RemoveUsersFromAdAudience Remove users from audience
 
-Removes people from a Meta or Reddit customer list audience. Same body as
+Removes people from a Meta, Reddit or LinkedIn customer list audience. Same body as
 `POST /v1/ads/audiences/{audienceId}/users`: plaintext keys are normalized and SHA-256 hashed
 exactly like an upload and hashed keys are sent as is, so a row removes the person it added.
 
-Meta and Reddit only, customer_list only. Every other platform returns 422 with code `feature_not_available`,
-and every other audience type returns 422. Max 10,000 users per request. The platform applies the removal
-asynchronously, so the audience size does not drop immediately. On Reddit `invalidEntrySamples` is always empty.
+- Meta, Reddit and LinkedIn customer_list audiences only. Every other platform returns 422 with code `feature_not_available`, and every other audience type returns 422.
+- Max 10,000 users per request. The platform applies the removal asynchronously, so the audience size does not drop immediately.
+- LinkedIn removes them from the list Zernio keeps and uploads what is left about a minute later.
+- On Reddit `invalidEntrySamples` is always empty.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param audienceId The Zernio audience id (the id field of GET /v1/ads/audiences), not the platform segment id.
