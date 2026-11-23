@@ -197,6 +197,8 @@ model_ad_rule_schedule.go
 model_ad_rule_schedule_quiet_hours.go
 model_ad_rule_schedule_times_inner.go
 model_ad_schedule_window.go
+model_ad_set_metric_row.go
+model_ad_set_metrics_response.go
 model_ad_status.go
 model_ad_tracking.go
 model_ad_tree_ad_set.go

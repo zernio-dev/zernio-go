@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.781.0
+API version: 1.782.0
 Contact: support@zernio.com
 */
 
@@ -684,6 +684,267 @@ func (a *MetricsAPIService) GetAdMetricsExecute(r MetricsAPIGetAdMetricsRequest)
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v InlineObject
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 503 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type MetricsAPIGetAdSetMetricsRequest struct {
+	ctx         context.Context
+	ApiService  *MetricsAPIService
+	fromDate    *string
+	toDate      *string
+	metrics     *string
+	limit       *int32
+	cursor      *string
+	adSetId     *string
+	campaignId  *string
+	granularity *string
+}
+
+// First day, inclusive.
+func (r MetricsAPIGetAdSetMetricsRequest) FromDate(fromDate string) MetricsAPIGetAdSetMetricsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// Last day, inclusive. The range is at most 400 days.
+func (r MetricsAPIGetAdSetMetricsRequest) ToDate(toDate string) MetricsAPIGetAdSetMetricsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Comma-separated delivery metrics, as GET /v1/metrics/catalog?entity&#x3D;ad-sets lists them (spend, impressions, reach, clicks, ctr, cpc, cpm, conversions, roas...).
+func (r MetricsAPIGetAdSetMetricsRequest) Metrics(metrics string) MetricsAPIGetAdSetMetricsRequest {
+	r.metrics = &metrics
+	return r
+}
+
+// With campaignId, ad sets per page, 50 by default, 100 at most.
+func (r MetricsAPIGetAdSetMetricsRequest) Limit(limit int32) MetricsAPIGetAdSetMetricsRequest {
+	r.limit = &limit
+	return r
+}
+
+// With campaignId, pagination.nextCursor of the previous page, sent with the same query.
+func (r MetricsAPIGetAdSetMetricsRequest) Cursor(cursor string) MetricsAPIGetAdSetMetricsRequest {
+	r.cursor = &cursor
+	return r
+}
+
+// Comma-separated platform ad set ids, up to 100. Send adSetId or campaignId.
+func (r MetricsAPIGetAdSetMetricsRequest) AdSetId(adSetId string) MetricsAPIGetAdSetMetricsRequest {
+	r.adSetId = &adSetId
+	return r
+}
+
+// One platform campaign id, for its ad sets. Send adSetId or campaignId.
+func (r MetricsAPIGetAdSetMetricsRequest) CampaignId(campaignId string) MetricsAPIGetAdSetMetricsRequest {
+	r.campaignId = &campaignId
+	return r
+}
+
+// day adds one point per day to each ad set.
+func (r MetricsAPIGetAdSetMetricsRequest) Granularity(granularity string) MetricsAPIGetAdSetMetricsRequest {
+	r.granularity = &granularity
+	return r
+}
+
+func (r MetricsAPIGetAdSetMetricsRequest) Execute() (*AdSetMetricsResponse, *http.Response, error) {
+	return r.ApiService.GetAdSetMetricsExecute(r)
+}
+
+/*
+GetAdSetMetrics Read the delivery metrics of ad sets over a window
+
+Sums the delivery metrics of every ad of each ad set from the stored daily rows, over `fromDate` to `toDate` (both required, at most 400 days). Send the ad sets by id with `adSetId` (up to 100), or one `campaignId` for its ad sets, paged with `cursor`.
+
+Each ad set comes with its `campaignId` and the `currency` of its ad account, and `granularity=day` adds one point per day. A query reads at most 9,200 ad set days (100 ad sets for 92 days, 23 for 400) and answers 422 `query_too_large` beyond that.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return MetricsAPIGetAdSetMetricsRequest
+*/
+func (a *MetricsAPIService) GetAdSetMetrics(ctx context.Context) MetricsAPIGetAdSetMetricsRequest {
+	return MetricsAPIGetAdSetMetricsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return AdSetMetricsResponse
+func (a *MetricsAPIService) GetAdSetMetricsExecute(r MetricsAPIGetAdSetMetricsRequest) (*AdSetMetricsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AdSetMetricsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetricsAPIService.GetAdSetMetrics")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/metrics/ad-sets"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.fromDate == nil {
+		return localVarReturnValue, nil, reportError("fromDate is required and must be specified")
+	}
+	if r.toDate == nil {
+		return localVarReturnValue, nil, reportError("toDate is required and must be specified")
+	}
+	if r.metrics == nil {
+		return localVarReturnValue, nil, reportError("metrics is required and must be specified")
+	}
+	if strlen(*r.metrics) < 1 {
+		return localVarReturnValue, nil, reportError("metrics must have at least 1 elements")
+	}
+
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 50
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	if r.adSetId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adSetId", r.adSetId, "form", "")
+	}
+	if r.campaignId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
+	}
+	parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
+	if r.granularity != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", r.granularity, "form", "")
+	} else {
+		var defaultValue string = "total"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", defaultValue, "form", "")
+		r.granularity = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 422 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
