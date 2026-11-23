@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.779.0
+API version: 1.780.0
 Contact: support@zernio.com
 */
 
@@ -7239,10 +7239,11 @@ func (a *ConnectAPIService) GetGmbLocationsExecute(r ConnectAPIGetGmbLocationsRe
 }
 
 type ConnectAPIGetGohighlevelConnectUrlRequest struct {
-	ctx         context.Context
-	ApiService  *ConnectAPIService
-	profileId   *string
-	redirectUrl *string
+	ctx                context.Context
+	ApiService         *ConnectAPIService
+	profileId          *string
+	redirectUrl        *string
+	reconnectAccountId *string
 }
 
 // Your Zernio profile ID (get from /v1/profiles).
@@ -7254,6 +7255,12 @@ func (r ConnectAPIGetGohighlevelConnectUrlRequest) ProfileId(profileId string) C
 // Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme such as &#x60;myapp://callback&#x60;; relative and unsafe URLs return 400.
 func (r ConnectAPIGetGohighlevelConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetGohighlevelConnectUrlRequest {
 	r.redirectUrl = &redirectUrl
+	return r
+}
+
+// The GoHighLevel location connection being reconnected. In a workspace with no billing set up, the connect is allowed only when it returns to that same location.
+func (r ConnectAPIGetGohighlevelConnectUrlRequest) ReconnectAccountId(reconnectAccountId string) ConnectAPIGetGohighlevelConnectUrlRequest {
+	r.reconnectAccountId = &reconnectAccountId
 	return r
 }
 
@@ -7314,6 +7321,9 @@ func (a *ConnectAPIService) GetGohighlevelConnectUrlExecute(r ConnectAPIGetGohig
 	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
 	if r.redirectUrl != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	if r.reconnectAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reconnectAccountId", r.reconnectAccountId, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -7903,10 +7913,11 @@ func (a *ConnectAPIService) GetGoogleSearchConsoleConnectUrlExecute(r ConnectAPI
 }
 
 type ConnectAPIGetHubSpotConnectUrlRequest struct {
-	ctx         context.Context
-	ApiService  *ConnectAPIService
-	profileId   *string
-	redirectUrl *string
+	ctx                context.Context
+	ApiService         *ConnectAPIService
+	profileId          *string
+	redirectUrl        *string
+	reconnectAccountId *string
 }
 
 // Your Zernio profile ID (get from /v1/profiles).
@@ -7918,6 +7929,12 @@ func (r ConnectAPIGetHubSpotConnectUrlRequest) ProfileId(profileId string) Conne
 // Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme such as &#x60;myapp://callback&#x60;; relative and unsafe URLs return 400.
 func (r ConnectAPIGetHubSpotConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetHubSpotConnectUrlRequest {
 	r.redirectUrl = &redirectUrl
+	return r
+}
+
+// The HubSpot portal connection being reconnected. In a workspace with no billing set up, the connect is allowed only when it returns to that same portal.
+func (r ConnectAPIGetHubSpotConnectUrlRequest) ReconnectAccountId(reconnectAccountId string) ConnectAPIGetHubSpotConnectUrlRequest {
+	r.reconnectAccountId = &reconnectAccountId
 	return r
 }
 
@@ -7982,6 +7999,9 @@ func (a *ConnectAPIService) GetHubSpotConnectUrlExecute(r ConnectAPIGetHubSpotCo
 	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
 	if r.redirectUrl != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	if r.reconnectAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reconnectAccountId", r.reconnectAccountId, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9097,11 +9117,12 @@ func (a *ConnectAPIService) GetRedditSubredditsExecute(r ConnectAPIGetRedditSubr
 }
 
 type ConnectAPIGetSalesforceConnectUrlRequest struct {
-	ctx         context.Context
-	ApiService  *ConnectAPIService
-	profileId   *string
-	environment *string
-	redirectUrl *string
+	ctx                context.Context
+	ApiService         *ConnectAPIService
+	profileId          *string
+	environment        *string
+	redirectUrl        *string
+	reconnectAccountId *string
 }
 
 // Your Zernio profile ID (get from /v1/profiles).
@@ -9119,6 +9140,12 @@ func (r ConnectAPIGetSalesforceConnectUrlRequest) Environment(environment string
 // Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme such as &#x60;myapp://callback&#x60;; relative and unsafe URLs return 400.
 func (r ConnectAPIGetSalesforceConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetSalesforceConnectUrlRequest {
 	r.redirectUrl = &redirectUrl
+	return r
+}
+
+// The Salesforce org connection being reconnected. In a workspace with no billing set up, the connect is allowed only when it returns to that same org.
+func (r ConnectAPIGetSalesforceConnectUrlRequest) ReconnectAccountId(reconnectAccountId string) ConnectAPIGetSalesforceConnectUrlRequest {
+	r.reconnectAccountId = &reconnectAccountId
 	return r
 }
 
@@ -9192,6 +9219,9 @@ func (a *ConnectAPIService) GetSalesforceConnectUrlExecute(r ConnectAPIGetSalesf
 	}
 	if r.redirectUrl != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	if r.reconnectAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reconnectAccountId", r.reconnectAccountId, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9912,10 +9942,11 @@ func (a *ConnectAPIService) GetTelegramConnectStatusExecute(r ConnectAPIGetTeleg
 }
 
 type ConnectAPIGetWebflowConnectUrlRequest struct {
-	ctx         context.Context
-	ApiService  *ConnectAPIService
-	profileId   *string
-	redirectUrl *string
+	ctx                context.Context
+	ApiService         *ConnectAPIService
+	profileId          *string
+	redirectUrl        *string
+	reconnectAccountId *string
 }
 
 // Your Zernio profile ID (get from /v1/profiles).
@@ -9927,6 +9958,12 @@ func (r ConnectAPIGetWebflowConnectUrlRequest) ProfileId(profileId string) Conne
 // Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme such as &#x60;myapp://callback&#x60;; relative and unsafe URLs return 400.
 func (r ConnectAPIGetWebflowConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetWebflowConnectUrlRequest {
 	r.redirectUrl = &redirectUrl
+	return r
+}
+
+// The Webflow site connection being reconnected. In a workspace with no billing set up, the connect is allowed only when it returns to that same site.
+func (r ConnectAPIGetWebflowConnectUrlRequest) ReconnectAccountId(reconnectAccountId string) ConnectAPIGetWebflowConnectUrlRequest {
+	r.reconnectAccountId = &reconnectAccountId
 	return r
 }
 
@@ -9991,6 +10028,9 @@ func (a *ConnectAPIService) GetWebflowConnectUrlExecute(r ConnectAPIGetWebflowCo
 	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
 	if r.redirectUrl != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	if r.reconnectAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reconnectAccountId", r.reconnectAccountId, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10339,10 +10379,11 @@ func (a *ConnectAPIService) GetWhatsAppSdkConfigExecute(r ConnectAPIGetWhatsAppS
 }
 
 type ConnectAPIGetWixConnectUrlRequest struct {
-	ctx         context.Context
-	ApiService  *ConnectAPIService
-	profileId   *string
-	redirectUrl *string
+	ctx                context.Context
+	ApiService         *ConnectAPIService
+	profileId          *string
+	redirectUrl        *string
+	reconnectAccountId *string
 }
 
 // Your Zernio profile ID (get from /v1/profiles).
@@ -10354,6 +10395,12 @@ func (r ConnectAPIGetWixConnectUrlRequest) ProfileId(profileId string) ConnectAP
 // Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme such as &#x60;myapp://callback&#x60;; relative and unsafe URLs return 400.
 func (r ConnectAPIGetWixConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetWixConnectUrlRequest {
 	r.redirectUrl = &redirectUrl
+	return r
+}
+
+// The Wix site connection being reconnected. In a workspace with no billing set up, the connect is allowed only when it returns to that same site.
+func (r ConnectAPIGetWixConnectUrlRequest) ReconnectAccountId(reconnectAccountId string) ConnectAPIGetWixConnectUrlRequest {
+	r.reconnectAccountId = &reconnectAccountId
 	return r
 }
 
@@ -10416,6 +10463,9 @@ func (a *ConnectAPIService) GetWixConnectUrlExecute(r ConnectAPIGetWixConnectUrl
 	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
 	if r.redirectUrl != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	if r.reconnectAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reconnectAccountId", r.reconnectAccountId, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10508,10 +10558,11 @@ func (a *ConnectAPIService) GetWixConnectUrlExecute(r ConnectAPIGetWixConnectUrl
 }
 
 type ConnectAPIGetWordPressAuthUrlRequest struct {
-	ctx         context.Context
-	ApiService  *ConnectAPIService
-	profileId   *string
-	redirectUrl *string
+	ctx                context.Context
+	ApiService         *ConnectAPIService
+	profileId          *string
+	redirectUrl        *string
+	reconnectAccountId *string
 }
 
 // Your Zernio profile ID (get from /v1/profiles).
@@ -10523,6 +10574,12 @@ func (r ConnectAPIGetWordPressAuthUrlRequest) ProfileId(profileId string) Connec
 // Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme such as &#x60;myapp://callback&#x60;; relative and unsafe URLs return 400.
 func (r ConnectAPIGetWordPressAuthUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetWordPressAuthUrlRequest {
 	r.redirectUrl = &redirectUrl
+	return r
+}
+
+// The WordPress site connection being reconnected. In a workspace with no billing set up, the connect is allowed only when it returns to that same site.
+func (r ConnectAPIGetWordPressAuthUrlRequest) ReconnectAccountId(reconnectAccountId string) ConnectAPIGetWordPressAuthUrlRequest {
+	r.reconnectAccountId = &reconnectAccountId
 	return r
 }
 
@@ -10589,6 +10646,9 @@ func (a *ConnectAPIService) GetWordPressAuthUrlExecute(r ConnectAPIGetWordPressA
 	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
 	if r.redirectUrl != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	if r.reconnectAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reconnectAccountId", r.reconnectAccountId, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

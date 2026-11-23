@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.779.0
+API version: 1.780.0
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,9 @@ type ConnectWordPressWithApplicationPasswordRequest struct {
 	// WordPress login name. A colon is not allowed.
 	Username string `json:"username" validate:"regexp=^[^:\\\\r\\\\n]+$"`
 	// Application password created for the WordPress user. Spaces in WordPress display formatting are accepted.
-	ApplicationPassword  string `json:"applicationPassword"`
+	ApplicationPassword string `json:"applicationPassword"`
+	// The WordPress site connection being reconnected. In a workspace with no billing set up, the connect is allowed only when it returns to that same site.
+	ReconnectAccountId   *string `json:"reconnectAccountId,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -151,6 +153,38 @@ func (o *ConnectWordPressWithApplicationPasswordRequest) SetApplicationPassword(
 	o.ApplicationPassword = v
 }
 
+// GetReconnectAccountId returns the ReconnectAccountId field value if set, zero value otherwise.
+func (o *ConnectWordPressWithApplicationPasswordRequest) GetReconnectAccountId() string {
+	if o == nil || IsNil(o.ReconnectAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.ReconnectAccountId
+}
+
+// GetReconnectAccountIdOk returns a tuple with the ReconnectAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectWordPressWithApplicationPasswordRequest) GetReconnectAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ReconnectAccountId) {
+		return nil, false
+	}
+	return o.ReconnectAccountId, true
+}
+
+// HasReconnectAccountId returns a boolean if a field has been set.
+func (o *ConnectWordPressWithApplicationPasswordRequest) HasReconnectAccountId() bool {
+	if o != nil && !IsNil(o.ReconnectAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetReconnectAccountId gets a reference to the given string and assigns it to the ReconnectAccountId field.
+func (o *ConnectWordPressWithApplicationPasswordRequest) SetReconnectAccountId(v string) {
+	o.ReconnectAccountId = &v
+}
+
 func (o ConnectWordPressWithApplicationPasswordRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -165,6 +199,9 @@ func (o ConnectWordPressWithApplicationPasswordRequest) ToMap() (map[string]inte
 	toSerialize["siteUrl"] = o.SiteUrl
 	toSerialize["username"] = o.Username
 	toSerialize["applicationPassword"] = o.ApplicationPassword
+	if !IsNil(o.ReconnectAccountId) {
+		toSerialize["reconnectAccountId"] = o.ReconnectAccountId
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -215,6 +252,7 @@ func (o *ConnectWordPressWithApplicationPasswordRequest) UnmarshalJSON(data []by
 		delete(additionalProperties, "siteUrl")
 		delete(additionalProperties, "username")
 		delete(additionalProperties, "applicationPassword")
+		delete(additionalProperties, "reconnectAccountId")
 		o.AdditionalProperties = additionalProperties
 	}
 
