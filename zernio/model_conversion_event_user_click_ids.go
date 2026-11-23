@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.798.0
+API version: 1.799.0
 Contact: support@zernio.com
 */
 
@@ -54,6 +54,8 @@ type ConversionEventUserClickIds struct {
 	Scid *string `json:"scid,omitempty"`
 	// Taboola click ID (the `tblci` URL param Taboola adds to ad clicks with its `{click_id}` macro). Sent to Taboola as `click-id`, not hashed.
 	Tblci *string `json:"tblci,omitempty"`
+	// Outbrain click ID (the `ob_click_id` URL param, filled by the `{{ob_click_id}}` macro you add to the campaign's Track box). Sent to Outbrain as `ob_click_id`, not hashed.
+	ObClickId *string `json:"ob_click_id,omitempty"`
 	// Impact partner click id (the `irclickid` URL param Impact adds to partner links). Sent to Impact as `ClickId`.
 	Irclickid *string `json:"irclickid,omitempty"`
 	// Awin click id (the `awc` URL param Awin adds to publisher links). Sent to Awin as the order's `awc`.
@@ -629,6 +631,38 @@ func (o *ConversionEventUserClickIds) SetTblci(v string) {
 	o.Tblci = &v
 }
 
+// GetObClickId returns the ObClickId field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetObClickId() string {
+	if o == nil || IsNil(o.ObClickId) {
+		var ret string
+		return ret
+	}
+	return *o.ObClickId
+}
+
+// GetObClickIdOk returns a tuple with the ObClickId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetObClickIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ObClickId) {
+		return nil, false
+	}
+	return o.ObClickId, true
+}
+
+// HasObClickId returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasObClickId() bool {
+	if o != nil && !IsNil(o.ObClickId) {
+		return true
+	}
+
+	return false
+}
+
+// SetObClickId gets a reference to the given string and assigns it to the ObClickId field.
+func (o *ConversionEventUserClickIds) SetObClickId(v string) {
+	o.ObClickId = &v
+}
+
 // GetIrclickid returns the Irclickid field value if set, zero value otherwise.
 func (o *ConversionEventUserClickIds) GetIrclickid() string {
 	if o == nil || IsNil(o.Irclickid) {
@@ -881,6 +915,9 @@ func (o ConversionEventUserClickIds) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Tblci) {
 		toSerialize["tblci"] = o.Tblci
+	}
+	if !IsNil(o.ObClickId) {
+		toSerialize["ob_click_id"] = o.ObClickId
 	}
 	if !IsNil(o.Irclickid) {
 		toSerialize["irclickid"] = o.Irclickid

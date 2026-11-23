@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.798.0
+API version: 1.799.0
 Contact: support@zernio.com
 */
 
@@ -7951,6 +7951,7 @@ Relays one or more events to the target ad platform's native Conversions API. Th
 - X Ads (`xads`) via the X Conversion API (`POST /12/measurement/conversions/{pixelId}`)
 - Snapchat (`snapchatads`) via the Snapchat Conversions API (`POST https://tr.snapchat.com/v3/{pixelId}/events`)
 - Taboola (`taboolaads`) via its S2S postback (`GET https://trc.taboola.com/actions-handler/log/3/s2s-action`), one request per event
+- Outbrain (`outbrainads`) via its S2S pixel (`GET https://tr.outbrain.com/unifiedPixel`), one request per event
 - Klaviyo (`klaviyo`) via the Events API (`POST https://a.klaviyo.com/api/events`)
 - Attentive (`attentive`) via the eCommerce and Custom Events APIs
 - Impact (`impact`) via the Conversions API (`POST /Advertisers/{AccountSID}/Conversions`)
@@ -7974,6 +7975,7 @@ Relays one or more events to the target ad platform's native Conversions API. Th
 - X Ads: X Pixel event id, e.g. `tw-rbhhj-rcfms`. Each event needs `clickIds.twclid`, an `email`, a `phone`, or `ipAddress` plus `userAgent`; the event decides the type and `eventId` is sent as `conversion_id`.
 - Snapchat: the connection's Snap Pixel ID, e.g. `1a2b3c4d-5e6f-4a8b-9c0d-1e2f3a4b5c6d`. Each event needs an `email`, a `phone`, or `ipAddress` plus `userAgent`; website events also need `sourceUrl`. With `testCode`, events go to Snap's validate endpoint and are not recorded.
 - Taboola: the connection's numeric Taboola Account ID, e.g. `1234567`. Each event needs `clickIds.tblci`. `eventName` is sent as is and must equal the Event Name of a conversion rule in Realize (case-sensitive). Taboola has no test mode, so an event with `testCode` is not sent (code `TEST_MODE_UNSUPPORTED`).
+- Outbrain: the connection's Outbrain marketer id, e.g. `00f4b02153ee75f3c9dc4fc128ab0419ab`. Each event needs `clickIds.ob_click_id`. `eventName` is sent as is and must equal the name of an Event-Based Conversion in Amplify (case-sensitive). Outbrain has no test mode, so an event with `testCode` is not sent (code `TEST_MODE_UNSUPPORTED`).
 - Klaviyo: the connection's Klaviyo account id. Each event needs an unhashed `email`, a `phone` with its country code, or an `externalId`; `eventId` is the `unique_id`. Klaviyo has no test mode, so an event with `testCode` is not sent (code `TEST_MODE_UNSUPPORTED`).
 - Klaviyo metrics: `Purchase` is `Placed Order`, `InitiateCheckout` `Started Checkout`, `ViewContent` `Viewed Product`, `AddToCart` `Added to Cart`; any other name is a metric of that name.
 - Attentive: the connection's Attentive company id. `Purchase`, `AddToCart` and `ViewContent` with priced `items` go to the eCommerce endpoints; every other event goes out as a custom event named `eventName`. Each event needs an unhashed `email`, a `phone` with its country code, or an `externalId`. A `testCode` is refused.
