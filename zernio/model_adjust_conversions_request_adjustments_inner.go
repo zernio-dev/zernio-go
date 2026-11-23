@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.787.0
+API version: 1.788.0
 Contact: support@zernio.com
 */
 
@@ -29,8 +29,10 @@ type AdjustConversionsRequestAdjustmentsInner struct {
 	OrderId *string `json:"orderId,omitempty"`
 	// Alternative key. The original click ID. Pair with `conversionTime`. Not valid for ENHANCEMENT.
 	Gclid *string `json:"gclid,omitempty"`
-	// The original conversion's time, unix seconds. Required when identifying by `gclid`.
+	// The original conversion's time, unix seconds. Required when identifying by `gclid` or `msclkid`.
 	ConversionTime *float32 `json:"conversionTime,omitempty"`
+	// Microsoft Ads only, and required there. The click ID the conversion was sent with. Pair with `conversionTime`.
+	Msclkid *string `json:"msclkid,omitempty"`
 	// RESTATEMENT only. The corrected TOTAL conversion value.
 	RestatementValue *float32 `json:"restatementValue,omitempty"`
 	// RESTATEMENT only. ISO 4217 currency for `restatementValue`.
@@ -205,6 +207,38 @@ func (o *AdjustConversionsRequestAdjustmentsInner) SetConversionTime(v float32) 
 	o.ConversionTime = &v
 }
 
+// GetMsclkid returns the Msclkid field value if set, zero value otherwise.
+func (o *AdjustConversionsRequestAdjustmentsInner) GetMsclkid() string {
+	if o == nil || IsNil(o.Msclkid) {
+		var ret string
+		return ret
+	}
+	return *o.Msclkid
+}
+
+// GetMsclkidOk returns a tuple with the Msclkid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdjustConversionsRequestAdjustmentsInner) GetMsclkidOk() (*string, bool) {
+	if o == nil || IsNil(o.Msclkid) {
+		return nil, false
+	}
+	return o.Msclkid, true
+}
+
+// HasMsclkid returns a boolean if a field has been set.
+func (o *AdjustConversionsRequestAdjustmentsInner) HasMsclkid() bool {
+	if o != nil && !IsNil(o.Msclkid) {
+		return true
+	}
+
+	return false
+}
+
+// SetMsclkid gets a reference to the given string and assigns it to the Msclkid field.
+func (o *AdjustConversionsRequestAdjustmentsInner) SetMsclkid(v string) {
+	o.Msclkid = &v
+}
+
 // GetRestatementValue returns the RestatementValue field value if set, zero value otherwise.
 func (o *AdjustConversionsRequestAdjustmentsInner) GetRestatementValue() float32 {
 	if o == nil || IsNil(o.RestatementValue) {
@@ -353,6 +387,9 @@ func (o AdjustConversionsRequestAdjustmentsInner) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.ConversionTime) {
 		toSerialize["conversionTime"] = o.ConversionTime
+	}
+	if !IsNil(o.Msclkid) {
+		toSerialize["msclkid"] = o.Msclkid
 	}
 	if !IsNil(o.RestatementValue) {
 		toSerialize["restatementValue"] = o.RestatementValue
