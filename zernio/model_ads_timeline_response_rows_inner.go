@@ -23,6 +23,8 @@ type AdsTimelineResponseRowsInner struct {
 	Date *string `json:"date,omitempty"`
 	// ISO 4217 currency of every money field in this row (spend, cpc, cpm, costPerConversion, purchaseValue, actionValues). Null when the currency of the row's ad accounts is unknown. Added 2026-10-23.  An account whose ad accounts bill in different currencies gets one row per currency for that day, never a sum across currencies.
 	Currency NullableString `json:"currency,omitempty"`
+	// Only with `breakdown=adAccount`. The platform ad account of this row (e.g. Meta `act_…`); null for rows ingested before 2026-05-13. Added 2026-11-23.
+	AdAccountId NullableString `json:"adAccountId,omitempty"`
 	// Native currency units (matches /ads/tree convention), in `currency`.
 	Spend       *float32 `json:"spend,omitempty"`
 	Impressions *int32   `json:"impressions,omitempty"`
@@ -143,6 +145,49 @@ func (o *AdsTimelineResponseRowsInner) SetCurrencyNil() {
 // UnsetCurrency ensures that no value is present for Currency, not even an explicit nil
 func (o *AdsTimelineResponseRowsInner) UnsetCurrency() {
 	o.Currency.Unset()
+}
+
+// GetAdAccountId returns the AdAccountId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdsTimelineResponseRowsInner) GetAdAccountId() string {
+	if o == nil || IsNil(o.AdAccountId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.AdAccountId.Get()
+}
+
+// GetAdAccountIdOk returns a tuple with the AdAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdsTimelineResponseRowsInner) GetAdAccountIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AdAccountId.Get(), o.AdAccountId.IsSet()
+}
+
+// HasAdAccountId returns a boolean if a field has been set.
+func (o *AdsTimelineResponseRowsInner) HasAdAccountId() bool {
+	if o != nil && o.AdAccountId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAdAccountId gets a reference to the given NullableString and assigns it to the AdAccountId field.
+func (o *AdsTimelineResponseRowsInner) SetAdAccountId(v string) {
+	o.AdAccountId.Set(&v)
+}
+
+// SetAdAccountIdNil sets the value for AdAccountId to be an explicit nil
+func (o *AdsTimelineResponseRowsInner) SetAdAccountIdNil() {
+	o.AdAccountId.Set(nil)
+}
+
+// UnsetAdAccountId ensures that no value is present for AdAccountId, not even an explicit nil
+func (o *AdsTimelineResponseRowsInner) UnsetAdAccountId() {
+	o.AdAccountId.Unset()
 }
 
 // GetSpend returns the Spend field value if set, zero value otherwise.
@@ -672,6 +717,9 @@ func (o AdsTimelineResponseRowsInner) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Currency.IsSet() {
 		toSerialize["currency"] = o.Currency.Get()
+	}
+	if o.AdAccountId.IsSet() {
+		toSerialize["adAccountId"] = o.AdAccountId.Get()
 	}
 	if !IsNil(o.Spend) {
 		toSerialize["spend"] = o.Spend

@@ -5516,6 +5516,7 @@ type AdCampaignsAPIGetAdsTimelineRequest struct {
 	fromDate    *string
 	toDate      *string
 	platform    *string
+	breakdown   *string
 	compare     *string
 }
 
@@ -5546,6 +5547,12 @@ func (r AdCampaignsAPIGetAdsTimelineRequest) ToDate(toDate string) AdCampaignsAP
 // Restrict to one platform.
 func (r AdCampaignsAPIGetAdsTimelineRequest) Platform(platform string) AdCampaignsAPIGetAdsTimelineRequest {
 	r.platform = &platform
+	return r
+}
+
+// Set to &#x60;adAccount&#x60; to keep one row per day and platform ad account, each carrying its &#x60;adAccountId&#x60;, instead of one row per day and currency. Two connections that reach the same ad account both return it: add their timelines per &#x60;adAccountId&#x60; to count it once.
+func (r AdCampaignsAPIGetAdsTimelineRequest) Breakdown(breakdown string) AdCampaignsAPIGetAdsTimelineRequest {
+	r.breakdown = &breakdown
 	return r
 }
 
@@ -5630,6 +5637,9 @@ func (a *AdCampaignsAPIService) GetAdsTimelineExecute(r AdCampaignsAPIGetAdsTime
 	}
 	if r.platform != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.breakdown != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "breakdown", r.breakdown, "form", "")
 	}
 	if r.compare != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "compare", r.compare, "form", "")
