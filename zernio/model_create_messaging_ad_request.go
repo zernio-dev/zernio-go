@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.804.0
+API version: 1.805.0
 Contact: support@zernio.com
 */
 
@@ -137,7 +137,7 @@ type CreateMessagingAdRequest struct {
 	SpecialAdCategoryCountry []string `json:"specialAdCategoryCountry,omitempty"`
 	// Meta's Advantage+ audience expansion. `0` (default) keeps targeting strict; `1` lets Meta expand beyond the supplied targeting when its delivery system finds better matches. Always sent on CREATE (Meta requires it).
 	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
-	// Defaults to `OUTCOME_ENGAGEMENT`. `OUTCOME_SALES` and `OUTCOME_LEADS` require additional account configuration (Dataset linked to the WABA for sales) and may be rejected by Meta if missing.
+	// Defaults to `OUTCOME_ENGAGEMENT` on POST /v1/ads/ctwa and POST /v1/ads/messaging, and to `OUTCOME_LEADS` on POST /v1/ads/call and on POST /v1/ads/messaging with `optimizationGoal: LEAD_GENERATION` (which accepts only `OUTCOME_LEADS`). `OUTCOME_SALES` and `OUTCOME_LEADS` require additional account configuration (Dataset linked to the WABA for sales) and may be rejected by Meta if missing.
 	Objective *string `json:"objective,omitempty"`
 	// Defaults to `ACTIVE`. `PAUSED` pauses only the top-most object this call creates: the new campaign (ad set and ads switched on), or, with `adSetId`, the new ads themselves.
 	Status *string `json:"status,omitempty"`
@@ -147,7 +147,7 @@ type CreateMessagingAdRequest struct {
 	AdSetStatus *string `json:"adSetStatus,omitempty"`
 	// Ad-level status, same semantics as `POST /v1/ads/create`. Sets the new ads' switch and overrides `status` for them, also with `adSetId`. Send `campaignStatus`, `adSetStatus` and `adStatus` all PAUSED to create every object paused.
 	AdStatus *AdActivationStatus `json:"adStatus,omitempty"`
-	// Meta bid strategy applied to the shared ad set. Defaults to `LOWEST_COST_WITHOUT_CAP` (auto-bid) when omitted. `LOWEST_COST_WITH_BID_CAP` and `COST_CAP` require `bidAmount`. `LOWEST_COST_WITH_MIN_ROAS` requires `roasAverageFloor`. CTWA's `optimization_goal` is fixed to `CONVERSATIONS`, but the bid strategy is independent.
+	// Meta bid strategy applied to the shared ad set. Defaults to `LOWEST_COST_WITHOUT_CAP` (auto-bid) when omitted. `LOWEST_COST_WITH_BID_CAP` and `COST_CAP` require `bidAmount`. `LOWEST_COST_WITH_MIN_ROAS` requires `roasAverageFloor`. The ad set `optimization_goal` comes from the endpoint (`CONVERSATIONS` on POST /v1/ads/ctwa, `QUALITY_CALL` on POST /v1/ads/call, the `optimizationGoal` field on POST /v1/ads/messaging); the bid strategy is independent.
 	BidStrategy *string `json:"bidStrategy,omitempty"`
 	// Whole currency units (e.g. `5` = $5.00 on a USD account). Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`; rejected otherwise.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
@@ -165,6 +165,8 @@ type CreateMessagingAdRequest struct {
 	Destination *string `json:"destination,omitempty"`
 	// Two or three messaging apps on ONE ad set, like Ads Manager's \"all messaging apps\". Set this OR `destination`, not both.  The ad set gets Meta's combined destination_type (e.g. MESSAGING_INSTAGRAM_DIRECT_MESSENGER_WHATSAPP) and the creative one CTA per app, so Meta opens the app each viewer is likeliest to answer from.  - WhatsApp in the list still needs the Page paired with a WhatsApp Business number. - With `adSetId`, the existing ad set must already use that combined destination_type.
 	Destinations []string `json:"destinations,omitempty"`
+	// What the ad set optimizes for. Defaults to `CONVERSATIONS`. Cannot be combined with `adSetId` (the existing ad set owns its goal).  - `LEAD_GENERATION` needs a single `destination: whatsapp` (a 400 with `destinations` or another destination) and runs the campaign under `OUTCOME_LEADS`. - `objective`, when sent with `LEAD_GENERATION`, must be `OUTCOME_LEADS`. - With `existingCampaignId` the campaign must be `OUTCOME_LEADS` (a 400 otherwise).
+	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 	// A different image or video per placement on one messaging ad, e.g. a 4:5 image on Feed and a 9:16 image on Stories/Reels. Works on the single-creative shape and on attach (`adSetId`).  Replaces top-level `imageUrl` / `video` (sending either alongside is a 400). `headline` and `body` stay required as the default copy. The CTA, `welcomeMessage` and `whatsappPhoneNumber` apply to every placement.  Single `destination` only. Meta cannot combine per-placement media with `destinations`: it drops the placement rules from a multi-destination creative, or refuses more than one call to action per placement rule with error 1885878. So that combination is a 400.  Also a 400 with `creatives[]`, `platformPostId`, `existingPostId` or `objectStoryId`, and on POST /v1/ads/call.
 	PlacementAssets *MetaPlacementAssets `json:"placementAssets,omitempty"`
 	// A workflow in the ad account's profile, stored on the ad. 404 when no such workflow exists in the profile.  When someone clicks the ad, the workflow starts in the conversation the click opens (on the first message, a postback or a standalone referral carrying the ad id), ahead of keyword-matched workflows, if it is active on the receiving account.
@@ -2610,6 +2612,38 @@ func (o *CreateMessagingAdRequest) SetDestinations(v []string) {
 	o.Destinations = v
 }
 
+// GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetOptimizationGoal() string {
+	if o == nil || IsNil(o.OptimizationGoal) {
+		var ret string
+		return ret
+	}
+	return *o.OptimizationGoal
+}
+
+// GetOptimizationGoalOk returns a tuple with the OptimizationGoal field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetOptimizationGoalOk() (*string, bool) {
+	if o == nil || IsNil(o.OptimizationGoal) {
+		return nil, false
+	}
+	return o.OptimizationGoal, true
+}
+
+// HasOptimizationGoal returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasOptimizationGoal() bool {
+	if o != nil && !IsNil(o.OptimizationGoal) {
+		return true
+	}
+
+	return false
+}
+
+// SetOptimizationGoal gets a reference to the given string and assigns it to the OptimizationGoal field.
+func (o *CreateMessagingAdRequest) SetOptimizationGoal(v string) {
+	o.OptimizationGoal = &v
+}
+
 // GetPlacementAssets returns the PlacementAssets field value if set, zero value otherwise.
 func (o *CreateMessagingAdRequest) GetPlacementAssets() MetaPlacementAssets {
 	if o == nil || IsNil(o.PlacementAssets) {
@@ -2937,6 +2971,9 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Destinations) {
 		toSerialize["destinations"] = o.Destinations
+	}
+	if !IsNil(o.OptimizationGoal) {
+		toSerialize["optimizationGoal"] = o.OptimizationGoal
 	}
 	if !IsNil(o.PlacementAssets) {
 		toSerialize["placementAssets"] = o.PlacementAssets

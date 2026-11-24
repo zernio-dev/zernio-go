@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.804.0
+API version: 1.805.0
 Contact: support@zernio.com
 */
 
@@ -137,7 +137,7 @@ type CtwaAdRequestBody struct {
 	SpecialAdCategoryCountry []string `json:"specialAdCategoryCountry,omitempty"`
 	// Meta's Advantage+ audience expansion. `0` (default) keeps targeting strict; `1` lets Meta expand beyond the supplied targeting when its delivery system finds better matches. Always sent on CREATE (Meta requires it).
 	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
-	// Defaults to `OUTCOME_ENGAGEMENT`. `OUTCOME_SALES` and `OUTCOME_LEADS` require additional account configuration (Dataset linked to the WABA for sales) and may be rejected by Meta if missing.
+	// Defaults to `OUTCOME_ENGAGEMENT` on POST /v1/ads/ctwa and POST /v1/ads/messaging, and to `OUTCOME_LEADS` on POST /v1/ads/call and on POST /v1/ads/messaging with `optimizationGoal: LEAD_GENERATION` (which accepts only `OUTCOME_LEADS`). `OUTCOME_SALES` and `OUTCOME_LEADS` require additional account configuration (Dataset linked to the WABA for sales) and may be rejected by Meta if missing.
 	Objective *string `json:"objective,omitempty"`
 	// Defaults to `ACTIVE`. `PAUSED` pauses only the top-most object this call creates: the new campaign (ad set and ads switched on), or, with `adSetId`, the new ads themselves.
 	Status *string `json:"status,omitempty"`
@@ -147,7 +147,7 @@ type CtwaAdRequestBody struct {
 	AdSetStatus *string `json:"adSetStatus,omitempty"`
 	// Ad-level status, same semantics as `POST /v1/ads/create`. Sets the new ads' switch and overrides `status` for them, also with `adSetId`. Send `campaignStatus`, `adSetStatus` and `adStatus` all PAUSED to create every object paused.
 	AdStatus *AdActivationStatus `json:"adStatus,omitempty"`
-	// Meta bid strategy applied to the shared ad set. Defaults to `LOWEST_COST_WITHOUT_CAP` (auto-bid) when omitted. `LOWEST_COST_WITH_BID_CAP` and `COST_CAP` require `bidAmount`. `LOWEST_COST_WITH_MIN_ROAS` requires `roasAverageFloor`. CTWA's `optimization_goal` is fixed to `CONVERSATIONS`, but the bid strategy is independent.
+	// Meta bid strategy applied to the shared ad set. Defaults to `LOWEST_COST_WITHOUT_CAP` (auto-bid) when omitted. `LOWEST_COST_WITH_BID_CAP` and `COST_CAP` require `bidAmount`. `LOWEST_COST_WITH_MIN_ROAS` requires `roasAverageFloor`. The ad set `optimization_goal` comes from the endpoint (`CONVERSATIONS` on POST /v1/ads/ctwa, `QUALITY_CALL` on POST /v1/ads/call, the `optimizationGoal` field on POST /v1/ads/messaging); the bid strategy is independent.
 	BidStrategy *string `json:"bidStrategy,omitempty"`
 	// Whole currency units (e.g. `5` = $5.00 on a USD account). Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`; rejected otherwise.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
