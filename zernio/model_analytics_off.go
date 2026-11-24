@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.818.0
+API version: 1.818.1
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,8 @@ var _ MappedNullable = &AnalyticsOff{}
 // AnalyticsOff X only: why no analytics sync runs for the account, so its numbers stay as of the last read (one read is made when the account connects).
 type AnalyticsOff struct {
 	// - X_ANALYTICS_NOT_ENABLED: `xCapabilities.analytics` is off on the account. It is opt-in on usage-based billing. Turn it on with `PUT /v1/accounts/{accountId}`, or in the account's X settings in the dashboard. - X_ANALYTICS_PAUSED: it was on, and the monthly X spend cap turned it off. - PAYMENT_REQUIRED: X access is paused because billing on this account failed.  New values may be added.
-	Code    string `json:"code"`
+	Code string `json:"code"`
+	// The reason in words. X_ANALYTICS_NOT_ENABLED also says how to turn it on.
 	Message string `json:"message"`
 }
 
