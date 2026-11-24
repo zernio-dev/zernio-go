@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.805.0
+API version: 1.807.0
 Contact: support@zernio.com
 */
 
@@ -22,9 +22,11 @@ var _ MappedNullable = &UpdateForwardingRuleRequest{}
 type UpdateForwardingRuleRequest struct {
 	ApiSecret *string `json:"apiSecret,omitempty"`
 	// Your event name to the name this destination gets, such as `{ \"Lead\": \"Purchase\" }`. Names not in the map are sent unchanged.  A target spelled like a standard event in another case or form (`purchase`, `generate_lead`) is saved as the standard name (`Purchase`, `Lead`), so each platform gets its own standard event.  `eventNames` and `valueCondition` are checked against the name and value as received, before renaming. The event id is never changed, so deduplication still works.
-	EventNameMap         map[string]string                    `json:"eventNameMap,omitempty"`
-	ValueOverride        *ForwardingRuleValueOverride         `json:"valueOverride,omitempty"`
-	ValueCondition       NullableForwardingRuleValueCondition `json:"valueCondition,omitempty"`
+	EventNameMap   map[string]string                    `json:"eventNameMap,omitempty"`
+	ValueOverride  *ForwardingRuleValueOverride         `json:"valueOverride,omitempty"`
+	ValueCondition NullableForwardingRuleValueCondition `json:"valueCondition,omitempty"`
+	// The value this destination gets for each event name, keyed by the name as received (before `eventNameMap` renames it), such as a `Lead` worth 20 EUR and a `QualifiedLead` worth 150 EUR. An event listed here ignores `valueOverride`; events not listed keep it.  The dashboard's Value sent section (Ads, Conversions, a destination) sets this map.
+	EventValues          map[string]ForwardingRuleEventValue `json:"eventValues,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -187,6 +189,39 @@ func (o *UpdateForwardingRuleRequest) UnsetValueCondition() {
 	o.ValueCondition.Unset()
 }
 
+// GetEventValues returns the EventValues field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateForwardingRuleRequest) GetEventValues() map[string]ForwardingRuleEventValue {
+	if o == nil {
+		var ret map[string]ForwardingRuleEventValue
+		return ret
+	}
+	return o.EventValues
+}
+
+// GetEventValuesOk returns a tuple with the EventValues field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateForwardingRuleRequest) GetEventValuesOk() (map[string]ForwardingRuleEventValue, bool) {
+	if o == nil || IsNil(o.EventValues) {
+		return map[string]ForwardingRuleEventValue{}, false
+	}
+	return o.EventValues, true
+}
+
+// HasEventValues returns a boolean if a field has been set.
+func (o *UpdateForwardingRuleRequest) HasEventValues() bool {
+	if o != nil && !IsNil(o.EventValues) {
+		return true
+	}
+
+	return false
+}
+
+// SetEventValues gets a reference to the given map[string]ForwardingRuleEventValue and assigns it to the EventValues field.
+func (o *UpdateForwardingRuleRequest) SetEventValues(v map[string]ForwardingRuleEventValue) {
+	o.EventValues = v
+}
+
 func (o UpdateForwardingRuleRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -208,6 +243,9 @@ func (o UpdateForwardingRuleRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if o.ValueCondition.IsSet() {
 		toSerialize["valueCondition"] = o.ValueCondition.Get()
+	}
+	if o.EventValues != nil {
+		toSerialize["eventValues"] = o.EventValues
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -235,6 +273,7 @@ func (o *UpdateForwardingRuleRequest) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "eventNameMap")
 		delete(additionalProperties, "valueOverride")
 		delete(additionalProperties, "valueCondition")
+		delete(additionalProperties, "eventValues")
 		o.AdditionalProperties = additionalProperties
 	}
 

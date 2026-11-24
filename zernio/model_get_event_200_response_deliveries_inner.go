@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.805.0
+API version: 1.807.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,10 @@ type GetEvent200ResponseDeliveriesInner struct {
 	Error     NullableString `json:"error,omitempty"`
 	ErrorCode NullableString `json:"errorCode,omitempty"`
 	SentAt    *time.Time     `json:"sentAt,omitempty"`
+	// The value this destination got, after its forwarding rule's `eventValues` or `valueOverride`. Null when it got none, and on sends before 2026-11-24.
+	ValueSent NullableFloat32 `json:"valueSent,omitempty"`
+	// The currency sent with `valueSent`.
+	CurrencySent NullableString `json:"currencySent,omitempty"`
 }
 
 // NewGetEvent200ResponseDeliveriesInner instantiates a new GetEvent200ResponseDeliveriesInner object
@@ -339,6 +343,92 @@ func (o *GetEvent200ResponseDeliveriesInner) SetSentAt(v time.Time) {
 	o.SentAt = &v
 }
 
+// GetValueSent returns the ValueSent field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetEvent200ResponseDeliveriesInner) GetValueSent() float32 {
+	if o == nil || IsNil(o.ValueSent.Get()) {
+		var ret float32
+		return ret
+	}
+	return *o.ValueSent.Get()
+}
+
+// GetValueSentOk returns a tuple with the ValueSent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetEvent200ResponseDeliveriesInner) GetValueSentOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ValueSent.Get(), o.ValueSent.IsSet()
+}
+
+// HasValueSent returns a boolean if a field has been set.
+func (o *GetEvent200ResponseDeliveriesInner) HasValueSent() bool {
+	if o != nil && o.ValueSent.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetValueSent gets a reference to the given NullableFloat32 and assigns it to the ValueSent field.
+func (o *GetEvent200ResponseDeliveriesInner) SetValueSent(v float32) {
+	o.ValueSent.Set(&v)
+}
+
+// SetValueSentNil sets the value for ValueSent to be an explicit nil
+func (o *GetEvent200ResponseDeliveriesInner) SetValueSentNil() {
+	o.ValueSent.Set(nil)
+}
+
+// UnsetValueSent ensures that no value is present for ValueSent, not even an explicit nil
+func (o *GetEvent200ResponseDeliveriesInner) UnsetValueSent() {
+	o.ValueSent.Unset()
+}
+
+// GetCurrencySent returns the CurrencySent field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetEvent200ResponseDeliveriesInner) GetCurrencySent() string {
+	if o == nil || IsNil(o.CurrencySent.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CurrencySent.Get()
+}
+
+// GetCurrencySentOk returns a tuple with the CurrencySent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetEvent200ResponseDeliveriesInner) GetCurrencySentOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CurrencySent.Get(), o.CurrencySent.IsSet()
+}
+
+// HasCurrencySent returns a boolean if a field has been set.
+func (o *GetEvent200ResponseDeliveriesInner) HasCurrencySent() bool {
+	if o != nil && o.CurrencySent.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCurrencySent gets a reference to the given NullableString and assigns it to the CurrencySent field.
+func (o *GetEvent200ResponseDeliveriesInner) SetCurrencySent(v string) {
+	o.CurrencySent.Set(&v)
+}
+
+// SetCurrencySentNil sets the value for CurrencySent to be an explicit nil
+func (o *GetEvent200ResponseDeliveriesInner) SetCurrencySentNil() {
+	o.CurrencySent.Set(nil)
+}
+
+// UnsetCurrencySent ensures that no value is present for CurrencySent, not even an explicit nil
+func (o *GetEvent200ResponseDeliveriesInner) UnsetCurrencySent() {
+	o.CurrencySent.Unset()
+}
+
 func (o GetEvent200ResponseDeliveriesInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -372,6 +462,12 @@ func (o GetEvent200ResponseDeliveriesInner) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.SentAt) {
 		toSerialize["sentAt"] = o.SentAt
+	}
+	if o.ValueSent.IsSet() {
+		toSerialize["valueSent"] = o.ValueSent.Get()
+	}
+	if o.CurrencySent.IsSet() {
+		toSerialize["currencySent"] = o.CurrencySent.Get()
 	}
 	return toSerialize, nil
 }

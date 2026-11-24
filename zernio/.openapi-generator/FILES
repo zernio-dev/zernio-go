@@ -1455,6 +1455,7 @@ model_fetch_google_business_verification_options_request.go
 model_file_item.go
 model_file_picker_session.go
 model_file_share_link.go
+model_fixed.go
 model_flow_automation_definition.go
 model_flow_automation_definition_graph.go
 model_flow_automation_definition_trigger.go
@@ -1471,6 +1472,7 @@ model_food_menu_label.go
 model_food_menu_section.go
 model_forward_email_request.go
 model_forwarding_rule.go
+model_forwarding_rule_event_value.go
 model_forwarding_rule_value_condition.go
 model_forwarding_rule_value_override.go
 model_free_busy_error.go
@@ -2745,6 +2747,7 @@ model_order_imessage_sender_request_contact.go
 model_org_connection.go
 model_org_connection_setup.go
 model_org_connection_setup_dns_record.go
+model_original.go
 model_owned_phone_number.go
 model_owned_phone_number_features.go
 model_owned_phone_number_profile_id.go
@@ -2756,6 +2759,7 @@ model_payout_batch_item.go
 model_payout_batch_item_creator.go
 model_pending.go
 model_per_post.go
+model_percent.go
 model_phone_number_stock_watch.go
 model_pin_discord_message_200_response.go
 model_pin_inbox_comment_200_response.go
