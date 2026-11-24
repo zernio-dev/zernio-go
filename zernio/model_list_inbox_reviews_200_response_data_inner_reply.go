@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.820.0
+API version: 1.821.0
 Contact: support@zernio.com
 */
 
@@ -19,10 +19,13 @@ import (
 // checks if the ListInboxReviews200ResponseDataInnerReply type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ListInboxReviews200ResponseDataInnerReply{}
 
-// ListInboxReviews200ResponseDataInnerReply struct for ListInboxReviews200ResponseDataInnerReply
+// ListInboxReviews200ResponseDataInnerReply The reply from the Page or business. Absent when hasReply is false.
 type ListInboxReviews200ResponseDataInnerReply struct {
-	Id      *string    `json:"id,omitempty"`
-	Text    *string    `json:"text,omitempty"`
+	// Reply id. On Google Business Profile it is the review id.
+	Id *string `json:"id,omitempty"`
+	// Reply text.
+	Text *string `json:"text,omitempty"`
+	// When the reply was written (on Google Business Profile, last updated).
 	Created *time.Time `json:"created,omitempty"`
 }
 

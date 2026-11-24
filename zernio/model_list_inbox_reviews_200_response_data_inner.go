@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.820.0
+API version: 1.821.0
 Contact: support@zernio.com
 */
 
@@ -31,7 +31,8 @@ type ListInboxReviews200ResponseDataInner struct {
 	// Human-readable Google Business Profile location display name. Google Business Profile only; absent for other platforms.
 	LocationName NullableString                                `json:"locationName,omitempty"`
 	Reviewer     *ListInboxReviews200ResponseDataInnerReviewer `json:"reviewer,omitempty"`
-	Rating       *int32                                        `json:"rating,omitempty"`
+	// Star rating the reviewer gave, 1 to 5. Null for a Facebook recommendation without stars (see recommendationType).
+	Rating NullableInt32 `json:"rating,omitempty"`
 	// Facebook recommendation: positive means recommends, negative means does not recommend. Null or absent when unavailable; absent for other platforms. Independent of the numeric rating.
 	RecommendationType NullableString `json:"recommendationType,omitempty"`
 	Text               *string        `json:"text,omitempty"`
@@ -299,36 +300,47 @@ func (o *ListInboxReviews200ResponseDataInner) SetReviewer(v ListInboxReviews200
 	o.Reviewer = &v
 }
 
-// GetRating returns the Rating field value if set, zero value otherwise.
+// GetRating returns the Rating field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListInboxReviews200ResponseDataInner) GetRating() int32 {
-	if o == nil || IsNil(o.Rating) {
+	if o == nil || IsNil(o.Rating.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.Rating
+	return *o.Rating.Get()
 }
 
 // GetRatingOk returns a tuple with the Rating field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListInboxReviews200ResponseDataInner) GetRatingOk() (*int32, bool) {
-	if o == nil || IsNil(o.Rating) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Rating, true
+	return o.Rating.Get(), o.Rating.IsSet()
 }
 
 // HasRating returns a boolean if a field has been set.
 func (o *ListInboxReviews200ResponseDataInner) HasRating() bool {
-	if o != nil && !IsNil(o.Rating) {
+	if o != nil && o.Rating.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRating gets a reference to the given int32 and assigns it to the Rating field.
+// SetRating gets a reference to the given NullableInt32 and assigns it to the Rating field.
 func (o *ListInboxReviews200ResponseDataInner) SetRating(v int32) {
-	o.Rating = &v
+	o.Rating.Set(&v)
+}
+
+// SetRatingNil sets the value for Rating to be an explicit nil
+func (o *ListInboxReviews200ResponseDataInner) SetRatingNil() {
+	o.Rating.Set(nil)
+}
+
+// UnsetRating ensures that no value is present for Rating, not even an explicit nil
+func (o *ListInboxReviews200ResponseDataInner) UnsetRating() {
+	o.Rating.Unset()
 }
 
 // GetRecommendationType returns the RecommendationType field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -672,8 +684,8 @@ func (o ListInboxReviews200ResponseDataInner) ToMap() (map[string]interface{}, e
 	if !IsNil(o.Reviewer) {
 		toSerialize["reviewer"] = o.Reviewer
 	}
-	if !IsNil(o.Rating) {
-		toSerialize["rating"] = o.Rating
+	if o.Rating.IsSet() {
+		toSerialize["rating"] = o.Rating.Get()
 	}
 	if o.RecommendationType.IsSet() {
 		toSerialize["recommendationType"] = o.RecommendationType.Get()

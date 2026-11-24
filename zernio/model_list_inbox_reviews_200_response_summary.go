@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.820.0
+API version: 1.821.0
 Contact: support@zernio.com
 */
 
@@ -18,9 +18,11 @@ import (
 // checks if the ListInboxReviews200ResponseSummary type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ListInboxReviews200ResponseSummary{}
 
-// ListInboxReviews200ResponseSummary struct for ListInboxReviews200ResponseSummary
+// ListInboxReviews200ResponseSummary Computed over every review matching the filters, before pagination. A Facebook Page contributes the Page-wide count and average Facebook reports, which ignore the filters. Google Business Profile locations are computed over the reviews read, partial for accounts in meta.truncatedAccounts.
 type ListInboxReviews200ResponseSummary struct {
-	TotalReviews  *int32          `json:"totalReviews,omitempty"`
+	// Includes reviews without a star rating.
+	TotalReviews *int32 `json:"totalReviews,omitempty"`
+	// Mean star rating rounded to one decimal, leaving out reviews without a star rating. Null when none has one.
 	AverageRating NullableFloat32 `json:"averageRating,omitempty"`
 }
 
