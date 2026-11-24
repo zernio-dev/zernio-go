@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.811.0
+API version: 1.811.1
 Contact: support@zernio.com
 */
 
@@ -65,8 +65,9 @@ Keys a platform does not use are ignored. A row with none of the keys that platf
 Send lists over 10,000 people as several requests to the same audience: each one adds to it.
 
 - **TikTok and Pinterest**: the first upload creates the audience on the platform, later uploads add to it. TikTok allows 24 updates per audience per day.
-- **LinkedIn**: LinkedIn takes a list as one file, so Zernio keeps the hashed emails sent to each list and uploads the whole list about a minute after the requests stop (every 15 minutes while they keep coming).
-- **LinkedIn limits**: a list holds at most 300,000 contacts (more returns 422 and changes nothing). LinkedIn matches each upload in up to 48 hours. A list last uploaded before 2026-11-23 starts again from its next upload.
+- **LinkedIn**: a list created from 2026-11-24 receives the emails right away, 5,000 per LinkedIn call, and LinkedIn matches them within 48 hours.
+- **LinkedIn lists created before 2026-11-24**, or by a connection made before then that was not reconnected, take a list as one file: Zernio keeps the hashed emails and uploads the whole list about a minute after the requests stop (every 15 minutes while they keep coming).
+- **LinkedIn limits**: such a list holds at most 300,000 contacts (more returns 422 and changes nothing).
 
 ### Reddit
 
@@ -862,7 +863,7 @@ exactly like an upload and hashed keys are sent as is, so a row removes the pers
 - Max 10,000 users per request. The platform applies the removal asynchronously, so the audience size does not drop immediately.
 - TikTok, LinkedIn, Pinterest and X match on email only: a row without an email counts in `invalid`, and a request with no email at all returns 400. Google matches on email, phone and name with address, like the upload.
 - TikTok refuses a removal that would leave the audience under 1,000 people.
-- LinkedIn removes them from the list Zernio keeps and uploads what is left about a minute later.
+- LinkedIn removes them right away. On a list created before 2026-11-24, Zernio removes them from the list it keeps and uploads what is left about a minute later.
 - `invalidEntrySamples` is filled on Meta only.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
