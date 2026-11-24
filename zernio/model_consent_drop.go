@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.807.0
+API version: 1.808.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &ConsentDrop{}
 
 // ConsentDrop An event the destination did not get because the visitor did not consent.
 type ConsentDrop struct {
-	// Index into the events sent to this destination.
+	// Position of the event in the request's `events` array, counted from 0, also when repeats or events this destination does not take were left out.
 	EventIndex *int32  `json:"eventIndex,omitempty"`
 	EventId    *string `json:"eventId,omitempty"`
 	// `consent_denied`: a signal the platform needs is `DENIED`. `consent_missing`: the visitor is in the EEA, UK or CH and the signal was never given.
