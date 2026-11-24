@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.808.0
+API version: 1.809.0
 Contact: support@zernio.com
 */
 
@@ -26,8 +26,10 @@ type GetEventsOverview200ResponseSitesInner struct {
 	// Hits today.
 	HitsToday *int32 `json:"hitsToday,omitempty"`
 	// The last day in the past 7 with a hit. `null` when none.
-	LastActiveOn NullableString                                `json:"lastActiveOn,omitempty"`
-	Totals       *GetEventsOverview200ResponseSitesInnerTotals `json:"totals,omitempty"`
+	LastActiveOn NullableString `json:"lastActiveOn,omitempty"`
+	// Each event name people (not bots) sent the site in the last 7 days, sorted. Names the site sends that are neither standard nor in its `customEvents` are left out.
+	EventNamesLastWeek []string                                      `json:"eventNamesLastWeek,omitempty"`
+	Totals             *GetEventsOverview200ResponseSitesInnerTotals `json:"totals,omitempty"`
 }
 
 // NewGetEventsOverview200ResponseSitesInner instantiates a new GetEventsOverview200ResponseSitesInner object
@@ -186,6 +188,38 @@ func (o *GetEventsOverview200ResponseSitesInner) UnsetLastActiveOn() {
 	o.LastActiveOn.Unset()
 }
 
+// GetEventNamesLastWeek returns the EventNamesLastWeek field value if set, zero value otherwise.
+func (o *GetEventsOverview200ResponseSitesInner) GetEventNamesLastWeek() []string {
+	if o == nil || IsNil(o.EventNamesLastWeek) {
+		var ret []string
+		return ret
+	}
+	return o.EventNamesLastWeek
+}
+
+// GetEventNamesLastWeekOk returns a tuple with the EventNamesLastWeek field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverview200ResponseSitesInner) GetEventNamesLastWeekOk() ([]string, bool) {
+	if o == nil || IsNil(o.EventNamesLastWeek) {
+		return nil, false
+	}
+	return o.EventNamesLastWeek, true
+}
+
+// HasEventNamesLastWeek returns a boolean if a field has been set.
+func (o *GetEventsOverview200ResponseSitesInner) HasEventNamesLastWeek() bool {
+	if o != nil && !IsNil(o.EventNamesLastWeek) {
+		return true
+	}
+
+	return false
+}
+
+// SetEventNamesLastWeek gets a reference to the given []string and assigns it to the EventNamesLastWeek field.
+func (o *GetEventsOverview200ResponseSitesInner) SetEventNamesLastWeek(v []string) {
+	o.EventNamesLastWeek = v
+}
+
 // GetTotals returns the Totals field value if set, zero value otherwise.
 func (o *GetEventsOverview200ResponseSitesInner) GetTotals() GetEventsOverview200ResponseSitesInnerTotals {
 	if o == nil || IsNil(o.Totals) {
@@ -239,6 +273,9 @@ func (o GetEventsOverview200ResponseSitesInner) ToMap() (map[string]interface{},
 	}
 	if o.LastActiveOn.IsSet() {
 		toSerialize["lastActiveOn"] = o.LastActiveOn.Get()
+	}
+	if !IsNil(o.EventNamesLastWeek) {
+		toSerialize["eventNamesLastWeek"] = o.EventNamesLastWeek
 	}
 	if !IsNil(o.Totals) {
 		toSerialize["totals"] = o.Totals
