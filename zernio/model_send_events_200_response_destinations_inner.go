@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.822.0
+API version: 1.823.0
 Contact: support@zernio.com
 */
 
@@ -27,8 +27,11 @@ type SendEvents200ResponseDestinationsInner struct {
 	EventsSent   *int32 `json:"eventsSent,omitempty"`
 	EventsFailed *int32 `json:"eventsFailed,omitempty"`
 	// Events this destination did not get because the visitor did not consent (see Consent above).
-	EventsDropped *int32                                                `json:"eventsDropped,omitempty"`
-	Drops         []ConsentDrop                                         `json:"drops,omitempty"`
+	EventsDropped *int32        `json:"eventsDropped,omitempty"`
+	Drops         []ConsentDrop `json:"drops,omitempty"`
+	// Events not sent again because this destination already accepted them (same eventId and eventName within 48 hours), another request is sending them right now, or an earlier event in this request has the same eventId and eventName.
+	EventsSkipped *int32                                                `json:"eventsSkipped,omitempty"`
+	Skipped       []SendEvents200ResponseDestinationsInnerSkippedInner  `json:"skipped,omitempty"`
 	Failures      []SendEvents200ResponseDestinationsInnerFailuresInner `json:"failures,omitempty"`
 	// Set when the destination could not be reached at all (account disconnected, unsupported platform, platform error).
 	Error *string `json:"error,omitempty"`
@@ -281,6 +284,70 @@ func (o *SendEvents200ResponseDestinationsInner) SetDrops(v []ConsentDrop) {
 	o.Drops = v
 }
 
+// GetEventsSkipped returns the EventsSkipped field value if set, zero value otherwise.
+func (o *SendEvents200ResponseDestinationsInner) GetEventsSkipped() int32 {
+	if o == nil || IsNil(o.EventsSkipped) {
+		var ret int32
+		return ret
+	}
+	return *o.EventsSkipped
+}
+
+// GetEventsSkippedOk returns a tuple with the EventsSkipped field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEvents200ResponseDestinationsInner) GetEventsSkippedOk() (*int32, bool) {
+	if o == nil || IsNil(o.EventsSkipped) {
+		return nil, false
+	}
+	return o.EventsSkipped, true
+}
+
+// HasEventsSkipped returns a boolean if a field has been set.
+func (o *SendEvents200ResponseDestinationsInner) HasEventsSkipped() bool {
+	if o != nil && !IsNil(o.EventsSkipped) {
+		return true
+	}
+
+	return false
+}
+
+// SetEventsSkipped gets a reference to the given int32 and assigns it to the EventsSkipped field.
+func (o *SendEvents200ResponseDestinationsInner) SetEventsSkipped(v int32) {
+	o.EventsSkipped = &v
+}
+
+// GetSkipped returns the Skipped field value if set, zero value otherwise.
+func (o *SendEvents200ResponseDestinationsInner) GetSkipped() []SendEvents200ResponseDestinationsInnerSkippedInner {
+	if o == nil || IsNil(o.Skipped) {
+		var ret []SendEvents200ResponseDestinationsInnerSkippedInner
+		return ret
+	}
+	return o.Skipped
+}
+
+// GetSkippedOk returns a tuple with the Skipped field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEvents200ResponseDestinationsInner) GetSkippedOk() ([]SendEvents200ResponseDestinationsInnerSkippedInner, bool) {
+	if o == nil || IsNil(o.Skipped) {
+		return nil, false
+	}
+	return o.Skipped, true
+}
+
+// HasSkipped returns a boolean if a field has been set.
+func (o *SendEvents200ResponseDestinationsInner) HasSkipped() bool {
+	if o != nil && !IsNil(o.Skipped) {
+		return true
+	}
+
+	return false
+}
+
+// SetSkipped gets a reference to the given []SendEvents200ResponseDestinationsInnerSkippedInner and assigns it to the Skipped field.
+func (o *SendEvents200ResponseDestinationsInner) SetSkipped(v []SendEvents200ResponseDestinationsInnerSkippedInner) {
+	o.Skipped = v
+}
+
 // GetFailures returns the Failures field value if set, zero value otherwise.
 func (o *SendEvents200ResponseDestinationsInner) GetFailures() []SendEvents200ResponseDestinationsInnerFailuresInner {
 	if o == nil || IsNil(o.Failures) {
@@ -471,6 +538,12 @@ func (o SendEvents200ResponseDestinationsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Drops) {
 		toSerialize["drops"] = o.Drops
+	}
+	if !IsNil(o.EventsSkipped) {
+		toSerialize["eventsSkipped"] = o.EventsSkipped
+	}
+	if !IsNil(o.Skipped) {
+		toSerialize["skipped"] = o.Skipped
 	}
 	if !IsNil(o.Failures) {
 		toSerialize["failures"] = o.Failures
