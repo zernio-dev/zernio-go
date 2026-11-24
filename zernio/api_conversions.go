@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.812.0
+API version: 1.812.1
 Contact: support@zernio.com
 */
 
@@ -9226,7 +9226,9 @@ UpdateForwardingRule Update a forwarding rule
 
 Changes the fields you send and keeps the others. Send `eventNameMap: null` to stop renaming, `valueOverride: { "mode": "original" }` to send the event's own value again, and `valueCondition: null` to forward whatever the value. `eventValues` replaces the whole map; `null` or `{}` clears it.
 
-`apiSecret` replaces the secret of a rule whose destination needs one, such as a Google Analytics data stream's Measurement Protocol API secret. Before saving, Zernio sends one hit to Google's validation server; Google does not confirm the secret itself, so check GA4 Realtime after the next events.
+`apiSecret` replaces the secret of a rule whose destination needs one, such as a Google Analytics data stream's Measurement Protocol API secret. Events that name the stream in `destinations` on `POST /v1/events` use it too.
+
+Before saving, Zernio sends one hit to Google's validation server; Google does not confirm the secret itself, so check GA4 Realtime after the next events.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param ruleId The rule `id`.

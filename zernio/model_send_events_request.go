@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.812.0
+API version: 1.812.1
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ type SendEventsRequest struct {
 	// Profile the events belong to. Its saved destinations receive the events.
 	ProfileId string            `json:"profileId"`
 	Events    []ConversionEvent `json:"events"`
-	// Send to these destinations instead of the saved ones (every event goes to each).
+	// Send to these destinations instead of the saved ones (every event goes to each).  A Google Analytics stream is sent to with the Measurement Protocol API secret saved on a forwarding rule for the same account and stream: the rule of this `profileId`, else the most recently changed one in your other profiles. With none saved, the destination's `error` says how to save one.
 	Destinations []SendEventsRequestDestinationsInner `json:"destinations,omitempty"`
 	// Every event's consent, unless the event sets its own (see Consent above).
 	Consent *EventConsent `json:"consent,omitempty"`
