@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.823.0
+API version: 1.824.0
 Contact: support@zernio.com
 */
 
@@ -13747,6 +13747,16 @@ Google keeps a Demand Gen campaign's locations and languages on its ad groups an
 - Campaigns migrated from Discovery that still target on the campaign keep being written there.
 - `devices` and `locationTargetingType` stay campaign-level.
 - `excludedLocations` is not available on Demand Gen yet and returns 400.
+
+### Staging
+
+Send `stage: true` to store the edit as an ad change of type `campaign_targeting` instead of applying it. The answer is `202` with the change.
+
+Its diff has one entry per value under `targeting`. `before` comes from the campaign's devices, locations, excluded locations, languages and location targeting type, read live from Google.
+
+Confirm reads them again and answers `409` if any of them changed.
+
+A Demand Gen campaign's targeting cannot be staged yet: its locations and languages live on its ad groups, which that read does not cover. `stage: true` on one returns `400` with code `staging_not_supported` before anything is stored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Google platform campaign ID
