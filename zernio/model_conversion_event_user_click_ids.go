@@ -32,6 +32,10 @@ type ConversionEventUserClickIds struct {
 	Wbraid *string `json:"wbraid,omitempty"`
 	// LinkedIn first-party ad tracking click ID. Captured by parsing `li_fat_id` from landing-page URLs after the advertiser enables enhanced conversion tracking on the LinkedIn Insight Tag. Sent to LinkedIn as the LINKEDIN_FIRST_PARTY_ADS_TRACKING_UUID userId. Opaque token, not hashed.
 	LiFatId *string `json:"li_fat_id,omitempty"`
+	// TikTok click ID (the `ttclid` URL param TikTok adds to ad clicks). Sent to TikTok pixel destinations as `user.ttclid`, not hashed.
+	Ttclid *string `json:"ttclid,omitempty"`
+	// TikTok Pixel browser id (the `_ttp` cookie). Sent to TikTok pixel destinations as `user.ttp`, not hashed. Offline Event Sets match on email and phone only.
+	Ttp *string `json:"ttp,omitempty"`
 	// Pinterest click ID (the `epik` URL param or `_epik` cookie). Sent to Pinterest as `click_id`, not hashed.
 	Epik *string `json:"epik,omitempty"`
 	// Reddit click ID (the `rdt_cid` URL param Reddit adds to ad clicks). Sent to Reddit as `click_id`, not hashed.
@@ -277,6 +281,70 @@ func (o *ConversionEventUserClickIds) HasLiFatId() bool {
 // SetLiFatId gets a reference to the given string and assigns it to the LiFatId field.
 func (o *ConversionEventUserClickIds) SetLiFatId(v string) {
 	o.LiFatId = &v
+}
+
+// GetTtclid returns the Ttclid field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetTtclid() string {
+	if o == nil || IsNil(o.Ttclid) {
+		var ret string
+		return ret
+	}
+	return *o.Ttclid
+}
+
+// GetTtclidOk returns a tuple with the Ttclid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetTtclidOk() (*string, bool) {
+	if o == nil || IsNil(o.Ttclid) {
+		return nil, false
+	}
+	return o.Ttclid, true
+}
+
+// HasTtclid returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasTtclid() bool {
+	if o != nil && !IsNil(o.Ttclid) {
+		return true
+	}
+
+	return false
+}
+
+// SetTtclid gets a reference to the given string and assigns it to the Ttclid field.
+func (o *ConversionEventUserClickIds) SetTtclid(v string) {
+	o.Ttclid = &v
+}
+
+// GetTtp returns the Ttp field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetTtp() string {
+	if o == nil || IsNil(o.Ttp) {
+		var ret string
+		return ret
+	}
+	return *o.Ttp
+}
+
+// GetTtpOk returns a tuple with the Ttp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetTtpOk() (*string, bool) {
+	if o == nil || IsNil(o.Ttp) {
+		return nil, false
+	}
+	return o.Ttp, true
+}
+
+// HasTtp returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasTtp() bool {
+	if o != nil && !IsNil(o.Ttp) {
+		return true
+	}
+
+	return false
+}
+
+// SetTtp gets a reference to the given string and assigns it to the Ttp field.
+func (o *ConversionEventUserClickIds) SetTtp(v string) {
+	o.Ttp = &v
 }
 
 // GetEpik returns the Epik field value if set, zero value otherwise.
@@ -882,6 +950,12 @@ func (o ConversionEventUserClickIds) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.LiFatId) {
 		toSerialize["li_fat_id"] = o.LiFatId
+	}
+	if !IsNil(o.Ttclid) {
+		toSerialize["ttclid"] = o.Ttclid
+	}
+	if !IsNil(o.Ttp) {
+		toSerialize["ttp"] = o.Ttp
 	}
 	if !IsNil(o.Epik) {
 		toSerialize["epik"] = o.Epik
