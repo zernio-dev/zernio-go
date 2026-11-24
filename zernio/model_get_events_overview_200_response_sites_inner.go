@@ -30,6 +30,8 @@ type GetEventsOverview200ResponseSitesInner struct {
 	// Each event name people (not bots) sent the site in the last 7 days, sorted. Names the site sends that are neither standard nor in its `customEvents` are left out.
 	EventNamesLastWeek []string                                      `json:"eventNamesLastWeek,omitempty"`
 	Totals             *GetEventsOverview200ResponseSitesInnerTotals `json:"totals,omitempty"`
+	// Whether no forwarding rule of the profile to an ad platform uses the site (its own events, or server events its visits complete) and its tag fires no ad pixel in the browser.
+	SendsNowhere *bool `json:"sendsNowhere,omitempty"`
 }
 
 // NewGetEventsOverview200ResponseSitesInner instantiates a new GetEventsOverview200ResponseSitesInner object
@@ -252,6 +254,38 @@ func (o *GetEventsOverview200ResponseSitesInner) SetTotals(v GetEventsOverview20
 	o.Totals = &v
 }
 
+// GetSendsNowhere returns the SendsNowhere field value if set, zero value otherwise.
+func (o *GetEventsOverview200ResponseSitesInner) GetSendsNowhere() bool {
+	if o == nil || IsNil(o.SendsNowhere) {
+		var ret bool
+		return ret
+	}
+	return *o.SendsNowhere
+}
+
+// GetSendsNowhereOk returns a tuple with the SendsNowhere field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetEventsOverview200ResponseSitesInner) GetSendsNowhereOk() (*bool, bool) {
+	if o == nil || IsNil(o.SendsNowhere) {
+		return nil, false
+	}
+	return o.SendsNowhere, true
+}
+
+// HasSendsNowhere returns a boolean if a field has been set.
+func (o *GetEventsOverview200ResponseSitesInner) HasSendsNowhere() bool {
+	if o != nil && !IsNil(o.SendsNowhere) {
+		return true
+	}
+
+	return false
+}
+
+// SetSendsNowhere gets a reference to the given bool and assigns it to the SendsNowhere field.
+func (o *GetEventsOverview200ResponseSitesInner) SetSendsNowhere(v bool) {
+	o.SendsNowhere = &v
+}
+
 func (o GetEventsOverview200ResponseSitesInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -279,6 +313,9 @@ func (o GetEventsOverview200ResponseSitesInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Totals) {
 		toSerialize["totals"] = o.Totals
+	}
+	if !IsNil(o.SendsNowhere) {
+		toSerialize["sendsNowhere"] = o.SendsNowhere
 	}
 	return toSerialize, nil
 }

@@ -30,6 +30,10 @@ type TrackingSitePeriodTotals struct {
 	Purchases *int32 `json:"purchases,omitempty"`
 	// Purchases with ad consent for which no browser pixel fired, so only the server reported them.
 	Recovered *int32 `json:"recovered,omitempty"`
+	// Leads recorded on the site without bots.
+	Leads *int32 `json:"leads,omitempty"`
+	// Checkouts started on the site without bots.
+	Checkouts *int32 `json:"checkouts,omitempty"`
 }
 
 // NewTrackingSitePeriodTotals instantiates a new TrackingSitePeriodTotals object
@@ -209,6 +213,70 @@ func (o *TrackingSitePeriodTotals) SetRecovered(v int32) {
 	o.Recovered = &v
 }
 
+// GetLeads returns the Leads field value if set, zero value otherwise.
+func (o *TrackingSitePeriodTotals) GetLeads() int32 {
+	if o == nil || IsNil(o.Leads) {
+		var ret int32
+		return ret
+	}
+	return *o.Leads
+}
+
+// GetLeadsOk returns a tuple with the Leads field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingSitePeriodTotals) GetLeadsOk() (*int32, bool) {
+	if o == nil || IsNil(o.Leads) {
+		return nil, false
+	}
+	return o.Leads, true
+}
+
+// HasLeads returns a boolean if a field has been set.
+func (o *TrackingSitePeriodTotals) HasLeads() bool {
+	if o != nil && !IsNil(o.Leads) {
+		return true
+	}
+
+	return false
+}
+
+// SetLeads gets a reference to the given int32 and assigns it to the Leads field.
+func (o *TrackingSitePeriodTotals) SetLeads(v int32) {
+	o.Leads = &v
+}
+
+// GetCheckouts returns the Checkouts field value if set, zero value otherwise.
+func (o *TrackingSitePeriodTotals) GetCheckouts() int32 {
+	if o == nil || IsNil(o.Checkouts) {
+		var ret int32
+		return ret
+	}
+	return *o.Checkouts
+}
+
+// GetCheckoutsOk returns a tuple with the Checkouts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingSitePeriodTotals) GetCheckoutsOk() (*int32, bool) {
+	if o == nil || IsNil(o.Checkouts) {
+		return nil, false
+	}
+	return o.Checkouts, true
+}
+
+// HasCheckouts returns a boolean if a field has been set.
+func (o *TrackingSitePeriodTotals) HasCheckouts() bool {
+	if o != nil && !IsNil(o.Checkouts) {
+		return true
+	}
+
+	return false
+}
+
+// SetCheckouts gets a reference to the given int32 and assigns it to the Checkouts field.
+func (o *TrackingSitePeriodTotals) SetCheckouts(v int32) {
+	o.Checkouts = &v
+}
+
 func (o TrackingSitePeriodTotals) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -233,6 +301,12 @@ func (o TrackingSitePeriodTotals) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Recovered) {
 		toSerialize["recovered"] = o.Recovered
+	}
+	if !IsNil(o.Leads) {
+		toSerialize["leads"] = o.Leads
+	}
+	if !IsNil(o.Checkouts) {
+		toSerialize["checkouts"] = o.Checkouts
 	}
 	return toSerialize, nil
 }
