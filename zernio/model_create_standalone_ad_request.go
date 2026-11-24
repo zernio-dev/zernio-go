@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.815.0
+API version: 1.815.1
 Contact: support@zernio.com
 */
 
@@ -256,7 +256,7 @@ type CreateStandaloneAdRequest struct {
 	UserDevice []string `json:"userDevice,omitempty"`
 	// Meta app promotion only. Immutable campaign flag. Set true for iOS 14+ SKAdNetwork campaigns and supply promotedObject.applicationId plus promotedObject.objectStoreUrl. The campaign receives promotedObject only when this flag is true. Cannot be changed on an existing campaign.
 	IsSkadnetworkAttribution *bool `json:"isSkadnetworkAttribution,omitempty"`
-	// Meta ad-set attribution. Required as SKADNETWORK for iOS 14+ app promotion or a SKAdNetwork campaign. Requires AUCTION buying. Standalone Meta ad-set creation is not supported; use this field on /v1/ads/create.
+	// Meta ad-set attribution. SKADNETWORK for a SKAdNetwork campaign, AEM for an iOS 14+ AEM campaign without isSkadnetworkAttribution. With existingCampaignId, omit it to follow the campaign; a value that conflicts with the campaign is rejected. Requires AUCTION buying. Use this field on /v1/ads/create.
 	CampaignAttribution *string           `json:"campaignAttribution,omitempty"`
 	PromotedObject      *AdPromotedObject `json:"promotedObject,omitempty"`
 }
