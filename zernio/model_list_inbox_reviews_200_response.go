@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.819.1
+API version: 1.820.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ type ListInboxReviews200Response struct {
 	Status     *string                                          `json:"status,omitempty"`
 	Data       []ListInboxReviews200ResponseDataInner           `json:"data,omitempty"`
 	Pagination *ListCalendarEventInstances200ResponsePagination `json:"pagination,omitempty"`
-	Meta       *ListInboxConversations200ResponseMeta           `json:"meta,omitempty"`
+	Meta       *ListInboxReviews200ResponseMeta                 `json:"meta,omitempty"`
 	Summary    *ListInboxReviews200ResponseSummary              `json:"summary,omitempty"`
 }
 
@@ -141,9 +141,9 @@ func (o *ListInboxReviews200Response) SetPagination(v ListCalendarEventInstances
 }
 
 // GetMeta returns the Meta field value if set, zero value otherwise.
-func (o *ListInboxReviews200Response) GetMeta() ListInboxConversations200ResponseMeta {
+func (o *ListInboxReviews200Response) GetMeta() ListInboxReviews200ResponseMeta {
 	if o == nil || IsNil(o.Meta) {
-		var ret ListInboxConversations200ResponseMeta
+		var ret ListInboxReviews200ResponseMeta
 		return ret
 	}
 	return *o.Meta
@@ -151,7 +151,7 @@ func (o *ListInboxReviews200Response) GetMeta() ListInboxConversations200Respons
 
 // GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListInboxReviews200Response) GetMetaOk() (*ListInboxConversations200ResponseMeta, bool) {
+func (o *ListInboxReviews200Response) GetMetaOk() (*ListInboxReviews200ResponseMeta, bool) {
 	if o == nil || IsNil(o.Meta) {
 		return nil, false
 	}
@@ -167,8 +167,8 @@ func (o *ListInboxReviews200Response) HasMeta() bool {
 	return false
 }
 
-// SetMeta gets a reference to the given ListInboxConversations200ResponseMeta and assigns it to the Meta field.
-func (o *ListInboxReviews200Response) SetMeta(v ListInboxConversations200ResponseMeta) {
+// SetMeta gets a reference to the given ListInboxReviews200ResponseMeta and assigns it to the Meta field.
+func (o *ListInboxReviews200Response) SetMeta(v ListInboxReviews200ResponseMeta) {
 	o.Meta = &v
 }
 
