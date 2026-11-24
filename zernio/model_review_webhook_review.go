@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.816.0
+API version: 1.817.0
 Contact: support@zernio.com
 */
 
@@ -25,10 +25,12 @@ var _ MappedNullable = &ReviewWebhookReview{}
 type ReviewWebhookReview struct {
 	// Platform review ID (e.g. \"accounts/123/locations/456/reviews/789\" for Google Business Profile).
 	Id string `json:"id"`
-	// Platform the review originated on. Currently Google Business Profile only.
+	// Platform the review originated on (Google Business Profile or Facebook Pages).
 	Platform string `json:"platform"`
-	// Star rating the reviewer gave.
-	Rating int32 `json:"rating"`
+	// Star rating the reviewer gave. Null for a Facebook recommendation without stars.
+	Rating NullableInt32 `json:"rating"`
+	// Facebook only. Whether the reviewer recommended the Page.
+	RecommendationType *string `json:"recommendationType,omitempty"`
 	// Review text content. May be empty if the reviewer left only a rating.
 	Text      string                      `json:"text"`
 	Reviewer  ReviewWebhookReviewReviewer `json:"reviewer"`
@@ -44,7 +46,7 @@ type _ReviewWebhookReview ReviewWebhookReview
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewReviewWebhookReview(id string, platform string, rating int32, text string, reviewer ReviewWebhookReviewReviewer, createdAt time.Time, replied bool) *ReviewWebhookReview {
+func NewReviewWebhookReview(id string, platform string, rating NullableInt32, text string, reviewer ReviewWebhookReviewReviewer, createdAt time.Time, replied bool) *ReviewWebhookReview {
 	this := ReviewWebhookReview{}
 	this.Id = id
 	this.Platform = platform
@@ -113,27 +115,61 @@ func (o *ReviewWebhookReview) SetPlatform(v string) {
 }
 
 // GetRating returns the Rating field value
+// If the value is explicit nil, the zero value for int32 will be returned
 func (o *ReviewWebhookReview) GetRating() int32 {
-	if o == nil {
+	if o == nil || o.Rating.Get() == nil {
 		var ret int32
 		return ret
 	}
 
-	return o.Rating
+	return *o.Rating.Get()
 }
 
 // GetRatingOk returns a tuple with the Rating field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ReviewWebhookReview) GetRatingOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Rating, true
+	return o.Rating.Get(), o.Rating.IsSet()
 }
 
 // SetRating sets field value
 func (o *ReviewWebhookReview) SetRating(v int32) {
-	o.Rating = v
+	o.Rating.Set(&v)
+}
+
+// GetRecommendationType returns the RecommendationType field value if set, zero value otherwise.
+func (o *ReviewWebhookReview) GetRecommendationType() string {
+	if o == nil || IsNil(o.RecommendationType) {
+		var ret string
+		return ret
+	}
+	return *o.RecommendationType
+}
+
+// GetRecommendationTypeOk returns a tuple with the RecommendationType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ReviewWebhookReview) GetRecommendationTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.RecommendationType) {
+		return nil, false
+	}
+	return o.RecommendationType, true
+}
+
+// HasRecommendationType returns a boolean if a field has been set.
+func (o *ReviewWebhookReview) HasRecommendationType() bool {
+	if o != nil && !IsNil(o.RecommendationType) {
+		return true
+	}
+
+	return false
+}
+
+// SetRecommendationType gets a reference to the given string and assigns it to the RecommendationType field.
+func (o *ReviewWebhookReview) SetRecommendationType(v string) {
+	o.RecommendationType = &v
 }
 
 // GetText returns the Text field value
@@ -276,7 +312,10 @@ func (o ReviewWebhookReview) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
 	toSerialize["platform"] = o.Platform
-	toSerialize["rating"] = o.Rating
+	toSerialize["rating"] = o.Rating.Get()
+	if !IsNil(o.RecommendationType) {
+		toSerialize["recommendationType"] = o.RecommendationType
+	}
 	toSerialize["text"] = o.Text
 	toSerialize["reviewer"] = o.Reviewer
 	toSerialize["createdAt"] = o.CreatedAt
