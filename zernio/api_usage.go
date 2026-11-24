@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.813.1
+API version: 1.814.0
 Contact: support@zernio.com
 */
 
@@ -620,7 +620,7 @@ Returns the plan / quota / usage snapshot: plan name, billing period, limits, us
 
 ### With `range`, `granularity`, `from`, or `to`
 
-Returns usage METERING: billed spend (USD) by product family over the window, at `day` / `month` / `total` granularity. Product families: `accounts`, `numbers`, `imessage`, `calls`, `sms`, `messages`, `verify`, `dlc`, `xApi`, `ads`, `credits`, `other`.
+Returns usage METERING: billed spend (USD) by product family over the window, at `day` / `month` / `total` granularity. Product families: `accounts`, `numbers`, `imessage`, `rcs`, `calls`, `sms`, `messages`, `verify`, `dlc`, `xApi`, `ads`, `automations`, `websiteEvents`, `credits`, `other`.
 
 Data comes from the usage-based invoice breakdown (the CHARGE view, which always reconciles with what gets billed). Also served at `GET /v1/usage/daily`.
 
@@ -639,7 +639,13 @@ Usage-based accounts only: legacy Stripe accounts get `{ "supported": false, "da
 
 With `groupBy=profile`, each group also carries `profileId` and `externalId`.
 
-Profile-scoped API keys and members only see their profiles' groups (`attribution.restricted: true`, with `totals` summing the visible groups). Credits, 10DLC fees and Verify are always unattributed.
+Profile-scoped API keys and members only see their profiles' groups (`attribution.restricted: true`, with `totals` summing the visible groups).
+
+Credits, managed messages, RCS messages, ad automations, Verify and website events are always unattributed.
+
+iMessage sender and RCS agent fees go to the profile of the sender or agent. Automation runs split each day's fee by that day's runs.
+
+A 10DLC fee goes to a profile only when its registration names one. Registrations filed by API or dashboard belong to the owner and stay unattributed.
 
 A caller that sees the whole workspace gets `restricted: false` and the same `totals` as without `groupBy`. Shares are measured over everything the bill and its members carry, so `unattributed` can include spend outside the workspace, never named.
 
@@ -832,6 +838,7 @@ Identical to a bare `GET /v1/usage` call (this path is its deprecated alias).
 ### Related endpoints
 
 - Billed spend by product: call `GET /v1/usage` with `range` / `granularity` params.
+- Billed spend per profile, by your own `externalId`: `GET /v1/usage?range=cycle&groupBy=profile` ([what each customer costs you](/multi-tenant)).
 - The statement view (balance, credits, caps, payment status) lives at `GET /v1/billing`.
 
 ### Response shape

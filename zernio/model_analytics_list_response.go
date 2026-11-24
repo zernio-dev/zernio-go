@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.813.1
+API version: 1.814.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type AnalyticsListResponse struct {
 	Accounts []SocialAccount `json:"accounts,omitempty"`
 	// Whether user has analytics add-on access
 	HasAnalyticsAccess *bool `json:"hasAnalyticsAccess,omitempty"`
+	// The X accounts this list covers (after its platform, profile and account filters) whose analytics sync does not run: their numbers stay as of the last read. Also sent with `view=summary`. Absent when there are none.
+	AnalyticsOff []AnalyticsOffAccount `json:"analyticsOff,omitempty"`
 }
 
 // NewAnalyticsListResponse instantiates a new AnalyticsListResponse object
@@ -206,6 +208,38 @@ func (o *AnalyticsListResponse) SetHasAnalyticsAccess(v bool) {
 	o.HasAnalyticsAccess = &v
 }
 
+// GetAnalyticsOff returns the AnalyticsOff field value if set, zero value otherwise.
+func (o *AnalyticsListResponse) GetAnalyticsOff() []AnalyticsOffAccount {
+	if o == nil || IsNil(o.AnalyticsOff) {
+		var ret []AnalyticsOffAccount
+		return ret
+	}
+	return o.AnalyticsOff
+}
+
+// GetAnalyticsOffOk returns a tuple with the AnalyticsOff field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsListResponse) GetAnalyticsOffOk() ([]AnalyticsOffAccount, bool) {
+	if o == nil || IsNil(o.AnalyticsOff) {
+		return nil, false
+	}
+	return o.AnalyticsOff, true
+}
+
+// HasAnalyticsOff returns a boolean if a field has been set.
+func (o *AnalyticsListResponse) HasAnalyticsOff() bool {
+	if o != nil && !IsNil(o.AnalyticsOff) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnalyticsOff gets a reference to the given []AnalyticsOffAccount and assigns it to the AnalyticsOff field.
+func (o *AnalyticsListResponse) SetAnalyticsOff(v []AnalyticsOffAccount) {
+	o.AnalyticsOff = v
+}
+
 func (o AnalyticsListResponse) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -230,6 +264,9 @@ func (o AnalyticsListResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.HasAnalyticsAccess) {
 		toSerialize["hasAnalyticsAccess"] = o.HasAnalyticsAccess
+	}
+	if !IsNil(o.AnalyticsOff) {
+		toSerialize["analyticsOff"] = o.AnalyticsOff
 	}
 	return toSerialize, nil
 }

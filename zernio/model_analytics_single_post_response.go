@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.813.1
+API version: 1.814.0
 Contact: support@zernio.com
 */
 
@@ -40,6 +40,8 @@ type AnalyticsSinglePostResponse struct {
 	SyncStatus *string `json:"syncStatus,omitempty"`
 	// Human-readable status message for pending, partial, or failed states
 	Message NullableString `json:"message,omitempty"`
+	// The X accounts of this post whose analytics sync does not run: synced numbers stay as of the last read, and a pending X entry stays pending. Absent when there are none.
+	AnalyticsOff []AnalyticsOffAccount `json:"analyticsOff,omitempty"`
 	// Cover image URL. A Facebook, Instagram or TikTok cover whose signed CDN link is still valid is served as that link, which expires (Meta `oe=`, TikTok `x-expires=`): download the image rather than storing the link.  Once the link expires, Zernio re-reads the cover from the platform and serves it from Zernio storage, a URL that does not expire.  Null while that re-read is pending (read again shortly) or when the platform no longer returns the post, never an expired link.
 	ThumbnailUrl NullableString `json:"thumbnailUrl,omitempty"`
 	MediaType    NullableString `json:"mediaType,omitempty"`
@@ -577,6 +579,38 @@ func (o *AnalyticsSinglePostResponse) UnsetMessage() {
 	o.Message.Unset()
 }
 
+// GetAnalyticsOff returns the AnalyticsOff field value if set, zero value otherwise.
+func (o *AnalyticsSinglePostResponse) GetAnalyticsOff() []AnalyticsOffAccount {
+	if o == nil || IsNil(o.AnalyticsOff) {
+		var ret []AnalyticsOffAccount
+		return ret
+	}
+	return o.AnalyticsOff
+}
+
+// GetAnalyticsOffOk returns a tuple with the AnalyticsOff field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsSinglePostResponse) GetAnalyticsOffOk() ([]AnalyticsOffAccount, bool) {
+	if o == nil || IsNil(o.AnalyticsOff) {
+		return nil, false
+	}
+	return o.AnalyticsOff, true
+}
+
+// HasAnalyticsOff returns a boolean if a field has been set.
+func (o *AnalyticsSinglePostResponse) HasAnalyticsOff() bool {
+	if o != nil && !IsNil(o.AnalyticsOff) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnalyticsOff gets a reference to the given []AnalyticsOffAccount and assigns it to the AnalyticsOff field.
+func (o *AnalyticsSinglePostResponse) SetAnalyticsOff(v []AnalyticsOffAccount) {
+	o.AnalyticsOff = v
+}
+
 // GetThumbnailUrl returns the ThumbnailUrl field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AnalyticsSinglePostResponse) GetThumbnailUrl() string {
 	if o == nil || IsNil(o.ThumbnailUrl.Get()) {
@@ -906,6 +940,9 @@ func (o AnalyticsSinglePostResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Message.IsSet() {
 		toSerialize["message"] = o.Message.Get()
+	}
+	if !IsNil(o.AnalyticsOff) {
+		toSerialize["analyticsOff"] = o.AnalyticsOff
 	}
 	if o.ThumbnailUrl.IsSet() {
 		toSerialize["thumbnailUrl"] = o.ThumbnailUrl.Get()

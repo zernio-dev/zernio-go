@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.813.1
+API version: 1.814.0
 Contact: support@zernio.com
 */
 
@@ -35,8 +35,10 @@ type PostMetricsResponseMeta struct {
 	// With include=total: the posts the list holds, counted on the first page and carried by the cursor.
 	Total NullableInt32 `json:"total"`
 	// On a list of posts: the accounts this read queued for a fresh sync, because they were never synced or their stored numbers are over 90 minutes old. The answer holds the stored numbers; the synced ones arrive within minutes.
-	SyncRequestedAccountIds []string                                   `json:"syncRequestedAccountIds,omitempty"`
-	MetricsSample           *PostMetricsResponseMetaAllOfMetricsSample `json:"metricsSample,omitempty"`
+	SyncRequestedAccountIds []string `json:"syncRequestedAccountIds,omitempty"`
+	// The X accounts read whose analytics sync does not run: their stored numbers are not refreshed, and their posts without any stay pending. On a list, on the first page. Absent when there are none, and on the groupBy and changedSince reads other than groupBy=post.
+	AnalyticsOff  []AnalyticsOffAccount                      `json:"analyticsOff,omitempty"`
+	MetricsSample *PostMetricsResponseMetaAllOfMetricsSample `json:"metricsSample,omitempty"`
 }
 
 type _PostMetricsResponseMeta PostMetricsResponseMeta
@@ -296,6 +298,38 @@ func (o *PostMetricsResponseMeta) SetSyncRequestedAccountIds(v []string) {
 	o.SyncRequestedAccountIds = v
 }
 
+// GetAnalyticsOff returns the AnalyticsOff field value if set, zero value otherwise.
+func (o *PostMetricsResponseMeta) GetAnalyticsOff() []AnalyticsOffAccount {
+	if o == nil || IsNil(o.AnalyticsOff) {
+		var ret []AnalyticsOffAccount
+		return ret
+	}
+	return o.AnalyticsOff
+}
+
+// GetAnalyticsOffOk returns a tuple with the AnalyticsOff field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostMetricsResponseMeta) GetAnalyticsOffOk() ([]AnalyticsOffAccount, bool) {
+	if o == nil || IsNil(o.AnalyticsOff) {
+		return nil, false
+	}
+	return o.AnalyticsOff, true
+}
+
+// HasAnalyticsOff returns a boolean if a field has been set.
+func (o *PostMetricsResponseMeta) HasAnalyticsOff() bool {
+	if o != nil && !IsNil(o.AnalyticsOff) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnalyticsOff gets a reference to the given []AnalyticsOffAccount and assigns it to the AnalyticsOff field.
+func (o *PostMetricsResponseMeta) SetAnalyticsOff(v []AnalyticsOffAccount) {
+	o.AnalyticsOff = v
+}
+
 // GetMetricsSample returns the MetricsSample field value if set, zero value otherwise.
 func (o *PostMetricsResponseMeta) GetMetricsSample() PostMetricsResponseMetaAllOfMetricsSample {
 	if o == nil || IsNil(o.MetricsSample) {
@@ -348,6 +382,9 @@ func (o PostMetricsResponseMeta) ToMap() (map[string]interface{}, error) {
 	toSerialize["total"] = o.Total.Get()
 	if !IsNil(o.SyncRequestedAccountIds) {
 		toSerialize["syncRequestedAccountIds"] = o.SyncRequestedAccountIds
+	}
+	if !IsNil(o.AnalyticsOff) {
+		toSerialize["analyticsOff"] = o.AnalyticsOff
 	}
 	if !IsNil(o.MetricsSample) {
 		toSerialize["metricsSample"] = o.MetricsSample

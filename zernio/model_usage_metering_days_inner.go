@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.813.1
+API version: 1.814.0
 Contact: support@zernio.com
 */
 
@@ -25,8 +25,10 @@ type UsageMeteringDaysInner struct {
 	Numbers  *float32 `json:"numbers,omitempty"`
 	// iMessage sender fees.
 	Imessage *float32 `json:"imessage,omitempty"`
-	Calls    *float32 `json:"calls,omitempty"`
-	Sms      *float32 `json:"sms,omitempty"`
+	// RCS agent and message fees.
+	Rcs   *float32 `json:"rcs,omitempty"`
+	Calls *float32 `json:"calls,omitempty"`
+	Sms   *float32 `json:"sms,omitempty"`
 	// Managed outbound message fees.
 	Messages *float32 `json:"messages,omitempty"`
 	// Verify (per verification) fees.
@@ -36,6 +38,10 @@ type UsageMeteringDaysInner struct {
 	XApi *float32 `json:"xApi,omitempty"`
 	// Managed ads fees.
 	Ads *float32 `json:"ads,omitempty"`
+	// Automation run and ad automation fees.
+	Automations *float32 `json:"automations,omitempty"`
+	// Website event fees.
+	WebsiteEvents *float32 `json:"websiteEvents,omitempty"`
 	// Applied credits/discounts (negative).
 	Credits *float32 `json:"credits,omitempty"`
 	Other   *float32 `json:"other,omitempty"`
@@ -184,6 +190,38 @@ func (o *UsageMeteringDaysInner) HasImessage() bool {
 // SetImessage gets a reference to the given float32 and assigns it to the Imessage field.
 func (o *UsageMeteringDaysInner) SetImessage(v float32) {
 	o.Imessage = &v
+}
+
+// GetRcs returns the Rcs field value if set, zero value otherwise.
+func (o *UsageMeteringDaysInner) GetRcs() float32 {
+	if o == nil || IsNil(o.Rcs) {
+		var ret float32
+		return ret
+	}
+	return *o.Rcs
+}
+
+// GetRcsOk returns a tuple with the Rcs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageMeteringDaysInner) GetRcsOk() (*float32, bool) {
+	if o == nil || IsNil(o.Rcs) {
+		return nil, false
+	}
+	return o.Rcs, true
+}
+
+// HasRcs returns a boolean if a field has been set.
+func (o *UsageMeteringDaysInner) HasRcs() bool {
+	if o != nil && !IsNil(o.Rcs) {
+		return true
+	}
+
+	return false
+}
+
+// SetRcs gets a reference to the given float32 and assigns it to the Rcs field.
+func (o *UsageMeteringDaysInner) SetRcs(v float32) {
+	o.Rcs = &v
 }
 
 // GetCalls returns the Calls field value if set, zero value otherwise.
@@ -410,6 +448,70 @@ func (o *UsageMeteringDaysInner) SetAds(v float32) {
 	o.Ads = &v
 }
 
+// GetAutomations returns the Automations field value if set, zero value otherwise.
+func (o *UsageMeteringDaysInner) GetAutomations() float32 {
+	if o == nil || IsNil(o.Automations) {
+		var ret float32
+		return ret
+	}
+	return *o.Automations
+}
+
+// GetAutomationsOk returns a tuple with the Automations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageMeteringDaysInner) GetAutomationsOk() (*float32, bool) {
+	if o == nil || IsNil(o.Automations) {
+		return nil, false
+	}
+	return o.Automations, true
+}
+
+// HasAutomations returns a boolean if a field has been set.
+func (o *UsageMeteringDaysInner) HasAutomations() bool {
+	if o != nil && !IsNil(o.Automations) {
+		return true
+	}
+
+	return false
+}
+
+// SetAutomations gets a reference to the given float32 and assigns it to the Automations field.
+func (o *UsageMeteringDaysInner) SetAutomations(v float32) {
+	o.Automations = &v
+}
+
+// GetWebsiteEvents returns the WebsiteEvents field value if set, zero value otherwise.
+func (o *UsageMeteringDaysInner) GetWebsiteEvents() float32 {
+	if o == nil || IsNil(o.WebsiteEvents) {
+		var ret float32
+		return ret
+	}
+	return *o.WebsiteEvents
+}
+
+// GetWebsiteEventsOk returns a tuple with the WebsiteEvents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageMeteringDaysInner) GetWebsiteEventsOk() (*float32, bool) {
+	if o == nil || IsNil(o.WebsiteEvents) {
+		return nil, false
+	}
+	return o.WebsiteEvents, true
+}
+
+// HasWebsiteEvents returns a boolean if a field has been set.
+func (o *UsageMeteringDaysInner) HasWebsiteEvents() bool {
+	if o != nil && !IsNil(o.WebsiteEvents) {
+		return true
+	}
+
+	return false
+}
+
+// SetWebsiteEvents gets a reference to the given float32 and assigns it to the WebsiteEvents field.
+func (o *UsageMeteringDaysInner) SetWebsiteEvents(v float32) {
+	o.WebsiteEvents = &v
+}
+
 // GetCredits returns the Credits field value if set, zero value otherwise.
 func (o *UsageMeteringDaysInner) GetCredits() float32 {
 	if o == nil || IsNil(o.Credits) {
@@ -496,6 +598,9 @@ func (o UsageMeteringDaysInner) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Imessage) {
 		toSerialize["imessage"] = o.Imessage
 	}
+	if !IsNil(o.Rcs) {
+		toSerialize["rcs"] = o.Rcs
+	}
 	if !IsNil(o.Calls) {
 		toSerialize["calls"] = o.Calls
 	}
@@ -516,6 +621,12 @@ func (o UsageMeteringDaysInner) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Ads) {
 		toSerialize["ads"] = o.Ads
+	}
+	if !IsNil(o.Automations) {
+		toSerialize["automations"] = o.Automations
+	}
+	if !IsNil(o.WebsiteEvents) {
+		toSerialize["websiteEvents"] = o.WebsiteEvents
 	}
 	if !IsNil(o.Credits) {
 		toSerialize["credits"] = o.Credits

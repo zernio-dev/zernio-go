@@ -304,6 +304,8 @@ model_analytics_delta_response.go
 model_analytics_list_response.go
 model_analytics_list_response_posts_inner.go
 model_analytics_list_response_posts_inner_media_items_inner.go
+model_analytics_off.go
+model_analytics_off_account.go
 model_analytics_overview.go
 model_analytics_overview_data_staleness.go
 model_analytics_single_post_response.go

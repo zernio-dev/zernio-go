@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.813.1
+API version: 1.814.0
 Contact: support@zernio.com
 */
 
@@ -50,6 +50,7 @@ type GetAccountHealth200Response struct {
 	// When the earliest current stored cause was recorded (the start of the outage); for an intentional disconnect, when it was disconnected. Null when the connection is healthy, including when the account is unhealthy for another reason (analytics, messaging restriction, missing analytics scopes, Meta phone status), or when unknown.
 	UnhealthySince NullableTime                                               `json:"unhealthySince,omitempty"`
 	AnalyticsSync  *GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync `json:"analyticsSync,omitempty"`
+	AnalyticsOff   *AnalyticsOff                                              `json:"analyticsOff,omitempty"`
 	// Present on WhatsApp, Instagram and Facebook accounts. An active WhatsApp number with no inbound message or comment 24 hours after its latest connect gets an entry in issues, which never changes status. Null for accounts connected before tracking shipped, until their first inbound event or next connect.
 	InboundActivity       NullableInboundActivity                                            `json:"inboundActivity,omitempty"`
 	PublishingRestriction *GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction `json:"publishingRestriction,omitempty"`
@@ -718,6 +719,38 @@ func (o *GetAccountHealth200Response) SetAnalyticsSync(v GetAllAccountsHealth200
 	o.AnalyticsSync = &v
 }
 
+// GetAnalyticsOff returns the AnalyticsOff field value if set, zero value otherwise.
+func (o *GetAccountHealth200Response) GetAnalyticsOff() AnalyticsOff {
+	if o == nil || IsNil(o.AnalyticsOff) {
+		var ret AnalyticsOff
+		return ret
+	}
+	return *o.AnalyticsOff
+}
+
+// GetAnalyticsOffOk returns a tuple with the AnalyticsOff field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200Response) GetAnalyticsOffOk() (*AnalyticsOff, bool) {
+	if o == nil || IsNil(o.AnalyticsOff) {
+		return nil, false
+	}
+	return o.AnalyticsOff, true
+}
+
+// HasAnalyticsOff returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasAnalyticsOff() bool {
+	if o != nil && !IsNil(o.AnalyticsOff) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnalyticsOff gets a reference to the given AnalyticsOff and assigns it to the AnalyticsOff field.
+func (o *GetAccountHealth200Response) SetAnalyticsOff(v AnalyticsOff) {
+	o.AnalyticsOff = &v
+}
+
 // GetInboundActivity returns the InboundActivity field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetAccountHealth200Response) GetInboundActivity() InboundActivity {
 	if o == nil || IsNil(o.InboundActivity.Get()) {
@@ -998,6 +1031,9 @@ func (o GetAccountHealth200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AnalyticsSync) {
 		toSerialize["analyticsSync"] = o.AnalyticsSync
+	}
+	if !IsNil(o.AnalyticsOff) {
+		toSerialize["analyticsOff"] = o.AnalyticsOff
 	}
 	if o.InboundActivity.IsSet() {
 		toSerialize["inboundActivity"] = o.InboundActivity.Get()
