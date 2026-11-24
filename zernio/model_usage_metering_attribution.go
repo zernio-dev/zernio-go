@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.813.0
+API version: 1.813.1
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &UsageMeteringAttribution{}
 type UsageMeteringAttribution struct {
 	GroupBy *string                 `json:"groupBy,omitempty"`
 	Groups  []UsageAttributionGroup `json:"groups,omitempty"`
-	// Spend no profile/account can claim: credits, 10DLC fees, Verify, and usage whose record no longer resolves to an account. Zero for a restricted principal.
+	// Spend no profile/account of your workspace can claim: credits, 10DLC fees, Verify, usage whose record no longer resolves to an account, and the share measured outside your workspace. Zero for a restricted principal.
 	Unattributed *UsageAttributionSlice `json:"unattributed,omitempty"`
 	// The window totals; for a restricted principal, the sum of the visible groups.
 	Totals *UsageAttributionSlice `json:"totals,omitempty"`
