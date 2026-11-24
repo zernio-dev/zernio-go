@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.819.0
+API version: 1.819.1
 Contact: support@zernio.com
 */
 
@@ -1123,6 +1123,7 @@ func (r LeadGenAPIListFormLeadsRequest) Limit(limit int32) LeadGenAPIListFormLea
 	return r
 }
 
+// The pagination.cursor of the previous page.
 func (r LeadGenAPIListFormLeadsRequest) Cursor(cursor string) LeadGenAPIListFormLeadsRequest {
 	r.cursor = &cursor
 	return r
@@ -1143,7 +1144,7 @@ ListFormLeads List leads for a single form
 
 Lists the leads submitted through one Meta lead form.
 
-It serves persisted leads (ingested via the leadgen webhook) when available, falling back to a live Graph read.
+It serves the leads Zernio stored when the form has any, newest stored first. Otherwise it reads them live from Meta. No parameter forces a live read.
 
 ### Accounts
 
@@ -1154,11 +1155,27 @@ Accepts either of these with leads_retrieval access to the form:
 
 ### Freshness
 
-Persisted leads arrive in real time through Meta's webhook. A background pass re-reads every Page from Meta to catch the leads the webhook misses: every 15 minutes for Pages that received a lead in the last 7 days.
+Leads are stored within seconds through Meta's webhook. A recovery pass stores the leads the webhook missed and sends them as `lead.received` too.
 
-`meta.lastCheckedAt` says when that pass last ran, so polling this endpoint faster than that returns nothing new. Subscribe to the `lead.received` webhook instead.
+Recovered leads usually arrive within 15 minutes for Pages with a lead in the last 7 days, up to 4 hours for Pages with forms but no recent lead, and up to 3 days for a Page's first lead form. Failing Meta reads add up to 24 hours.
 
-The live Graph read is cached for 5 minutes, and `meta.lastCheckedAt` is when it was read.
+Reading this endpoint does not trigger that pass. A live read that finds leads only moves the Page's next pass forward.
+
+### What recovery skips
+
+For a form with no stored lead, recovery reaches back 7 days. It reads only the first 200 forms Meta lists for a Page and skips archived or deleted forms. It stores at most 50 new leads per form per pass, leaving the rest for the next pass.
+
+A form whose missed backlog is too deep to page through is skipped and logged, so recovery is not proof that every lead is stored.
+
+### meta.lastCheckedAt
+
+For stored leads, it is when the recovery pass last finished for the Page. That pass can skip forms, so the value can be recent while leads are missing, including on an empty page.
+
+For live reads, it is when Meta was read. With content retained, that read is cached for 5 minutes. With zero content retention, every read is live and uncached.
+
+### Paging
+
+Pass `pagination.cursor` back as `cursor` while `hasMore` is true. Pages are not a snapshot: leads stored after the first page, recovered ones included, sort first and appear only when you read from the start again. Deduplicate on `id`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param formId
