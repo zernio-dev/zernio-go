@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.802.0
+API version: 1.802.1
 Contact: support@zernio.com
 */
 
@@ -563,8 +563,9 @@ GenerateAdPreviews Render pre-create ad previews
 
 Shows how a Meta creative will look in each placement before you create the ad, as embeddable previews.
 
-Renders how a creative would look per placement BEFORE any ad exists, via Meta's
-`/generatepreviews`. Provide exactly one creative source: `existingCreativeId` or `creativeSpec`.
+Renders how a creative would look per placement BEFORE any ad exists. Provide exactly one
+creative source: `creativeSpec` renders via Meta's `/generatepreviews`, `existingCreativeId`
+via Meta's `/{creative_id}/previews`.
 Each preview is an HTML `<iframe>` snippet embeddable directly. Unknown `formats` values
 return Meta's 400 verbatim.
 
