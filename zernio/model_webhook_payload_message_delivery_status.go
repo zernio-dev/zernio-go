@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.800.3
+API version: 1.802.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadMessageDeliveryStatus type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageDeliveryStatus{}
 
-// WebhookPayloadMessageDeliveryStatus Shared payload for message.delivered, message.read, message.played and message.failed events. Fires when the platform reports a new delivery state for an outgoing message.  **Platform support:**  - message.delivered: WhatsApp, Facebook Messenger, SMS, RCS. - message.read: WhatsApp, Facebook Messenger, Instagram, RCS. Not SMS (carriers report delivery, never read). - message.played: WhatsApp only, voice messages. - message.failed: WhatsApp, SMS and RCS (other platforms don't expose per-message failure via webhook). On SMS, `error.code` is the carrier's numeric code and `error.message` its reason.
+// WebhookPayloadMessageDeliveryStatus Shared payload for message.delivered, message.read, message.played and message.failed events. Fires when the platform reports a new delivery state for an outgoing message.  **Platform support:**  - message.delivered: WhatsApp, Facebook Messenger, SMS, RCS, iMessage. - message.read: WhatsApp, Facebook Messenger, Instagram, RCS. Not SMS (carriers report delivery, never read). - message.played: WhatsApp only, voice messages. - message.failed: WhatsApp, SMS, RCS and iMessage (other platforms don't expose per-message failure via webhook). On SMS, `error.code` is the carrier's numeric code and `error.message` its reason. - On iMessage, message.failed can follow message.delivered for the same message: the provider delivered it on iMessage, then reported its SMS or RCS fallback failed. The failure is final.
 type WebhookPayloadMessageDeliveryStatus struct {
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
 	Test *bool `json:"test,omitempty"`
