@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.814.1
+API version: 1.815.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,7 @@ var _ MappedNullable = &StagedAdChange{}
 type StagedAdChange struct {
 	// The change id, used in /v1/ads/changes/{changeId}.
 	Id string `json:"id"`
-	// Which write was staged: a status route, or the update route of a campaign, an ad set or an ad.
+	// Which write was staged: a status route, the update route of a campaign, an ad set or an ad, or one of the create routes (POST /v1/ads/create, POST /v1/ads/campaigns, POST /v1/ads/ad-sets).
 	Type string `json:"type"`
 	// The ad platform of the object, as the write route names it.
 	Platform string `json:"platform"`
@@ -33,8 +33,10 @@ type StagedAdChange struct {
 	AccountId string `json:"accountId"`
 	// The ad account id on the platform.
 	AdAccountId string `json:"adAccountId"`
-	// The object the change applies to: the platform campaign id, the platform ad set id, or the Zernio ad id.
+	// The object the change applies to: the platform campaign id, the platform ad set id, or the Zernio ad id. Null for a create, whose object does not exist yet.
 	TargetId NullableString `json:"targetId"`
+	// Present and true when the change creates a new object. Every diff entry then has `before: null` and `beforeAvailable: false`.
+	Creates *bool `json:"creates,omitempty"`
 	// - `staged`: waiting to be confirmed or discarded. - `confirming`: a confirm is running. A change that stays here has an unknown outcome and is never applied again automatically. - `confirmed`: applied. `result` holds what the write returned. - `failed`: not applied. `error` says why.
 	Status string `json:"status"`
 	// One entry per value of the staged request that the write would change.  - A nested field is flattened: each leaf is one entry under its dotted path (`budget.amount`, `targeting.ageMin`, `creative.headline`). - A list is one entry. - A leaf whose value on the ad network already equals the requested value is left out, so the list can be empty. - `stage` and other flags that only steer the write are never listed.
@@ -223,6 +225,38 @@ func (o *StagedAdChange) GetTargetIdOk() (*string, bool) {
 // SetTargetId sets field value
 func (o *StagedAdChange) SetTargetId(v string) {
 	o.TargetId.Set(&v)
+}
+
+// GetCreates returns the Creates field value if set, zero value otherwise.
+func (o *StagedAdChange) GetCreates() bool {
+	if o == nil || IsNil(o.Creates) {
+		var ret bool
+		return ret
+	}
+	return *o.Creates
+}
+
+// GetCreatesOk returns a tuple with the Creates field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StagedAdChange) GetCreatesOk() (*bool, bool) {
+	if o == nil || IsNil(o.Creates) {
+		return nil, false
+	}
+	return o.Creates, true
+}
+
+// HasCreates returns a boolean if a field has been set.
+func (o *StagedAdChange) HasCreates() bool {
+	if o != nil && !IsNil(o.Creates) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreates gets a reference to the given bool and assigns it to the Creates field.
+func (o *StagedAdChange) SetCreates(v bool) {
+	o.Creates = &v
 }
 
 // GetStatus returns the Status field value
@@ -427,6 +461,9 @@ func (o StagedAdChange) ToMap() (map[string]interface{}, error) {
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["targetId"] = o.TargetId.Get()
+	if !IsNil(o.Creates) {
+		toSerialize["creates"] = o.Creates
+	}
 	toSerialize["status"] = o.Status
 	toSerialize["diff"] = o.Diff
 	toSerialize["createdBy"] = o.CreatedBy

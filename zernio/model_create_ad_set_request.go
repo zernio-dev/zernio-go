@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.814.1
+API version: 1.815.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &CreateAdSetRequest{}
 
 // CreateAdSetRequest struct for CreateAdSetRequest
 type CreateAdSetRequest struct {
+	// Send true to stage this create instead of sending it. Nothing is created on the ad network; the response is `202` with the staged change. Create it with POST /v1/ads/changes/{changeId}/confirm. Google only: `platform: reddit` or `snapchat` returns 400 `staging_not_supported`.
+	Stage *bool `json:"stage,omitempty"`
 	// Zernio SocialAccount id owning the Google Ads or Reddit Ads connection.
 	AccountId string `json:"accountId"`
 	// \"google\", \"reddit\" and \"snapchat\" are implemented; every other value returns 501.
@@ -81,6 +83,38 @@ func NewCreateAdSetRequestWithDefaults() *CreateAdSetRequest {
 	var status string = "PAUSED"
 	this.Status = &status
 	return &this
+}
+
+// GetStage returns the Stage field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetStage() bool {
+	if o == nil || IsNil(o.Stage) {
+		var ret bool
+		return ret
+	}
+	return *o.Stage
+}
+
+// GetStageOk returns a tuple with the Stage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetStageOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stage) {
+		return nil, false
+	}
+	return o.Stage, true
+}
+
+// HasStage returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasStage() bool {
+	if o != nil && !IsNil(o.Stage) {
+		return true
+	}
+
+	return false
+}
+
+// SetStage gets a reference to the given bool and assigns it to the Stage field.
+func (o *CreateAdSetRequest) SetStage(v bool) {
+	o.Stage = &v
 }
 
 // GetAccountId returns the AccountId field value
@@ -608,6 +642,9 @@ func (o CreateAdSetRequest) MarshalJSON() ([]byte, error) {
 
 func (o CreateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Stage) {
+		toSerialize["stage"] = o.Stage
+	}
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["platform"] = o.Platform
 	toSerialize["campaignId"] = o.CampaignId

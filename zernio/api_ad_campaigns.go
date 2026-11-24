@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.814.1
+API version: 1.815.0
 Contact: support@zernio.com
 */
 
@@ -1115,6 +1115,8 @@ Created `PAUSED` (TikTok `DISABLE`) unless `status: ACTIVE` where the platform s
 
 **Idempotency:** send an `Idempotency-Key` header to make retries safe.
 
+**Staging:** send `stage: true` to store the create as an ad change instead of sending it. The response is `202`, and POST /v1/ads/changes/{changeId}/confirm creates the campaign later. Meta and Google only. The network is not called at staging and checks the campaign at confirm.
+
 ### Field support
 
 - `specialAdCategories`: Meta-only (400 elsewhere).
@@ -1348,6 +1350,8 @@ Created `PAUSED` unless `status: ACTIVE`. The new ad group has no ad yet, so it 
 It can be read, edited and deleted through `/v1/ads/ad-sets/{adSetId}` right away (targeting, schedule, name, `status`, `budget` and bid fields). A budget on an ad group that spends its campaign budget returns 422.
 
 **Idempotency:** send an `Idempotency-Key` header to make retries safe.
+
+**Staging:** send `stage: true` to store the create as an ad change instead of sending it. The response is `202`, and POST /v1/ads/changes/{changeId}/confirm creates the ad group later. Google only: Reddit and Snapchat return 400. Google checks the ad group at confirm.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPICreateAdSetRequest
@@ -2161,6 +2165,14 @@ Use the `accountId` of a `snapchatads` connection signed in through GET /v1/conn
 - `existingCampaignId` adds a new ad squad and ad to a campaign; `adSetId` adds the ad to an existing ad squad. `validateOnly` returns 501.
 
 Without `status`, every level is switched on: send `status: PAUSED` to create it paused. A failed step deletes what the call created.
+
+### Staging
+
+Send `stage: true` to store the create as an ad change instead of sending it. The response is `202` with the change, and POST /v1/ads/changes/{changeId}/confirm creates the ad later. Meta and Google only.
+
+Google validates a staged Performance Max or Demand Gen create. Meta is not called at staging, and neither is Google for a search or display ad: the network checks those at confirm.
+
+Media is fetched at confirm. An upload in Zernio's temporary storage is copied to permanent storage at staging, and the staged change points at the copy. A presigned URL returns 400 with `stage`.
 
 ### Idempotency
 

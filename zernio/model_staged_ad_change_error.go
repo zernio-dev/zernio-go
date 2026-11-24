@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.814.1
+API version: 1.815.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,8 @@ type StagedAdChangeError struct {
 	// An error code, or `target_changed` when the object changed on the ad network after staging.
 	Code    *string        `json:"code,omitempty"`
 	Message NullableString `json:"message,omitempty"`
+	// Creates only. What the failed create reported, such as objects it had already made on the ad network.
+	Details map[string]interface{} `json:"details,omitempty"`
 }
 
 // NewStagedAdChangeError instantiates a new StagedAdChangeError object
@@ -117,6 +119,38 @@ func (o *StagedAdChangeError) UnsetMessage() {
 	o.Message.Unset()
 }
 
+// GetDetails returns the Details field value if set, zero value otherwise.
+func (o *StagedAdChangeError) GetDetails() map[string]interface{} {
+	if o == nil || IsNil(o.Details) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.Details
+}
+
+// GetDetailsOk returns a tuple with the Details field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StagedAdChangeError) GetDetailsOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Details) {
+		return map[string]interface{}{}, false
+	}
+	return o.Details, true
+}
+
+// HasDetails returns a boolean if a field has been set.
+func (o *StagedAdChangeError) HasDetails() bool {
+	if o != nil && !IsNil(o.Details) {
+		return true
+	}
+
+	return false
+}
+
+// SetDetails gets a reference to the given map[string]interface{} and assigns it to the Details field.
+func (o *StagedAdChangeError) SetDetails(v map[string]interface{}) {
+	o.Details = v
+}
+
 func (o StagedAdChangeError) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -132,6 +166,9 @@ func (o StagedAdChangeError) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Message.IsSet() {
 		toSerialize["message"] = o.Message.Get()
+	}
+	if !IsNil(o.Details) {
+		toSerialize["details"] = o.Details
 	}
 	return toSerialize, nil
 }
