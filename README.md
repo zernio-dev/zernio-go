@@ -563,6 +563,13 @@ func main() {
 | `client.AdCampaignsAPI.ReplaceCampaignNegativeKeywords(ctx)` | Replace campaign-level negative keywords |
 | `client.AdCampaignsAPI.ReplaceGoogleListingGroupFilters(ctx)` | Replace an asset group's listing-group tree |
 
+### Ad Changes
+| Method | Description |
+|--------|-------------|
+| `client.AdChangesAPI.GetAdChange(ctx)` | Get a staged ad change |
+| `client.AdChangesAPI.ConfirmAdChange(ctx)` | Confirm a staged ad change |
+| `client.AdChangesAPI.DiscardAdChange(ctx)` | Discard a staged ad change |
+
 ### Ad Creatives
 | Method | Description |
 |--------|-------------|
