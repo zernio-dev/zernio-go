@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.800.0
+API version: 1.800.1
 Contact: support@zernio.com
 */
 
@@ -44,7 +44,7 @@ The initial sync, ad-account discovery plus a 90-day ad backfill, completed for 
 
 ### When it fires
 
-Fires once per ads-enabled account. `sync` reports whether the backfill succeeded fully or partially, and how many ads were synced versus failed.
+Fires once per ads-enabled account. `sync.status` is `"success"` only when every ad synced. When any ad failed it is `"failure"`, and `sync.synced` and `sync.failed` say how many: a partial backfill is a `"failure"` with both above zero. Ads that failed keep syncing on the regular schedule.
 
 ### Scoped connects
 
@@ -52,7 +52,7 @@ When scoping was applied at connect time, `account.platformAdAccountId` echoes t
 
 ### On failure
 
-When `sync.status` is `"failure"`, the payload adds `sync.error` (raw platform error, about 2 KB), `sync.errorCode` and `sync.errorSubcode` when parseable, and `sync.errorCategory`.
+When `sync.status` is `"failure"` and the platform returned an error, the payload adds `sync.error` (raw platform error, about 2 KB), `sync.errorCode` and `sync.errorSubcode` when parseable, and `sync.errorCategory`.
 
 ### Error categories
 
