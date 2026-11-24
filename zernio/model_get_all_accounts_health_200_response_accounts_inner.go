@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.803.1
+API version: 1.804.0
 Contact: support@zernio.com
 */
 
@@ -48,9 +48,11 @@ type GetAllAccountsHealth200ResponseAccountsInner struct {
 	UnhealthySince NullableTime                                               `json:"unhealthySince,omitempty"`
 	AnalyticsSync  *GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync `json:"analyticsSync,omitempty"`
 	// Present on WhatsApp, Instagram and Facebook accounts. An active WhatsApp number with no inbound message or comment 24 hours after its latest connect gets an entry in issues, which never changes status. Null for accounts connected before tracking shipped, until their first inbound event or next connect.
-	InboundActivity       NullableInboundActivity                                            `json:"inboundActivity,omitempty"`
-	PublishingRestriction *GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction `json:"publishingRestriction,omitempty"`
-	MessagingRestriction  *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction  `json:"messagingRestriction,omitempty"`
+	InboundActivity NullableInboundActivity `json:"inboundActivity,omitempty"`
+	// WhatsApp accounts only. On `already_synced` an entry with the steps for a new import is added to `issues`, which never changes status. Null when no request ran for the current connection, and on numbers that are not in coexistence.
+	CoexistenceHistorySync NullableCoexistenceHistorySync                                     `json:"coexistenceHistorySync,omitempty"`
+	PublishingRestriction  *GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction `json:"publishingRestriction,omitempty"`
+	MessagingRestriction   *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction  `json:"messagingRestriction,omitempty"`
 }
 
 // NewGetAllAccountsHealth200ResponseAccountsInner instantiates a new GetAllAccountsHealth200ResponseAccountsInner object
@@ -754,6 +756,49 @@ func (o *GetAllAccountsHealth200ResponseAccountsInner) UnsetInboundActivity() {
 	o.InboundActivity.Unset()
 }
 
+// GetCoexistenceHistorySync returns the CoexistenceHistorySync field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetCoexistenceHistorySync() CoexistenceHistorySync {
+	if o == nil || IsNil(o.CoexistenceHistorySync.Get()) {
+		var ret CoexistenceHistorySync
+		return ret
+	}
+	return *o.CoexistenceHistorySync.Get()
+}
+
+// GetCoexistenceHistorySyncOk returns a tuple with the CoexistenceHistorySync field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetCoexistenceHistorySyncOk() (*CoexistenceHistorySync, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CoexistenceHistorySync.Get(), o.CoexistenceHistorySync.IsSet()
+}
+
+// HasCoexistenceHistorySync returns a boolean if a field has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) HasCoexistenceHistorySync() bool {
+	if o != nil && o.CoexistenceHistorySync.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCoexistenceHistorySync gets a reference to the given NullableCoexistenceHistorySync and assigns it to the CoexistenceHistorySync field.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) SetCoexistenceHistorySync(v CoexistenceHistorySync) {
+	o.CoexistenceHistorySync.Set(&v)
+}
+
+// SetCoexistenceHistorySyncNil sets the value for CoexistenceHistorySync to be an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInner) SetCoexistenceHistorySyncNil() {
+	o.CoexistenceHistorySync.Set(nil)
+}
+
+// UnsetCoexistenceHistorySync ensures that no value is present for CoexistenceHistorySync, not even an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInner) UnsetCoexistenceHistorySync() {
+	o.CoexistenceHistorySync.Unset()
+}
+
 // GetPublishingRestriction returns the PublishingRestriction field value if set, zero value otherwise.
 func (o *GetAllAccountsHealth200ResponseAccountsInner) GetPublishingRestriction() GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction {
 	if o == nil || IsNil(o.PublishingRestriction) {
@@ -887,6 +932,9 @@ func (o GetAllAccountsHealth200ResponseAccountsInner) ToMap() (map[string]interf
 	}
 	if o.InboundActivity.IsSet() {
 		toSerialize["inboundActivity"] = o.InboundActivity.Get()
+	}
+	if o.CoexistenceHistorySync.IsSet() {
+		toSerialize["coexistenceHistorySync"] = o.CoexistenceHistorySync.Get()
 	}
 	if !IsNil(o.PublishingRestriction) {
 		toSerialize["publishingRestriction"] = o.PublishingRestriction

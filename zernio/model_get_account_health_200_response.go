@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.803.1
+API version: 1.804.0
 Contact: support@zernio.com
 */
 
@@ -51,12 +51,13 @@ type GetAccountHealth200Response struct {
 	UnhealthySince NullableTime                                               `json:"unhealthySince,omitempty"`
 	AnalyticsSync  *GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync `json:"analyticsSync,omitempty"`
 	// Present on WhatsApp, Instagram and Facebook accounts. An active WhatsApp number with no inbound message or comment 24 hours after its latest connect gets an entry in issues, which never changes status. Null for accounts connected before tracking shipped, until their first inbound event or next connect.
-	InboundActivity        NullableInboundActivity                                            `json:"inboundActivity,omitempty"`
-	PublishingRestriction  *GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction `json:"publishingRestriction,omitempty"`
-	MessagingRestriction   *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction  `json:"messagingRestriction,omitempty"`
-	CoexistenceHistorySync *GetAccountHealth200ResponseCoexistenceHistorySync                 `json:"coexistenceHistorySync,omitempty"`
-	PlatformConnection     *GetAccountHealth200ResponsePlatformConnection                     `json:"platformConnection,omitempty"`
-	LineWebhook            *GetAccountHealth200ResponseLineWebhook                            `json:"lineWebhook,omitempty"`
+	InboundActivity       NullableInboundActivity                                            `json:"inboundActivity,omitempty"`
+	PublishingRestriction *GetAllAccountsHealth200ResponseAccountsInnerPublishingRestriction `json:"publishingRestriction,omitempty"`
+	MessagingRestriction  *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction  `json:"messagingRestriction,omitempty"`
+	// WhatsApp accounts only. Null when no request ran for the current connection, and on numbers that are not in coexistence.
+	CoexistenceHistorySync NullableCoexistenceHistorySync                 `json:"coexistenceHistorySync,omitempty"`
+	PlatformConnection     *GetAccountHealth200ResponsePlatformConnection `json:"platformConnection,omitempty"`
+	LineWebhook            *GetAccountHealth200ResponseLineWebhook        `json:"lineWebhook,omitempty"`
 }
 
 // NewGetAccountHealth200Response instantiates a new GetAccountHealth200Response object
@@ -824,36 +825,47 @@ func (o *GetAccountHealth200Response) SetMessagingRestriction(v GetAllAccountsHe
 	o.MessagingRestriction = &v
 }
 
-// GetCoexistenceHistorySync returns the CoexistenceHistorySync field value if set, zero value otherwise.
-func (o *GetAccountHealth200Response) GetCoexistenceHistorySync() GetAccountHealth200ResponseCoexistenceHistorySync {
-	if o == nil || IsNil(o.CoexistenceHistorySync) {
-		var ret GetAccountHealth200ResponseCoexistenceHistorySync
+// GetCoexistenceHistorySync returns the CoexistenceHistorySync field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAccountHealth200Response) GetCoexistenceHistorySync() CoexistenceHistorySync {
+	if o == nil || IsNil(o.CoexistenceHistorySync.Get()) {
+		var ret CoexistenceHistorySync
 		return ret
 	}
-	return *o.CoexistenceHistorySync
+	return *o.CoexistenceHistorySync.Get()
 }
 
 // GetCoexistenceHistorySyncOk returns a tuple with the CoexistenceHistorySync field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetAccountHealth200Response) GetCoexistenceHistorySyncOk() (*GetAccountHealth200ResponseCoexistenceHistorySync, bool) {
-	if o == nil || IsNil(o.CoexistenceHistorySync) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAccountHealth200Response) GetCoexistenceHistorySyncOk() (*CoexistenceHistorySync, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CoexistenceHistorySync, true
+	return o.CoexistenceHistorySync.Get(), o.CoexistenceHistorySync.IsSet()
 }
 
 // HasCoexistenceHistorySync returns a boolean if a field has been set.
 func (o *GetAccountHealth200Response) HasCoexistenceHistorySync() bool {
-	if o != nil && !IsNil(o.CoexistenceHistorySync) {
+	if o != nil && o.CoexistenceHistorySync.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCoexistenceHistorySync gets a reference to the given GetAccountHealth200ResponseCoexistenceHistorySync and assigns it to the CoexistenceHistorySync field.
-func (o *GetAccountHealth200Response) SetCoexistenceHistorySync(v GetAccountHealth200ResponseCoexistenceHistorySync) {
-	o.CoexistenceHistorySync = &v
+// SetCoexistenceHistorySync gets a reference to the given NullableCoexistenceHistorySync and assigns it to the CoexistenceHistorySync field.
+func (o *GetAccountHealth200Response) SetCoexistenceHistorySync(v CoexistenceHistorySync) {
+	o.CoexistenceHistorySync.Set(&v)
+}
+
+// SetCoexistenceHistorySyncNil sets the value for CoexistenceHistorySync to be an explicit nil
+func (o *GetAccountHealth200Response) SetCoexistenceHistorySyncNil() {
+	o.CoexistenceHistorySync.Set(nil)
+}
+
+// UnsetCoexistenceHistorySync ensures that no value is present for CoexistenceHistorySync, not even an explicit nil
+func (o *GetAccountHealth200Response) UnsetCoexistenceHistorySync() {
+	o.CoexistenceHistorySync.Unset()
 }
 
 // GetPlatformConnection returns the PlatformConnection field value if set, zero value otherwise.
@@ -996,8 +1008,8 @@ func (o GetAccountHealth200Response) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.MessagingRestriction) {
 		toSerialize["messagingRestriction"] = o.MessagingRestriction
 	}
-	if !IsNil(o.CoexistenceHistorySync) {
-		toSerialize["coexistenceHistorySync"] = o.CoexistenceHistorySync
+	if o.CoexistenceHistorySync.IsSet() {
+		toSerialize["coexistenceHistorySync"] = o.CoexistenceHistorySync.Get()
 	}
 	if !IsNil(o.PlatformConnection) {
 		toSerialize["platformConnection"] = o.PlatformConnection
