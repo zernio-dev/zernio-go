@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.812.1
+API version: 1.813.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,7 @@ var _ MappedNullable = &StagedAdChange{}
 type StagedAdChange struct {
 	// The change id, used in /v1/ads/changes/{changeId}.
 	Id string `json:"id"`
-	// Which write was staged.
+	// Which write was staged: a status route, or the update route of a campaign, an ad set or an ad.
 	Type string `json:"type"`
 	// The ad platform of the object, as the write route names it.
 	Platform string `json:"platform"`
@@ -37,7 +37,7 @@ type StagedAdChange struct {
 	TargetId NullableString `json:"targetId"`
 	// - `staged`: waiting to be confirmed or discarded. - `confirming`: a confirm is running. A change that stays here has an unknown outcome and is never applied again automatically. - `confirmed`: applied. `result` holds what the write returned. - `failed`: not applied. `error` says why.
 	Status string `json:"status"`
-	// One entry per field of the staged request.
+	// One entry per value of the staged request that the write would change.  - A nested field is flattened: each leaf is one entry under its dotted path (`budget.amount`, `targeting.ageMin`, `creative.headline`). - A list is one entry. - A leaf whose value on the ad network already equals the requested value is left out, so the list can be empty. - `stage` and other flags that only steer the write are never listed.
 	Diff []StagedAdChangeDiffInner `json:"diff"`
 	// The user who staged the change.
 	CreatedBy string    `json:"createdBy"`

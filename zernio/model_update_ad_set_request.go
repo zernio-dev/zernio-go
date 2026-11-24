@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.812.1
+API version: 1.813.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &UpdateAdSetRequest{}
 
 // UpdateAdSetRequest struct for UpdateAdSetRequest
 type UpdateAdSetRequest struct {
+	// Send true to stage this change instead of applying it. Nothing is written to the ad network; the response is `202` with the staged change and its diff. Apply it with POST /v1/ads/changes/{changeId}/confirm. Meta and Google only; cannot be combined with `validateOnly` or `dryRun`.
+	Stage    *bool                     `json:"stage,omitempty"`
 	Platform string                    `json:"platform"`
 	Budget   *UpdateAdSetRequestBudget `json:"budget,omitempty"`
 	// Writes the ad set's own on/off switch (Meta: `configured_status`; X: the line item's `entity_status` ACTIVE / PAUSED), whatever delivery status its ads report. Omit if not toggling delivery state.
@@ -75,6 +77,38 @@ func NewUpdateAdSetRequest(platform string) *UpdateAdSetRequest {
 func NewUpdateAdSetRequestWithDefaults() *UpdateAdSetRequest {
 	this := UpdateAdSetRequest{}
 	return &this
+}
+
+// GetStage returns the Stage field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetStage() bool {
+	if o == nil || IsNil(o.Stage) {
+		var ret bool
+		return ret
+	}
+	return *o.Stage
+}
+
+// GetStageOk returns a tuple with the Stage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetStageOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stage) {
+		return nil, false
+	}
+	return o.Stage, true
+}
+
+// HasStage returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasStage() bool {
+	if o != nil && !IsNil(o.Stage) {
+		return true
+	}
+
+	return false
+}
+
+// SetStage gets a reference to the given bool and assigns it to the Stage field.
+func (o *UpdateAdSetRequest) SetStage(v bool) {
+	o.Stage = &v
 }
 
 // GetPlatform returns the Platform field value
@@ -709,6 +743,9 @@ func (o UpdateAdSetRequest) MarshalJSON() ([]byte, error) {
 
 func (o UpdateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Stage) {
+		toSerialize["stage"] = o.Stage
+	}
 	toSerialize["platform"] = o.Platform
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget
