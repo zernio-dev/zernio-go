@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.800.2
+API version: 1.800.3
 Contact: support@zernio.com
 */
 
@@ -38,10 +38,10 @@ type AnalyticsListResponsePostsInner struct {
 	// True when this post's metrics include paid delivery, so organic reporting should exclude it.  Set for LinkedIn dark posts and for TikTok posts one of your TikTok ads promotes (Spark / boosted).  TikTok exposes no ad flag of its own. A video created by an uploaded-asset (non-Spark) TikTok ad is posted to the profile with a fresh organic id and cannot be detected, so those still report false.
 	IsAd      *bool          `json:"isAd,omitempty"`
 	ProfileId NullableString `json:"profileId,omitempty"`
-	// Cover image URL. Facebook, Instagram and TikTok covers whose platform CDN link expired are re-read from the platform and served from Zernio storage, so that URL does not expire and can be cached.
-	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
-	MediaType    *string `json:"mediaType,omitempty"`
-	// All media items for this post. Carousel posts contain one entry per slide.  - Facebook and Instagram images and video covers whose Meta CDN links expired are re-read and served from Zernio storage (non-expiring). - Facebook and Instagram video file URLs, and LinkedIn media URLs, stay the platform's signed links and are refreshed on read once they lapse.
+	// Cover image URL. A Facebook, Instagram or TikTok cover whose signed CDN link is still valid is served as that link, which expires (Meta `oe=`, TikTok `x-expires=`): download the image rather than storing the link.  Once the link expires, Zernio re-reads the cover from the platform and serves it from Zernio storage, a URL that does not expire.  Null while that re-read is pending (read again shortly) or when the platform no longer returns the post, never an expired link.
+	ThumbnailUrl NullableString `json:"thumbnailUrl,omitempty"`
+	MediaType    *string        `json:"mediaType,omitempty"`
+	// All media items for this post. Carousel posts contain one entry per slide.  - Facebook and Instagram images and video covers whose Meta CDN links expired are re-read and served from Zernio storage (non-expiring). - Facebook and Instagram video file URLs, and LinkedIn media URLs, stay the platform's signed links and are refreshed on read once they lapse. - A `url` or `thumbnail` whose platform link expired and could not be re-read yet is null, never the expired link.
 	MediaItems []AnalyticsListResponsePostsInnerMediaItemsInner `json:"mediaItems,omitempty"`
 	// Instagram only: the platform media product type (e.g. FEED, REELS, STORY, AD). Absent when the platform did not report it.
 	MediaProductType *string `json:"mediaProductType,omitempty"`
@@ -553,36 +553,47 @@ func (o *AnalyticsListResponsePostsInner) UnsetProfileId() {
 	o.ProfileId.Unset()
 }
 
-// GetThumbnailUrl returns the ThumbnailUrl field value if set, zero value otherwise.
+// GetThumbnailUrl returns the ThumbnailUrl field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AnalyticsListResponsePostsInner) GetThumbnailUrl() string {
-	if o == nil || IsNil(o.ThumbnailUrl) {
+	if o == nil || IsNil(o.ThumbnailUrl.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.ThumbnailUrl
+	return *o.ThumbnailUrl.Get()
 }
 
 // GetThumbnailUrlOk returns a tuple with the ThumbnailUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AnalyticsListResponsePostsInner) GetThumbnailUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.ThumbnailUrl) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ThumbnailUrl, true
+	return o.ThumbnailUrl.Get(), o.ThumbnailUrl.IsSet()
 }
 
 // HasThumbnailUrl returns a boolean if a field has been set.
 func (o *AnalyticsListResponsePostsInner) HasThumbnailUrl() bool {
-	if o != nil && !IsNil(o.ThumbnailUrl) {
+	if o != nil && o.ThumbnailUrl.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetThumbnailUrl gets a reference to the given string and assigns it to the ThumbnailUrl field.
+// SetThumbnailUrl gets a reference to the given NullableString and assigns it to the ThumbnailUrl field.
 func (o *AnalyticsListResponsePostsInner) SetThumbnailUrl(v string) {
-	o.ThumbnailUrl = &v
+	o.ThumbnailUrl.Set(&v)
+}
+
+// SetThumbnailUrlNil sets the value for ThumbnailUrl to be an explicit nil
+func (o *AnalyticsListResponsePostsInner) SetThumbnailUrlNil() {
+	o.ThumbnailUrl.Set(nil)
+}
+
+// UnsetThumbnailUrl ensures that no value is present for ThumbnailUrl, not even an explicit nil
+func (o *AnalyticsListResponsePostsInner) UnsetThumbnailUrl() {
+	o.ThumbnailUrl.Unset()
 }
 
 // GetMediaType returns the MediaType field value if set, zero value otherwise.
@@ -861,8 +872,8 @@ func (o AnalyticsListResponsePostsInner) ToMap() (map[string]interface{}, error)
 	if o.ProfileId.IsSet() {
 		toSerialize["profileId"] = o.ProfileId.Get()
 	}
-	if !IsNil(o.ThumbnailUrl) {
-		toSerialize["thumbnailUrl"] = o.ThumbnailUrl
+	if o.ThumbnailUrl.IsSet() {
+		toSerialize["thumbnailUrl"] = o.ThumbnailUrl.Get()
 	}
 	if !IsNil(o.MediaType) {
 		toSerialize["mediaType"] = o.MediaType

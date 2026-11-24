@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.800.2
+API version: 1.800.3
 Contact: support@zernio.com
 */
 
@@ -22,9 +22,9 @@ var _ MappedNullable = &AnalyticsListResponsePostsInnerMediaItemsInner{}
 type AnalyticsListResponsePostsInnerMediaItemsInner struct {
 	Type *string `json:"type,omitempty"`
 	// Direct URL to the media
-	Url *string `json:"url,omitempty"`
+	Url NullableString `json:"url,omitempty"`
 	// Thumbnail URL (same as url for images)
-	Thumbnail *string `json:"thumbnail,omitempty"`
+	Thumbnail NullableString `json:"thumbnail,omitempty"`
 	// Accessibility alt text set on the media, when present.
 	AltText *string `json:"altText,omitempty"`
 }
@@ -78,68 +78,90 @@ func (o *AnalyticsListResponsePostsInnerMediaItemsInner) SetType(v string) {
 	o.Type = &v
 }
 
-// GetUrl returns the Url field value if set, zero value otherwise.
+// GetUrl returns the Url field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AnalyticsListResponsePostsInnerMediaItemsInner) GetUrl() string {
-	if o == nil || IsNil(o.Url) {
+	if o == nil || IsNil(o.Url.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Url
+	return *o.Url.Get()
 }
 
 // GetUrlOk returns a tuple with the Url field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AnalyticsListResponsePostsInnerMediaItemsInner) GetUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.Url) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Url, true
+	return o.Url.Get(), o.Url.IsSet()
 }
 
 // HasUrl returns a boolean if a field has been set.
 func (o *AnalyticsListResponsePostsInnerMediaItemsInner) HasUrl() bool {
-	if o != nil && !IsNil(o.Url) {
+	if o != nil && o.Url.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetUrl gets a reference to the given string and assigns it to the Url field.
+// SetUrl gets a reference to the given NullableString and assigns it to the Url field.
 func (o *AnalyticsListResponsePostsInnerMediaItemsInner) SetUrl(v string) {
-	o.Url = &v
+	o.Url.Set(&v)
 }
 
-// GetThumbnail returns the Thumbnail field value if set, zero value otherwise.
+// SetUrlNil sets the value for Url to be an explicit nil
+func (o *AnalyticsListResponsePostsInnerMediaItemsInner) SetUrlNil() {
+	o.Url.Set(nil)
+}
+
+// UnsetUrl ensures that no value is present for Url, not even an explicit nil
+func (o *AnalyticsListResponsePostsInnerMediaItemsInner) UnsetUrl() {
+	o.Url.Unset()
+}
+
+// GetThumbnail returns the Thumbnail field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AnalyticsListResponsePostsInnerMediaItemsInner) GetThumbnail() string {
-	if o == nil || IsNil(o.Thumbnail) {
+	if o == nil || IsNil(o.Thumbnail.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Thumbnail
+	return *o.Thumbnail.Get()
 }
 
 // GetThumbnailOk returns a tuple with the Thumbnail field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AnalyticsListResponsePostsInnerMediaItemsInner) GetThumbnailOk() (*string, bool) {
-	if o == nil || IsNil(o.Thumbnail) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Thumbnail, true
+	return o.Thumbnail.Get(), o.Thumbnail.IsSet()
 }
 
 // HasThumbnail returns a boolean if a field has been set.
 func (o *AnalyticsListResponsePostsInnerMediaItemsInner) HasThumbnail() bool {
-	if o != nil && !IsNil(o.Thumbnail) {
+	if o != nil && o.Thumbnail.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetThumbnail gets a reference to the given string and assigns it to the Thumbnail field.
+// SetThumbnail gets a reference to the given NullableString and assigns it to the Thumbnail field.
 func (o *AnalyticsListResponsePostsInnerMediaItemsInner) SetThumbnail(v string) {
-	o.Thumbnail = &v
+	o.Thumbnail.Set(&v)
+}
+
+// SetThumbnailNil sets the value for Thumbnail to be an explicit nil
+func (o *AnalyticsListResponsePostsInnerMediaItemsInner) SetThumbnailNil() {
+	o.Thumbnail.Set(nil)
+}
+
+// UnsetThumbnail ensures that no value is present for Thumbnail, not even an explicit nil
+func (o *AnalyticsListResponsePostsInnerMediaItemsInner) UnsetThumbnail() {
+	o.Thumbnail.Unset()
 }
 
 // GetAltText returns the AltText field value if set, zero value otherwise.
@@ -187,11 +209,11 @@ func (o AnalyticsListResponsePostsInnerMediaItemsInner) ToMap() (map[string]inte
 	if !IsNil(o.Type) {
 		toSerialize["type"] = o.Type
 	}
-	if !IsNil(o.Url) {
-		toSerialize["url"] = o.Url
+	if o.Url.IsSet() {
+		toSerialize["url"] = o.Url.Get()
 	}
-	if !IsNil(o.Thumbnail) {
-		toSerialize["thumbnail"] = o.Thumbnail
+	if o.Thumbnail.IsSet() {
+		toSerialize["thumbnail"] = o.Thumbnail.Get()
 	}
 	if !IsNil(o.AltText) {
 		toSerialize["altText"] = o.AltText
