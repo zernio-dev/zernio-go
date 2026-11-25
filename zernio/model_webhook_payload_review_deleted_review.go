@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.828.0
+API version: 1.829.0
 Contact: support@zernio.com
 */
 
@@ -23,14 +23,14 @@ var _ MappedNullable = &WebhookPayloadReviewDeletedReview{}
 
 // WebhookPayloadReviewDeletedReview struct for WebhookPayloadReviewDeletedReview
 type WebhookPayloadReviewDeletedReview struct {
-	// Full review name, matching review.id on the review.new event (\"accounts/123/locations/456/reviews/789\").
+	// Google: full review name. Facebook: the review id from review.new.
 	Id       string `json:"id"`
 	Platform string `json:"platform"`
 	// Star rating the reviewer gave. Null when it was never recorded.
 	Rating NullableInt32 `json:"rating"`
-	// When the reviewer posted the review. Null when it was never recorded.
+	// When the reviewer posted the review. Null when it was never recorded. Always null on Facebook.
 	CreatedAt NullableTime `json:"createdAt"`
-	// Last time Zernio saw Google return this review.
+	// Last time Zernio saw Google return this review. On Facebook, when Meta's removal notice arrived.
 	LastSeenAt time.Time `json:"lastSeenAt"`
 }
 

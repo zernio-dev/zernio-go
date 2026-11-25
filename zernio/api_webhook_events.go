@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.828.0
+API version: 1.829.0
 Contact: support@zernio.com
 */
 
@@ -14251,19 +14251,23 @@ func (r WebhookEventsAPIOnReviewDeletedRequest) Execute() (*http.Response, error
 /*
 OnReviewDeleted Review deleted event
 
-Google Business Profile stopped returning a review, for example after its spam filter removed it.
+A review was removed: Google Business Profile stopped returning it (for example after its spam filter removed it), or Meta reported a removed Facebook Page recommendation.
 
 ### When it fires
 
-Zernio detects it by polling, so it usually fires 6 to 12 hours after the review disappears. Only locations covered by a webhook subscribed to `review.deleted` or `review.restored` are checked.
+On Google, Zernio detects it by polling, so it usually fires 6 to 12 hours after the review disappears. Only locations covered by a webhook subscribed to `review.deleted` or `review.restored` are checked.
 
 ### Restores
 
 If the review comes back, `review.restored` fires, so a hidden then restored review produces `review.deleted` then `review.restored`. A `review.updated` can arrive for a deleted review; the next check restores it.
 
+### Facebook Pages
+
+On Facebook Pages it fires when Meta reports a removed recommendation with its review id. Best effort: Meta does not document the id on removals, so some removals produce no event.
+
 ### Payload notes
 
-`review.id` is the full review name, the same value `review.new` sent. It may arrive for a review id you never received `review.new` for, so ignore ids you do not know.
+`review.id` is the full review name on Google and the review id on Facebook, the same value `review.new` sent. It may arrive for a review id you never received `review.new` for, so ignore ids you do not know.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnReviewDeletedRequest
@@ -14580,7 +14584,7 @@ Only teams with a webhook subscribed to `review.updated` are checked. A removed 
 
 ### Facebook Pages
 
-Fires when the reviewer edits their review and when the Page adds or edits a reply, with the review read live from the Page. A reply sent through the API produces only the review.updated from Meta's webhook, with no immediate delivery.
+Fires when the reviewer edits their review and when the Page adds, edits or removes a reply, with the review read live from the Page. A reply sent through the API produces only the review.updated from Meta's webhook, with no immediate delivery.
 
 ### Payload notes
 
