@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.827.1
+API version: 1.828.0
 Contact: support@zernio.com
 */
 
@@ -5251,7 +5251,7 @@ func (r AdCampaignsAPIGetAdTreeRequest) MinSpend(minSpend float32) AdCampaignsAP
 	return r
 }
 
-// Campaign-level sort order. &#x60;newest&#x60; (default) / &#x60;oldest&#x60; order by the campaign&#39;s newest-ad createdAt. &#x60;spend_desc&#x60; / &#x60;spend_asc&#x60; order by aggregated spend in the requested date range; campaigns with no spend land at the end.
+// Campaign order. &#x60;newest&#x60; (default) / &#x60;oldest&#x60;: by the newest ad&#39;s createdAt. &#x60;spend_*&#x60;: by spend in the date range. &#x60;results_*&#x60; / &#x60;cost_per_result_*&#x60;: by results, or spend per result, for each campaign&#39;s objective (reach summed across its ads); no-result campaigns end a cost order.
 func (r AdCampaignsAPIGetAdTreeRequest) Sort(sort string) AdCampaignsAPIGetAdTreeRequest {
 	r.sort = &sort
 	return r
