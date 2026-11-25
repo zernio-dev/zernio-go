@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.833.0
+API version: 1.833.1
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &InstagramVideoFallback{}
 // InstagramVideoFallback Meta only. Present when Meta refused an existing Instagram video as the boosted ad (code 100, subcode 1815279: upload it to Facebook first) and Zernio created the ad another way:  - `instagram_video_reuploaded`: the video was copied into the ad account, and the ad still references the original post. - `instagram_video_rehosted_copy`: the video was uploaded as a new Facebook video in a new Page post, so the ad does not show the original post's likes and comments.  Send `rehostOnInstagramVideoRejection: false` on the boost to get Meta's error instead.
 type InstagramVideoFallback struct {
 	Kind string `json:"kind"`
-	// True when the ad still references the original Instagram post and keeps its engagement.
+	// True when the ad still references the original Instagram post and keeps its engagement. The ad's creative may still report an effective_instagram_media_id and permalink different from the boosted media: Instagram's boosted rendition of the same post, which shares its likes and comments.
 	LinkedToOriginalPost bool `json:"linkedToOriginalPost"`
 	// The Facebook-side ad video Zernio made.  - instagram_video_reuploaded: the copy in the ad account video library (possibly one made by an earlier boost of the same media, reused). The creative carries it as video_id, unless Meta accepted the plain post reference once the copy existed; then the copy is kept for that reference. - instagram_video_rehosted_copy: the new upload the creative uses (an unused copy made by this request is deleted).
 	VideoId       string                              `json:"videoId"`
