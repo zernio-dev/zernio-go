@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.832.2
+API version: 1.833.0
 Contact: support@zernio.com
 */
 
@@ -44,7 +44,9 @@ The caller needs the same access to the object as for the direct write, and the 
 
 Before writing, the object is read from the ad network again and compared with what it held when the change was staged.
 
-If it changed in between, nothing is written, the change ends as `failed` and the answer is `409` `change_target_changed` with the current values in `details.current`. Stage the change again from those values.
+If it changed in between, nothing is written and the answer is `409` `change_target_changed` with the current values in `details.current`. The change stays `staged` and reads `stale: true`. Discard it and stage the change again from those values.
+
+After a confirm, the other staged changes on the same object are read again, so confirming one of two changes on an object does not refuse the other.
 
 ### Retrying
 
@@ -373,7 +375,7 @@ GetAdChange Get a staged ad change
 
 Returns one ad change with its before/after diff. A change is created by sending a supported ad write with `stage: true`.
 
-A staged change does not expire. A confirmed or failed change stays readable for 7 days.
+A staged change does not expire. A confirmed or failed change stays readable for 7 days, a failed create for 30 days. Disconnecting the connection of a staged change deletes it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param changeId The id of the staged change.

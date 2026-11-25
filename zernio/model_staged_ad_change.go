@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.832.2
+API version: 1.833.0
 Contact: support@zernio.com
 */
 
@@ -35,16 +35,22 @@ type StagedAdChange struct {
 	AdAccountId string `json:"adAccountId"`
 	// The object the change applies to: the platform campaign id, the platform ad set id, or the Zernio ad id. Null for a create, whose object does not exist yet.
 	TargetId NullableString `json:"targetId"`
+	// The name of the object when the change was staged, or the name a create will give it. Null when it is not known.
+	TargetName NullableString `json:"targetName,omitempty"`
 	// Present and true when the change creates a new object. Every diff entry then has `before: null` and `beforeAvailable: false`.
 	Creates *bool `json:"creates,omitempty"`
-	// - `staged`: waiting to be confirmed or discarded. - `confirming`: a confirm is running. A change that stays here has an unknown outcome and is never applied again automatically. - `confirmed`: applied. `result` holds what the write returned. - `failed`: not applied. `error` says why.
+	// - `staged`: waiting to be confirmed or discarded. - `confirming`: a confirm is running. A change left here for 15 minutes ends as `failed` with error code `change_outcome_unknown`, and is never applied again automatically. - `confirmed`: applied. `result` holds what the write returned. - `failed`: not applied. `error` says why.
 	Status string `json:"status"`
 	// One entry per value of the staged request that the write would change.  - A nested field is flattened: each leaf is one entry under its dotted path (`budget.amount`, `targeting.ageMin`, `creative.headline`). - A list is one entry. - A leaf whose value on the ad network already equals the requested value is left out, so the list can be empty. - `stage` and other flags that only steer the write are never listed.
 	Diff []StagedAdChangeDiffInner `json:"diff"`
 	// The user who staged the change.
-	CreatedBy string    `json:"createdBy"`
+	CreatedBy string `json:"createdBy"`
+	// The user who confirmed the change. Null while nobody has, and after a confirm that left the change staged.
+	ConfirmedBy NullableString `json:"confirmedBy,omitempty"`
+	// Present and true on a staged change whose last confirm was refused with `change_target_changed`. `error` then says why. Discard it and stage it again from the current values.
+	Stale     *bool     `json:"stale,omitempty"`
 	CreatedAt time.Time `json:"createdAt"`
-	// When the confirm ended, as `confirmed` or `failed`. A finished change is deleted 7 days later.
+	// When the confirm ended, as `confirmed` or `failed`. A finished change is deleted 7 days later, a failed create 30 days later.
 	FinishedAt NullableTime `json:"finishedAt"`
 	// Present once `confirmed`: the response body of the write.
 	Result map[string]interface{} `json:"result,omitempty"`
@@ -227,6 +233,49 @@ func (o *StagedAdChange) SetTargetId(v string) {
 	o.TargetId.Set(&v)
 }
 
+// GetTargetName returns the TargetName field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *StagedAdChange) GetTargetName() string {
+	if o == nil || IsNil(o.TargetName.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.TargetName.Get()
+}
+
+// GetTargetNameOk returns a tuple with the TargetName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *StagedAdChange) GetTargetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TargetName.Get(), o.TargetName.IsSet()
+}
+
+// HasTargetName returns a boolean if a field has been set.
+func (o *StagedAdChange) HasTargetName() bool {
+	if o != nil && o.TargetName.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetName gets a reference to the given NullableString and assigns it to the TargetName field.
+func (o *StagedAdChange) SetTargetName(v string) {
+	o.TargetName.Set(&v)
+}
+
+// SetTargetNameNil sets the value for TargetName to be an explicit nil
+func (o *StagedAdChange) SetTargetNameNil() {
+	o.TargetName.Set(nil)
+}
+
+// UnsetTargetName ensures that no value is present for TargetName, not even an explicit nil
+func (o *StagedAdChange) UnsetTargetName() {
+	o.TargetName.Unset()
+}
+
 // GetCreates returns the Creates field value if set, zero value otherwise.
 func (o *StagedAdChange) GetCreates() bool {
 	if o == nil || IsNil(o.Creates) {
@@ -329,6 +378,81 @@ func (o *StagedAdChange) GetCreatedByOk() (*string, bool) {
 // SetCreatedBy sets field value
 func (o *StagedAdChange) SetCreatedBy(v string) {
 	o.CreatedBy = v
+}
+
+// GetConfirmedBy returns the ConfirmedBy field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *StagedAdChange) GetConfirmedBy() string {
+	if o == nil || IsNil(o.ConfirmedBy.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ConfirmedBy.Get()
+}
+
+// GetConfirmedByOk returns a tuple with the ConfirmedBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *StagedAdChange) GetConfirmedByOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ConfirmedBy.Get(), o.ConfirmedBy.IsSet()
+}
+
+// HasConfirmedBy returns a boolean if a field has been set.
+func (o *StagedAdChange) HasConfirmedBy() bool {
+	if o != nil && o.ConfirmedBy.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetConfirmedBy gets a reference to the given NullableString and assigns it to the ConfirmedBy field.
+func (o *StagedAdChange) SetConfirmedBy(v string) {
+	o.ConfirmedBy.Set(&v)
+}
+
+// SetConfirmedByNil sets the value for ConfirmedBy to be an explicit nil
+func (o *StagedAdChange) SetConfirmedByNil() {
+	o.ConfirmedBy.Set(nil)
+}
+
+// UnsetConfirmedBy ensures that no value is present for ConfirmedBy, not even an explicit nil
+func (o *StagedAdChange) UnsetConfirmedBy() {
+	o.ConfirmedBy.Unset()
+}
+
+// GetStale returns the Stale field value if set, zero value otherwise.
+func (o *StagedAdChange) GetStale() bool {
+	if o == nil || IsNil(o.Stale) {
+		var ret bool
+		return ret
+	}
+	return *o.Stale
+}
+
+// GetStaleOk returns a tuple with the Stale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StagedAdChange) GetStaleOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stale) {
+		return nil, false
+	}
+	return o.Stale, true
+}
+
+// HasStale returns a boolean if a field has been set.
+func (o *StagedAdChange) HasStale() bool {
+	if o != nil && !IsNil(o.Stale) {
+		return true
+	}
+
+	return false
+}
+
+// SetStale gets a reference to the given bool and assigns it to the Stale field.
+func (o *StagedAdChange) SetStale(v bool) {
+	o.Stale = &v
 }
 
 // GetCreatedAt returns the CreatedAt field value
@@ -461,12 +585,21 @@ func (o StagedAdChange) ToMap() (map[string]interface{}, error) {
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["targetId"] = o.TargetId.Get()
+	if o.TargetName.IsSet() {
+		toSerialize["targetName"] = o.TargetName.Get()
+	}
 	if !IsNil(o.Creates) {
 		toSerialize["creates"] = o.Creates
 	}
 	toSerialize["status"] = o.Status
 	toSerialize["diff"] = o.Diff
 	toSerialize["createdBy"] = o.CreatedBy
+	if o.ConfirmedBy.IsSet() {
+		toSerialize["confirmedBy"] = o.ConfirmedBy.Get()
+	}
+	if !IsNil(o.Stale) {
+		toSerialize["stale"] = o.Stale
+	}
 	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["finishedAt"] = o.FinishedAt.Get()
 	if !IsNil(o.Result) {
