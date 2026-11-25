@@ -315,7 +315,7 @@ func main() {
 | `client.ConnectAPI.CompleteWhatsAppPhoneSelection(ctx)` | Complete number selection |
 | `client.ConnectAPI.ConfigureTikTokAdsBrandIdentity(ctx)` | Set TikTok brand identity |
 | `client.ConnectAPI.ConnectAds(ctx)` | Connect ads for a platform |
-| `client.ConnectAPI.ConnectAppLovinAdsCredentials(ctx)` | Connect an AppLovin account |
+| `client.ConnectAPI.ConnectAppLovinAdsCredentials(ctx)` | Connect an AppLovin account (not available yet) |
 | `client.ConnectAPI.ConnectAttentiveCredentials(ctx)` | Connect an Attentive company |
 | `client.ConnectAPI.ConnectAwinCredentials(ctx)` | Connect an Awin advertiser |
 | `client.ConnectAPI.ConnectBlueskyCredentials(ctx)` | Connect Bluesky account |
