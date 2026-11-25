@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.831.0
+API version: 1.831.1
 Contact: support@zernio.com
 */
 
@@ -28,9 +28,8 @@ type StartGoogleBusinessVerificationRequest struct {
 	// For PHONE_CALL / SMS.
 	PhoneNumber *string `json:"phoneNumber,omitempty"`
 	// For EMAIL.
-	EmailAddress *string `json:"emailAddress,omitempty"`
-	// For ADDRESS (postcard) verification.
-	MailerContact map[string]interface{} `json:"mailerContact,omitempty"`
+	EmailAddress  *string                                              `json:"emailAddress,omitempty"`
+	MailerContact *StartGoogleBusinessVerificationRequestMailerContact `json:"mailerContact,omitempty"`
 	// ServiceBusinessContext (e.g. service address). Required for service-area businesses.
 	Context map[string]interface{} `json:"context,omitempty"`
 }
@@ -176,19 +175,19 @@ func (o *StartGoogleBusinessVerificationRequest) SetEmailAddress(v string) {
 }
 
 // GetMailerContact returns the MailerContact field value if set, zero value otherwise.
-func (o *StartGoogleBusinessVerificationRequest) GetMailerContact() map[string]interface{} {
+func (o *StartGoogleBusinessVerificationRequest) GetMailerContact() StartGoogleBusinessVerificationRequestMailerContact {
 	if o == nil || IsNil(o.MailerContact) {
-		var ret map[string]interface{}
+		var ret StartGoogleBusinessVerificationRequestMailerContact
 		return ret
 	}
-	return o.MailerContact
+	return *o.MailerContact
 }
 
 // GetMailerContactOk returns a tuple with the MailerContact field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *StartGoogleBusinessVerificationRequest) GetMailerContactOk() (map[string]interface{}, bool) {
+func (o *StartGoogleBusinessVerificationRequest) GetMailerContactOk() (*StartGoogleBusinessVerificationRequestMailerContact, bool) {
 	if o == nil || IsNil(o.MailerContact) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.MailerContact, true
 }
@@ -202,9 +201,9 @@ func (o *StartGoogleBusinessVerificationRequest) HasMailerContact() bool {
 	return false
 }
 
-// SetMailerContact gets a reference to the given map[string]interface{} and assigns it to the MailerContact field.
-func (o *StartGoogleBusinessVerificationRequest) SetMailerContact(v map[string]interface{}) {
-	o.MailerContact = v
+// SetMailerContact gets a reference to the given StartGoogleBusinessVerificationRequestMailerContact and assigns it to the MailerContact field.
+func (o *StartGoogleBusinessVerificationRequest) SetMailerContact(v StartGoogleBusinessVerificationRequestMailerContact) {
+	o.MailerContact = &v
 }
 
 // GetContext returns the Context field value if set, zero value otherwise.
