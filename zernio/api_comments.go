@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.827.0
+API version: 1.827.1
 Contact: support@zernio.com
 */
 
@@ -1069,6 +1069,7 @@ func (r CommentsAPIListInboxCommentsRequest) View(view string) CommentsAPIListIn
 	return r
 }
 
+// Pass back &#x60;pagination.nextCursor&#x60; of the previous page unchanged, with the same &#x60;sortBy&#x60; and &#x60;sortOrder&#x60;.
 func (r CommentsAPIListInboxCommentsRequest) Cursor(cursor string) CommentsAPIListInboxCommentsRequest {
 	r.cursor = &cursor
 	return r
@@ -1115,7 +1116,7 @@ Ad comment counts are read with the Marketing API token (Facebook side) or the c
 
 Pagination walks each account's platform listing. Following `nextCursor` reaches past the first page on Facebook, Instagram, Threads, LinkedIn and YouTube, the platforms that support a server-side date window. On the others the listing stops at its first page.
 
-Cursor pagination is only coherent for the default sort (`sortBy=date`, `sortOrder=desc`). With `sortOrder=asc`, or with `sortBy=comments`, the cursor filter does not match the sort order and the second page is unreliable.
+With `sortOrder=asc` or `sortBy=comments`, the pages cover the newest posts of each account that the first page is drawn from, in the requested order; following `nextCursor` does not reach older posts.
 
 `minComments` is applied to each page after pagination. A page can hold fewer than `limit` posts, even none, while `hasMore` is true; keep following `nextCursor`.
 
