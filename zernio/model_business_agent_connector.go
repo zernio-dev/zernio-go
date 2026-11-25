@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.831.1
+API version: 1.832.0
 Contact: support@zernio.com
 */
 
@@ -20,23 +20,22 @@ import (
 // checks if the BusinessAgentConnector type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &BusinessAgentConnector{}
 
-// BusinessAgentConnector struct for BusinessAgentConnector
+// BusinessAgentConnector Secret values are never returned: auth_config and mtls_config leave out client_secret, client_key, private_key and every API key value. Send them again with the credentials call to rotate them.
 type BusinessAgentConnector struct {
-	// Unique per number.
-	Name string `json:"name"`
-	// Tell the agent what the service provides.
-	Description *string `json:"description,omitempty"`
-	// Public HTTPS URL reachable from Meta.
-	BaseUrl                 string                                              `json:"base_url"`
-	ConnectorProtocol       *string                                             `json:"connector_protocol,omitempty"`
-	AuthType                string                                              `json:"auth_type"`
-	AuthConfig              *BusinessAgentConnectorInputAuthConfig              `json:"auth_config,omitempty"`
-	UserAuthInjectionConfig *BusinessAgentConnectorInputUserAuthInjectionConfig `json:"user_auth_injection_config,omitempty"`
-	RequiresCertificate     *bool                                               `json:"requires_certificate,omitempty"`
-	Id                      string                                              `json:"id"`
-	McpToolSync             map[string]interface{}                              `json:"mcp_tool_sync,omitempty"`
-	MtlsConfig              map[string]interface{}                              `json:"mtls_config,omitempty"`
-	ConnectionStatus        *BusinessAgentConnectorAllOfConnectionStatus        `json:"connection_status,omitempty"`
+	Id                string  `json:"id"`
+	Name              string  `json:"name"`
+	Description       *string `json:"description,omitempty"`
+	BaseUrl           string  `json:"base_url"`
+	ConnectorProtocol *string `json:"connector_protocol,omitempty"`
+	AuthType          string  `json:"auth_type"`
+	// What Meta stores for the connector's auth (for example oauth2_client_credentials with token_url and client_id), without secret values.
+	AuthConfig              map[string]interface{}                         `json:"auth_config,omitempty"`
+	UserAuthInjectionConfig *BusinessAgentConnectorUserAuthInjectionConfig `json:"user_auth_injection_config,omitempty"`
+	RequiresCertificate     *bool                                          `json:"requires_certificate,omitempty"`
+	McpToolSync             map[string]interface{}                         `json:"mcp_tool_sync,omitempty"`
+	// Certificate details, without client_key or private_key.
+	MtlsConfig       map[string]interface{}                  `json:"mtls_config,omitempty"`
+	ConnectionStatus *BusinessAgentConnectorConnectionStatus `json:"connection_status,omitempty"`
 }
 
 type _BusinessAgentConnector BusinessAgentConnector
@@ -45,12 +44,12 @@ type _BusinessAgentConnector BusinessAgentConnector
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBusinessAgentConnector(name string, baseUrl string, authType string, id string) *BusinessAgentConnector {
+func NewBusinessAgentConnector(id string, name string, baseUrl string, authType string) *BusinessAgentConnector {
 	this := BusinessAgentConnector{}
+	this.Id = id
 	this.Name = name
 	this.BaseUrl = baseUrl
 	this.AuthType = authType
-	this.Id = id
 	return &this
 }
 
@@ -60,6 +59,30 @@ func NewBusinessAgentConnector(name string, baseUrl string, authType string, id 
 func NewBusinessAgentConnectorWithDefaults() *BusinessAgentConnector {
 	this := BusinessAgentConnector{}
 	return &this
+}
+
+// GetId returns the Id field value
+func (o *BusinessAgentConnector) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *BusinessAgentConnector) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
+
+// SetId sets field value
+func (o *BusinessAgentConnector) SetId(v string) {
+	o.Id = v
 }
 
 // GetName returns the Name field value
@@ -199,19 +222,19 @@ func (o *BusinessAgentConnector) SetAuthType(v string) {
 }
 
 // GetAuthConfig returns the AuthConfig field value if set, zero value otherwise.
-func (o *BusinessAgentConnector) GetAuthConfig() BusinessAgentConnectorInputAuthConfig {
+func (o *BusinessAgentConnector) GetAuthConfig() map[string]interface{} {
 	if o == nil || IsNil(o.AuthConfig) {
-		var ret BusinessAgentConnectorInputAuthConfig
+		var ret map[string]interface{}
 		return ret
 	}
-	return *o.AuthConfig
+	return o.AuthConfig
 }
 
 // GetAuthConfigOk returns a tuple with the AuthConfig field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BusinessAgentConnector) GetAuthConfigOk() (*BusinessAgentConnectorInputAuthConfig, bool) {
+func (o *BusinessAgentConnector) GetAuthConfigOk() (map[string]interface{}, bool) {
 	if o == nil || IsNil(o.AuthConfig) {
-		return nil, false
+		return map[string]interface{}{}, false
 	}
 	return o.AuthConfig, true
 }
@@ -225,15 +248,15 @@ func (o *BusinessAgentConnector) HasAuthConfig() bool {
 	return false
 }
 
-// SetAuthConfig gets a reference to the given BusinessAgentConnectorInputAuthConfig and assigns it to the AuthConfig field.
-func (o *BusinessAgentConnector) SetAuthConfig(v BusinessAgentConnectorInputAuthConfig) {
-	o.AuthConfig = &v
+// SetAuthConfig gets a reference to the given map[string]interface{} and assigns it to the AuthConfig field.
+func (o *BusinessAgentConnector) SetAuthConfig(v map[string]interface{}) {
+	o.AuthConfig = v
 }
 
 // GetUserAuthInjectionConfig returns the UserAuthInjectionConfig field value if set, zero value otherwise.
-func (o *BusinessAgentConnector) GetUserAuthInjectionConfig() BusinessAgentConnectorInputUserAuthInjectionConfig {
+func (o *BusinessAgentConnector) GetUserAuthInjectionConfig() BusinessAgentConnectorUserAuthInjectionConfig {
 	if o == nil || IsNil(o.UserAuthInjectionConfig) {
-		var ret BusinessAgentConnectorInputUserAuthInjectionConfig
+		var ret BusinessAgentConnectorUserAuthInjectionConfig
 		return ret
 	}
 	return *o.UserAuthInjectionConfig
@@ -241,7 +264,7 @@ func (o *BusinessAgentConnector) GetUserAuthInjectionConfig() BusinessAgentConne
 
 // GetUserAuthInjectionConfigOk returns a tuple with the UserAuthInjectionConfig field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BusinessAgentConnector) GetUserAuthInjectionConfigOk() (*BusinessAgentConnectorInputUserAuthInjectionConfig, bool) {
+func (o *BusinessAgentConnector) GetUserAuthInjectionConfigOk() (*BusinessAgentConnectorUserAuthInjectionConfig, bool) {
 	if o == nil || IsNil(o.UserAuthInjectionConfig) {
 		return nil, false
 	}
@@ -257,8 +280,8 @@ func (o *BusinessAgentConnector) HasUserAuthInjectionConfig() bool {
 	return false
 }
 
-// SetUserAuthInjectionConfig gets a reference to the given BusinessAgentConnectorInputUserAuthInjectionConfig and assigns it to the UserAuthInjectionConfig field.
-func (o *BusinessAgentConnector) SetUserAuthInjectionConfig(v BusinessAgentConnectorInputUserAuthInjectionConfig) {
+// SetUserAuthInjectionConfig gets a reference to the given BusinessAgentConnectorUserAuthInjectionConfig and assigns it to the UserAuthInjectionConfig field.
+func (o *BusinessAgentConnector) SetUserAuthInjectionConfig(v BusinessAgentConnectorUserAuthInjectionConfig) {
 	o.UserAuthInjectionConfig = &v
 }
 
@@ -292,30 +315,6 @@ func (o *BusinessAgentConnector) HasRequiresCertificate() bool {
 // SetRequiresCertificate gets a reference to the given bool and assigns it to the RequiresCertificate field.
 func (o *BusinessAgentConnector) SetRequiresCertificate(v bool) {
 	o.RequiresCertificate = &v
-}
-
-// GetId returns the Id field value
-func (o *BusinessAgentConnector) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *BusinessAgentConnector) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
-
-// SetId sets field value
-func (o *BusinessAgentConnector) SetId(v string) {
-	o.Id = v
 }
 
 // GetMcpToolSync returns the McpToolSync field value if set, zero value otherwise.
@@ -383,9 +382,9 @@ func (o *BusinessAgentConnector) SetMtlsConfig(v map[string]interface{}) {
 }
 
 // GetConnectionStatus returns the ConnectionStatus field value if set, zero value otherwise.
-func (o *BusinessAgentConnector) GetConnectionStatus() BusinessAgentConnectorAllOfConnectionStatus {
+func (o *BusinessAgentConnector) GetConnectionStatus() BusinessAgentConnectorConnectionStatus {
 	if o == nil || IsNil(o.ConnectionStatus) {
-		var ret BusinessAgentConnectorAllOfConnectionStatus
+		var ret BusinessAgentConnectorConnectionStatus
 		return ret
 	}
 	return *o.ConnectionStatus
@@ -393,7 +392,7 @@ func (o *BusinessAgentConnector) GetConnectionStatus() BusinessAgentConnectorAll
 
 // GetConnectionStatusOk returns a tuple with the ConnectionStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BusinessAgentConnector) GetConnectionStatusOk() (*BusinessAgentConnectorAllOfConnectionStatus, bool) {
+func (o *BusinessAgentConnector) GetConnectionStatusOk() (*BusinessAgentConnectorConnectionStatus, bool) {
 	if o == nil || IsNil(o.ConnectionStatus) {
 		return nil, false
 	}
@@ -409,8 +408,8 @@ func (o *BusinessAgentConnector) HasConnectionStatus() bool {
 	return false
 }
 
-// SetConnectionStatus gets a reference to the given BusinessAgentConnectorAllOfConnectionStatus and assigns it to the ConnectionStatus field.
-func (o *BusinessAgentConnector) SetConnectionStatus(v BusinessAgentConnectorAllOfConnectionStatus) {
+// SetConnectionStatus gets a reference to the given BusinessAgentConnectorConnectionStatus and assigns it to the ConnectionStatus field.
+func (o *BusinessAgentConnector) SetConnectionStatus(v BusinessAgentConnectorConnectionStatus) {
 	o.ConnectionStatus = &v
 }
 
@@ -424,6 +423,7 @@ func (o BusinessAgentConnector) MarshalJSON() ([]byte, error) {
 
 func (o BusinessAgentConnector) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	toSerialize["id"] = o.Id
 	toSerialize["name"] = o.Name
 	if !IsNil(o.Description) {
 		toSerialize["description"] = o.Description
@@ -442,7 +442,6 @@ func (o BusinessAgentConnector) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.RequiresCertificate) {
 		toSerialize["requires_certificate"] = o.RequiresCertificate
 	}
-	toSerialize["id"] = o.Id
 	if !IsNil(o.McpToolSync) {
 		toSerialize["mcp_tool_sync"] = o.McpToolSync
 	}
@@ -460,10 +459,10 @@ func (o *BusinessAgentConnector) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"id",
 		"name",
 		"base_url",
 		"auth_type",
-		"id",
 	}
 
 	allProperties := make(map[string]interface{})
