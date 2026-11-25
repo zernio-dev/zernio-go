@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.833.1
+API version: 1.834.0
 Contact: support@zernio.com
 */
 
@@ -35,6 +35,8 @@ type CreatePhoneNumberPortInRequest struct {
 	CustomerReference    *string    `json:"customerReference,omitempty"`
 	// Whether the losing account ports all its numbers (full) or keeps some (partial).
 	PortType *string `json:"portType,omitempty"`
+	// Profile the ported numbers land on. When omitted, a profile is picked the same way as for a number purchase. Must be a profile the caller can access.
+	ProfileId *string `json:"profileId,omitempty"`
 	// Country-specific requirement values for international ports (from GET /v1/phone-numbers/port-in/requirements). Not needed for US/CA. The LOA and invoice requirements are satisfied automatically by loaDocumentId/invoiceDocumentId, and address-type requirements by the endUser service address.
 	Requirements []CreatePhoneNumberPortInRequestRequirementsInner `json:"requirements,omitempty"`
 }
@@ -258,6 +260,38 @@ func (o *CreatePhoneNumberPortInRequest) SetPortType(v string) {
 	o.PortType = &v
 }
 
+// GetProfileId returns the ProfileId field value if set, zero value otherwise.
+func (o *CreatePhoneNumberPortInRequest) GetProfileId() string {
+	if o == nil || IsNil(o.ProfileId) {
+		var ret string
+		return ret
+	}
+	return *o.ProfileId
+}
+
+// GetProfileIdOk returns a tuple with the ProfileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePhoneNumberPortInRequest) GetProfileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ProfileId) {
+		return nil, false
+	}
+	return o.ProfileId, true
+}
+
+// HasProfileId returns a boolean if a field has been set.
+func (o *CreatePhoneNumberPortInRequest) HasProfileId() bool {
+	if o != nil && !IsNil(o.ProfileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileId gets a reference to the given string and assigns it to the ProfileId field.
+func (o *CreatePhoneNumberPortInRequest) SetProfileId(v string) {
+	o.ProfileId = &v
+}
+
 // GetRequirements returns the Requirements field value if set, zero value otherwise.
 func (o *CreatePhoneNumberPortInRequest) GetRequirements() []CreatePhoneNumberPortInRequestRequirementsInner {
 	if o == nil || IsNil(o.Requirements) {
@@ -312,6 +346,9 @@ func (o CreatePhoneNumberPortInRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.PortType) {
 		toSerialize["portType"] = o.PortType
+	}
+	if !IsNil(o.ProfileId) {
+		toSerialize["profileId"] = o.ProfileId
 	}
 	if !IsNil(o.Requirements) {
 		toSerialize["requirements"] = o.Requirements
