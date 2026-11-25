@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.830.0
+API version: 1.831.0
 Contact: support@zernio.com
 */
 
@@ -2366,7 +2366,9 @@ func (r AutomationsAPIGetZernioAutomationTemplateRequest) Execute() (*CreateAuto
 /*
 GetZernioAutomationTemplate Get a Zernio automation template
 
-Returns one of Zernio's ready-made ad rule templates in the same shape as your own. Each threshold and budget or bid amount is an input with the template's own value as its default, so an install can change it or leave it.
+Returns one of Zernio's ready-made templates in the same shape as your own: an ad rule (like `stop_losers`), a comment to DM (`comment-keyword-dm`, `comment-keyword-dm-follow-gate`) or a sequence (`sequence-welcome-series`, `sequence-nurture`).
+
+In an ad rule, each threshold and budget or bid amount is an input with the template's own value as its default, so an install can change it or leave it. A comment to DM or a sequence asks for a profile and one account of it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param templateId The id of one of Zernio's templates, for example `stop_losers`.

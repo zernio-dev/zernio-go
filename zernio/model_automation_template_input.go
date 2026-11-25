@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.830.0
+API version: 1.831.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ var _ MappedNullable = &AutomationTemplateInput{}
 type AutomationTemplateInput struct {
 	// The name to send the value under in `inputs`, for example `adAccount`.
 	Key string `json:"key"`
-	// What the value is. `ad_account`: `{ accountId, adAccountId }`. `profile`: a profile id. `social_accounts`: an array of social account ids. `notify_destination`: an array of `{ accountId, to?, channelId? }`. `number`, `money` (in the ad account's currency) and `percent`: a number within the bounds below. `choice`: one of `options[].value`.
+	// What the value is. `ad_account`: `{ accountId, adAccountId }`. `profile`: a profile id. `social_account`: one social account id of that profile (a comment to DM or a sequence).  `social_accounts`: an array of social account ids. `notify_destination`: an array of `{ accountId, to?, channelId? }`. `number`, `money` (in the ad account's currency) and `percent`: a number within the bounds below. `choice`: one of `options[].value`.
 	Type  string `json:"type"`
 	Label string `json:"label"`
 	// True when an install may leave it out. A field that points at a left-out input is dropped.
