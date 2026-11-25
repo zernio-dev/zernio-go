@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.826.0
+API version: 1.827.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &UpdateAdSetRequestPlatformSpecificData{}
 
 // UpdateAdSetRequestPlatformSpecificData Platform-specific post-launch delivery settings. The platform is implied by the `platform` body param. Meta only; other platforms return 400. Unknown keys are rejected.
 type UpdateAdSetRequestPlatformSpecificData struct {
-	// Meta ad-set optimization_goal (e.g. OFFSITE_CONVERSIONS, LANDING_PAGE_VIEWS).
+	// Meta ad-set optimization_goal (e.g. OFFSITE_CONVERSIONS, LANDING_PAGE_VIEWS).  Meta fixes an ad set's attribution window (`attribution_spec`) at creation. A goal that needs another window cannot be set here:  - OFFSITE_CONVERSIONS to LANDING_PAGE_VIEWS needs a 1-day click window. - Meta answers subcode 1885560, and this returns 400 with `param: platformSpecificData.optimizationGoal`. - Instead, create a new ad set with POST /v1/ads/create, sending the new `optimizationGoal` and its `attributionSpec`, and pause this one.  `attributionSpec` is not accepted here for the same reason (400 with `param: platformSpecificData.attributionSpec`).
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 	// Meta ad-set billing_event (e.g. IMPRESSIONS, LINK_CLICKS, THRUPLAY).
 	BillingEvent *string `json:"billingEvent,omitempty"`
