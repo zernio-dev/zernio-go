@@ -574,8 +574,10 @@ func main() {
 |--------|-------------|
 | `client.AdChangesAPI.ListAdChanges(ctx)` | List staged ad changes |
 | `client.AdChangesAPI.GetAdChange(ctx)` | Get a staged ad change |
+| `client.AdChangesAPI.UpdateAdChange(ctx)` | Edit or refresh a staged ad change |
 | `client.AdChangesAPI.ConfirmAdChange(ctx)` | Confirm a staged ad change |
 | `client.AdChangesAPI.DiscardAdChange(ctx)` | Discard a staged ad change |
+| `client.AdChangesAPI.RestageAdChange(ctx)` | Stage a failed ad change again |
 
 ### Ad Creatives
 | Method | Description |

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.841.0
+API version: 1.842.0
 Contact: support@zernio.com
 */
 
@@ -25,8 +25,9 @@ var _ MappedNullable = &StagedAdChange{}
 type StagedAdChange struct {
 	// The change id, used in /v1/ads/changes/{changeId}.
 	Id string `json:"id"`
-	// Which write was staged: a status route, the update route of a campaign, an ad set or an ad, the campaign targeting route, or one of the create routes (POST /v1/ads/create, POST /v1/ads/campaigns, POST /v1/ads/ad-sets).
-	Type string `json:"type"`
+	// Which write was staged: a status route, an update route (campaign, ad set, ad), the campaign targeting route or a create route. `operation` is any other ads write, staged as its request and named by `request`. It has no live read, so its diff shows the new values only.
+	Type    string                 `json:"type"`
+	Request *StagedAdChangeRequest `json:"request,omitempty"`
 	// The ad platform of the object, as the write route names it.
 	Platform string `json:"platform"`
 	// The connected account the write goes through.
@@ -47,7 +48,7 @@ type StagedAdChange struct {
 	CreatedBy string `json:"createdBy"`
 	// The user who confirmed the change. Null while nobody has, and after a confirm that left the change staged.
 	ConfirmedBy NullableString `json:"confirmedBy,omitempty"`
-	// Present and true on a staged change whose last confirm was refused with `change_target_changed`. `error` then says why. Discard it and stage it again from the current values.
+	// Present and true on a staged change whose last confirm was refused with `change_target_changed`. `error` then says why. Refresh it with PATCH /v1/ads/changes/{changeId} (no body), or discard it and stage it again.
 	Stale     *bool     `json:"stale,omitempty"`
 	CreatedAt time.Time `json:"createdAt"`
 	// When the confirm ended, as `confirmed` or `failed`. A finished change is deleted 7 days later, a failed create 30 days later.
@@ -133,6 +134,38 @@ func (o *StagedAdChange) GetTypeOk() (*string, bool) {
 // SetType sets field value
 func (o *StagedAdChange) SetType(v string) {
 	o.Type = v
+}
+
+// GetRequest returns the Request field value if set, zero value otherwise.
+func (o *StagedAdChange) GetRequest() StagedAdChangeRequest {
+	if o == nil || IsNil(o.Request) {
+		var ret StagedAdChangeRequest
+		return ret
+	}
+	return *o.Request
+}
+
+// GetRequestOk returns a tuple with the Request field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StagedAdChange) GetRequestOk() (*StagedAdChangeRequest, bool) {
+	if o == nil || IsNil(o.Request) {
+		return nil, false
+	}
+	return o.Request, true
+}
+
+// HasRequest returns a boolean if a field has been set.
+func (o *StagedAdChange) HasRequest() bool {
+	if o != nil && !IsNil(o.Request) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequest gets a reference to the given StagedAdChangeRequest and assigns it to the Request field.
+func (o *StagedAdChange) SetRequest(v StagedAdChangeRequest) {
+	o.Request = &v
 }
 
 // GetPlatform returns the Platform field value
@@ -581,6 +614,9 @@ func (o StagedAdChange) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
 	toSerialize["type"] = o.Type
+	if !IsNil(o.Request) {
+		toSerialize["request"] = o.Request
+	}
 	toSerialize["platform"] = o.Platform
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId

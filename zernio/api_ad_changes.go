@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.841.0
+API version: 1.842.0
 Contact: support@zernio.com
 */
 
@@ -44,7 +44,9 @@ The caller needs the same access to the object as for the direct write, and the 
 
 Before writing, the object is read from the ad network again and compared with what it held when the change was staged.
 
-If it changed in between, nothing is written and the answer is `409` `change_target_changed` with the current values in `details.current`. The change stays `staged` and reads `stale: true`. Discard it and stage the change again from those values.
+If it changed in between, nothing is written and the answer is `409` `change_target_changed` with the current values in `details.current`. The change stays `staged` and reads `stale: true`. Refresh it with PATCH /v1/ads/changes/{changeId}, or discard it and stage the change again from those values.
+
+A change of type `operation` has no such check: its request is sent through its own route as it was stored.
 
 After a confirm, the other staged changes on the same object are read again, so confirming one of two changes on an object does not refuse the other.
 
@@ -375,6 +377,10 @@ GetAdChange Get a staged ad change
 
 Returns one ad change with its before/after diff. A change is created by sending a supported ad write with `stage: true`.
 
+Campaign, ad set and ad edits, status changes and creates stage with a live read and a diff against the current values.
+
+Every other write listed under `request.operation` stages as its request. Send `stage: true` in its body, or `?stage=true` on a write without a body. The answer is `202` with the change.
+
 A staged change does not expire. A confirmed or failed change stays readable for 7 days, a failed create for 30 days. Disconnecting the connection of a staged change deletes it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -512,8 +518,43 @@ func (a *AdChangesAPIService) GetAdChangeExecute(r AdChangesAPIGetAdChangeReques
 type AdChangesAPIListAdChangesRequest struct {
 	ctx        context.Context
 	ApiService *AdChangesAPIService
+	status     *string
+	accountId  *string
+	platform   *string
+	type_      *string
+	createdBy  *string
 	limit      *int32
 	cursor     *string
+}
+
+// Which changes to list.
+func (r AdChangesAPIListAdChangesRequest) Status(status string) AdChangesAPIListAdChangesRequest {
+	r.status = &status
+	return r
+}
+
+// Only the changes of this connected account.
+func (r AdChangesAPIListAdChangesRequest) AccountId(accountId string) AdChangesAPIListAdChangesRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Only the changes on this ad platform, as the change names it (for example &#x60;facebook&#x60; or &#x60;google&#x60;).
+func (r AdChangesAPIListAdChangesRequest) Platform(platform string) AdChangesAPIListAdChangesRequest {
+	r.platform = &platform
+	return r
+}
+
+// Only the changes of this type.
+func (r AdChangesAPIListAdChangesRequest) Type_(type_ string) AdChangesAPIListAdChangesRequest {
+	r.type_ = &type_
+	return r
+}
+
+// Only the changes this user staged.
+func (r AdChangesAPIListAdChangesRequest) CreatedBy(createdBy string) AdChangesAPIListAdChangesRequest {
+	r.createdBy = &createdBy
+	return r
 }
 
 // How many changes to return.
@@ -535,7 +576,7 @@ func (r AdChangesAPIListAdChangesRequest) Execute() (*ListAdChanges200Response, 
 /*
 ListAdChanges List staged ad changes
 
-Lists the ad changes waiting to be confirmed or discarded, newest first. A confirmed or failed change is not listed; read it by id.
+Lists the ad changes waiting to be confirmed or discarded, newest first. With `status=failed` it lists the changes a confirm could not apply, each with its error, until they are deleted (7 days, 30 for a failed create). A confirmed change is not listed; read it by id.
 
 Each item is a summary without the diff. Read one change to get its before/after values.
 
@@ -571,6 +612,25 @@ func (a *AdChangesAPIService) ListAdChangesExecute(r AdChangesAPIListAdChangesRe
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.status != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")
+	} else {
+		var defaultValue string = "staged"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "status", defaultValue, "form", "")
+		r.status = &defaultValue
+	}
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.type_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "type", r.type_, "form", "")
+	}
+	if r.createdBy != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "createdBy", r.createdBy, "form", "")
+	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
 	} else {
@@ -643,6 +703,344 @@ func (a *AdChangesAPIService) ListAdChangesExecute(r AdChangesAPIListAdChangesRe
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdChangesAPIRestageAdChangeRequest struct {
+	ctx        context.Context
+	ApiService *AdChangesAPIService
+	changeId   string
+}
+
+func (r AdChangesAPIRestageAdChangeRequest) Execute() (*GetAdChange200Response, *http.Response, error) {
+	return r.ApiService.RestageAdChangeExecute(r)
+}
+
+/*
+RestageAdChange Stage a failed ad change again
+
+Makes a new staged change from a change that failed at confirm. Nothing is written to the ad network.
+
+The new change holds the same request. It is checked for the calling user, and an edit is read against the current values of its object. The failed change stays readable until it is deleted.
+
+A failed create cannot be staged again (`409`): it may have made part of its objects on the ad network, which its `error.details` lists. Stage a new create instead.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param changeId The id of the failed change.
+	@return AdChangesAPIRestageAdChangeRequest
+*/
+func (a *AdChangesAPIService) RestageAdChange(ctx context.Context, changeId string) AdChangesAPIRestageAdChangeRequest {
+	return AdChangesAPIRestageAdChangeRequest{
+		ApiService: a,
+		ctx:        ctx,
+		changeId:   changeId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdChange200Response
+func (a *AdChangesAPIService) RestageAdChangeExecute(r AdChangesAPIRestageAdChangeRequest) (*GetAdChange200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdChange200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdChangesAPIService.RestageAdChange")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/changes/{changeId}/restage"
+	localVarPath = strings.Replace(localVarPath, "{"+"changeId"+"}", url.PathEscape(parameterValueToString(r.changeId, "changeId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdChangesAPIUpdateAdChangeRequest struct {
+	ctx         context.Context
+	ApiService  *AdChangesAPIService
+	changeId    string
+	requestBody *map[string]interface{}
+}
+
+func (r AdChangesAPIUpdateAdChangeRequest) RequestBody(requestBody map[string]interface{}) AdChangesAPIUpdateAdChangeRequest {
+	r.requestBody = &requestBody
+	return r
+}
+
+func (r AdChangesAPIUpdateAdChangeRequest) Execute() (*GetAdChange200Response, *http.Response, error) {
+	return r.ApiService.UpdateAdChangeExecute(r)
+}
+
+/*
+UpdateAdChange Edit or refresh a staged ad change
+
+Replaces the request body of a staged change, or reads its object again when no body is sent. The change keeps its id. Nothing is written to the ad network.
+
+### Edit
+
+Send the new body: the same kind of body as the route the change was staged on, without `stage`. It passes the checks of staging again for the calling user. The object is read again, so the diff and the changed-since check start from its current values.
+
+A change of type `operation` stores a whole request and cannot be edited in place (`409`): discard it and stage the request again.
+
+### Refresh
+
+Send no body. The object is read again with the body the change already holds. Use it on a change that reads `stale: true` after a confirm answered `409` `change_target_changed`: once refreshed it can be confirmed.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param changeId The id of the staged change.
+	@return AdChangesAPIUpdateAdChangeRequest
+*/
+func (a *AdChangesAPIService) UpdateAdChange(ctx context.Context, changeId string) AdChangesAPIUpdateAdChangeRequest {
+	return AdChangesAPIUpdateAdChangeRequest{
+		ApiService: a,
+		ctx:        ctx,
+		changeId:   changeId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdChange200Response
+func (a *AdChangesAPIService) UpdateAdChangeExecute(r AdChangesAPIUpdateAdChangeRequest) (*GetAdChange200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdChange200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdChangesAPIService.UpdateAdChange")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/changes/{changeId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"changeId"+"}", url.PathEscape(parameterValueToString(r.changeId, "changeId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.requestBody
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

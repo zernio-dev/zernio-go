@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.841.0
+API version: 1.842.0
 Contact: support@zernio.com
 */
 
@@ -21,12 +21,18 @@ import (
 // checks if the StagedAdChangeSummary type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &StagedAdChangeSummary{}
 
-// StagedAdChangeSummary A staged ad change as the list returns it: what it targets and who staged it, without the diff.
+// StagedAdChangeSummary A staged or failed ad change as the list returns it: what it targets and who staged it, without the diff.
 type StagedAdChangeSummary struct {
 	// The change id, used in /v1/ads/changes/{changeId}.
 	Id string `json:"id"`
-	// Which write was staged.
-	Type string `json:"type"`
+	// Which write was staged. `operation` is a write staged as its request, named by `request`.
+	Type    string                        `json:"type"`
+	Request *StagedAdChangeSummaryRequest `json:"request,omitempty"`
+	// The status the list was asked for.
+	Status string `json:"status"`
+	// Present and true on a staged change whose object was edited on the ad network after staging. Refresh it with PATCH /v1/ads/changes/{changeId}.
+	Stale *bool                       `json:"stale,omitempty"`
+	Error *StagedAdChangeSummaryError `json:"error,omitempty"`
 	// The ad platform of the object, as the write route names it.
 	Platform string `json:"platform"`
 	// The connected account the write goes through.
@@ -50,10 +56,11 @@ type _StagedAdChangeSummary StagedAdChangeSummary
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewStagedAdChangeSummary(id string, type_ string, platform string, accountId string, adAccountId string, targetId NullableString, targetName NullableString, creates bool, createdBy string, createdAt time.Time) *StagedAdChangeSummary {
+func NewStagedAdChangeSummary(id string, type_ string, status string, platform string, accountId string, adAccountId string, targetId NullableString, targetName NullableString, creates bool, createdBy string, createdAt time.Time) *StagedAdChangeSummary {
 	this := StagedAdChangeSummary{}
 	this.Id = id
 	this.Type = type_
+	this.Status = status
 	this.Platform = platform
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
@@ -119,6 +126,126 @@ func (o *StagedAdChangeSummary) GetTypeOk() (*string, bool) {
 // SetType sets field value
 func (o *StagedAdChangeSummary) SetType(v string) {
 	o.Type = v
+}
+
+// GetRequest returns the Request field value if set, zero value otherwise.
+func (o *StagedAdChangeSummary) GetRequest() StagedAdChangeSummaryRequest {
+	if o == nil || IsNil(o.Request) {
+		var ret StagedAdChangeSummaryRequest
+		return ret
+	}
+	return *o.Request
+}
+
+// GetRequestOk returns a tuple with the Request field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StagedAdChangeSummary) GetRequestOk() (*StagedAdChangeSummaryRequest, bool) {
+	if o == nil || IsNil(o.Request) {
+		return nil, false
+	}
+	return o.Request, true
+}
+
+// HasRequest returns a boolean if a field has been set.
+func (o *StagedAdChangeSummary) HasRequest() bool {
+	if o != nil && !IsNil(o.Request) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequest gets a reference to the given StagedAdChangeSummaryRequest and assigns it to the Request field.
+func (o *StagedAdChangeSummary) SetRequest(v StagedAdChangeSummaryRequest) {
+	o.Request = &v
+}
+
+// GetStatus returns the Status field value
+func (o *StagedAdChangeSummary) GetStatus() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value
+// and a boolean to check if the value has been set.
+func (o *StagedAdChangeSummary) GetStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Status, true
+}
+
+// SetStatus sets field value
+func (o *StagedAdChangeSummary) SetStatus(v string) {
+	o.Status = v
+}
+
+// GetStale returns the Stale field value if set, zero value otherwise.
+func (o *StagedAdChangeSummary) GetStale() bool {
+	if o == nil || IsNil(o.Stale) {
+		var ret bool
+		return ret
+	}
+	return *o.Stale
+}
+
+// GetStaleOk returns a tuple with the Stale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StagedAdChangeSummary) GetStaleOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stale) {
+		return nil, false
+	}
+	return o.Stale, true
+}
+
+// HasStale returns a boolean if a field has been set.
+func (o *StagedAdChangeSummary) HasStale() bool {
+	if o != nil && !IsNil(o.Stale) {
+		return true
+	}
+
+	return false
+}
+
+// SetStale gets a reference to the given bool and assigns it to the Stale field.
+func (o *StagedAdChangeSummary) SetStale(v bool) {
+	o.Stale = &v
+}
+
+// GetError returns the Error field value if set, zero value otherwise.
+func (o *StagedAdChangeSummary) GetError() StagedAdChangeSummaryError {
+	if o == nil || IsNil(o.Error) {
+		var ret StagedAdChangeSummaryError
+		return ret
+	}
+	return *o.Error
+}
+
+// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StagedAdChangeSummary) GetErrorOk() (*StagedAdChangeSummaryError, bool) {
+	if o == nil || IsNil(o.Error) {
+		return nil, false
+	}
+	return o.Error, true
+}
+
+// HasError returns a boolean if a field has been set.
+func (o *StagedAdChangeSummary) HasError() bool {
+	if o != nil && !IsNil(o.Error) {
+		return true
+	}
+
+	return false
+}
+
+// SetError gets a reference to the given StagedAdChangeSummaryError and assigns it to the Error field.
+func (o *StagedAdChangeSummary) SetError(v StagedAdChangeSummaryError) {
+	o.Error = &v
 }
 
 // GetPlatform returns the Platform field value
@@ -329,6 +456,16 @@ func (o StagedAdChangeSummary) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
 	toSerialize["type"] = o.Type
+	if !IsNil(o.Request) {
+		toSerialize["request"] = o.Request
+	}
+	toSerialize["status"] = o.Status
+	if !IsNil(o.Stale) {
+		toSerialize["stale"] = o.Stale
+	}
+	if !IsNil(o.Error) {
+		toSerialize["error"] = o.Error
+	}
 	toSerialize["platform"] = o.Platform
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
@@ -347,6 +484,7 @@ func (o *StagedAdChangeSummary) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"id",
 		"type",
+		"status",
 		"platform",
 		"accountId",
 		"adAccountId",
