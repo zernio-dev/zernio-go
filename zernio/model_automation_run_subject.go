@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.845.1
+API version: 1.846.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,10 @@ type AutomationRunSubject struct {
 	// For example `conversation`, `contact`, `comment`, `message` or `post`.
 	Type *string `json:"type,omitempty"`
 	Id   *string `json:"id,omitempty"`
+	// The person's display name, where the run knows it. Null for a check about a post, an ad or an order.
+	Name NullableString `json:"name,omitempty"`
+	// The person's username without `@`, or their phone number in E.164 (it always starts with `+`). Null where neither is known.
+	Handle NullableString `json:"handle,omitempty"`
 }
 
 // NewAutomationRunSubject instantiates a new AutomationRunSubject object
@@ -106,6 +110,92 @@ func (o *AutomationRunSubject) SetId(v string) {
 	o.Id = &v
 }
 
+// GetName returns the Name field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AutomationRunSubject) GetName() string {
+	if o == nil || IsNil(o.Name.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Name.Get()
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AutomationRunSubject) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Name.Get(), o.Name.IsSet()
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *AutomationRunSubject) HasName() bool {
+	if o != nil && o.Name.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given NullableString and assigns it to the Name field.
+func (o *AutomationRunSubject) SetName(v string) {
+	o.Name.Set(&v)
+}
+
+// SetNameNil sets the value for Name to be an explicit nil
+func (o *AutomationRunSubject) SetNameNil() {
+	o.Name.Set(nil)
+}
+
+// UnsetName ensures that no value is present for Name, not even an explicit nil
+func (o *AutomationRunSubject) UnsetName() {
+	o.Name.Unset()
+}
+
+// GetHandle returns the Handle field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AutomationRunSubject) GetHandle() string {
+	if o == nil || IsNil(o.Handle.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Handle.Get()
+}
+
+// GetHandleOk returns a tuple with the Handle field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AutomationRunSubject) GetHandleOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Handle.Get(), o.Handle.IsSet()
+}
+
+// HasHandle returns a boolean if a field has been set.
+func (o *AutomationRunSubject) HasHandle() bool {
+	if o != nil && o.Handle.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetHandle gets a reference to the given NullableString and assigns it to the Handle field.
+func (o *AutomationRunSubject) SetHandle(v string) {
+	o.Handle.Set(&v)
+}
+
+// SetHandleNil sets the value for Handle to be an explicit nil
+func (o *AutomationRunSubject) SetHandleNil() {
+	o.Handle.Set(nil)
+}
+
+// UnsetHandle ensures that no value is present for Handle, not even an explicit nil
+func (o *AutomationRunSubject) UnsetHandle() {
+	o.Handle.Unset()
+}
+
 func (o AutomationRunSubject) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -121,6 +211,12 @@ func (o AutomationRunSubject) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
+	}
+	if o.Name.IsSet() {
+		toSerialize["name"] = o.Name.Get()
+	}
+	if o.Handle.IsSet() {
+		toSerialize["handle"] = o.Handle.Get()
 	}
 	return toSerialize, nil
 }
