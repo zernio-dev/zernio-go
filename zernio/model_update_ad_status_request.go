@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.840.0
+API version: 1.841.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,8 @@ var _ MappedNullable = &UpdateAdStatusRequest{}
 // UpdateAdStatusRequest struct for UpdateAdStatusRequest
 type UpdateAdStatusRequest struct {
 	Status string `json:"status"`
+	// A Zernio Meta Ads or Facebook connection id (also accepted in the query). Changes the status of an ad created in Ads Manager that Zernio has not synced, by numeric Meta id. Ignored when Zernio has the ad. It echoes the requested status; `stage: true` answers 400.
+	AccountId *string `json:"accountId,omitempty"`
 	// Send true to stage this change instead of applying it. Nothing is written to the ad network; the response is `202` with the staged change and its diff. Apply it with POST /v1/ads/changes/{changeId}/confirm. Meta, Google, TikTok, X, Snapchat and Reddit; cannot be combined with `validateOnly` or `dryRun`.
 	Stage *bool `json:"stage,omitempty"`
 }
@@ -71,6 +73,38 @@ func (o *UpdateAdStatusRequest) SetStatus(v string) {
 	o.Status = v
 }
 
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *UpdateAdStatusRequest) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdStatusRequest) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *UpdateAdStatusRequest) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *UpdateAdStatusRequest) SetAccountId(v string) {
+	o.AccountId = &v
+}
+
 // GetStage returns the Stage field value if set, zero value otherwise.
 func (o *UpdateAdStatusRequest) GetStage() bool {
 	if o == nil || IsNil(o.Stage) {
@@ -114,6 +148,9 @@ func (o UpdateAdStatusRequest) MarshalJSON() ([]byte, error) {
 func (o UpdateAdStatusRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["status"] = o.Status
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
+	}
 	if !IsNil(o.Stage) {
 		toSerialize["stage"] = o.Stage
 	}
