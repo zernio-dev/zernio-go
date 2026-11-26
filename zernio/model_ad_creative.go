@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.835.0
+API version: 1.835.1
 Contact: support@zernio.com
 */
 
@@ -80,7 +80,7 @@ type AdCreative struct {
 	EffectiveObjectStoryId NullableString `json:"effectiveObjectStoryId,omitempty"`
 	// Facebook Page backing the creative (Meta only). What the `pageId` filter on /v1/ads, /v1/ads/campaigns and /v1/ads/tree matches against. Absent for non-Meta ads and rare Meta creatives with no page signal.
 	PageId NullableString `json:"pageId,omitempty"`
-	// Meta `effective_instagram_media_id`, the Instagram media ID of the boosted post the ad's engagement lives on. Pass to GET /v1/ads?effectiveInstagramMediaId= to map a Business-Manager-visible IG post back to this ad.
+	// Meta `effective_instagram_media_id`, the Instagram media the ad's engagement lives on. For a boosted reel it can differ from the reel you boosted: Meta's promoted rendition, not a duplicate. Pass to GET /v1/ads?effectiveInstagramMediaId= to map a Business-Manager-visible IG post back to this ad.
 	EffectiveInstagramMediaId NullableString `json:"effectiveInstagramMediaId,omitempty"`
 	// Meta `instagram_user_id`, the Instagram-scoped business ID that owns the boosted media.
 	InstagramUserId NullableString `json:"instagramUserId,omitempty"`

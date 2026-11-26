@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.835.0
+API version: 1.835.1
 Contact: support@zernio.com
 */
 
@@ -7966,7 +7966,7 @@ func (r AdCampaignsAPIListAdsRequest) EffectiveObjectStoryId(effectiveObjectStor
 	return r
 }
 
-// Instagram media ID of the boosted post (Meta &#x60;effective_instagram_media_id&#x60;). Use to map a Business-Manager-visible IG post back to the Zernio ad.
+// Instagram media ID of the boosted post (Meta &#x60;effective_instagram_media_id&#x60;). Use to map a Business-Manager-visible IG post back to the Zernio ad. For a boosted reel it can differ from the media ID you boosted (&#x60;platformPostId&#x60;), so filter by the ID shown on the ad, not the original reel ID.
 func (r AdCampaignsAPIListAdsRequest) EffectiveInstagramMediaId(effectiveInstagramMediaId string) AdCampaignsAPIListAdsRequest {
 	r.effectiveInstagramMediaId = &effectiveInstagramMediaId
 	return r
