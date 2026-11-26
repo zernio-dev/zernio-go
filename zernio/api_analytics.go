@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.845.0
+API version: 1.845.1
 Contact: support@zernio.com
 */
 
@@ -5876,7 +5876,7 @@ func (r AnalyticsAPIGetTikTokAccountInsightsRequest) AccountId(accountId string)
 	return r
 }
 
-// Comma-separated list. Defaults to \&quot;follower_count,likes_count,video_count,followers_gained,followers_lost\&quot;.  Live profile counters (requires user.info.stats scope):   - follower_count  (cumulative; time series joined from AccountStats)   - following_count (cumulative; time series joined from AccountStats.metadata)   - likes_count     (cumulative; time series joined from AccountStats.metadata)   - video_count     (cumulative; time series joined from AccountStats.metadata)  Daily account figures from TikTok (requires user.insights scope and an account on Zernio&#39;s TikTok connection):   - video_views     (views of all the account&#39;s videos that day)   - likes           (likes received that day)   - comments        (comments received that day)   - shares          (shares that day)   - profile_views   (profile views that day)  Zernio-synthesized:   - followers_gained  (sum of positive daily follower deltas)   - followers_lost    (sum of absolute negative daily deltas)
+// Comma-separated list. Defaults to \&quot;follower_count,likes_count,video_count,followers_gained,followers_lost\&quot;.  Live profile counters (requires user.info.stats, or user.insights on a TikTok Business connection):   - follower_count  (cumulative; time series joined from AccountStats)   - following_count (cumulative; time series joined from AccountStats.metadata)   - likes_count     (cumulative; time series joined from AccountStats.metadata)   - video_count     (cumulative; time series joined from AccountStats.metadata)  Daily account figures from TikTok (requires user.insights scope and an account on Zernio&#39;s TikTok connection):   - video_views     (views of all the account&#39;s videos that day)   - likes           (likes received that day)   - comments        (comments received that day)   - shares          (shares that day)   - profile_views   (profile views that day)  Zernio-synthesized:   - followers_gained  (sum of positive daily follower deltas)   - followers_lost    (sum of absolute negative daily deltas)
 func (r AnalyticsAPIGetTikTokAccountInsightsRequest) Metrics(metrics string) AnalyticsAPIGetTikTokAccountInsightsRequest {
 	r.metrics = &metrics
 	return r
@@ -5925,7 +5925,7 @@ Returns account-level TikTok insights: the lifetime profile counters (live, with
 
 - Response shape matches /v1/analytics/instagram/account-insights.
 - Max 89 days, defaults to last 30 days.
-- Requires the user.info.stats scope on the account (412 if missing).
+- Requires the user.info.stats scope on the account, or user.insights on an account connected through Zernio's TikTok Business connection (412 if missing).
 
 ### Daily account metrics
 
