@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.837.0
+API version: 1.837.1
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the WebhookPayloadMessageSentMessageSender type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageSentMessageSender{}
 
-// WebhookPayloadMessageSentMessageSender **On this event the sender is your own business, not the person you are talking to.** `id` is the Zernio account id and `name`, `username` and `picture` are that connected account's own profile.  Do not read these to name or update a contact: doing so on an echo relabels the customer's record with your business name. The other party is `conversation.participantId` / `participantName` / `participantUsername`, which are populated in both directions.
+// WebhookPayloadMessageSentMessageSender **On this event the sender is your own business, not the person you are talking to.** `id` is the Zernio account id and `name`, `username` and `picture` are that connected account's own profile.  Do not read these to name or update a contact: doing so on an echo relabels the customer's record with your business name. The other party is `conversation.participantId` / `participantName` / `participantUsername`.  `participantId` is always set. On a thread the business started, `participantUsername` and `participantName` can be empty on the first events; Zernio fills them shortly after when Meta returns the contact (`participantName` then holds the @username until the contact writes and their profile is read).
 type WebhookPayloadMessageSentMessageSender struct {
 	// The Zernio account id of the connected account that sent the message, not a contact id.
 	Id string `json:"id"`
