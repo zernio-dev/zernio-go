@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.850.0
+API version: 1.851.0
 Contact: support@zernio.com
 */
 
@@ -2158,6 +2158,13 @@ Use the `accountId` of a `microsoftads` connection and its numeric `adAccountId`
 - Bid fields, sitelinks, callouts, structured snippets, `businessName`, `longHeadline` and a `campaignType` other than `search` return 422.
 
 Without `status`, every level is switched on and the campaign spends once Microsoft approves the ad: send `status: PAUSED` to create it paused. A failed step deletes the campaign the call created.
+
+`existingCampaignId` adds a new ad group, with its ad, `keywords` and `negativeKeywords`, to an existing Microsoft Search campaign in the ad account (404 when it is not there).
+
+- The campaign keeps its own budget, locations, languages and campaign negatives: those fields return 422.
+- `startDate` and `endDate` set the new ad group's dates.
+- `status: PAUSED` pauses only the new ad group, and a failed step deletes only that ad group.
+- `adSetId` is not available.
 
 ### Snapchat Ads
 
