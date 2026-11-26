@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.834.1
+API version: 1.835.0
 Contact: support@zernio.com
 */
 
@@ -18,8 +18,9 @@ import (
 // checks if the WebhookPayloadMessageSentMetadata type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageSentMetadata{}
 
-// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin, WhatsApp contact cards, the TikTok message type, or outgoing Instagram/Facebook buttons, quick replies and template.  The key is present only when the send carried some context: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
+// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin, WhatsApp contact cards, Meta's reason a WhatsApp Business app echo has no renderable body, the TikTok message type, or outgoing Instagram/Facebook buttons, quick replies and template.  The key is present only when the send carried some context: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
 type WebhookPayloadMessageSentMetadata struct {
+	Unsupported *WebhookPayloadMessageMetadataUnsupported `json:"unsupported,omitempty"`
 	// Instagram/Facebook only. The buttons, quickReplies and/or template this outgoing message carried, as sent (tracked urls included when link tracking wrapped a button). Absent when the send carried none.
 	MetaInteractive map[string]interface{}                 `json:"metaInteractive,omitempty"`
 	Location        *WebhookPayloadMessageMetadataLocation `json:"location,omitempty"`
@@ -48,6 +49,38 @@ func NewWebhookPayloadMessageSentMetadata() *WebhookPayloadMessageSentMetadata {
 func NewWebhookPayloadMessageSentMetadataWithDefaults() *WebhookPayloadMessageSentMetadata {
 	this := WebhookPayloadMessageSentMetadata{}
 	return &this
+}
+
+// GetUnsupported returns the Unsupported field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSentMetadata) GetUnsupported() WebhookPayloadMessageMetadataUnsupported {
+	if o == nil || IsNil(o.Unsupported) {
+		var ret WebhookPayloadMessageMetadataUnsupported
+		return ret
+	}
+	return *o.Unsupported
+}
+
+// GetUnsupportedOk returns a tuple with the Unsupported field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSentMetadata) GetUnsupportedOk() (*WebhookPayloadMessageMetadataUnsupported, bool) {
+	if o == nil || IsNil(o.Unsupported) {
+		return nil, false
+	}
+	return o.Unsupported, true
+}
+
+// HasUnsupported returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMetadata) HasUnsupported() bool {
+	if o != nil && !IsNil(o.Unsupported) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnsupported gets a reference to the given WebhookPayloadMessageMetadataUnsupported and assigns it to the Unsupported field.
+func (o *WebhookPayloadMessageSentMetadata) SetUnsupported(v WebhookPayloadMessageMetadataUnsupported) {
+	o.Unsupported = &v
 }
 
 // GetMetaInteractive returns the MetaInteractive field value if set, zero value otherwise.
@@ -252,6 +285,9 @@ func (o WebhookPayloadMessageSentMetadata) MarshalJSON() ([]byte, error) {
 
 func (o WebhookPayloadMessageSentMetadata) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Unsupported) {
+		toSerialize["unsupported"] = o.Unsupported
+	}
 	if !IsNil(o.MetaInteractive) {
 		toSerialize["metaInteractive"] = o.MetaInteractive
 	}
