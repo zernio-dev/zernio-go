@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.838.0
+API version: 1.839.0
 Contact: support@zernio.com
 */
 
@@ -511,14 +511,14 @@ func (a *AutomationsAPIService) BacktestAutomationExecute(r AutomationsAPIBackte
 }
 
 type AutomationsAPIBacktestAutomationDraftRequest struct {
-	ctx                  context.Context
-	ApiService           *AutomationsAPIService
-	automationDefinition *AutomationDefinition
-	days                 *int32
+	ctx                     context.Context
+	ApiService              *AutomationsAPIService
+	createAutomationRequest *CreateAutomationRequest
+	days                    *int32
 }
 
-func (r AutomationsAPIBacktestAutomationDraftRequest) AutomationDefinition(automationDefinition AutomationDefinition) AutomationsAPIBacktestAutomationDraftRequest {
-	r.automationDefinition = &automationDefinition
+func (r AutomationsAPIBacktestAutomationDraftRequest) CreateAutomationRequest(createAutomationRequest CreateAutomationRequest) AutomationsAPIBacktestAutomationDraftRequest {
+	r.createAutomationRequest = &createAutomationRequest
 	return r
 }
 
@@ -540,6 +540,8 @@ Replays an automation over past days on stored daily metrics, without saving it 
 Each day lists what it would have done. Its own changes carry into later days, but the metrics stay what really happened. `notes` says what the replay could not know.
 
 Only ad automations can be backtested, on at most 5,000 ads.
+
+The draft can instead be sent as `name` and an automation `graph` (`AutomationGraph`), replayed exactly as its own shape would be. A comment to DM or flow graph is refused (`not_supported`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AutomationsAPIBacktestAutomationDraftRequest
@@ -572,8 +574,8 @@ func (a *AutomationsAPIService) BacktestAutomationDraftExecute(r AutomationsAPIB
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.automationDefinition == nil {
-		return localVarReturnValue, nil, reportError("automationDefinition is required and must be specified")
+	if r.createAutomationRequest == nil {
+		return localVarReturnValue, nil, reportError("createAutomationRequest is required and must be specified")
 	}
 
 	if r.days != nil {
@@ -601,7 +603,7 @@ func (a *AutomationsAPIService) BacktestAutomationDraftExecute(r AutomationsAPIB
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.automationDefinition
+	localVarPostBody = r.createAutomationRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -4361,14 +4363,14 @@ func (a *AutomationsAPIService) PreviewAutomationExecute(r AutomationsAPIPreview
 }
 
 type AutomationsAPIPreviewAutomationDraftRequest struct {
-	ctx                  context.Context
-	ApiService           *AutomationsAPIService
-	automationDefinition *AutomationDefinition
-	limit                *int32
+	ctx                     context.Context
+	ApiService              *AutomationsAPIService
+	createAutomationRequest *CreateAutomationRequest
+	limit                   *int32
 }
 
-func (r AutomationsAPIPreviewAutomationDraftRequest) AutomationDefinition(automationDefinition AutomationDefinition) AutomationsAPIPreviewAutomationDraftRequest {
-	r.automationDefinition = &automationDefinition
+func (r AutomationsAPIPreviewAutomationDraftRequest) CreateAutomationRequest(createAutomationRequest CreateAutomationRequest) AutomationsAPIPreviewAutomationDraftRequest {
+	r.createAutomationRequest = &createAutomationRequest
 	return r
 }
 
@@ -4388,6 +4390,8 @@ PreviewAutomationDraft Preview an unsaved automation
 Shows what an ad rule would do if it ran now, without saving it or changing anything: every object it checks, each condition with its actual value, and the steps a match would run. It refuses what saving would refuse.
 
 Event and scheduled automations cannot be previewed yet (400, `not_supported`).
+
+The draft can instead be sent as `name` and an automation `graph` (`AutomationGraph`), previewed exactly as its own shape would be. A comment to DM or flow graph is refused (`not_supported`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AutomationsAPIPreviewAutomationDraftRequest
@@ -4420,8 +4424,8 @@ func (a *AutomationsAPIService) PreviewAutomationDraftExecute(r AutomationsAPIPr
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.automationDefinition == nil {
-		return localVarReturnValue, nil, reportError("automationDefinition is required and must be specified")
+	if r.createAutomationRequest == nil {
+		return localVarReturnValue, nil, reportError("createAutomationRequest is required and must be specified")
 	}
 
 	if r.limit != nil {
@@ -4449,7 +4453,7 @@ func (a *AutomationsAPIService) PreviewAutomationDraftExecute(r AutomationsAPIPr
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.automationDefinition
+	localVarPostBody = r.createAutomationRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
