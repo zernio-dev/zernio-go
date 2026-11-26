@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.849.0
+API version: 1.850.0
 Contact: support@zernio.com
 */
 
@@ -2144,11 +2144,16 @@ Reddit throttling surfaces as 429 `rate_limited` with `platform: reddit`; retry 
 
 ### Microsoft Ads
 
-Use the `accountId` of a `microsoftads` connection and its numeric `adAccountId`. Zernio creates a Search campaign carrying the daily budget, the countries and the `campaignNegativeKeywords`, an ad group carrying the schedule and the `negativeKeywords`, a responsive search ad and the `keywords`.
+Use the `accountId` of a `microsoftads` connection and its numeric `adAccountId`. Zernio creates a Search campaign carrying the daily budget, the locations, the languages and the `campaignNegativeKeywords`, an ad group carrying the schedule and the `negativeKeywords`, a responsive search ad and the `keywords`.
 
 - `goal` is `traffic`; `budgetType` must be `daily`.
 - `headline`, `body` and `linkUrl` are required. `additionalHeadlines` and `additionalDescriptions` complete the ad to 3 to 15 headlines (30 characters) and 2 to 4 descriptions (90 characters); missing ones are filled from `name` and the link's host.
-- `countries` (or `targeting.countries`) is required; no other targeting field applies.
+- At least one location is required: `countries` (ISO codes), `regions`, `cities` or `metros`.
+- `regions`, `cities` and `metros` take Google geo target ids, as on Google creates (look them up with GET /v1/ads/targeting/search on a Google account). Zernio maps each to its Microsoft location; one Microsoft cannot target returns 422 naming it.
+- City radius, postal codes and other targeting fields are not available.
+- `languages` (ISO codes) sets the campaign languages. Without it the campaign targets every language.
+- Accepted language codes: sq, bg, hr, cs, da, nl, en, et, fi, fr, de, el, hu, it, ja, lv, lt, mt, no, nb, pl, pt, ro, sk, sl, es, sv, zh-TW and zh-Hant.
+- `excludedLocations` returns 422.
 - Negative keywords match `exact` or `phrase` (a bare string is `phrase`); `broad` returns 422.
 - Bid fields, sitelinks, callouts, structured snippets, `businessName`, `longHeadline` and a `campaignType` other than `search` return 422.
 
