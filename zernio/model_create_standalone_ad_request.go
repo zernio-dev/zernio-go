@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.848.0
+API version: 1.849.0
 Contact: support@zernio.com
 */
 
@@ -198,9 +198,9 @@ type CreateStandaloneAdRequest struct {
 	DemandGen             *GoogleDemandGenInput                    `json:"demandGen,omitempty"`
 	// Google Search, Microsoft Ads, and Amazon Sponsored Products (MANUAL campaigns) and Sponsored Brands. Keywords on the new ad group; entries are strings (BROAD) or { text, matchType }. Editable later via PUT /v1/ads/{adId} targeting.keywords.
 	Keywords []KeywordEntry `json:"keywords,omitempty"`
-	// Google Search and Amazon Sponsored Products and Sponsored Brands (EXACT or PHRASE only); other platforms return 400. Ad-group-level negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
+	// Google Search, Microsoft Ads, and Amazon Sponsored Products and Sponsored Brands (EXACT or PHRASE only on Amazon and Microsoft; on Microsoft a bare string is PHRASE); other platforms return 400. Ad-group-level negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords (Google and Amazon only).
 	NegativeKeywords []KeywordEntry `json:"negativeKeywords,omitempty"`
-	// Google Search and Amazon Sponsored Products; other platforms return 400. Campaign-level negative keywords (campaign_criterion.negative on Google), created alongside the ad group. Editable later via PUT /v1/ads/campaigns/{campaignId}/negative-keywords.
+	// Google Search, Microsoft Ads (EXACT or PHRASE, a bare string is PHRASE) and Amazon Sponsored Products; other platforms return 400. Campaign-level negative keywords (campaign_criterion.negative on Google), created alongside the ad group. Editable later via PUT /v1/ads/campaigns/{campaignId}/negative-keywords (Google and Amazon only).
 	CampaignNegativeKeywords []KeywordEntry `json:"campaignNegativeKeywords,omitempty"`
 	// Google Search RSA only. Extra text assets, as strings or objects with text and optional pinnedField. String input remains supported.  - The effective create lists, including primary text and after deduplication, must contain 3-15 headlines and 2-4 descriptions. Excess entries return 400. - Each headline is at most 30 characters (Google's limit). A longer one returns 400 naming the field and index (e.g. `additionalHeadlines[2]`); it is never truncated. - On Search the same limit applies to `headline` and `longHeadline` (30) and to `body` (90).
 	AdditionalHeadlines []CreateStandaloneAdRequestAdditionalHeadlinesInner `json:"additionalHeadlines,omitempty"`
