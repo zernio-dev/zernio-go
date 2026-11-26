@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.847.0
+API version: 1.848.0
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,7 @@ type AutomationTemplateAutomation struct {
 	Key string `json:"key"`
 	// A `POST /v1/automations` body without `status`, in which every value tied to one account is an input reference such as `{ \"$input\": \"adAccount\" }`. Campaign ids, id filters, start and end dates and approval steps are not kept.
 	Definition map[string]interface{} `json:"definition"`
-	// The same automation as the graph the editor opens and saves, input references kept in place. Read only: always present in responses, null only for a definition whose kind cannot be told.
+	// The same automation as the graph the editor opens and saves, input references kept in place. Read only: always present in responses, null only for an automation that cannot be read as a graph.
 	Graph NullableAutomationGraph `json:"graph,omitempty"`
 }
 
