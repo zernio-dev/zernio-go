@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.846.0
+API version: 1.847.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type AutomationTemplateAutomation struct {
 	Key string `json:"key"`
 	// A `POST /v1/automations` body without `status`, in which every value tied to one account is an input reference such as `{ \"$input\": \"adAccount\" }`. Campaign ids, id filters, start and end dates and approval steps are not kept.
 	Definition map[string]interface{} `json:"definition"`
+	// The same automation as the graph the editor opens and saves, input references kept in place. Read only: always present in responses, null only for a definition whose kind cannot be told.
+	Graph NullableAutomationGraph `json:"graph,omitempty"`
 }
 
 type _AutomationTemplateAutomation AutomationTemplateAutomation
@@ -97,6 +99,49 @@ func (o *AutomationTemplateAutomation) SetDefinition(v map[string]interface{}) {
 	o.Definition = v
 }
 
+// GetGraph returns the Graph field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AutomationTemplateAutomation) GetGraph() AutomationGraph {
+	if o == nil || IsNil(o.Graph.Get()) {
+		var ret AutomationGraph
+		return ret
+	}
+	return *o.Graph.Get()
+}
+
+// GetGraphOk returns a tuple with the Graph field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AutomationTemplateAutomation) GetGraphOk() (*AutomationGraph, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Graph.Get(), o.Graph.IsSet()
+}
+
+// HasGraph returns a boolean if a field has been set.
+func (o *AutomationTemplateAutomation) HasGraph() bool {
+	if o != nil && o.Graph.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetGraph gets a reference to the given NullableAutomationGraph and assigns it to the Graph field.
+func (o *AutomationTemplateAutomation) SetGraph(v AutomationGraph) {
+	o.Graph.Set(&v)
+}
+
+// SetGraphNil sets the value for Graph to be an explicit nil
+func (o *AutomationTemplateAutomation) SetGraphNil() {
+	o.Graph.Set(nil)
+}
+
+// UnsetGraph ensures that no value is present for Graph, not even an explicit nil
+func (o *AutomationTemplateAutomation) UnsetGraph() {
+	o.Graph.Unset()
+}
+
 func (o AutomationTemplateAutomation) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -109,6 +154,9 @@ func (o AutomationTemplateAutomation) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["key"] = o.Key
 	toSerialize["definition"] = o.Definition
+	if o.Graph.IsSet() {
+		toSerialize["graph"] = o.Graph.Get()
+	}
 	return toSerialize, nil
 }
 
