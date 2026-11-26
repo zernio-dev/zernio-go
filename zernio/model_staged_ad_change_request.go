@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.842.0
+API version: 1.843.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,10 @@ type StagedAdChangeRequest struct {
 	Method    string `json:"method"`
 	// The path of the write, for example /v1/ads/keywords.
 	Path string `json:"path"`
+	// The path values of the staged request, by the names in `path`.
+	Params map[string]string `json:"params,omitempty"`
+	// The query values of the staged request, without `stage`.
+	Query map[string]string `json:"query,omitempty"`
 }
 
 type _StagedAdChangeRequest StagedAdChangeRequest
@@ -123,6 +127,70 @@ func (o *StagedAdChangeRequest) SetPath(v string) {
 	o.Path = v
 }
 
+// GetParams returns the Params field value if set, zero value otherwise.
+func (o *StagedAdChangeRequest) GetParams() map[string]string {
+	if o == nil || IsNil(o.Params) {
+		var ret map[string]string
+		return ret
+	}
+	return o.Params
+}
+
+// GetParamsOk returns a tuple with the Params field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StagedAdChangeRequest) GetParamsOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.Params) {
+		return map[string]string{}, false
+	}
+	return o.Params, true
+}
+
+// HasParams returns a boolean if a field has been set.
+func (o *StagedAdChangeRequest) HasParams() bool {
+	if o != nil && !IsNil(o.Params) {
+		return true
+	}
+
+	return false
+}
+
+// SetParams gets a reference to the given map[string]string and assigns it to the Params field.
+func (o *StagedAdChangeRequest) SetParams(v map[string]string) {
+	o.Params = v
+}
+
+// GetQuery returns the Query field value if set, zero value otherwise.
+func (o *StagedAdChangeRequest) GetQuery() map[string]string {
+	if o == nil || IsNil(o.Query) {
+		var ret map[string]string
+		return ret
+	}
+	return o.Query
+}
+
+// GetQueryOk returns a tuple with the Query field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StagedAdChangeRequest) GetQueryOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.Query) {
+		return map[string]string{}, false
+	}
+	return o.Query, true
+}
+
+// HasQuery returns a boolean if a field has been set.
+func (o *StagedAdChangeRequest) HasQuery() bool {
+	if o != nil && !IsNil(o.Query) {
+		return true
+	}
+
+	return false
+}
+
+// SetQuery gets a reference to the given map[string]string and assigns it to the Query field.
+func (o *StagedAdChangeRequest) SetQuery(v map[string]string) {
+	o.Query = v
+}
+
 func (o StagedAdChangeRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -136,6 +204,12 @@ func (o StagedAdChangeRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["operation"] = o.Operation
 	toSerialize["method"] = o.Method
 	toSerialize["path"] = o.Path
+	if !IsNil(o.Params) {
+		toSerialize["params"] = o.Params
+	}
+	if !IsNil(o.Query) {
+		toSerialize["query"] = o.Query
+	}
 	return toSerialize, nil
 }
 

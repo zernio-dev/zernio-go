@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.842.0
+API version: 1.843.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,7 @@ var _ MappedNullable = &StagedAdChange{}
 type StagedAdChange struct {
 	// The change id, used in /v1/ads/changes/{changeId}.
 	Id string `json:"id"`
-	// Which write was staged: a status route, an update route (campaign, ad set, ad), the campaign targeting route or a create route. `operation` is any other ads write, staged as its request and named by `request`. It has no live read, so its diff shows the new values only.
+	// Which write was staged: a status route, an update route (campaign, ad set, ad), the campaign targeting route or a create route. `operation` is any other ads write, staged as its request and named by `request`. It has no live read, so its diff shows the sent values only.
 	Type    string                 `json:"type"`
 	Request *StagedAdChangeRequest `json:"request,omitempty"`
 	// The ad platform of the object, as the write route names it.
@@ -34,7 +34,7 @@ type StagedAdChange struct {
 	AccountId string `json:"accountId"`
 	// The ad account id on the platform.
 	AdAccountId string `json:"adAccountId"`
-	// The object the change applies to: the platform campaign id, the platform ad set id, or the Zernio ad id. Null for a create, whose object does not exist yet.
+	// The object the change applies to: the platform campaign id, the platform ad set id, or the Zernio ad id. A write staged as its request with no such object carries the last id of its path. Null when there is none, as for a create.
 	TargetId NullableString `json:"targetId"`
 	// The name of the object when the change was staged, or the name a create will give it. Null when it is not known.
 	TargetName NullableString `json:"targetName,omitempty"`
