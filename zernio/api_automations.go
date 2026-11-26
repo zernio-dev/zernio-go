@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.837.1
+API version: 1.838.0
 Contact: support@zernio.com
 */
 
@@ -672,14 +672,14 @@ func (a *AutomationsAPIService) BacktestAutomationDraftExecute(r AutomationsAPIB
 }
 
 type AutomationsAPICreateAutomationRequest struct {
-	ctx                  context.Context
-	ApiService           *AutomationsAPIService
-	automationDefinition *AutomationDefinition
-	idempotencyKey       *string
+	ctx                     context.Context
+	ApiService              *AutomationsAPIService
+	createAutomationRequest *CreateAutomationRequest
+	idempotencyKey          *string
 }
 
-func (r AutomationsAPICreateAutomationRequest) AutomationDefinition(automationDefinition AutomationDefinition) AutomationsAPICreateAutomationRequest {
-	r.automationDefinition = &automationDefinition
+func (r AutomationsAPICreateAutomationRequest) CreateAutomationRequest(createAutomationRequest CreateAutomationRequest) AutomationsAPICreateAutomationRequest {
+	r.createAutomationRequest = &createAutomationRequest
 	return r
 }
 
@@ -704,6 +704,10 @@ Creates an automation. Its trigger picks the kind:
 - **Sequence**: an `enrollment` trigger on one messaging account, with message steps sent over time. It is on unless `status` is `draft`. It needs what `/v1/sequences` needs: the inbox add-on and a key with the `messages` group.
 - **Comment to DM**: a comment door in `trigger.type`, such as `comment.keyword`, with a `graph` of the shapes `/v1/comment-automations` holds. It is on unless `status` is `paused`, and needs what `/v1/comment-automations` needs. A post that already has an active automation is a 409.
 - **Flow** (`kind` is `workflow`): a flow trigger such as `inbound_message` (or a `graph` whose trigger node names it) on one account, with the builder's `graph`. It is a draft unless `status` is `active`, which needs a complete graph; `paused` is refused. It needs the inbox add-on and a full-access key.
+
+An ad rule, event, scheduled automation or sequence can instead be sent as `name`, `status` and an automation `graph` (`AutomationGraph`, the one its response carries). The graph's trigger picks the kind, and it is saved exactly as its own shape would be.
+
+A comment to DM or flow sent as an automation graph is refused (`not_supported`).
 
 Everything an automation cannot hold is refused at once: the 400 lists every problem with its JSON path in `details.problems`.
 
@@ -738,8 +742,8 @@ func (a *AutomationsAPIService) CreateAutomationExecute(r AutomationsAPICreateAu
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.automationDefinition == nil {
-		return localVarReturnValue, nil, reportError("automationDefinition is required and must be specified")
+	if r.createAutomationRequest == nil {
+		return localVarReturnValue, nil, reportError("createAutomationRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -763,7 +767,7 @@ func (a *AutomationsAPIService) CreateAutomationExecute(r AutomationsAPICreateAu
 		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
-	localVarPostBody = r.automationDefinition
+	localVarPostBody = r.createAutomationRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

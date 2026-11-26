@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.837.1
+API version: 1.838.0
 Contact: support@zernio.com
 */
 
@@ -43,6 +43,7 @@ type AutomationOneOf struct {
 	CreatedAt   time.Time                 `json:"createdAt"`
 	UpdatedAt   time.Time                 `json:"updatedAt"`
 	Template    *AutomationRecordTemplate `json:"template,omitempty"`
+	Graph       *AutomationGraph          `json:"graph,omitempty"`
 }
 
 type _AutomationOneOf AutomationOneOf
@@ -485,6 +486,38 @@ func (o *AutomationOneOf) SetTemplate(v AutomationRecordTemplate) {
 	o.Template = &v
 }
 
+// GetGraph returns the Graph field value if set, zero value otherwise.
+func (o *AutomationOneOf) GetGraph() AutomationGraph {
+	if o == nil || IsNil(o.Graph) {
+		var ret AutomationGraph
+		return ret
+	}
+	return *o.Graph
+}
+
+// GetGraphOk returns a tuple with the Graph field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AutomationOneOf) GetGraphOk() (*AutomationGraph, bool) {
+	if o == nil || IsNil(o.Graph) {
+		return nil, false
+	}
+	return o.Graph, true
+}
+
+// HasGraph returns a boolean if a field has been set.
+func (o *AutomationOneOf) HasGraph() bool {
+	if o != nil && !IsNil(o.Graph) {
+		return true
+	}
+
+	return false
+}
+
+// SetGraph gets a reference to the given AutomationGraph and assigns it to the Graph field.
+func (o *AutomationOneOf) SetGraph(v AutomationGraph) {
+	o.Graph = &v
+}
+
 func (o AutomationOneOf) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -516,6 +549,9 @@ func (o AutomationOneOf) ToMap() (map[string]interface{}, error) {
 	toSerialize["updatedAt"] = o.UpdatedAt
 	if !IsNil(o.Template) {
 		toSerialize["template"] = o.Template
+	}
+	if !IsNil(o.Graph) {
+		toSerialize["graph"] = o.Graph
 	}
 	return toSerialize, nil
 }
