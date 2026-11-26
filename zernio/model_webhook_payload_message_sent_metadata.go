@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.835.2
+API version: 1.836.0
 Contact: support@zernio.com
 */
 
@@ -18,9 +18,16 @@ import (
 // checks if the WebhookPayloadMessageSentMetadata type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageSentMetadata{}
 
-// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin, WhatsApp contact cards, Meta's reason a WhatsApp Business app echo has no renderable body, the TikTok message type, or outgoing Instagram/Facebook buttons, quick replies and template.  The key is present only when the send carried some context: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
+// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin, WhatsApp contact cards, WhatsApp template name, language, header and footer, Meta's reason a WhatsApp Business app echo has no renderable body, the TikTok message type, or outgoing Instagram/Facebook buttons, quick replies and template.  The key is present only when the send carried some context: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
 type WebhookPayloadMessageSentMetadata struct {
-	Unsupported *WebhookPayloadMessageMetadataUnsupported `json:"unsupported,omitempty"`
+	// WhatsApp template sends only. Name of the approved template that was sent.
+	TemplateName *string `json:"templateName,omitempty"`
+	// WhatsApp template sends only. Language code of the approved template that was sent.
+	TemplateLanguage *string                                          `json:"templateLanguage,omitempty"`
+	TemplateHeader   *WebhookPayloadMessageSentMetadataTemplateHeader `json:"templateHeader,omitempty"`
+	// WhatsApp template sends only. Footer text of the template. Absent when the template has no footer, and on bulk, broadcast and automation sends.
+	TemplateFooter *string                                   `json:"templateFooter,omitempty"`
+	Unsupported    *WebhookPayloadMessageMetadataUnsupported `json:"unsupported,omitempty"`
 	// Instagram/Facebook only. The buttons, quickReplies and/or template this outgoing message carried, as sent (tracked urls included when link tracking wrapped a button). Absent when the send carried none.
 	MetaInteractive map[string]interface{}                 `json:"metaInteractive,omitempty"`
 	Location        *WebhookPayloadMessageMetadataLocation `json:"location,omitempty"`
@@ -49,6 +56,134 @@ func NewWebhookPayloadMessageSentMetadata() *WebhookPayloadMessageSentMetadata {
 func NewWebhookPayloadMessageSentMetadataWithDefaults() *WebhookPayloadMessageSentMetadata {
 	this := WebhookPayloadMessageSentMetadata{}
 	return &this
+}
+
+// GetTemplateName returns the TemplateName field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSentMetadata) GetTemplateName() string {
+	if o == nil || IsNil(o.TemplateName) {
+		var ret string
+		return ret
+	}
+	return *o.TemplateName
+}
+
+// GetTemplateNameOk returns a tuple with the TemplateName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSentMetadata) GetTemplateNameOk() (*string, bool) {
+	if o == nil || IsNil(o.TemplateName) {
+		return nil, false
+	}
+	return o.TemplateName, true
+}
+
+// HasTemplateName returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMetadata) HasTemplateName() bool {
+	if o != nil && !IsNil(o.TemplateName) {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplateName gets a reference to the given string and assigns it to the TemplateName field.
+func (o *WebhookPayloadMessageSentMetadata) SetTemplateName(v string) {
+	o.TemplateName = &v
+}
+
+// GetTemplateLanguage returns the TemplateLanguage field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSentMetadata) GetTemplateLanguage() string {
+	if o == nil || IsNil(o.TemplateLanguage) {
+		var ret string
+		return ret
+	}
+	return *o.TemplateLanguage
+}
+
+// GetTemplateLanguageOk returns a tuple with the TemplateLanguage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSentMetadata) GetTemplateLanguageOk() (*string, bool) {
+	if o == nil || IsNil(o.TemplateLanguage) {
+		return nil, false
+	}
+	return o.TemplateLanguage, true
+}
+
+// HasTemplateLanguage returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMetadata) HasTemplateLanguage() bool {
+	if o != nil && !IsNil(o.TemplateLanguage) {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplateLanguage gets a reference to the given string and assigns it to the TemplateLanguage field.
+func (o *WebhookPayloadMessageSentMetadata) SetTemplateLanguage(v string) {
+	o.TemplateLanguage = &v
+}
+
+// GetTemplateHeader returns the TemplateHeader field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSentMetadata) GetTemplateHeader() WebhookPayloadMessageSentMetadataTemplateHeader {
+	if o == nil || IsNil(o.TemplateHeader) {
+		var ret WebhookPayloadMessageSentMetadataTemplateHeader
+		return ret
+	}
+	return *o.TemplateHeader
+}
+
+// GetTemplateHeaderOk returns a tuple with the TemplateHeader field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSentMetadata) GetTemplateHeaderOk() (*WebhookPayloadMessageSentMetadataTemplateHeader, bool) {
+	if o == nil || IsNil(o.TemplateHeader) {
+		return nil, false
+	}
+	return o.TemplateHeader, true
+}
+
+// HasTemplateHeader returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMetadata) HasTemplateHeader() bool {
+	if o != nil && !IsNil(o.TemplateHeader) {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplateHeader gets a reference to the given WebhookPayloadMessageSentMetadataTemplateHeader and assigns it to the TemplateHeader field.
+func (o *WebhookPayloadMessageSentMetadata) SetTemplateHeader(v WebhookPayloadMessageSentMetadataTemplateHeader) {
+	o.TemplateHeader = &v
+}
+
+// GetTemplateFooter returns the TemplateFooter field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSentMetadata) GetTemplateFooter() string {
+	if o == nil || IsNil(o.TemplateFooter) {
+		var ret string
+		return ret
+	}
+	return *o.TemplateFooter
+}
+
+// GetTemplateFooterOk returns a tuple with the TemplateFooter field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSentMetadata) GetTemplateFooterOk() (*string, bool) {
+	if o == nil || IsNil(o.TemplateFooter) {
+		return nil, false
+	}
+	return o.TemplateFooter, true
+}
+
+// HasTemplateFooter returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMetadata) HasTemplateFooter() bool {
+	if o != nil && !IsNil(o.TemplateFooter) {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplateFooter gets a reference to the given string and assigns it to the TemplateFooter field.
+func (o *WebhookPayloadMessageSentMetadata) SetTemplateFooter(v string) {
+	o.TemplateFooter = &v
 }
 
 // GetUnsupported returns the Unsupported field value if set, zero value otherwise.
@@ -285,6 +420,18 @@ func (o WebhookPayloadMessageSentMetadata) MarshalJSON() ([]byte, error) {
 
 func (o WebhookPayloadMessageSentMetadata) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.TemplateName) {
+		toSerialize["templateName"] = o.TemplateName
+	}
+	if !IsNil(o.TemplateLanguage) {
+		toSerialize["templateLanguage"] = o.TemplateLanguage
+	}
+	if !IsNil(o.TemplateHeader) {
+		toSerialize["templateHeader"] = o.TemplateHeader
+	}
+	if !IsNil(o.TemplateFooter) {
+		toSerialize["templateFooter"] = o.TemplateFooter
+	}
 	if !IsNil(o.Unsupported) {
 		toSerialize["unsupported"] = o.Unsupported
 	}
