@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.839.0
+API version: 1.840.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the WebhookPayloadMessageSentMetadata type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageSentMetadata{}
 
-// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin, WhatsApp contact cards, WhatsApp template name, language, header and footer, Meta's reason a WhatsApp Business app echo has no renderable body, the TikTok message type, or outgoing Instagram/Facebook buttons, quick replies and template.  The key is present only when the send carried some context: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
+// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin, WhatsApp contact cards, WhatsApp template name, language, header, footer and buttons, Meta's reason a WhatsApp Business app echo has no renderable body, the TikTok message type, or outgoing Instagram/Facebook buttons, quick replies and template.  The key is present only when the send carried some context: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
 type WebhookPayloadMessageSentMetadata struct {
 	// WhatsApp template sends only. Name of the approved template that was sent.
 	TemplateName *string `json:"templateName,omitempty"`
@@ -26,8 +26,10 @@ type WebhookPayloadMessageSentMetadata struct {
 	TemplateLanguage *string                                          `json:"templateLanguage,omitempty"`
 	TemplateHeader   *WebhookPayloadMessageSentMetadataTemplateHeader `json:"templateHeader,omitempty"`
 	// WhatsApp template sends only. Footer text of the template. Absent when the template has no footer, and on bulk, broadcast and automation sends.
-	TemplateFooter *string                                   `json:"templateFooter,omitempty"`
-	Unsupported    *WebhookPayloadMessageMetadataUnsupported `json:"unsupported,omitempty"`
+	TemplateFooter *string `json:"templateFooter,omitempty"`
+	// WhatsApp template sends only. The approved buttons as the recipient saw them, with a dynamic URL filled with the value the send gave. Never carries a coupon code, OTP or flow value.  Absent when the template has no top-level buttons (carousel card buttons are not included), and on bulk, broadcast and automation sends.
+	TemplateButtons []WebhookPayloadMessageSentMetadataTemplateButtonsInner `json:"templateButtons,omitempty"`
+	Unsupported     *WebhookPayloadMessageMetadataUnsupported               `json:"unsupported,omitempty"`
 	// Instagram/Facebook only. The buttons, quickReplies and/or template this outgoing message carried, as sent (tracked urls included when link tracking wrapped a button). Absent when the send carried none.
 	MetaInteractive map[string]interface{}                 `json:"metaInteractive,omitempty"`
 	Location        *WebhookPayloadMessageMetadataLocation `json:"location,omitempty"`
@@ -184,6 +186,38 @@ func (o *WebhookPayloadMessageSentMetadata) HasTemplateFooter() bool {
 // SetTemplateFooter gets a reference to the given string and assigns it to the TemplateFooter field.
 func (o *WebhookPayloadMessageSentMetadata) SetTemplateFooter(v string) {
 	o.TemplateFooter = &v
+}
+
+// GetTemplateButtons returns the TemplateButtons field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSentMetadata) GetTemplateButtons() []WebhookPayloadMessageSentMetadataTemplateButtonsInner {
+	if o == nil || IsNil(o.TemplateButtons) {
+		var ret []WebhookPayloadMessageSentMetadataTemplateButtonsInner
+		return ret
+	}
+	return o.TemplateButtons
+}
+
+// GetTemplateButtonsOk returns a tuple with the TemplateButtons field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSentMetadata) GetTemplateButtonsOk() ([]WebhookPayloadMessageSentMetadataTemplateButtonsInner, bool) {
+	if o == nil || IsNil(o.TemplateButtons) {
+		return nil, false
+	}
+	return o.TemplateButtons, true
+}
+
+// HasTemplateButtons returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMetadata) HasTemplateButtons() bool {
+	if o != nil && !IsNil(o.TemplateButtons) {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplateButtons gets a reference to the given []WebhookPayloadMessageSentMetadataTemplateButtonsInner and assigns it to the TemplateButtons field.
+func (o *WebhookPayloadMessageSentMetadata) SetTemplateButtons(v []WebhookPayloadMessageSentMetadataTemplateButtonsInner) {
+	o.TemplateButtons = v
 }
 
 // GetUnsupported returns the Unsupported field value if set, zero value otherwise.
@@ -431,6 +465,9 @@ func (o WebhookPayloadMessageSentMetadata) ToMap() (map[string]interface{}, erro
 	}
 	if !IsNil(o.TemplateFooter) {
 		toSerialize["templateFooter"] = o.TemplateFooter
+	}
+	if !IsNil(o.TemplateButtons) {
+		toSerialize["templateButtons"] = o.TemplateButtons
 	}
 	if !IsNil(o.Unsupported) {
 		toSerialize["unsupported"] = o.Unsupported
