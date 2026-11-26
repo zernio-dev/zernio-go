@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.844.0
+API version: 1.845.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type InlineObject5Details struct {
 	CurrentAccountCount *int32 `json:"current_account_count,omitempty"`
 	// Whether the team currently has a card on file in Stripe. Set when reason=free_tier_exceeded or reason=twitter_passthrough.
 	HasPaymentMethod *bool `json:"has_payment_method,omitempty"`
+	// Whether the caller can add the card themselves (the payer, or an owner, admin or billing admin of the workspace). False for a member or a viewer: the workspace owner has to add it. Set for the card reasons.
+	CanAddCard *bool `json:"can_add_card,omitempty"`
 	// One-time card verification charge in USD cents, credited to usage. Only set when reason=card_verification_required.
 	VerificationAmountCents *int32 `json:"verification_amount_cents,omitempty"`
 	// The negotiated connected-account cap from the team's enterprise contract. Self-service teams have no cap and never receive this reason. Only set when reason=enterprise_required.
@@ -145,6 +147,38 @@ func (o *InlineObject5Details) SetHasPaymentMethod(v bool) {
 	o.HasPaymentMethod = &v
 }
 
+// GetCanAddCard returns the CanAddCard field value if set, zero value otherwise.
+func (o *InlineObject5Details) GetCanAddCard() bool {
+	if o == nil || IsNil(o.CanAddCard) {
+		var ret bool
+		return ret
+	}
+	return *o.CanAddCard
+}
+
+// GetCanAddCardOk returns a tuple with the CanAddCard field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject5Details) GetCanAddCardOk() (*bool, bool) {
+	if o == nil || IsNil(o.CanAddCard) {
+		return nil, false
+	}
+	return o.CanAddCard, true
+}
+
+// HasCanAddCard returns a boolean if a field has been set.
+func (o *InlineObject5Details) HasCanAddCard() bool {
+	if o != nil && !IsNil(o.CanAddCard) {
+		return true
+	}
+
+	return false
+}
+
+// SetCanAddCard gets a reference to the given bool and assigns it to the CanAddCard field.
+func (o *InlineObject5Details) SetCanAddCard(v bool) {
+	o.CanAddCard = &v
+}
+
 // GetVerificationAmountCents returns the VerificationAmountCents field value if set, zero value otherwise.
 func (o *InlineObject5Details) GetVerificationAmountCents() int32 {
 	if o == nil || IsNil(o.VerificationAmountCents) {
@@ -227,6 +261,9 @@ func (o InlineObject5Details) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.HasPaymentMethod) {
 		toSerialize["has_payment_method"] = o.HasPaymentMethod
+	}
+	if !IsNil(o.CanAddCard) {
+		toSerialize["can_add_card"] = o.CanAddCard
 	}
 	if !IsNil(o.VerificationAmountCents) {
 		toSerialize["verification_amount_cents"] = o.VerificationAmountCents
