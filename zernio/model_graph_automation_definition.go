@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.856.2
+API version: 1.857.0
 Contact: support@zernio.com
 */
 
@@ -20,10 +20,10 @@ import (
 // checks if the GraphAutomationDefinition type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &GraphAutomationDefinition{}
 
-// GraphAutomationDefinition An ad rule, event or scheduled automation or sequence sent as an automation graph. It is saved as its own shape would be.
+// GraphAutomationDefinition Any automation sent as an automation graph. It is saved as its own shape would be.  - A comment to DM keeps its fixed node ids (`dm`, `reply`, `like`, `hide`, `delay`, ...) and may carry its DM door as a second trigger with its own `entry`. - A flow's trigger settings go on its trigger node, added when the graph has none.
 type GraphAutomationDefinition struct {
 	Name string `json:"name"`
-	// Sequences.
+	// Sequences and flows.
 	Description *string         `json:"description,omitempty"`
 	Status      *string         `json:"status,omitempty"`
 	Graph       AutomationGraph `json:"graph"`

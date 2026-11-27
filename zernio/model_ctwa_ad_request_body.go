@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.856.2
+API version: 1.857.0
 Contact: support@zernio.com
 */
 
@@ -134,9 +134,8 @@ type CtwaAdRequestBody struct {
 	// Meta special ad categories on the new campaign.
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
 	// Countries the special ad category applies to. Requires specialAdCategories.
-	SpecialAdCategoryCountry []string `json:"specialAdCategoryCountry,omitempty"`
-	// Meta's Advantage+ audience expansion. `0` (default) keeps targeting strict; `1` lets Meta expand beyond the supplied targeting when its delivery system finds better matches. Always sent on CREATE (Meta requires it).
-	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
+	SpecialAdCategoryCountry []string                                   `json:"specialAdCategoryCountry,omitempty"`
+	AdvantageAudience        *UpdateAdRequestTargetingAdvantageAudience `json:"advantageAudience,omitempty"`
 	// Defaults to `OUTCOME_ENGAGEMENT` on POST /v1/ads/ctwa and POST /v1/ads/messaging, and to `OUTCOME_LEADS` on POST /v1/ads/call and on POST /v1/ads/messaging with `optimizationGoal: LEAD_GENERATION` (which accepts only `OUTCOME_LEADS`). `OUTCOME_SALES` and `OUTCOME_LEADS` require additional account configuration (Dataset linked to the WABA for sales) and may be rejected by Meta if missing.
 	Objective *string `json:"objective,omitempty"`
 	// Defaults to `ACTIVE`. `PAUSED` pauses only the top-most object this call creates: the new campaign (ad set and ads switched on), or, with `adSetId`, the new ads themselves.
@@ -2121,9 +2120,9 @@ func (o *CtwaAdRequestBody) SetSpecialAdCategoryCountry(v []string) {
 }
 
 // GetAdvantageAudience returns the AdvantageAudience field value if set, zero value otherwise.
-func (o *CtwaAdRequestBody) GetAdvantageAudience() int32 {
+func (o *CtwaAdRequestBody) GetAdvantageAudience() UpdateAdRequestTargetingAdvantageAudience {
 	if o == nil || IsNil(o.AdvantageAudience) {
-		var ret int32
+		var ret UpdateAdRequestTargetingAdvantageAudience
 		return ret
 	}
 	return *o.AdvantageAudience
@@ -2131,7 +2130,7 @@ func (o *CtwaAdRequestBody) GetAdvantageAudience() int32 {
 
 // GetAdvantageAudienceOk returns a tuple with the AdvantageAudience field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CtwaAdRequestBody) GetAdvantageAudienceOk() (*int32, bool) {
+func (o *CtwaAdRequestBody) GetAdvantageAudienceOk() (*UpdateAdRequestTargetingAdvantageAudience, bool) {
 	if o == nil || IsNil(o.AdvantageAudience) {
 		return nil, false
 	}
@@ -2147,8 +2146,8 @@ func (o *CtwaAdRequestBody) HasAdvantageAudience() bool {
 	return false
 }
 
-// SetAdvantageAudience gets a reference to the given int32 and assigns it to the AdvantageAudience field.
-func (o *CtwaAdRequestBody) SetAdvantageAudience(v int32) {
+// SetAdvantageAudience gets a reference to the given UpdateAdRequestTargetingAdvantageAudience and assigns it to the AdvantageAudience field.
+func (o *CtwaAdRequestBody) SetAdvantageAudience(v UpdateAdRequestTargetingAdvantageAudience) {
 	o.AdvantageAudience = &v
 }
 

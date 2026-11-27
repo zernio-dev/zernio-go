@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.856.2
+API version: 1.857.0
 Contact: support@zernio.com
 */
 
@@ -21,11 +21,12 @@ var _ MappedNullable = &TrackingSite{}
 
 // TrackingSite struct for TrackingSite
 type TrackingSite struct {
-	Id        *string              `json:"id,omitempty"`
-	ProfileId *string              `json:"profileId,omitempty"`
-	Name      *string              `json:"name,omitempty"`
-	Status    *string              `json:"status,omitempty"`
-	Install   *TrackingSiteInstall `json:"install,omitempty"`
+	Id        *string `json:"id,omitempty"`
+	ProfileId *string `json:"profileId,omitempty"`
+	Name      *string `json:"name,omitempty"`
+	// `paused` while the workspace is over its free website events for the month with no payment method: the site records nothing until one is added.
+	Status  *string              `json:"status,omitempty"`
+	Install *TrackingSiteInstall `json:"install,omitempty"`
 	// True when the store's orders reach Zernio from the store itself, so website purchases are forwarded but not counted twice.
 	StoreOrders *bool `json:"storeOrders,omitempty"`
 	// Public key that names the site in the snippet, such as `zs_...`.

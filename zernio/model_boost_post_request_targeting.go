@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.856.2
+API version: 1.857.0
 Contact: support@zernio.com
 */
 
@@ -39,9 +39,8 @@ type BoostPostRequestTargeting struct {
 	// Point-radius (lat/lng) targeting (Meta custom_locations). No geo `key` lookup needed.
 	CustomLocations []BoostPostRequestTargetingCustomLocationsInner `json:"customLocations,omitempty"`
 	// Interest objects from /v1/ads/interests. Each must include id and name.
-	Interests []UpdateAdRequestTargetingInterestsInner `json:"interests,omitempty"`
-	// Meta only. 0 = disabled (default), 1 = enabled.
-	AdvantageAudience *int32 `json:"advantage_audience,omitempty"`
+	Interests         []UpdateAdRequestTargetingInterestsInner   `json:"interests,omitempty"`
+	AdvantageAudience *UpdateAdRequestTargetingAdvantageAudience `json:"advantage_audience,omitempty"`
 }
 
 // NewBoostPostRequestTargeting instantiates a new BoostPostRequestTargeting object
@@ -414,9 +413,9 @@ func (o *BoostPostRequestTargeting) SetInterests(v []UpdateAdRequestTargetingInt
 }
 
 // GetAdvantageAudience returns the AdvantageAudience field value if set, zero value otherwise.
-func (o *BoostPostRequestTargeting) GetAdvantageAudience() int32 {
+func (o *BoostPostRequestTargeting) GetAdvantageAudience() UpdateAdRequestTargetingAdvantageAudience {
 	if o == nil || IsNil(o.AdvantageAudience) {
-		var ret int32
+		var ret UpdateAdRequestTargetingAdvantageAudience
 		return ret
 	}
 	return *o.AdvantageAudience
@@ -424,7 +423,7 @@ func (o *BoostPostRequestTargeting) GetAdvantageAudience() int32 {
 
 // GetAdvantageAudienceOk returns a tuple with the AdvantageAudience field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BoostPostRequestTargeting) GetAdvantageAudienceOk() (*int32, bool) {
+func (o *BoostPostRequestTargeting) GetAdvantageAudienceOk() (*UpdateAdRequestTargetingAdvantageAudience, bool) {
 	if o == nil || IsNil(o.AdvantageAudience) {
 		return nil, false
 	}
@@ -440,8 +439,8 @@ func (o *BoostPostRequestTargeting) HasAdvantageAudience() bool {
 	return false
 }
 
-// SetAdvantageAudience gets a reference to the given int32 and assigns it to the AdvantageAudience field.
-func (o *BoostPostRequestTargeting) SetAdvantageAudience(v int32) {
+// SetAdvantageAudience gets a reference to the given UpdateAdRequestTargetingAdvantageAudience and assigns it to the AdvantageAudience field.
+func (o *BoostPostRequestTargeting) SetAdvantageAudience(v UpdateAdRequestTargetingAdvantageAudience) {
 	o.AdvantageAudience = &v
 }
 

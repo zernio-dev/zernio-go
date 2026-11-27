@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.856.2
+API version: 1.857.0
 Contact: support@zernio.com
 */
 
@@ -212,8 +212,7 @@ type CreateStandaloneAdRequest struct {
 	Callouts []string `json:"callouts,omitempty"`
 	// Google Search only. Structured snippets: one header from Google's predefined list plus 3-10 values (max 25 chars each). Each becomes one Asset (`structured_snippet_asset`) plus a CampaignAsset link with field_type STRUCTURED_SNIPPET.
 	StructuredSnippets []CreateStandaloneAdRequestStructuredSnippetsInner `json:"structuredSnippets,omitempty"`
-	// Meta only. Controls the Advantage audience feature (targeting_automation). 0 = disabled (default), 1 = enabled. Meta Marketing API requires this field on all ad set creation requests.
-	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
+	AdvantageAudience  *UpdateAdRequestTargetingAdvantageAudience         `json:"advantageAudience,omitempty"`
 	// Meta only. Conversion attribution window for the ad set, mapping 1:1 to Meta's ad-set `attribution_spec`. Only honored for conversion goals (`conversions`, `lead_generation`, `app_promotion`); ignored for awareness/traffic/engagement. Omit to use Meta's default (`7-day click` + `1-day view`).  Meta enforces the valid combinations (invalid combos surface as a Meta 400):  - `VIEW_THROUGH`: only `windowDays: 1` (7d/28d view windows were removed Jan 2026). - `ENGAGED_VIDEO_VIEW`: only `1`, and only alongside `VIEW_THROUGH: 1`. - `CLICK_THROUGH: 28`: only on certain objectives.  Example: `[{ \"eventType\": \"CLICK_THROUGH\", \"windowDays\": 7 }, { \"eventType\": \"VIEW_THROUGH\", \"windowDays\": 1 }]`
 	AttributionSpec []BoostPostRequestAttributionSpecInner `json:"attributionSpec,omitempty"`
 	// Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Applied on Meta, TikTok, Pinterest and Reddit. Ignored on Google, LinkedIn and X.
@@ -3519,9 +3518,9 @@ func (o *CreateStandaloneAdRequest) SetStructuredSnippets(v []CreateStandaloneAd
 }
 
 // GetAdvantageAudience returns the AdvantageAudience field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetAdvantageAudience() int32 {
+func (o *CreateStandaloneAdRequest) GetAdvantageAudience() UpdateAdRequestTargetingAdvantageAudience {
 	if o == nil || IsNil(o.AdvantageAudience) {
-		var ret int32
+		var ret UpdateAdRequestTargetingAdvantageAudience
 		return ret
 	}
 	return *o.AdvantageAudience
@@ -3529,7 +3528,7 @@ func (o *CreateStandaloneAdRequest) GetAdvantageAudience() int32 {
 
 // GetAdvantageAudienceOk returns a tuple with the AdvantageAudience field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetAdvantageAudienceOk() (*int32, bool) {
+func (o *CreateStandaloneAdRequest) GetAdvantageAudienceOk() (*UpdateAdRequestTargetingAdvantageAudience, bool) {
 	if o == nil || IsNil(o.AdvantageAudience) {
 		return nil, false
 	}
@@ -3545,8 +3544,8 @@ func (o *CreateStandaloneAdRequest) HasAdvantageAudience() bool {
 	return false
 }
 
-// SetAdvantageAudience gets a reference to the given int32 and assigns it to the AdvantageAudience field.
-func (o *CreateStandaloneAdRequest) SetAdvantageAudience(v int32) {
+// SetAdvantageAudience gets a reference to the given UpdateAdRequestTargetingAdvantageAudience and assigns it to the AdvantageAudience field.
+func (o *CreateStandaloneAdRequest) SetAdvantageAudience(v UpdateAdRequestTargetingAdvantageAudience) {
 	o.AdvantageAudience = &v
 }
 
