@@ -3275,6 +3275,7 @@ model_staged_ad_change.go
 model_staged_ad_change_diff_inner.go
 model_staged_ad_change_error.go
 model_staged_ad_change_request.go
+model_staged_ad_change_request_query_value.go
 model_staged_ad_change_summary.go
 model_staged_ad_change_summary_error.go
 model_staged_ad_change_summary_request.go

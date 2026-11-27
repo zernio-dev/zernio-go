@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.857.1
+API version: 1.858.0
 Contact: support@zernio.com
 */
 
@@ -40,7 +40,7 @@ type StagedAdChange struct {
 	TargetName NullableString `json:"targetName,omitempty"`
 	// Present and true when the change creates a new object. Every diff entry then has `before: null` and `beforeAvailable: false`.
 	Creates *bool `json:"creates,omitempty"`
-	// - `staged`: waiting to be confirmed or discarded. - `confirming`: a confirm is running. A change left here for 15 minutes ends as `failed` with error code `change_outcome_unknown`, and is never applied again automatically. - `confirmed`: applied. `result` holds what the write returned. - `failed`: not applied. `error` says why.
+	// - `staged`: waiting to be confirmed or discarded. - `confirming`: a confirm is running. A change left here for about 18 minutes ends as `failed` with error code `change_outcome_unknown`, and is never applied again automatically. - `confirmed`: applied. `result` holds what the write returned. - `failed`: not applied. `error` says why.
 	Status string `json:"status"`
 	// One entry per value of the staged request that the write would change.  - A nested field is flattened: each leaf is one entry under its dotted path (`budget.amount`, `targeting.ageMin`, `creative.headline`). - A list is one entry. - A leaf whose value on the ad network already equals the requested value is left out, so the list can be empty. - `stage` and other flags that only steer the write are never listed.
 	Diff []StagedAdChangeDiffInner `json:"diff"`

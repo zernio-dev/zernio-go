@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.857.1
+API version: 1.858.0
 Contact: support@zernio.com
 */
 
@@ -29,8 +29,8 @@ type StagedAdChangeRequest struct {
 	Path string `json:"path"`
 	// The path values of the staged request, by the names in `path`.
 	Params map[string]string `json:"params,omitempty"`
-	// The query values of the staged request, without `stage`.
-	Query map[string]string `json:"query,omitempty"`
+	// The query values of the staged request, without `stage`. A key that was sent more than once holds every value, in the order sent.
+	Query map[string]StagedAdChangeRequestQueryValue `json:"query,omitempty"`
 }
 
 type _StagedAdChangeRequest StagedAdChangeRequest
@@ -160,9 +160,9 @@ func (o *StagedAdChangeRequest) SetParams(v map[string]string) {
 }
 
 // GetQuery returns the Query field value if set, zero value otherwise.
-func (o *StagedAdChangeRequest) GetQuery() map[string]string {
+func (o *StagedAdChangeRequest) GetQuery() map[string]StagedAdChangeRequestQueryValue {
 	if o == nil || IsNil(o.Query) {
-		var ret map[string]string
+		var ret map[string]StagedAdChangeRequestQueryValue
 		return ret
 	}
 	return o.Query
@@ -170,9 +170,9 @@ func (o *StagedAdChangeRequest) GetQuery() map[string]string {
 
 // GetQueryOk returns a tuple with the Query field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *StagedAdChangeRequest) GetQueryOk() (map[string]string, bool) {
+func (o *StagedAdChangeRequest) GetQueryOk() (map[string]StagedAdChangeRequestQueryValue, bool) {
 	if o == nil || IsNil(o.Query) {
-		return map[string]string{}, false
+		return map[string]StagedAdChangeRequestQueryValue{}, false
 	}
 	return o.Query, true
 }
@@ -186,8 +186,8 @@ func (o *StagedAdChangeRequest) HasQuery() bool {
 	return false
 }
 
-// SetQuery gets a reference to the given map[string]string and assigns it to the Query field.
-func (o *StagedAdChangeRequest) SetQuery(v map[string]string) {
+// SetQuery gets a reference to the given map[string]StagedAdChangeRequestQueryValue and assigns it to the Query field.
+func (o *StagedAdChangeRequest) SetQuery(v map[string]StagedAdChangeRequestQueryValue) {
 	o.Query = v
 }
 

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.857.1
+API version: 1.858.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ type StagedAdChangeError struct {
 	// An error code, or `target_changed` when the object changed on the ad network after staging.
 	Code    *string        `json:"code,omitempty"`
 	Message NullableString `json:"message,omitempty"`
-	// Creates only. What the failed create reported, such as objects it had already made on the ad network.
+	// Only on a failed change. What the write reported: the objects a failed create had already made, the fields an update had written (`appliedFields`), or the result of each item of a list write that failed in part.
 	Details map[string]interface{} `json:"details,omitempty"`
 }
 
