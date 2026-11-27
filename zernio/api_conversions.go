@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.854.4
+API version: 1.855.0
 Contact: support@zernio.com
 */
 
@@ -2841,14 +2841,18 @@ func (r ConversionsAPIGetAdConversionMetricsRequest) Execute() (*GetAdConversion
 /*
 GetAdConversionMetrics Get attribution metrics
 
-Shows a LinkedIn conversion rule's attributed conversions, value, leads and cost over time.
+Shows the conversions an ad network credited to a destination over time, bucketed by date.
 
-LinkedIn-only today. Returns conversion-attribution metrics
-(`externalWebsiteConversions`, `externalWebsitePostClickConversions`,
-`externalWebsitePostViewConversions`, `conversionValueInLocalCurrency`,
-`qualifiedLeads`, `costInLocalCurrency`) bucketed by date.
+**LinkedIn** (a conversion rule): `externalWebsiteConversions`, `externalWebsitePostClickConversions`,
+`externalWebsitePostViewConversions`, `conversionValueInLocalCurrency`, `qualifiedLeads`, `costInLocalCurrency`.
 
-Date-range constraints (passed through from LinkedIn):
+**Google Ads** (a conversion action, `destinationId` as `customers/{customerId}/conversionActions/{id}` or the bare id; `adAccountId` is the customer id):
+`conversions`, `conversionsValue`, `allConversions`, `allConversionsValue`. Dates are in the Google Ads account's time zone,
+days with no conversions have no row, and month and year buckets are cut to the asked range.
+
+Other platforms answer 405.
+
+Date-range constraints on LinkedIn:
 - `granularity=DAILY` is retained for ~6 months only
 - `granularity=ALL` with a range > 6 months auto-rounds to month boundaries
 - `granularity=MONTHLY`/`YEARLY` retains 24 months
