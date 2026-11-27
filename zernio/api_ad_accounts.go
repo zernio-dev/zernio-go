@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.859.0
+API version: 1.860.0
 Contact: support@zernio.com
 */
 
@@ -2239,6 +2239,7 @@ type AdAccountsAPIDeleteAdNegativeKeywordListRequest struct {
 	ApiService     *AdAccountsAPIService
 	listId         string
 	accountId      *string
+	stage          *bool
 	idempotencyKey *string
 	adAccountId    *string
 	customerId     *string
@@ -2247,6 +2248,12 @@ type AdAccountsAPIDeleteAdNegativeKeywordListRequest struct {
 
 func (r AdAccountsAPIDeleteAdNegativeKeywordListRequest) AccountId(accountId string) AdAccountsAPIDeleteAdNegativeKeywordListRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdAccountsAPIDeleteAdNegativeKeywordListRequest) Stage(stage bool) AdAccountsAPIDeleteAdNegativeKeywordListRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -2321,6 +2328,9 @@ func (a *AdAccountsAPIService) DeleteAdNegativeKeywordListExecute(r AdAccountsAP
 		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
@@ -2426,11 +2436,18 @@ type AdAccountsAPIDeleteValueRuleSetRequest struct {
 	ApiService     *AdAccountsAPIService
 	valueRuleSetId string
 	accountId      *string
+	stage          *bool
 }
 
 // Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
 func (r AdAccountsAPIDeleteValueRuleSetRequest) AccountId(accountId string) AdAccountsAPIDeleteValueRuleSetRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdAccountsAPIDeleteValueRuleSetRequest) Stage(stage bool) AdAccountsAPIDeleteValueRuleSetRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -2486,6 +2503,9 @@ func (a *AdAccountsAPIService) DeleteValueRuleSetExecute(r AdAccountsAPIDeleteVa
 		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2579,6 +2599,7 @@ type AdAccountsAPIDetachAdLabelRequest struct {
 	ApiService  *AdAccountsAPIService
 	labelId     string
 	accountId   *string
+	stage       *bool
 	adAccountId *string
 	customerId  *string
 	campaignIds *[]string
@@ -2590,6 +2611,12 @@ type AdAccountsAPIDetachAdLabelRequest struct {
 // Zernio Google Ads connection id.
 func (r AdAccountsAPIDetachAdLabelRequest) AccountId(accountId string) AdAccountsAPIDetachAdLabelRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdAccountsAPIDetachAdLabelRequest) Stage(stage bool) AdAccountsAPIDetachAdLabelRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -2679,6 +2706,9 @@ func (a *AdAccountsAPIService) DetachAdLabelExecute(r AdAccountsAPIDetachAdLabel
 		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
@@ -9773,6 +9803,7 @@ type AdAccountsAPIRemoveAccountCalloutRequest struct {
 	ApiService  *AdAccountsAPIService
 	accountId   *string
 	assetId     *string
+	stage       *bool
 	adAccountId *string
 	customerId  *string
 }
@@ -9786,6 +9817,12 @@ func (r AdAccountsAPIRemoveAccountCalloutRequest) AccountId(accountId string) Ad
 // Numeric Google Ads asset id.
 func (r AdAccountsAPIRemoveAccountCalloutRequest) AssetId(assetId string) AdAccountsAPIRemoveAccountCalloutRequest {
 	r.assetId = &assetId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdAccountsAPIRemoveAccountCalloutRequest) Stage(stage bool) AdAccountsAPIRemoveAccountCalloutRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -9851,6 +9888,9 @@ func (a *AdAccountsAPIService) RemoveAccountCalloutExecute(r AdAccountsAPIRemove
 		return localVarReturnValue, nil, reportError("assetId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
@@ -9962,6 +10002,7 @@ type AdAccountsAPIRemoveAccountSitelinkRequest struct {
 	ApiService  *AdAccountsAPIService
 	accountId   *string
 	assetId     *string
+	stage       *bool
 	adAccountId *string
 	customerId  *string
 }
@@ -9975,6 +10016,12 @@ func (r AdAccountsAPIRemoveAccountSitelinkRequest) AccountId(accountId string) A
 // Numeric Google Ads asset id.
 func (r AdAccountsAPIRemoveAccountSitelinkRequest) AssetId(assetId string) AdAccountsAPIRemoveAccountSitelinkRequest {
 	r.assetId = &assetId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdAccountsAPIRemoveAccountSitelinkRequest) Stage(stage bool) AdAccountsAPIRemoveAccountSitelinkRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -10040,6 +10087,9 @@ func (a *AdAccountsAPIService) RemoveAccountSitelinkExecute(r AdAccountsAPIRemov
 		return localVarReturnValue, nil, reportError("assetId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
@@ -10151,6 +10201,7 @@ type AdAccountsAPIRemoveAccountStructuredSnippetRequest struct {
 	ApiService  *AdAccountsAPIService
 	accountId   *string
 	assetId     *string
+	stage       *bool
 	adAccountId *string
 	customerId  *string
 }
@@ -10164,6 +10215,12 @@ func (r AdAccountsAPIRemoveAccountStructuredSnippetRequest) AccountId(accountId 
 // Numeric Google Ads asset id.
 func (r AdAccountsAPIRemoveAccountStructuredSnippetRequest) AssetId(assetId string) AdAccountsAPIRemoveAccountStructuredSnippetRequest {
 	r.assetId = &assetId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdAccountsAPIRemoveAccountStructuredSnippetRequest) Stage(stage bool) AdAccountsAPIRemoveAccountStructuredSnippetRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -10229,6 +10286,9 @@ func (a *AdAccountsAPIService) RemoveAccountStructuredSnippetExecute(r AdAccount
 		return localVarReturnValue, nil, reportError("assetId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
@@ -10341,6 +10401,7 @@ type AdAccountsAPIRemoveAdAccountUserRequest struct {
 	accountId   *string
 	adAccountId *string
 	userId      *string
+	stage       *bool
 }
 
 // Zernio SocialAccount id used to resolve the Meta token.
@@ -10358,6 +10419,12 @@ func (r AdAccountsAPIRemoveAdAccountUserRequest) AdAccountId(adAccountId string)
 // Business-scoped user id.
 func (r AdAccountsAPIRemoveAdAccountUserRequest) UserId(userId string) AdAccountsAPIRemoveAdAccountUserRequest {
 	r.userId = &userId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdAccountsAPIRemoveAdAccountUserRequest) Stage(stage bool) AdAccountsAPIRemoveAdAccountUserRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -10411,6 +10478,9 @@ func (a *AdAccountsAPIService) RemoveAdAccountUserExecute(r AdAccountsAPIRemoveA
 		return localVarReturnValue, nil, reportError("userId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "userId", r.userId, "form", "")
@@ -10506,6 +10576,7 @@ type AdAccountsAPIRemoveAdLabelRequest struct {
 	ApiService  *AdAccountsAPIService
 	labelId     string
 	accountId   *string
+	stage       *bool
 	adAccountId *string
 	customerId  *string
 }
@@ -10513,6 +10584,12 @@ type AdAccountsAPIRemoveAdLabelRequest struct {
 // Zernio SocialAccount id (Google Ads)
 func (r AdAccountsAPIRemoveAdLabelRequest) AccountId(accountId string) AdAccountsAPIRemoveAdLabelRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdAccountsAPIRemoveAdLabelRequest) Stage(stage bool) AdAccountsAPIRemoveAdLabelRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -10578,6 +10655,9 @@ func (a *AdAccountsAPIService) RemoveAdLabelExecute(r AdAccountsAPIRemoveAdLabel
 		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
@@ -10689,6 +10769,7 @@ type AdAccountsAPIRemovePageUserRequest struct {
 	accountId  *string
 	pageId     *string
 	userId     *string
+	stage      *bool
 }
 
 // Zernio SocialAccount id used to resolve the Meta token.
@@ -10706,6 +10787,12 @@ func (r AdAccountsAPIRemovePageUserRequest) PageId(pageId string) AdAccountsAPIR
 // Business-scoped user id.
 func (r AdAccountsAPIRemovePageUserRequest) UserId(userId string) AdAccountsAPIRemovePageUserRequest {
 	r.userId = &userId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdAccountsAPIRemovePageUserRequest) Stage(stage bool) AdAccountsAPIRemovePageUserRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -10759,6 +10846,9 @@ func (a *AdAccountsAPIService) RemovePageUserExecute(r AdAccountsAPIRemovePageUs
 		return localVarReturnValue, nil, reportError("userId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "pageId", r.pageId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "userId", r.userId, "form", "")
@@ -11210,6 +11300,7 @@ type AdAccountsAPIRevokeAdAccountUserInvitationRequest struct {
 	accountId    *string
 	adAccountId  *string
 	invitationId *string
+	stage        *bool
 }
 
 // Google ads SocialAccount id.
@@ -11227,6 +11318,12 @@ func (r AdAccountsAPIRevokeAdAccountUserInvitationRequest) AdAccountId(adAccount
 // Numeric invitation id from GET /v1/ads/accounts/user-invitations.
 func (r AdAccountsAPIRevokeAdAccountUserInvitationRequest) InvitationId(invitationId string) AdAccountsAPIRevokeAdAccountUserInvitationRequest {
 	r.invitationId = &invitationId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdAccountsAPIRevokeAdAccountUserInvitationRequest) Stage(stage bool) AdAccountsAPIRevokeAdAccountUserInvitationRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -11282,6 +11379,9 @@ func (a *AdAccountsAPIService) RevokeAdAccountUserInvitationExecute(r AdAccounts
 		return localVarReturnValue, nil, reportError("invitationId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "invitationId", r.invitationId, "form", "")
@@ -12923,6 +13023,7 @@ type AdAccountsAPIWithdrawAdAccountUserInvitationApprovalRequest struct {
 	accountId              *string
 	adAccountId            *string
 	multiPartyAuthReviewId *string
+	stage                  *bool
 }
 
 // Google ads SocialAccount id.
@@ -12940,6 +13041,12 @@ func (r AdAccountsAPIWithdrawAdAccountUserInvitationApprovalRequest) AdAccountId
 // Numeric review id from POST /v1/ads/accounts/user-invitations or GET /v1/ads/accounts/user-invitations/pending-approvals.
 func (r AdAccountsAPIWithdrawAdAccountUserInvitationApprovalRequest) MultiPartyAuthReviewId(multiPartyAuthReviewId string) AdAccountsAPIWithdrawAdAccountUserInvitationApprovalRequest {
 	r.multiPartyAuthReviewId = &multiPartyAuthReviewId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdAccountsAPIWithdrawAdAccountUserInvitationApprovalRequest) Stage(stage bool) AdAccountsAPIWithdrawAdAccountUserInvitationApprovalRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -12999,6 +13106,9 @@ func (a *AdAccountsAPIService) WithdrawAdAccountUserInvitationApprovalExecute(r 
 		return localVarReturnValue, nil, reportError("multiPartyAuthReviewId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "multiPartyAuthReviewId", r.multiPartyAuthReviewId, "form", "")

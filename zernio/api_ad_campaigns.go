@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.859.0
+API version: 1.860.0
 Contact: support@zernio.com
 */
 
@@ -2362,6 +2362,13 @@ type AdCampaignsAPIDeleteAdRequest struct {
 	ctx        context.Context
 	ApiService *AdCampaignsAPIService
 	adId       string
+	stage      *bool
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdCampaignsAPIDeleteAdRequest) Stage(stage bool) AdCampaignsAPIDeleteAdRequest {
+	r.stage = &stage
+	return r
 }
 
 func (r AdCampaignsAPIDeleteAdRequest) Execute() (*DeleteAccountGroup200Response, *http.Response, error) {
@@ -2446,6 +2453,9 @@ func (a *AdCampaignsAPIService) DeleteAdExecute(r AdCampaignsAPIDeleteAdRequest)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -2750,6 +2760,13 @@ type AdCampaignsAPIDeleteAdSetRequest struct {
 	ctx        context.Context
 	ApiService *AdCampaignsAPIService
 	adSetId    string
+	stage      *bool
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdCampaignsAPIDeleteAdSetRequest) Stage(stage bool) AdCampaignsAPIDeleteAdSetRequest {
+	r.stage = &stage
+	return r
 }
 
 func (r AdCampaignsAPIDeleteAdSetRequest) Execute() (*DeleteAdCampaign200Response, *http.Response, error) {
@@ -2804,6 +2821,9 @@ func (a *AdCampaignsAPIService) DeleteAdSetExecute(r AdCampaignsAPIDeleteAdSetRe
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -10201,6 +10221,7 @@ type AdCampaignsAPIRemoveAdGroupAssetsRequest struct {
 	accountId                 *string
 	assetResourceNames        *[]string
 	adGroupAssetResourceNames *[]string
+	stage                     *bool
 	adAccountId               *string
 	customerId                *string
 }
@@ -10220,6 +10241,12 @@ func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) AssetResourceNames(assetResour
 // ad_group_asset resource names to remove, e.g. customers/1234567890/adGroupAssets/456~123~CALLOUT. Repeat the parameter or pass a comma-separated list.
 func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) AdGroupAssetResourceNames(adGroupAssetResourceNames []string) AdCampaignsAPIRemoveAdGroupAssetsRequest {
 	r.adGroupAssetResourceNames = &adGroupAssetResourceNames
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) Stage(stage bool) AdCampaignsAPIRemoveAdGroupAssetsRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -10297,6 +10324,9 @@ func (a *AdCampaignsAPIService) RemoveAdGroupAssetsExecute(r AdCampaignsAPIRemov
 		return localVarReturnValue, nil, reportError("adGroupAssetResourceNames must have at least 1 elements")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
@@ -10428,7 +10458,14 @@ type AdCampaignsAPIRemoveAdKeywordRequest struct {
 	ctx            context.Context
 	ApiService     *AdCampaignsAPIService
 	keywordId      string
+	stage          *bool
 	idempotencyKey *string
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdCampaignsAPIRemoveAdKeywordRequest) Stage(stage bool) AdCampaignsAPIRemoveAdKeywordRequest {
+	r.stage = &stage
+	return r
 }
 
 // Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
@@ -10487,6 +10524,9 @@ func (a *AdCampaignsAPIService) RemoveAdKeywordExecute(r AdCampaignsAPIRemoveAdK
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -10605,6 +10645,7 @@ type AdCampaignsAPIRemoveCampaignAssetsRequest struct {
 	accountId                  *string
 	assetResourceNames         *[]string
 	campaignAssetResourceNames *[]string
+	stage                      *bool
 	adAccountId                *string
 	customerId                 *string
 }
@@ -10624,6 +10665,12 @@ func (r AdCampaignsAPIRemoveCampaignAssetsRequest) AssetResourceNames(assetResou
 // campaign_asset resource names to remove, e.g. customers/1234567890/campaignAssets/456~123~CALLOUT. Repeat the parameter or pass a comma-separated list.
 func (r AdCampaignsAPIRemoveCampaignAssetsRequest) CampaignAssetResourceNames(campaignAssetResourceNames []string) AdCampaignsAPIRemoveCampaignAssetsRequest {
 	r.campaignAssetResourceNames = &campaignAssetResourceNames
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdCampaignsAPIRemoveCampaignAssetsRequest) Stage(stage bool) AdCampaignsAPIRemoveCampaignAssetsRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -10701,6 +10748,9 @@ func (a *AdCampaignsAPIService) RemoveCampaignAssetsExecute(r AdCampaignsAPIRemo
 		return localVarReturnValue, nil, reportError("campaignAssetResourceNames must have at least 1 elements")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
@@ -10833,7 +10883,14 @@ type AdCampaignsAPIRemoveGoogleAssetGroupRequest struct {
 	ApiService   *AdCampaignsAPIService
 	campaignId   string
 	assetGroupId string
+	stage        *bool
 	validateOnly *bool
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdCampaignsAPIRemoveGoogleAssetGroupRequest) Stage(stage bool) AdCampaignsAPIRemoveGoogleAssetGroupRequest {
+	r.stage = &stage
+	return r
 }
 
 func (r AdCampaignsAPIRemoveGoogleAssetGroupRequest) ValidateOnly(validateOnly bool) AdCampaignsAPIRemoveGoogleAssetGroupRequest {
@@ -10890,6 +10947,9 @@ func (a *AdCampaignsAPIService) RemoveGoogleAssetGroupExecute(r AdCampaignsAPIRe
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	if r.validateOnly != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "validateOnly", r.validateOnly, "form", "")
 	} else {

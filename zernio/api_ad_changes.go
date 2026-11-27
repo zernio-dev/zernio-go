@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.859.0
+API version: 1.860.0
 Contact: support@zernio.com
 */
 
@@ -728,9 +728,15 @@ func (a *AdChangesAPIService) ListAdChangesExecute(r AdChangesAPIListAdChangesRe
 }
 
 type AdChangesAPIRestageAdChangeRequest struct {
-	ctx        context.Context
-	ApiService *AdChangesAPIService
-	changeId   string
+	ctx                    context.Context
+	ApiService             *AdChangesAPIService
+	changeId               string
+	restageAdChangeRequest *RestageAdChangeRequest
+}
+
+func (r AdChangesAPIRestageAdChangeRequest) RestageAdChangeRequest(restageAdChangeRequest RestageAdChangeRequest) AdChangesAPIRestageAdChangeRequest {
+	r.restageAdChangeRequest = &restageAdChangeRequest
+	return r
 }
 
 func (r AdChangesAPIRestageAdChangeRequest) Execute() (*GetAdChange200Response, *http.Response, error) {
@@ -742,11 +748,19 @@ RestageAdChange Stage a failed ad change again
 
 Makes a new staged change from a change that failed at confirm. Nothing is written to the ad network.
 
-The new change holds the same request. It is checked for the calling user, and an edit is read against the current values of its object. The failed change stays readable until it is deleted.
+The new change holds the same request. It is checked for the calling user, and an edit is read against the current values of its object. The failed change stays readable until it is deleted, with `restaged: true`.
 
-A failed create cannot be staged again (`409`): it may have made part of its objects on the ad network, which its `error.details` lists. Stage a new create instead. This covers every change with `creates: true`.
+### A change that may have made objects
 
-Also refused with `409`: a change that failed as `change_outcome_unknown`, and a change whose kept uploads were deleted or moved to an earlier restage.
+The new change sends the same request again at confirm. A failed create may have made part of its objects on the ad network, and they would be made a second time.
+
+Such a change answers `409` with `param: "acknowledge"`. `details.leftBehind` lists the objects the failure left, and `details.outcomeUnknown` is true when nothing tells what was made. Send `acknowledge: true` to stage it again anyway.
+
+A failed create that left nothing behind is staged again without it.
+
+### Refused
+
+A change that did not fail, a failed change that was already staged again, and a change whose kept uploads were deleted or moved to an earlier restage answer `409`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param changeId The id of the failed change.
@@ -784,7 +798,7 @@ func (a *AdChangesAPIService) RestageAdChangeExecute(r AdChangesAPIRestageAdChan
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -800,6 +814,8 @@ func (a *AdChangesAPIService) RestageAdChangeExecute(r AdChangesAPIRestageAdChan
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.restageAdChangeRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -916,7 +932,9 @@ Replaces the request body of a staged change, or reads its object again when no 
 
 Send the new body: the same kind of body as the route the change was staged on, without `stage`. It passes the checks of staging again for the calling user. The object is read again, so the diff and the changed-since check start from its current values.
 
-A change of type `operation` stores a whole request and cannot be edited in place (`409`): discard it and stage the request again.
+A change of type `operation` stores a whole request. Its new body goes through the route of that write, which checks it as a new staged request. The path and the query stay as they were staged.
+
+Such an edit answers what that route answers when it refuses the body, and the change stays as it was. A request without a body has nothing to edit (`409`).
 
 ### Refresh
 

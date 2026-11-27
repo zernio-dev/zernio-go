@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.859.0
+API version: 1.860.0
 Contact: support@zernio.com
 */
 
@@ -21,6 +21,8 @@ var _ MappedNullable = &UpdateAdLabelRequest{}
 
 // UpdateAdLabelRequest struct for UpdateAdLabelRequest
 type UpdateAdLabelRequest struct {
+	// Send true to store this write as a staged change instead of applying it. The response is `202` with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later. Cannot be combined with `validateOnly`.
+	Stage *bool `json:"stage,omitempty"`
 	// Zernio SocialAccount id (Google Ads)
 	AccountId string `json:"accountId"`
 	// Google customer id. Required when the connection has multiple customers.
@@ -53,6 +55,38 @@ func NewUpdateAdLabelRequest(accountId string) *UpdateAdLabelRequest {
 func NewUpdateAdLabelRequestWithDefaults() *UpdateAdLabelRequest {
 	this := UpdateAdLabelRequest{}
 	return &this
+}
+
+// GetStage returns the Stage field value if set, zero value otherwise.
+func (o *UpdateAdLabelRequest) GetStage() bool {
+	if o == nil || IsNil(o.Stage) {
+		var ret bool
+		return ret
+	}
+	return *o.Stage
+}
+
+// GetStageOk returns a tuple with the Stage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdLabelRequest) GetStageOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stage) {
+		return nil, false
+	}
+	return o.Stage, true
+}
+
+// HasStage returns a boolean if a field has been set.
+func (o *UpdateAdLabelRequest) HasStage() bool {
+	if o != nil && !IsNil(o.Stage) {
+		return true
+	}
+
+	return false
+}
+
+// SetStage gets a reference to the given bool and assigns it to the Stage field.
+func (o *UpdateAdLabelRequest) SetStage(v bool) {
+	o.Stage = &v
 }
 
 // GetAccountId returns the AccountId field value
@@ -252,6 +286,9 @@ func (o UpdateAdLabelRequest) MarshalJSON() ([]byte, error) {
 
 func (o UpdateAdLabelRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Stage) {
+		toSerialize["stage"] = o.Stage
+	}
 	toSerialize["accountId"] = o.AccountId
 	if !IsNil(o.AdAccountId) {
 		toSerialize["adAccountId"] = o.AdAccountId
@@ -311,6 +348,7 @@ func (o *UpdateAdLabelRequest) UnmarshalJSON(data []byte) (err error) {
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "stage")
 		delete(additionalProperties, "accountId")
 		delete(additionalProperties, "adAccountId")
 		delete(additionalProperties, "customerId")

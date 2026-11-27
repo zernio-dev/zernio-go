@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.859.0
+API version: 1.860.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,8 @@ var _ MappedNullable = &BoostPostRequest{}
 
 // BoostPostRequest struct for BoostPostRequest
 type BoostPostRequest struct {
+	// Send true to store this write as a staged change instead of applying it. The response is `202` with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later. Cannot be combined with `validateOnly`.
+	Stage *bool `json:"stage,omitempty"`
 	// Meta Advantage+ creative enhancements. Map snake_case feature names to OPT_IN or OPT_OUT; Meta validates supported keys. On creation Zernio sends only the keys you name, so Meta's default applies to the rest; on PUT /v1/ads/{adId} omitted keys keep the creative's current value. Send OPT_OUT to switch an enhancement off.  auto_promotion_tag is an Advantage+ enhancement, not the Ads Manager Promotion setting. The deprecated standard_enhancements bundle (subcode 3858504) is a 400 before any Meta call.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// The Zernio post id (24 hex characters) returned when the post was created through Zernio. Send this or platformPostId. A value that is not a Zernio id is boosted as the platform post id, the same as platformPostId; a Zernio id that matches no post is a 404 on postId.
@@ -163,6 +165,38 @@ func NewBoostPostRequest(accountId string, adAccountId string, name string, goal
 func NewBoostPostRequestWithDefaults() *BoostPostRequest {
 	this := BoostPostRequest{}
 	return &this
+}
+
+// GetStage returns the Stage field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetStage() bool {
+	if o == nil || IsNil(o.Stage) {
+		var ret bool
+		return ret
+	}
+	return *o.Stage
+}
+
+// GetStageOk returns a tuple with the Stage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetStageOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stage) {
+		return nil, false
+	}
+	return o.Stage, true
+}
+
+// HasStage returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasStage() bool {
+	if o != nil && !IsNil(o.Stage) {
+		return true
+	}
+
+	return false
+}
+
+// SetStage gets a reference to the given bool and assigns it to the Stage field.
+func (o *BoostPostRequest) SetStage(v bool) {
+	o.Stage = &v
 }
 
 // GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
@@ -2078,6 +2112,9 @@ func (o BoostPostRequest) MarshalJSON() ([]byte, error) {
 
 func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Stage) {
+		toSerialize["stage"] = o.Stage
+	}
 	if !IsNil(o.CreativeFeatures) {
 		toSerialize["creativeFeatures"] = o.CreativeFeatures
 	}

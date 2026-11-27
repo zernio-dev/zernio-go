@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.859.0
+API version: 1.860.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &CtwaAdRequestBody{}
 
 // CtwaAdRequestBody Besides the `required` list, the request must use EXACTLY ONE of these shapes:  - Single-creative: `headline`, `body`, and one of `imageUrl` / `video`, OR `platformPostId` / `objectStoryId` to reuse an organic post. On POST /v1/ads/messaging, `placementAssets` can replace `imageUrl` / `video`. - Carousel (messaging and CTWA): `body` and `carouselCards` (2-10 image or video cards) instead of `imageUrl` / `video`, top level or per `creatives[]` entry. - Multi-creative: a non-empty `creatives[]` array. Top-level creative fields must NOT be set on this shape.  **Existing post references** work on messaging and CTWA only (not call ads). They cannot be combined with each other or with headline, body, imageUrl or video. `welcomeMessage` works on them (it lives on the ad, not the post).  No media is uploaded and the organic post is retained. Fresh creatives still require headline, body, and image or video.  The route enforces this at the Zod boundary; OpenAPI's `required` cannot express the OR cleanly.  **Campaign, ad set and targeting fields** match POST /v1/ads/create on Meta and run through the same builders:  - the full targeting set (including `rawTargeting`, `languages`, `gender`, exclusions and `savedTargetingId`); - `budgetLevel` (campaign budget); - `startDate` / `endDate` in the ad account timezone; - `existingCampaignId` to add a new ad set to a campaign you already have.
 type CtwaAdRequestBody struct {
+	// Send true to store this write as a staged change instead of applying it. The response is `202` with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later. Cannot be combined with `validateOnly`.
+	Stage *bool `json:"stage,omitempty"`
 	// When Meta answers a create with a 5xx and reading the parent back by name finds no such object, Zernio sends the create again (at most 3 POSTs per object, never for an object created ACTIVE) and reports it in `recoveredWrites`.  `false` never sends it again: the request fails with 502 and `details.unconfirmedWrite`, so you can check the parent yourself. One object found by name is still reused.
 	RetryOnServerError *bool `json:"retryOnServerError,omitempty"`
 	// Meta enhancement settings for single or attached ads, and defaults for creatives[]. An item replaces the entire map, including with an empty object.
@@ -186,6 +188,38 @@ func NewCtwaAdRequestBodyWithDefaults() *CtwaAdRequestBody {
 	var retryOnServerError bool = true
 	this.RetryOnServerError = &retryOnServerError
 	return &this
+}
+
+// GetStage returns the Stage field value if set, zero value otherwise.
+func (o *CtwaAdRequestBody) GetStage() bool {
+	if o == nil || IsNil(o.Stage) {
+		var ret bool
+		return ret
+	}
+	return *o.Stage
+}
+
+// GetStageOk returns a tuple with the Stage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBody) GetStageOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stage) {
+		return nil, false
+	}
+	return o.Stage, true
+}
+
+// HasStage returns a boolean if a field has been set.
+func (o *CtwaAdRequestBody) HasStage() bool {
+	if o != nil && !IsNil(o.Stage) {
+		return true
+	}
+
+	return false
+}
+
+// SetStage gets a reference to the given bool and assigns it to the Stage field.
+func (o *CtwaAdRequestBody) SetStage(v bool) {
+	o.Stage = &v
 }
 
 // GetRetryOnServerError returns the RetryOnServerError field value if set, zero value otherwise.
@@ -2545,6 +2579,9 @@ func (o CtwaAdRequestBody) MarshalJSON() ([]byte, error) {
 
 func (o CtwaAdRequestBody) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Stage) {
+		toSerialize["stage"] = o.Stage
+	}
 	if !IsNil(o.RetryOnServerError) {
 		toSerialize["retryOnServerError"] = o.RetryOnServerError
 	}

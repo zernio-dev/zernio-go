@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.859.0
+API version: 1.860.0
 Contact: support@zernio.com
 */
 
@@ -40,10 +40,16 @@ type StagedAdChange struct {
 	TargetName NullableString `json:"targetName,omitempty"`
 	// Present and true when the change creates a new object. Every diff entry then has `before: null` and `beforeAvailable: false`.
 	Creates *bool `json:"creates,omitempty"`
+	// Only on a failed change that makes an object, when its failure recorded objects it left on the ad network. Staging the change again makes them a second time at confirm.
+	LeftBehind []CreateTransferRequestReference `json:"leftBehind,omitempty"`
+	// Present and true on a failed change that a new change was already staged from. It cannot be staged again.
+	Restaged *bool `json:"restaged,omitempty"`
 	// - `staged`: waiting to be confirmed or discarded. - `confirming`: a confirm is running. A change left here for about 18 minutes ends as `failed` with error code `change_outcome_unknown`, and is never applied again automatically. - `confirmed`: applied. `result` holds what the write returned. - `failed`: not applied. `error` says why.
 	Status string `json:"status"`
 	// One entry per value of the staged request that the write would change.  - A nested field is flattened: each leaf is one entry under its dotted path (`budget.amount`, `targeting.ageMin`, `creative.headline`). - A list is one entry. - A leaf whose value on the ad network already equals the requested value is left out, so the list can be empty. - `stage` and other flags that only steer the write are never listed.
 	Diff []StagedAdChangeDiffInner `json:"diff"`
+	// The stored request body of the change: what the confirm sends. For type `operation` it is the body of the staged request, without its path and query values, and it is empty for a write that has no body.  It holds the keys that `diff` leaves out: `accountId`, `adAccountId`, `allowSharedBudgetUpdate`, and every value equal to the one on the ad network. To edit a change, send this body back to PATCH /v1/ads/changes/{changeId} with the changed values in place, because the edit replaces the whole stored body.
+	Body map[string]interface{} `json:"body"`
 	// The user who staged the change.
 	CreatedBy string `json:"createdBy"`
 	// The user who confirmed the change. Null while nobody has, and after a confirm that left the change staged.
@@ -64,7 +70,7 @@ type _StagedAdChange StagedAdChange
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewStagedAdChange(id string, type_ string, platform string, accountId string, adAccountId string, targetId NullableString, status string, diff []StagedAdChangeDiffInner, createdBy string, createdAt time.Time, finishedAt NullableTime) *StagedAdChange {
+func NewStagedAdChange(id string, type_ string, platform string, accountId string, adAccountId string, targetId NullableString, status string, diff []StagedAdChangeDiffInner, body map[string]interface{}, createdBy string, createdAt time.Time, finishedAt NullableTime) *StagedAdChange {
 	this := StagedAdChange{}
 	this.Id = id
 	this.Type = type_
@@ -74,6 +80,7 @@ func NewStagedAdChange(id string, type_ string, platform string, accountId strin
 	this.TargetId = targetId
 	this.Status = status
 	this.Diff = diff
+	this.Body = body
 	this.CreatedBy = createdBy
 	this.CreatedAt = createdAt
 	this.FinishedAt = finishedAt
@@ -341,6 +348,70 @@ func (o *StagedAdChange) SetCreates(v bool) {
 	o.Creates = &v
 }
 
+// GetLeftBehind returns the LeftBehind field value if set, zero value otherwise.
+func (o *StagedAdChange) GetLeftBehind() []CreateTransferRequestReference {
+	if o == nil || IsNil(o.LeftBehind) {
+		var ret []CreateTransferRequestReference
+		return ret
+	}
+	return o.LeftBehind
+}
+
+// GetLeftBehindOk returns a tuple with the LeftBehind field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StagedAdChange) GetLeftBehindOk() ([]CreateTransferRequestReference, bool) {
+	if o == nil || IsNil(o.LeftBehind) {
+		return nil, false
+	}
+	return o.LeftBehind, true
+}
+
+// HasLeftBehind returns a boolean if a field has been set.
+func (o *StagedAdChange) HasLeftBehind() bool {
+	if o != nil && !IsNil(o.LeftBehind) {
+		return true
+	}
+
+	return false
+}
+
+// SetLeftBehind gets a reference to the given []CreateTransferRequestReference and assigns it to the LeftBehind field.
+func (o *StagedAdChange) SetLeftBehind(v []CreateTransferRequestReference) {
+	o.LeftBehind = v
+}
+
+// GetRestaged returns the Restaged field value if set, zero value otherwise.
+func (o *StagedAdChange) GetRestaged() bool {
+	if o == nil || IsNil(o.Restaged) {
+		var ret bool
+		return ret
+	}
+	return *o.Restaged
+}
+
+// GetRestagedOk returns a tuple with the Restaged field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StagedAdChange) GetRestagedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Restaged) {
+		return nil, false
+	}
+	return o.Restaged, true
+}
+
+// HasRestaged returns a boolean if a field has been set.
+func (o *StagedAdChange) HasRestaged() bool {
+	if o != nil && !IsNil(o.Restaged) {
+		return true
+	}
+
+	return false
+}
+
+// SetRestaged gets a reference to the given bool and assigns it to the Restaged field.
+func (o *StagedAdChange) SetRestaged(v bool) {
+	o.Restaged = &v
+}
+
 // GetStatus returns the Status field value
 func (o *StagedAdChange) GetStatus() string {
 	if o == nil {
@@ -387,6 +458,30 @@ func (o *StagedAdChange) GetDiffOk() ([]StagedAdChangeDiffInner, bool) {
 // SetDiff sets field value
 func (o *StagedAdChange) SetDiff(v []StagedAdChangeDiffInner) {
 	o.Diff = v
+}
+
+// GetBody returns the Body field value
+func (o *StagedAdChange) GetBody() map[string]interface{} {
+	if o == nil {
+		var ret map[string]interface{}
+		return ret
+	}
+
+	return o.Body
+}
+
+// GetBodyOk returns a tuple with the Body field value
+// and a boolean to check if the value has been set.
+func (o *StagedAdChange) GetBodyOk() (map[string]interface{}, bool) {
+	if o == nil {
+		return map[string]interface{}{}, false
+	}
+	return o.Body, true
+}
+
+// SetBody sets field value
+func (o *StagedAdChange) SetBody(v map[string]interface{}) {
+	o.Body = v
 }
 
 // GetCreatedBy returns the CreatedBy field value
@@ -627,8 +722,15 @@ func (o StagedAdChange) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Creates) {
 		toSerialize["creates"] = o.Creates
 	}
+	if !IsNil(o.LeftBehind) {
+		toSerialize["leftBehind"] = o.LeftBehind
+	}
+	if !IsNil(o.Restaged) {
+		toSerialize["restaged"] = o.Restaged
+	}
 	toSerialize["status"] = o.Status
 	toSerialize["diff"] = o.Diff
+	toSerialize["body"] = o.Body
 	toSerialize["createdBy"] = o.CreatedBy
 	if o.ConfirmedBy.IsSet() {
 		toSerialize["confirmedBy"] = o.ConfirmedBy.Get()
@@ -660,6 +762,7 @@ func (o *StagedAdChange) UnmarshalJSON(data []byte) (err error) {
 		"targetId",
 		"status",
 		"diff",
+		"body",
 		"createdBy",
 		"createdAt",
 		"finishedAt",

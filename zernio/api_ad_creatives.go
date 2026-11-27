@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.859.0
+API version: 1.860.0
 Contact: support@zernio.com
 */
 
@@ -199,11 +199,18 @@ type AdCreativesAPIDeleteAdCreativeRequest struct {
 	ApiService *AdCreativesAPIService
 	creativeId string
 	accountId  *string
+	stage      *bool
 }
 
 // Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
 func (r AdCreativesAPIDeleteAdCreativeRequest) AccountId(accountId string) AdCreativesAPIDeleteAdCreativeRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdCreativesAPIDeleteAdCreativeRequest) Stage(stage bool) AdCreativesAPIDeleteAdCreativeRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -257,6 +264,9 @@ func (a *AdCreativesAPIService) DeleteAdCreativeExecute(r AdCreativesAPIDeleteAd
 		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -362,6 +372,7 @@ type AdCreativesAPIDeleteAdVideoRequest struct {
 	videoId     string
 	accountId   *string
 	adAccountId *string
+	stage       *bool
 }
 
 // Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
@@ -373,6 +384,12 @@ func (r AdCreativesAPIDeleteAdVideoRequest) AccountId(accountId string) AdCreati
 // Meta ad account id (act_&lt;n&gt;) that owns the video.
 func (r AdCreativesAPIDeleteAdVideoRequest) AdAccountId(adAccountId string) AdCreativesAPIDeleteAdVideoRequest {
 	r.adAccountId = &adAccountId
+	return r
+}
+
+// Send true to store this write as a staged change instead of applying it. The response is &#x60;202&#x60; with the change, and POST /v1/ads/changes/{changeId}/confirm applies it later.
+func (r AdCreativesAPIDeleteAdVideoRequest) Stage(stage bool) AdCreativesAPIDeleteAdVideoRequest {
+	r.stage = &stage
 	return r
 }
 
@@ -432,6 +449,9 @@ func (a *AdCreativesAPIService) DeleteAdVideoExecute(r AdCreativesAPIDeleteAdVid
 		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
 	}
 
+	if r.stage != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "stage", r.stage, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
 	// to determine the Content-Type header
