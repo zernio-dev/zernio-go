@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.858.0
+API version: 1.859.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,9 @@ type SendEvents200Response struct {
 	// Whether the events were stored for reporting (always false with testCode).
 	Stored *bool `json:"stored,omitempty"`
 	// The test code forwarded to every destination, or `null` when the request carried none.
-	TestCode     NullableString                           `json:"testCode,omitempty"`
+	TestCode NullableString `json:"testCode,omitempty"`
+	// Left out when there is nothing to warn about. `no_destination`: no forwarding rule took the events, so they were stored but sent to no platform.
+	Warnings     []SendEvents200ResponseWarningsInner     `json:"warnings,omitempty"`
 	Destinations []SendEvents200ResponseDestinationsInner `json:"destinations,omitempty"`
 	// Destinations whose sends were queued (all of them with `mode: async`, retries with `sync`).
 	QueuedDestinations *int32 `json:"queuedDestinations,omitempty"`
@@ -155,6 +157,38 @@ func (o *SendEvents200Response) UnsetTestCode() {
 	o.TestCode.Unset()
 }
 
+// GetWarnings returns the Warnings field value if set, zero value otherwise.
+func (o *SendEvents200Response) GetWarnings() []SendEvents200ResponseWarningsInner {
+	if o == nil || IsNil(o.Warnings) {
+		var ret []SendEvents200ResponseWarningsInner
+		return ret
+	}
+	return o.Warnings
+}
+
+// GetWarningsOk returns a tuple with the Warnings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEvents200Response) GetWarningsOk() ([]SendEvents200ResponseWarningsInner, bool) {
+	if o == nil || IsNil(o.Warnings) {
+		return nil, false
+	}
+	return o.Warnings, true
+}
+
+// HasWarnings returns a boolean if a field has been set.
+func (o *SendEvents200Response) HasWarnings() bool {
+	if o != nil && !IsNil(o.Warnings) {
+		return true
+	}
+
+	return false
+}
+
+// SetWarnings gets a reference to the given []SendEvents200ResponseWarningsInner and assigns it to the Warnings field.
+func (o *SendEvents200Response) SetWarnings(v []SendEvents200ResponseWarningsInner) {
+	o.Warnings = v
+}
+
 // GetDestinations returns the Destinations field value if set, zero value otherwise.
 func (o *SendEvents200Response) GetDestinations() []SendEvents200ResponseDestinationsInner {
 	if o == nil || IsNil(o.Destinations) {
@@ -237,6 +271,9 @@ func (o SendEvents200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if o.TestCode.IsSet() {
 		toSerialize["testCode"] = o.TestCode.Get()
+	}
+	if !IsNil(o.Warnings) {
+		toSerialize["warnings"] = o.Warnings
 	}
 	if !IsNil(o.Destinations) {
 		toSerialize["destinations"] = o.Destinations
