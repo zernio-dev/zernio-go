@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.861.1
+API version: 1.862.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,10 @@ type SendEvents200ResponseDestinationsInnerFailuresInner struct {
 	EventId    *string                                      `json:"eventId,omitempty"`
 	Message    *string                                      `json:"message,omitempty"`
 	Code       *SendConversions200ResponseFailuresInnerCode `json:"code,omitempty"`
+	// Google Ads and Campaign Manager 360 only: the event field Google refused (`event_timestamp`, `currency`...), without the `events.events[N].` prefix. Absent when Google named the event but no field.
+	Field *string `json:"field,omitempty"`
+	// Google Ads and Campaign Manager 360 only, when Google refused the request. Absent for other platforms.  - `event`: Google named this event, and `message` is its own violation. - `batch`: the refusal is about the whole request (destination, account, an outage) and is copied to every event of it. - `batch_rejected`: Google did not name this event, but its resend without the named events failed too. `message` is that resend's error.
+	Scope *string `json:"scope,omitempty"`
 }
 
 // NewSendEvents200ResponseDestinationsInnerFailuresInner instantiates a new SendEvents200ResponseDestinationsInnerFailuresInner object
@@ -172,6 +176,70 @@ func (o *SendEvents200ResponseDestinationsInnerFailuresInner) SetCode(v SendConv
 	o.Code = &v
 }
 
+// GetField returns the Field field value if set, zero value otherwise.
+func (o *SendEvents200ResponseDestinationsInnerFailuresInner) GetField() string {
+	if o == nil || IsNil(o.Field) {
+		var ret string
+		return ret
+	}
+	return *o.Field
+}
+
+// GetFieldOk returns a tuple with the Field field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEvents200ResponseDestinationsInnerFailuresInner) GetFieldOk() (*string, bool) {
+	if o == nil || IsNil(o.Field) {
+		return nil, false
+	}
+	return o.Field, true
+}
+
+// HasField returns a boolean if a field has been set.
+func (o *SendEvents200ResponseDestinationsInnerFailuresInner) HasField() bool {
+	if o != nil && !IsNil(o.Field) {
+		return true
+	}
+
+	return false
+}
+
+// SetField gets a reference to the given string and assigns it to the Field field.
+func (o *SendEvents200ResponseDestinationsInnerFailuresInner) SetField(v string) {
+	o.Field = &v
+}
+
+// GetScope returns the Scope field value if set, zero value otherwise.
+func (o *SendEvents200ResponseDestinationsInnerFailuresInner) GetScope() string {
+	if o == nil || IsNil(o.Scope) {
+		var ret string
+		return ret
+	}
+	return *o.Scope
+}
+
+// GetScopeOk returns a tuple with the Scope field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendEvents200ResponseDestinationsInnerFailuresInner) GetScopeOk() (*string, bool) {
+	if o == nil || IsNil(o.Scope) {
+		return nil, false
+	}
+	return o.Scope, true
+}
+
+// HasScope returns a boolean if a field has been set.
+func (o *SendEvents200ResponseDestinationsInnerFailuresInner) HasScope() bool {
+	if o != nil && !IsNil(o.Scope) {
+		return true
+	}
+
+	return false
+}
+
+// SetScope gets a reference to the given string and assigns it to the Scope field.
+func (o *SendEvents200ResponseDestinationsInnerFailuresInner) SetScope(v string) {
+	o.Scope = &v
+}
+
 func (o SendEvents200ResponseDestinationsInnerFailuresInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -193,6 +261,12 @@ func (o SendEvents200ResponseDestinationsInnerFailuresInner) ToMap() (map[string
 	}
 	if !IsNil(o.Code) {
 		toSerialize["code"] = o.Code
+	}
+	if !IsNil(o.Field) {
+		toSerialize["field"] = o.Field
+	}
+	if !IsNil(o.Scope) {
+		toSerialize["scope"] = o.Scope
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.861.1
+API version: 1.862.0
 Contact: support@zernio.com
 */
 
@@ -17,7 +17,7 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// SendConversions200ResponseFailuresInnerCode - struct for SendConversions200ResponseFailuresInnerCode
+// SendConversions200ResponseFailuresInnerCode - The platform's error code. For Google Ads and Campaign Manager 360, Google's reason for this event (`EVENT_TIME_INVALID`, `REQUIRED_FIELD_MISSING`...) when Google named this event with one.
 type SendConversions200ResponseFailuresInnerCode struct {
 	Int32  *int32
 	String *string

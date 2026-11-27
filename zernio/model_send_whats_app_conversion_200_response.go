@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.861.1
+API version: 1.862.0
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,7 @@ type SendWhatsAppConversion200Response struct {
 	// Events rejected by Meta (see failures).
 	EventsFailed *int32 `json:"eventsFailed,omitempty"`
 	// Per-event failure detail. Empty when all events were accepted.
-	Failures []SendConversions200ResponseFailuresInner `json:"failures,omitempty"`
+	Failures []SendWhatsAppConversion200ResponseFailuresInner `json:"failures,omitempty"`
 	// Meta `fbtrace_id` for debugging. Surface in support tickets.
 	TraceId *string `json:"traceId,omitempty"`
 	// Meta's `messages` (warnings about the events it accepted), each distinct one once, at most 20. Absent when Meta sent none.
@@ -149,9 +149,9 @@ func (o *SendWhatsAppConversion200Response) SetEventsFailed(v int32) {
 }
 
 // GetFailures returns the Failures field value if set, zero value otherwise.
-func (o *SendWhatsAppConversion200Response) GetFailures() []SendConversions200ResponseFailuresInner {
+func (o *SendWhatsAppConversion200Response) GetFailures() []SendWhatsAppConversion200ResponseFailuresInner {
 	if o == nil || IsNil(o.Failures) {
-		var ret []SendConversions200ResponseFailuresInner
+		var ret []SendWhatsAppConversion200ResponseFailuresInner
 		return ret
 	}
 	return o.Failures
@@ -159,7 +159,7 @@ func (o *SendWhatsAppConversion200Response) GetFailures() []SendConversions200Re
 
 // GetFailuresOk returns a tuple with the Failures field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SendWhatsAppConversion200Response) GetFailuresOk() ([]SendConversions200ResponseFailuresInner, bool) {
+func (o *SendWhatsAppConversion200Response) GetFailuresOk() ([]SendWhatsAppConversion200ResponseFailuresInner, bool) {
 	if o == nil || IsNil(o.Failures) {
 		return nil, false
 	}
@@ -175,8 +175,8 @@ func (o *SendWhatsAppConversion200Response) HasFailures() bool {
 	return false
 }
 
-// SetFailures gets a reference to the given []SendConversions200ResponseFailuresInner and assigns it to the Failures field.
-func (o *SendWhatsAppConversion200Response) SetFailures(v []SendConversions200ResponseFailuresInner) {
+// SetFailures gets a reference to the given []SendWhatsAppConversion200ResponseFailuresInner and assigns it to the Failures field.
+func (o *SendWhatsAppConversion200Response) SetFailures(v []SendWhatsAppConversion200ResponseFailuresInner) {
 	o.Failures = v
 }
 
