@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.864.1
+API version: 1.864.2
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadAccountAdsSyncFailed type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadAccountAdsSyncFailed{}
 
-// WebhookPayloadAccountAdsSyncFailed Webhook payload for `account.ads.sync_failed` events. Fired once per ad account when its ads stop syncing: no successful sync for 24 hours, or every live ad in it at the retry cap.  It does not fire again for the same ad account until `account.ads.sync_recovered`. Metrics for the ad account are stale meanwhile.
+// WebhookPayloadAccountAdsSyncFailed Webhook payload for `account.ads.sync_failed` events. Fired once per ad account when its ads stop syncing: no successful sync for 24 hours, or every live ad in it at the retry cap.  It does not fire again for the same ad account until `account.ads.sync_recovered`. Metrics for the ad account are stale meanwhile.  It does not fire while another active connection of the same user that does not need a reconnect has synced the ad account in the last 24 hours. It fires once none has, so `sync.lastSuccessfulSyncAt` can then be older than 3 days.
 type WebhookPayloadAccountAdsSyncFailed struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery.
 	Id string `json:"id"`
