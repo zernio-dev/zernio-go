@@ -61,6 +61,7 @@ func main() {
 | `client.PostsAPI.PinPost(ctx)` | Pin post |
 | `client.PostsAPI.RetryPost(ctx)` | Retry failed post |
 | `client.PostsAPI.ReviewPost(ctx)` | Approve or reject a post |
+| `client.PostsAPI.SetPostCommentsEnabled(ctx)` | Turn comments on or off |
 | `client.PostsAPI.UnpinPost(ctx)` | Unpin post |
 | `client.PostsAPI.UnpublishPost(ctx)` | Unpublish post |
 
