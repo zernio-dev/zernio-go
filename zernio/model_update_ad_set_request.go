@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.851.0
+API version: 1.852.0
 Contact: support@zernio.com
 */
 
@@ -46,6 +46,8 @@ type UpdateAdSetRequest struct {
 	StartDate *string `json:"startDate,omitempty"`
 	// Reddit only. The ad group's new end_time, ISO 8601, read in the ad account timezone when it has no offset; a date alone means the end of that day. `null` removes the end date so the ad group runs continuously.  Every other platform ignores it: nothing is written and no error is returned, so a body that also sends `status` still applies it. Meta takes it in `platformSpecificData.endDate`.  Returns 400 with `param: endDate` when:  - it is not after the start - it falls after the campaign's end - the campaign uses campaign budget optimization with no end date (Reddit then takes no end date on its ad groups) - `null` would outlive a campaign budget campaign that ends - `null` is sent for an ad group with a lifetime budget
 	EndDate NullableString `json:"endDate,omitempty"`
+	// Meta only. Meta-native targeting keys (snake_case, as GET /v1/ads/{adId} returns them) layered over the ad set's live targeting before `targeting` is applied. Each key replaces its live counterpart and `null` removes it.
+	RawTargeting map[string]interface{} `json:"rawTargeting,omitempty"`
 	// Targeting fields to change. Meta and Reddit (400 elsewhere).  **Reddit** (see the description above):  - `languages` must be among Reddit's ISO 639-1 codes (AR, CS, DA, DE, EL, EN, ES, FI, FR, HU, IT, JA, KO, NL, NO, PL, PT, RO, SV, VI, ZH, any case). - Emptying every included location is a 400 with `param: targeting.countries`. - Fields Reddit ad groups cannot take (age, income, devices, behaviors, B2B, `places`) return 400 with `param: targeting.<field>`.  **Meta**: same shape as the `targeting` object on POST /v1/ads/create.  - Only the keys you send change. Zernio reads the ad set's live targeting, merges your keys over it and writes the full spec back, so everything else (custom audiences, geo, age, interest groups, `targeting_automation`) is kept. - Setting any location replaces every location list. An empty list or `gender: all` clears that key. - `incomeTier` is resolved to Meta's income segment first (422 when Meta has none). - Fields Meta cannot target (LinkedIn B2B, Google `devices`, Reddit communities and keywords) return 400 with `param: targeting.<field>`. - An empty object is a 400, as is a `targeting.placements` object with no non-empty list (`param: targeting.placements`). - When the live targeting cannot be read, the request returns 502 and nothing is written.
 	Targeting NullableTargetingSpec `json:"targeting,omitempty"`
 	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP.  Internally converted to Meta's smallest-denomination integer, or (on OpenAI and X) to micros (× 1,000,000).  Meta only: may be sent alone, WITHOUT bidStrategy, to update the cap amount on an ad set whose parent campaign is COST_CAP or LOWEST_COST_WITH_BID_CAP. The strategy is inherited from the campaign and left untouched.
@@ -530,6 +532,38 @@ func (o *UpdateAdSetRequest) UnsetEndDate() {
 	o.EndDate.Unset()
 }
 
+// GetRawTargeting returns the RawTargeting field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetRawTargeting() map[string]interface{} {
+	if o == nil || IsNil(o.RawTargeting) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.RawTargeting
+}
+
+// GetRawTargetingOk returns a tuple with the RawTargeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetRawTargetingOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.RawTargeting) {
+		return map[string]interface{}{}, false
+	}
+	return o.RawTargeting, true
+}
+
+// HasRawTargeting returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasRawTargeting() bool {
+	if o != nil && !IsNil(o.RawTargeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetRawTargeting gets a reference to the given map[string]interface{} and assigns it to the RawTargeting field.
+func (o *UpdateAdSetRequest) SetRawTargeting(v map[string]interface{}) {
+	o.RawTargeting = v
+}
+
 // GetTargeting returns the Targeting field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *UpdateAdSetRequest) GetTargeting() TargetingSpec {
 	if o == nil || IsNil(o.Targeting.Get()) {
@@ -782,6 +816,9 @@ func (o UpdateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if o.EndDate.IsSet() {
 		toSerialize["endDate"] = o.EndDate.Get()
+	}
+	if !IsNil(o.RawTargeting) {
+		toSerialize["rawTargeting"] = o.RawTargeting
 	}
 	if o.Targeting.IsSet() {
 		toSerialize["targeting"] = o.Targeting.Get()
