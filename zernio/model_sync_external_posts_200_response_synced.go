@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.864.2
+API version: 1.864.3
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &SyncExternalPosts200ResponseSynced{}
 type SyncExternalPosts200ResponseSynced struct {
 	// Posts returned by the platform listing during the on-demand sync
 	PostsFound *int32 `json:"postsFound,omitempty"`
-	// Posts inserted or updated in Zernio
+	// Stored records this call wrote: new posts and posts whose metadata changed. On LinkedIn personal profiles and the X fallback sync, posts whose metrics were refreshed are counted too.
 	PostsSynced *int32 `json:"postsSynced,omitempty"`
 	// True when the account was synced within the debounce window and no live fetch ran.
 	Skipped *bool `json:"skipped,omitempty"`

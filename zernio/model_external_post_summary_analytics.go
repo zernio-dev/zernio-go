@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.864.2
+API version: 1.864.3
 Contact: support@zernio.com
 */
 
@@ -19,7 +19,7 @@ import (
 // checks if the ExternalPostSummaryAnalytics type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ExternalPostSummaryAnalytics{}
 
-// ExternalPostSummaryAnalytics Engagement + insights for the post. `likes` and `comments` are available immediately after an on-demand sync (they come from the platform listing). `reach`, `impressions`, `views` depend on the platform's insights, which carry their own delay (e.g. ~24h on Instagram) and read 0 until the platform makes them available.
+// ExternalPostSummaryAnalytics Not a source of metrics: read a post's metrics from GET /v1/analytics.  - A post read from Zernio's records (the recent posts list, or a   matched post that was already stored): usually `null` or only   `lastUpdated`. - Archived Instagram stories and posts first synced before metrics   moved to GET /v1/analytics: metric fields that are final or no   longer refreshed. Do not use them. - A post imported by this call (a LinkedIn personal profile post, a   TikTok Business post or a Pinterest Pin fetched by `url`/`postId`):   the values just fetched. A LinkedIn re-import of the same post   within about 15 seconds returns the stored record without metrics.
 type ExternalPostSummaryAnalytics struct {
 	Likes       *int32 `json:"likes,omitempty"`
 	Comments    *int32 `json:"comments,omitempty"`

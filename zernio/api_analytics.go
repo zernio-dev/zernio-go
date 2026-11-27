@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.864.2
+API version: 1.864.3
 Contact: support@zernio.com
 */
 
@@ -9356,7 +9356,13 @@ A `postId` or TikTok `url` that the listing has not stored is fetched from TikTo
 
 ### Analytics delay
 
-Post-level analytics (reach, impressions) still carry the platform's own delay (e.g. ~24h on Instagram). This endpoint confirms the post exists and returns its metadata plus basic engagement (likes, comments), not delayed insights.
+This endpoint confirms the post exists and returns its metadata, not its metrics: read those from `GET /v1/analytics`, where post-level insights (reach, impressions) still carry the platform's own delay (e.g. ~24h on Instagram). Only a post imported by this call returns the metrics it fetched.
+
+`synced.postsSynced` counts the stored records this call wrote:
+
+- Most platforms: new posts and posts whose metadata changed. `postsFound: 10` with `postsSynced: 0` means the live fetch ran and every post was already up to date.
+- LinkedIn personal profiles, and X when the timeline read falls back to Zernio-published posts: a post whose metrics were refreshed is counted too.
+- A post imported by `url`/`postId` is reported through `found` and `post`. Do not rely on `postsSynced` for it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPISyncExternalPostsRequest
