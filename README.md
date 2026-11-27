@@ -1286,6 +1286,7 @@ func main() {
 | `client.InstagramAPI.GetInstagramPublishingLimit(ctx)` | Get Instagram publishing limit |
 | `client.InstagramAPI.GetInstagramStoryInsights(ctx)` | Get Instagram story insights |
 | `client.InstagramAPI.SearchInstagramAudio(ctx)` | Search Instagram audio |
+| `client.InstagramAPI.SearchInstagramHashtag(ctx)` | Search public Instagram media by hashtag |
 
 ### Lead Gen
 | Method | Description |

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.864.4
+API version: 1.864.5
 Contact: support@zernio.com
 */
 
@@ -1897,6 +1897,215 @@ func (a *InstagramAPIService) SearchInstagramAudioExecute(r InstagramAPISearchIn
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type InstagramAPISearchInstagramHashtagRequest struct {
+	ctx        context.Context
+	ApiService *InstagramAPIService
+	accountId  string
+	hashtag    *string
+	limit      *int32
+}
+
+// One hashtag: letters, digits or \&quot;_\&quot;, with or without the leading #. Case-insensitive.
+func (r InstagramAPISearchInstagramHashtagRequest) Hashtag(hashtag string) InstagramAPISearchInstagramHashtagRequest {
+	r.hashtag = &hashtag
+	return r
+}
+
+// How many media to return in each of topMedia and recentMedia.
+func (r InstagramAPISearchInstagramHashtagRequest) Limit(limit int32) InstagramAPISearchInstagramHashtagRequest {
+	r.limit = &limit
+	return r
+}
+
+func (r InstagramAPISearchInstagramHashtagRequest) Execute() (*InstagramHashtagResearch, *http.Response, error) {
+	return r.ApiService.SearchInstagramHashtagExecute(r)
+}
+
+/*
+SearchInstagramHashtag Search public Instagram media by hashtag
+
+Resolves a hashtag to its Instagram hashtag ID, then returns the top
+and the recent public media carrying it, read through one of your
+connected Instagram accounts. Useful for trend, content and
+competitor research.
+
+Requires an Instagram account connected via **Facebook Login**. Meta
+serves hashtag search on graph.facebook.com only, so accounts
+connected with classic Instagram Login receive a 400
+(`instagram_hashtag_search_requires_facebook_login`) and must be
+reconnected choosing the Facebook option.
+
+**Weekly limit:** Meta lets one Instagram account search at most 30
+unique hashtags in a rolling 7 days.
+
+  - Searching a hashtag again inside the window does not count twice.
+  - `recentlySearchedCount` shows how much of the budget is used.
+  - Past the limit the request answers 429
+    `instagram_hashtag_search_limit_reached` until older searches leave
+    the window.
+  - Another connected account has its own budget.
+
+`recentMedia` only holds media published in the last 24 hours. Meta
+returns no media for hashtags it considers sensitive or offensive,
+and never returns the author's username. Media URLs are temporary.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The ID of a connected Instagram account (Facebook Login).
+	@return InstagramAPISearchInstagramHashtagRequest
+*/
+func (a *InstagramAPIService) SearchInstagramHashtag(ctx context.Context, accountId string) InstagramAPISearchInstagramHashtagRequest {
+	return InstagramAPISearchInstagramHashtagRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return InstagramHashtagResearch
+func (a *InstagramAPIService) SearchInstagramHashtagExecute(r InstagramAPISearchInstagramHashtagRequest) (*InstagramHashtagResearch, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *InstagramHashtagResearch
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstagramAPIService.SearchInstagramHashtag")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/instagram/hashtag-search"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.hashtag == nil {
+		return localVarReturnValue, nil, reportError("hashtag is required and must be specified")
+	}
+	if strlen(*r.hashtag) > 101 {
+		return localVarReturnValue, nil, reportError("hashtag must have less than 101 elements")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "hashtag", r.hashtag, "form", "")
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 24
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
