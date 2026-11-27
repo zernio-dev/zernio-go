@@ -1327,6 +1327,7 @@ func main() {
 | `client.MessagesAPI.GetInboxConversationMessages(ctx)` | List messages |
 | `client.MessagesAPI.GetInboxUnreadCount(ctx)` | Count unread conversations |
 | `client.MessagesAPI.GetMessageAttachment(ctx)` | Resolve message attachment |
+| `client.MessagesAPI.GetMessengerContact(ctx)` | Get a Messenger contact's language, time zone and gender |
 | `client.MessagesAPI.UpdateInboxConversation(ctx)` | Update conversation status |
 | `client.MessagesAPI.DeleteInboxConversation(ctx)` | Delete conversation |
 | `client.MessagesAPI.DeleteInboxLabel(ctx)` | Delete a conversation label |
