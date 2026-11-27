@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.854.1
+API version: 1.854.2
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,7 @@ type ListFormLeads200ResponseMeta struct {
 	FormId    *string `json:"formId,omitempty"`
 	// persisted: leads stored from the webhook and the recovery pass. live: read from Meta because none are stored for this form yet, or because content is not retained.
 	Source *string `json:"source,omitempty"`
-	// For persisted leads, when the recovery pass last finished for the Page (null before the first one). It does not prove every lead is stored. For live reads, when Meta was read.
+	// For persisted leads, when the recovery pass last ran for the Page, failed or parked passes included (null before the first one). It does not prove every lead is stored. For live reads, when Meta was read.
 	LastCheckedAt NullableTime `json:"lastCheckedAt,omitempty"`
 	LastUpdated   *time.Time   `json:"lastUpdated,omitempty"`
 }
