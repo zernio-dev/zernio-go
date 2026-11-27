@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.854.2
+API version: 1.854.3
 Contact: support@zernio.com
 */
 
@@ -2188,6 +2188,16 @@ Send `stage: true` to store the create as an ad change instead of sending it. Th
 Google validates a staged Performance Max or Demand Gen create. Meta is not called at staging, and neither is Google for a search or display ad: the network checks those at confirm.
 
 Media is fetched at confirm. An upload in Zernio's temporary storage is copied to permanent storage at staging, and the staged change points at the copy. A presigned URL returns 400 with `stage`.
+
+### Default changes
+
+Defaults this endpoint changed, with the version they took effect in, so a request can pin the previous behaviour by sending the field.
+
+| Version (date) | Field | Before | After |
+|---|---|---|---|
+| 1.516.0 (2026-11-06) | `campaignType` with `existingCampaignId` (Google) | `display` | The existing campaign's own type (Search, Display or Demand Gen; any other type returns 422) |
+
+The 1.516.0 changelog also listed `budgetLevel` and `retryOnServerError` for this endpoint; their defaults did not change in that version.
 
 ### Idempotency
 
