@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.854.0
+API version: 1.854.1
 Contact: support@zernio.com
 */
 
@@ -25,11 +25,13 @@ var _ MappedNullable = &GetWhatsAppPricingAnalytics200Response{}
 type GetWhatsAppPricingAnalytics200Response struct {
 	AccountId string `json:"accountId"`
 	// The number the data is scoped to, digits only.
-	PhoneNumber string                                                  `json:"phoneNumber"`
-	Granularity string                                                  `json:"granularity"`
-	Start       time.Time                                               `json:"start"`
-	End         time.Time                                               `json:"end"`
-	DataPoints  []GetWhatsAppPricingAnalytics200ResponseDataPointsInner `json:"dataPoints"`
+	PhoneNumber string    `json:"phoneNumber"`
+	Granularity string    `json:"granularity"`
+	Start       time.Time `json:"start"`
+	End         time.Time `json:"end"`
+	// ISO 4217 currency every `cost` is in, from the WABA's payment method (for example USD or BRL). Null when Meta does not return it.
+	Currency   NullableString                                          `json:"currency"`
+	DataPoints []GetWhatsAppPricingAnalytics200ResponseDataPointsInner `json:"dataPoints"`
 }
 
 type _GetWhatsAppPricingAnalytics200Response GetWhatsAppPricingAnalytics200Response
@@ -38,13 +40,14 @@ type _GetWhatsAppPricingAnalytics200Response GetWhatsAppPricingAnalytics200Respo
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetWhatsAppPricingAnalytics200Response(accountId string, phoneNumber string, granularity string, start time.Time, end time.Time, dataPoints []GetWhatsAppPricingAnalytics200ResponseDataPointsInner) *GetWhatsAppPricingAnalytics200Response {
+func NewGetWhatsAppPricingAnalytics200Response(accountId string, phoneNumber string, granularity string, start time.Time, end time.Time, currency NullableString, dataPoints []GetWhatsAppPricingAnalytics200ResponseDataPointsInner) *GetWhatsAppPricingAnalytics200Response {
 	this := GetWhatsAppPricingAnalytics200Response{}
 	this.AccountId = accountId
 	this.PhoneNumber = phoneNumber
 	this.Granularity = granularity
 	this.Start = start
 	this.End = end
+	this.Currency = currency
 	this.DataPoints = dataPoints
 	return &this
 }
@@ -177,6 +180,32 @@ func (o *GetWhatsAppPricingAnalytics200Response) SetEnd(v time.Time) {
 	o.End = v
 }
 
+// GetCurrency returns the Currency field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *GetWhatsAppPricingAnalytics200Response) GetCurrency() string {
+	if o == nil || o.Currency.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Currency.Get()
+}
+
+// GetCurrencyOk returns a tuple with the Currency field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetWhatsAppPricingAnalytics200Response) GetCurrencyOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Currency.Get(), o.Currency.IsSet()
+}
+
+// SetCurrency sets field value
+func (o *GetWhatsAppPricingAnalytics200Response) SetCurrency(v string) {
+	o.Currency.Set(&v)
+}
+
 // GetDataPoints returns the DataPoints field value
 func (o *GetWhatsAppPricingAnalytics200Response) GetDataPoints() []GetWhatsAppPricingAnalytics200ResponseDataPointsInner {
 	if o == nil {
@@ -216,6 +245,7 @@ func (o GetWhatsAppPricingAnalytics200Response) ToMap() (map[string]interface{},
 	toSerialize["granularity"] = o.Granularity
 	toSerialize["start"] = o.Start
 	toSerialize["end"] = o.End
+	toSerialize["currency"] = o.Currency.Get()
 	toSerialize["dataPoints"] = o.DataPoints
 	return toSerialize, nil
 }
@@ -230,6 +260,7 @@ func (o *GetWhatsAppPricingAnalytics200Response) UnmarshalJSON(data []byte) (err
 		"granularity",
 		"start",
 		"end",
+		"currency",
 		"dataPoints",
 	}
 

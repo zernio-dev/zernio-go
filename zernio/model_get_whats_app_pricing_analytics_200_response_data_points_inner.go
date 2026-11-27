@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.854.0
+API version: 1.854.1
 Contact: support@zernio.com
 */
 
@@ -37,7 +37,7 @@ type GetWhatsAppPricingAnalytics200ResponseDataPointsInner struct {
 	PricingCategory NullableString `json:"pricingCategory"`
 	// Messages delivered.
 	Volume NullableInt32 `json:"volume"`
-	// Approximate charge, in the currency of the WABA's payment method.
+	// Approximate charge, in the currency given by `currency`.
 	Cost NullableFloat32 `json:"cost"`
 }
 
