@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.863.0
+API version: 1.864.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &UpdateAdSetRequest{}
 
 // UpdateAdSetRequest struct for UpdateAdSetRequest
 type UpdateAdSetRequest struct {
+	// Meta only. Sends every write of this update to Meta with `execution_options: [\"validate_only\"]`. Meta checks it and changes nothing; Zernio stores nothing and fires no webhook.  - Answers `200` with `{ validateOnly: true, results, message }`, the shape of a validateOnly POST /v1/ads/create.  - The checks Zernio runs before the write (body, bid strategy, live ads allowance) run as for a real update.  - `true` on any other platform is a 400 naming `validateOnly`; `false` is ignored.  - Cannot be combined with `stage` (400 `mutually_exclusive_fields`). Counts toward the Meta ad account write guard.  - Idempotency-Key storage is bypassed, so the real update can reuse the key.
+	ValidateOnly *bool `json:"validateOnly,omitempty"`
 	// Send true to stage this change instead of applying it. Nothing is written to the ad network; the response is `202` with the staged change and its diff. Apply it with POST /v1/ads/changes/{changeId}/confirm. Meta, Google, TikTok, X, Snapchat and Reddit; cannot be combined with `validateOnly` or `dryRun`.
 	Stage    *bool                     `json:"stage,omitempty"`
 	Platform string                    `json:"platform"`
@@ -79,6 +81,38 @@ func NewUpdateAdSetRequest(platform string) *UpdateAdSetRequest {
 func NewUpdateAdSetRequestWithDefaults() *UpdateAdSetRequest {
 	this := UpdateAdSetRequest{}
 	return &this
+}
+
+// GetValidateOnly returns the ValidateOnly field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetValidateOnly() bool {
+	if o == nil || IsNil(o.ValidateOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.ValidateOnly
+}
+
+// GetValidateOnlyOk returns a tuple with the ValidateOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetValidateOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.ValidateOnly) {
+		return nil, false
+	}
+	return o.ValidateOnly, true
+}
+
+// HasValidateOnly returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasValidateOnly() bool {
+	if o != nil && !IsNil(o.ValidateOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetValidateOnly gets a reference to the given bool and assigns it to the ValidateOnly field.
+func (o *UpdateAdSetRequest) SetValidateOnly(v bool) {
+	o.ValidateOnly = &v
 }
 
 // GetStage returns the Stage field value if set, zero value otherwise.
@@ -777,6 +811,9 @@ func (o UpdateAdSetRequest) MarshalJSON() ([]byte, error) {
 
 func (o UpdateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.ValidateOnly) {
+		toSerialize["validateOnly"] = o.ValidateOnly
+	}
 	if !IsNil(o.Stage) {
 		toSerialize["stage"] = o.Stage
 	}

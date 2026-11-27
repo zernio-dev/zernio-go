@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.863.0
+API version: 1.864.0
 Contact: support@zernio.com
 */
 
@@ -20,8 +20,12 @@ var _ MappedNullable = &UpdateAd200Response{}
 
 // UpdateAd200Response struct for UpdateAd200Response
 type UpdateAd200Response struct {
-	Ad      *Ad     `json:"ad,omitempty"`
-	Message *string `json:"message,omitempty"`
+	// Present and true when the request was sent with validateOnly: nothing was changed. The other fields of a real update are then absent.
+	ValidateOnly *bool `json:"validateOnly,omitempty"`
+	// validateOnly only: one entry, the object Meta validated.
+	Results []AdWriteValidationResult `json:"results,omitempty"`
+	Ad      *Ad                       `json:"ad,omitempty"`
+	Message *string                   `json:"message,omitempty"`
 }
 
 // NewUpdateAd200Response instantiates a new UpdateAd200Response object
@@ -39,6 +43,70 @@ func NewUpdateAd200Response() *UpdateAd200Response {
 func NewUpdateAd200ResponseWithDefaults() *UpdateAd200Response {
 	this := UpdateAd200Response{}
 	return &this
+}
+
+// GetValidateOnly returns the ValidateOnly field value if set, zero value otherwise.
+func (o *UpdateAd200Response) GetValidateOnly() bool {
+	if o == nil || IsNil(o.ValidateOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.ValidateOnly
+}
+
+// GetValidateOnlyOk returns a tuple with the ValidateOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAd200Response) GetValidateOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.ValidateOnly) {
+		return nil, false
+	}
+	return o.ValidateOnly, true
+}
+
+// HasValidateOnly returns a boolean if a field has been set.
+func (o *UpdateAd200Response) HasValidateOnly() bool {
+	if o != nil && !IsNil(o.ValidateOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetValidateOnly gets a reference to the given bool and assigns it to the ValidateOnly field.
+func (o *UpdateAd200Response) SetValidateOnly(v bool) {
+	o.ValidateOnly = &v
+}
+
+// GetResults returns the Results field value if set, zero value otherwise.
+func (o *UpdateAd200Response) GetResults() []AdWriteValidationResult {
+	if o == nil || IsNil(o.Results) {
+		var ret []AdWriteValidationResult
+		return ret
+	}
+	return o.Results
+}
+
+// GetResultsOk returns a tuple with the Results field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAd200Response) GetResultsOk() ([]AdWriteValidationResult, bool) {
+	if o == nil || IsNil(o.Results) {
+		return nil, false
+	}
+	return o.Results, true
+}
+
+// HasResults returns a boolean if a field has been set.
+func (o *UpdateAd200Response) HasResults() bool {
+	if o != nil && !IsNil(o.Results) {
+		return true
+	}
+
+	return false
+}
+
+// SetResults gets a reference to the given []AdWriteValidationResult and assigns it to the Results field.
+func (o *UpdateAd200Response) SetResults(v []AdWriteValidationResult) {
+	o.Results = v
 }
 
 // GetAd returns the Ad field value if set, zero value otherwise.
@@ -115,6 +183,12 @@ func (o UpdateAd200Response) MarshalJSON() ([]byte, error) {
 
 func (o UpdateAd200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.ValidateOnly) {
+		toSerialize["validateOnly"] = o.ValidateOnly
+	}
+	if !IsNil(o.Results) {
+		toSerialize["results"] = o.Results
+	}
 	if !IsNil(o.Ad) {
 		toSerialize["ad"] = o.Ad
 	}

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.863.0
+API version: 1.864.0
 Contact: support@zernio.com
 */
 
@@ -21,6 +21,12 @@ var _ MappedNullable = &UpdateAdSet200Response{}
 
 // UpdateAdSet200Response struct for UpdateAdSet200Response
 type UpdateAdSet200Response struct {
+	// Present and true when the request was sent with validateOnly: nothing was changed. The other fields of a real update are then absent.
+	ValidateOnly *bool `json:"validateOnly,omitempty"`
+	// validateOnly only: one entry, the object Meta validated.
+	Results []AdWriteValidationResult `json:"results,omitempty"`
+	// validateOnly only: what was validated.
+	Message     *string   `json:"message,omitempty"`
 	Budget      *AdBudget `json:"budget,omitempty"`
 	BudgetLevel *string   `json:"budgetLevel,omitempty"`
 	// As in PUT /v1/ads/ad-sets/{adSetId}/status: delivery derived from the switches read back.
@@ -61,6 +67,102 @@ func NewUpdateAdSet200Response() *UpdateAdSet200Response {
 func NewUpdateAdSet200ResponseWithDefaults() *UpdateAdSet200Response {
 	this := UpdateAdSet200Response{}
 	return &this
+}
+
+// GetValidateOnly returns the ValidateOnly field value if set, zero value otherwise.
+func (o *UpdateAdSet200Response) GetValidateOnly() bool {
+	if o == nil || IsNil(o.ValidateOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.ValidateOnly
+}
+
+// GetValidateOnlyOk returns a tuple with the ValidateOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSet200Response) GetValidateOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.ValidateOnly) {
+		return nil, false
+	}
+	return o.ValidateOnly, true
+}
+
+// HasValidateOnly returns a boolean if a field has been set.
+func (o *UpdateAdSet200Response) HasValidateOnly() bool {
+	if o != nil && !IsNil(o.ValidateOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetValidateOnly gets a reference to the given bool and assigns it to the ValidateOnly field.
+func (o *UpdateAdSet200Response) SetValidateOnly(v bool) {
+	o.ValidateOnly = &v
+}
+
+// GetResults returns the Results field value if set, zero value otherwise.
+func (o *UpdateAdSet200Response) GetResults() []AdWriteValidationResult {
+	if o == nil || IsNil(o.Results) {
+		var ret []AdWriteValidationResult
+		return ret
+	}
+	return o.Results
+}
+
+// GetResultsOk returns a tuple with the Results field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSet200Response) GetResultsOk() ([]AdWriteValidationResult, bool) {
+	if o == nil || IsNil(o.Results) {
+		return nil, false
+	}
+	return o.Results, true
+}
+
+// HasResults returns a boolean if a field has been set.
+func (o *UpdateAdSet200Response) HasResults() bool {
+	if o != nil && !IsNil(o.Results) {
+		return true
+	}
+
+	return false
+}
+
+// SetResults gets a reference to the given []AdWriteValidationResult and assigns it to the Results field.
+func (o *UpdateAdSet200Response) SetResults(v []AdWriteValidationResult) {
+	o.Results = v
+}
+
+// GetMessage returns the Message field value if set, zero value otherwise.
+func (o *UpdateAdSet200Response) GetMessage() string {
+	if o == nil || IsNil(o.Message) {
+		var ret string
+		return ret
+	}
+	return *o.Message
+}
+
+// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSet200Response) GetMessageOk() (*string, bool) {
+	if o == nil || IsNil(o.Message) {
+		return nil, false
+	}
+	return o.Message, true
+}
+
+// HasMessage returns a boolean if a field has been set.
+func (o *UpdateAdSet200Response) HasMessage() bool {
+	if o != nil && !IsNil(o.Message) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessage gets a reference to the given string and assigns it to the Message field.
+func (o *UpdateAdSet200Response) SetMessage(v string) {
+	o.Message = &v
 }
 
 // GetBudget returns the Budget field value if set, zero value otherwise.
@@ -651,6 +753,15 @@ func (o UpdateAdSet200Response) MarshalJSON() ([]byte, error) {
 
 func (o UpdateAdSet200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.ValidateOnly) {
+		toSerialize["validateOnly"] = o.ValidateOnly
+	}
+	if !IsNil(o.Results) {
+		toSerialize["results"] = o.Results
+	}
+	if !IsNil(o.Message) {
+		toSerialize["message"] = o.Message
+	}
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget
 	}

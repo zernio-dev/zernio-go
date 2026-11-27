@@ -208,6 +208,8 @@ model_ad_tree_ad_set_promoted_object.go
 model_ad_tree_campaign.go
 model_ad_tree_campaign_optimization_goal.go
 model_ad_tree_response.go
+model_ad_write_validation.go
+model_ad_write_validation_result.go
 model_add_account_callouts_201_response.go
 model_add_account_callouts_201_response_callouts_inner.go
 model_add_account_callouts_request.go
