@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.862.0
+API version: 1.862.1
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,6 @@ type GetGmbLocations200Response struct {
 	// True when more locations exist than were returned (use search to narrow down).
 	HasMore            *bool   `json:"hasMore,omitempty"`
 	SelectedLocationId *string `json:"selectedLocationId,omitempty"`
-	Cached             *bool   `json:"cached,omitempty"`
 }
 
 // NewGetGmbLocations200Response instantiates a new GetGmbLocations200Response object
@@ -140,38 +139,6 @@ func (o *GetGmbLocations200Response) SetSelectedLocationId(v string) {
 	o.SelectedLocationId = &v
 }
 
-// GetCached returns the Cached field value if set, zero value otherwise.
-func (o *GetGmbLocations200Response) GetCached() bool {
-	if o == nil || IsNil(o.Cached) {
-		var ret bool
-		return ret
-	}
-	return *o.Cached
-}
-
-// GetCachedOk returns a tuple with the Cached field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GetGmbLocations200Response) GetCachedOk() (*bool, bool) {
-	if o == nil || IsNil(o.Cached) {
-		return nil, false
-	}
-	return o.Cached, true
-}
-
-// HasCached returns a boolean if a field has been set.
-func (o *GetGmbLocations200Response) HasCached() bool {
-	if o != nil && !IsNil(o.Cached) {
-		return true
-	}
-
-	return false
-}
-
-// SetCached gets a reference to the given bool and assigns it to the Cached field.
-func (o *GetGmbLocations200Response) SetCached(v bool) {
-	o.Cached = &v
-}
-
 func (o GetGmbLocations200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -190,9 +157,6 @@ func (o GetGmbLocations200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SelectedLocationId) {
 		toSerialize["selectedLocationId"] = o.SelectedLocationId
-	}
-	if !IsNil(o.Cached) {
-		toSerialize["cached"] = o.Cached
 	}
 	return toSerialize, nil
 }
