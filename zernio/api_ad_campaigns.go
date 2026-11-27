@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.853.1
+API version: 1.854.0
 Contact: support@zernio.com
 */
 
@@ -2089,6 +2089,8 @@ A missing field is a 400 naming it in `param`.
 - Every shape that builds a new ad set (no `adSetId`, `existingCampaignId` or `buyingType: "RESERVED"`): `budgetAmount`. `budgetType` defaults to daily, and a lifetime budget without `endDate` ends 7 days after it starts (see `appliedDefaults`).
 - Single image or video (the default), also with `adSetId`: `headline` (max 255), `body`, `callToAction`, and exactly one of `imageUrl` / `video`. A catalog template creative takes none, and ignores and does not upload any sent.
 - Single image or video also needs `linkUrl`, unless the goal is `lead_generation` or `page_visits` or `leadGenFormId` is set.
+- Goal `engagement` with `optimizationGoal: POST_ENGAGEMENT` and no `linkUrl` builds a post with no link and no button: `body` and one image or video only. `headline` is the video title.
+- On that post ad, `callToAction`, `callToActionLink`, `description` and `caption` return 400. It does not apply with `adSetId`, `translations` or `leadGenFormId`.
 - `bodies[]` / `headlines[]` text variations: `body`, one list with 2+ items, `callToAction`, `imageUrl` or `video`, and `linkUrl` unless the goal is `lead_generation` or `leadGenFormId` is set. `headline` is not required.
 - `placementAssets`: `headline`, `body`, `callToAction`, and `linkUrl` with the same exemptions as the single shape; the media comes from `placementAssets`.
 - `carouselCards`, also with `adSetId`: `body`, `callToAction`, and `linkUrl` unless the goal is `lead_generation` or `leadGenFormId` is set. `headline` is not required. Each card takes `imageUrl` or `video`.
