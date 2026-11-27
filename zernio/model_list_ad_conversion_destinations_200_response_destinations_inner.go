@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.856.1
+API version: 1.856.2
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,8 @@ type ListAdConversionDestinations200ResponseDestinationsInner struct {
 	Id   *string `json:"id,omitempty"`
 	Name *string `json:"name,omitempty"`
 	// Present when the platform locks event type to the destination (Google conversion actions, LinkedIn conversion rules).
-	Type   *string `json:"type,omitempty"`
+	Type *string `json:"type,omitempty"`
+	// On Google Ads, `inactive` also marks an action Zernio cannot send to: one that is not enabled, or whose source is not an import of conversions from clicks (`UPLOAD_CLICKS`).
 	Status *string `json:"status,omitempty"`
 	// Set by adapters whose destinations are scoped to a specific ad account (LinkedIn, Reddit). On LinkedIn, pass it back on subsequent CRUD calls.
 	AdAccountId *string `json:"adAccountId,omitempty"`
