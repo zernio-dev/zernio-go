@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.862.1
+API version: 1.863.0
 Contact: support@zernio.com
 */
 
@@ -33,17 +33,19 @@ type LinkedInAdsPlatformData struct {
 	// Deliver on the LinkedIn Audience Network. Defaults to false.
 	OffsiteDeliveryEnabled *bool `json:"offsiteDeliveryEnabled,omitempty"`
 	// Restrict delivery to Connected TV inventory.
-	ConnectedTelevisionOnly *bool                                 `json:"connectedTelevisionOnly,omitempty"`
-	Carousel                *LinkedInAdsPlatformDataCarousel      `json:"carousel,omitempty"`
-	Document                *LinkedInAdsPlatformDataDocument      `json:"document,omitempty"`
-	Spotlight               *LinkedInAdsPlatformDataSpotlight     `json:"spotlight,omitempty"`
-	Follower                *LinkedInAdsPlatformDataFollower      `json:"follower,omitempty"`
-	Jobs                    *LinkedInAdsPlatformDataJobs          `json:"jobs,omitempty"`
-	TextAd                  *LinkedInAdsPlatformDataTextAd        `json:"textAd,omitempty"`
-	Conversation            *LinkedInAdsPlatformDataConversation  `json:"conversation,omitempty"`
-	Event                   *LinkedInAdsPlatformDataEvent         `json:"event,omitempty"`
-	ThoughtLeader           *LinkedInAdsPlatformDataThoughtLeader `json:"thoughtLeader,omitempty"`
-	AdditionalProperties    map[string]interface{}
+	ConnectedTelevisionOnly *bool `json:"connectedTelevisionOnly,omitempty"`
+	// LinkedIn shape of an `imageUrl` with `linkUrl` ad on POST /v1/ads/create.  - `article` (default): an article link ad (`content.article`, image as the thumbnail). - `single_image`: a Single Image Ad (the image as the post media, `linkUrl` as the landing page, `callToAction` as the button).  `single_image` works only with `imageUrl`, returns 400 with `longHeadline` (LinkedIn does not show it on this format), and is rejected on boost.
+	ImageLinkFormat      *string                               `json:"imageLinkFormat,omitempty"`
+	Carousel             *LinkedInAdsPlatformDataCarousel      `json:"carousel,omitempty"`
+	Document             *LinkedInAdsPlatformDataDocument      `json:"document,omitempty"`
+	Spotlight            *LinkedInAdsPlatformDataSpotlight     `json:"spotlight,omitempty"`
+	Follower             *LinkedInAdsPlatformDataFollower      `json:"follower,omitempty"`
+	Jobs                 *LinkedInAdsPlatformDataJobs          `json:"jobs,omitempty"`
+	TextAd               *LinkedInAdsPlatformDataTextAd        `json:"textAd,omitempty"`
+	Conversation         *LinkedInAdsPlatformDataConversation  `json:"conversation,omitempty"`
+	Event                *LinkedInAdsPlatformDataEvent         `json:"event,omitempty"`
+	ThoughtLeader        *LinkedInAdsPlatformDataThoughtLeader `json:"thoughtLeader,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _LinkedInAdsPlatformData LinkedInAdsPlatformData
@@ -54,6 +56,8 @@ type _LinkedInAdsPlatformData LinkedInAdsPlatformData
 // will change when the set of required properties is changed
 func NewLinkedInAdsPlatformData() *LinkedInAdsPlatformData {
 	this := LinkedInAdsPlatformData{}
+	var imageLinkFormat string = "article"
+	this.ImageLinkFormat = &imageLinkFormat
 	return &this
 }
 
@@ -62,6 +66,8 @@ func NewLinkedInAdsPlatformData() *LinkedInAdsPlatformData {
 // but it doesn't guarantee that properties required by API are set
 func NewLinkedInAdsPlatformDataWithDefaults() *LinkedInAdsPlatformData {
 	this := LinkedInAdsPlatformData{}
+	var imageLinkFormat string = "article"
+	this.ImageLinkFormat = &imageLinkFormat
 	return &this
 }
 
@@ -287,6 +293,38 @@ func (o *LinkedInAdsPlatformData) HasConnectedTelevisionOnly() bool {
 // SetConnectedTelevisionOnly gets a reference to the given bool and assigns it to the ConnectedTelevisionOnly field.
 func (o *LinkedInAdsPlatformData) SetConnectedTelevisionOnly(v bool) {
 	o.ConnectedTelevisionOnly = &v
+}
+
+// GetImageLinkFormat returns the ImageLinkFormat field value if set, zero value otherwise.
+func (o *LinkedInAdsPlatformData) GetImageLinkFormat() string {
+	if o == nil || IsNil(o.ImageLinkFormat) {
+		var ret string
+		return ret
+	}
+	return *o.ImageLinkFormat
+}
+
+// GetImageLinkFormatOk returns a tuple with the ImageLinkFormat field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInAdsPlatformData) GetImageLinkFormatOk() (*string, bool) {
+	if o == nil || IsNil(o.ImageLinkFormat) {
+		return nil, false
+	}
+	return o.ImageLinkFormat, true
+}
+
+// HasImageLinkFormat returns a boolean if a field has been set.
+func (o *LinkedInAdsPlatformData) HasImageLinkFormat() bool {
+	if o != nil && !IsNil(o.ImageLinkFormat) {
+		return true
+	}
+
+	return false
+}
+
+// SetImageLinkFormat gets a reference to the given string and assigns it to the ImageLinkFormat field.
+func (o *LinkedInAdsPlatformData) SetImageLinkFormat(v string) {
+	o.ImageLinkFormat = &v
 }
 
 // GetCarousel returns the Carousel field value if set, zero value otherwise.
@@ -608,6 +646,9 @@ func (o LinkedInAdsPlatformData) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ConnectedTelevisionOnly) {
 		toSerialize["connectedTelevisionOnly"] = o.ConnectedTelevisionOnly
 	}
+	if !IsNil(o.ImageLinkFormat) {
+		toSerialize["imageLinkFormat"] = o.ImageLinkFormat
+	}
 	if !IsNil(o.Carousel) {
 		toSerialize["carousel"] = o.Carousel
 	}
@@ -664,6 +705,7 @@ func (o *LinkedInAdsPlatformData) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "audienceExpansionEnabled")
 		delete(additionalProperties, "offsiteDeliveryEnabled")
 		delete(additionalProperties, "connectedTelevisionOnly")
+		delete(additionalProperties, "imageLinkFormat")
 		delete(additionalProperties, "carousel")
 		delete(additionalProperties, "document")
 		delete(additionalProperties, "spotlight")
