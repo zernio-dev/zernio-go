@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.855.0
+API version: 1.856.0
 Contact: support@zernio.com
 */
 
@@ -23,10 +23,16 @@ var _ MappedNullable = &GetAutomationCatalog200ResponseTriggersInner{}
 // GetAutomationCatalog200ResponseTriggersInner struct for GetAutomationCatalog200ResponseTriggersInner
 type GetAutomationCatalog200ResponseTriggersInner struct {
 	Kind string `json:"kind"`
+	// Where a trigger picker files it: the same groups as the template marketplace.
+	Group string `json:"group"`
+	// The API key resource group its kind needs to create one.
+	ResourceGroup NullableString `json:"resourceGroup"`
 	// `schedule`, `enrollment`, a comment door such as `comment.keyword` (comment to DM), a flow trigger such as `inbound_message`, or the Zernio event name.
 	Type string `json:"type"`
-	// Event triggers only.
-	Label *string `json:"label,omitempty"`
+	// Its short name, such as `Ad rule schedule`.
+	Label string `json:"label"`
+	// One line on when it starts and what the automation does then.
+	Description string `json:"description"`
 	// What an event is about, such as `post` or `account`.
 	Subject *string `json:"subject,omitempty"`
 	// Which of `profileId`, `accountId`, `accountIds` and `platformPostId` the trigger needs.
@@ -41,8 +47,8 @@ type GetAutomationCatalog200ResponseTriggersInner struct {
 	// Ad rule trigger only: the weekly set times it takes.
 	Times           map[string]interface{} `json:"times,omitempty"`
 	FilterOperators []string               `json:"filterOperators,omitempty"`
-	// The step types the trigger takes. For an event, only those its subject can reach.
-	Steps []string `json:"steps,omitempty"`
+	// The step types allowed after the trigger. For an event, only those its subject can reach.
+	Steps []string `json:"steps"`
 	// Scheduled trigger only: the platforms, goals, most days and most boosts a day of `ads.boost_post`.
 	Boost  map[string]interface{} `json:"boost,omitempty"`
 	Limits []string               `json:"limits,omitempty"`
@@ -54,10 +60,15 @@ type _GetAutomationCatalog200ResponseTriggersInner GetAutomationCatalog200Respon
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetAutomationCatalog200ResponseTriggersInner(kind string, type_ string) *GetAutomationCatalog200ResponseTriggersInner {
+func NewGetAutomationCatalog200ResponseTriggersInner(kind string, group string, resourceGroup NullableString, type_ string, label string, description string, steps []string) *GetAutomationCatalog200ResponseTriggersInner {
 	this := GetAutomationCatalog200ResponseTriggersInner{}
 	this.Kind = kind
+	this.Group = group
+	this.ResourceGroup = resourceGroup
 	this.Type = type_
+	this.Label = label
+	this.Description = description
+	this.Steps = steps
 	return &this
 }
 
@@ -93,6 +104,56 @@ func (o *GetAutomationCatalog200ResponseTriggersInner) SetKind(v string) {
 	o.Kind = v
 }
 
+// GetGroup returns the Group field value
+func (o *GetAutomationCatalog200ResponseTriggersInner) GetGroup() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Group
+}
+
+// GetGroupOk returns a tuple with the Group field value
+// and a boolean to check if the value has been set.
+func (o *GetAutomationCatalog200ResponseTriggersInner) GetGroupOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Group, true
+}
+
+// SetGroup sets field value
+func (o *GetAutomationCatalog200ResponseTriggersInner) SetGroup(v string) {
+	o.Group = v
+}
+
+// GetResourceGroup returns the ResourceGroup field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *GetAutomationCatalog200ResponseTriggersInner) GetResourceGroup() string {
+	if o == nil || o.ResourceGroup.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.ResourceGroup.Get()
+}
+
+// GetResourceGroupOk returns a tuple with the ResourceGroup field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAutomationCatalog200ResponseTriggersInner) GetResourceGroupOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ResourceGroup.Get(), o.ResourceGroup.IsSet()
+}
+
+// SetResourceGroup sets field value
+func (o *GetAutomationCatalog200ResponseTriggersInner) SetResourceGroup(v string) {
+	o.ResourceGroup.Set(&v)
+}
+
 // GetType returns the Type field value
 func (o *GetAutomationCatalog200ResponseTriggersInner) GetType() string {
 	if o == nil {
@@ -117,36 +178,52 @@ func (o *GetAutomationCatalog200ResponseTriggersInner) SetType(v string) {
 	o.Type = v
 }
 
-// GetLabel returns the Label field value if set, zero value otherwise.
+// GetLabel returns the Label field value
 func (o *GetAutomationCatalog200ResponseTriggersInner) GetLabel() string {
-	if o == nil || IsNil(o.Label) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Label
+
+	return o.Label
 }
 
-// GetLabelOk returns a tuple with the Label field value if set, nil otherwise
+// GetLabelOk returns a tuple with the Label field value
 // and a boolean to check if the value has been set.
 func (o *GetAutomationCatalog200ResponseTriggersInner) GetLabelOk() (*string, bool) {
-	if o == nil || IsNil(o.Label) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Label, true
+	return &o.Label, true
 }
 
-// HasLabel returns a boolean if a field has been set.
-func (o *GetAutomationCatalog200ResponseTriggersInner) HasLabel() bool {
-	if o != nil && !IsNil(o.Label) {
-		return true
+// SetLabel sets field value
+func (o *GetAutomationCatalog200ResponseTriggersInner) SetLabel(v string) {
+	o.Label = v
+}
+
+// GetDescription returns the Description field value
+func (o *GetAutomationCatalog200ResponseTriggersInner) GetDescription() string {
+	if o == nil {
+		var ret string
+		return ret
 	}
 
-	return false
+	return o.Description
 }
 
-// SetLabel gets a reference to the given string and assigns it to the Label field.
-func (o *GetAutomationCatalog200ResponseTriggersInner) SetLabel(v string) {
-	o.Label = &v
+// GetDescriptionOk returns a tuple with the Description field value
+// and a boolean to check if the value has been set.
+func (o *GetAutomationCatalog200ResponseTriggersInner) GetDescriptionOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Description, true
+}
+
+// SetDescription sets field value
+func (o *GetAutomationCatalog200ResponseTriggersInner) SetDescription(v string) {
+	o.Description = v
 }
 
 // GetSubject returns the Subject field value if set, zero value otherwise.
@@ -405,34 +482,26 @@ func (o *GetAutomationCatalog200ResponseTriggersInner) SetFilterOperators(v []st
 	o.FilterOperators = v
 }
 
-// GetSteps returns the Steps field value if set, zero value otherwise.
+// GetSteps returns the Steps field value
 func (o *GetAutomationCatalog200ResponseTriggersInner) GetSteps() []string {
-	if o == nil || IsNil(o.Steps) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Steps
 }
 
-// GetStepsOk returns a tuple with the Steps field value if set, nil otherwise
+// GetStepsOk returns a tuple with the Steps field value
 // and a boolean to check if the value has been set.
 func (o *GetAutomationCatalog200ResponseTriggersInner) GetStepsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Steps) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Steps, true
 }
 
-// HasSteps returns a boolean if a field has been set.
-func (o *GetAutomationCatalog200ResponseTriggersInner) HasSteps() bool {
-	if o != nil && !IsNil(o.Steps) {
-		return true
-	}
-
-	return false
-}
-
-// SetSteps gets a reference to the given []string and assigns it to the Steps field.
+// SetSteps sets field value
 func (o *GetAutomationCatalog200ResponseTriggersInner) SetSteps(v []string) {
 	o.Steps = v
 }
@@ -512,10 +581,11 @@ func (o GetAutomationCatalog200ResponseTriggersInner) MarshalJSON() ([]byte, err
 func (o GetAutomationCatalog200ResponseTriggersInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["kind"] = o.Kind
+	toSerialize["group"] = o.Group
+	toSerialize["resourceGroup"] = o.ResourceGroup.Get()
 	toSerialize["type"] = o.Type
-	if !IsNil(o.Label) {
-		toSerialize["label"] = o.Label
-	}
+	toSerialize["label"] = o.Label
+	toSerialize["description"] = o.Description
 	if !IsNil(o.Subject) {
 		toSerialize["subject"] = o.Subject
 	}
@@ -540,9 +610,7 @@ func (o GetAutomationCatalog200ResponseTriggersInner) ToMap() (map[string]interf
 	if !IsNil(o.FilterOperators) {
 		toSerialize["filterOperators"] = o.FilterOperators
 	}
-	if !IsNil(o.Steps) {
-		toSerialize["steps"] = o.Steps
-	}
+	toSerialize["steps"] = o.Steps
 	if !IsNil(o.Boost) {
 		toSerialize["boost"] = o.Boost
 	}
@@ -558,7 +626,12 @@ func (o *GetAutomationCatalog200ResponseTriggersInner) UnmarshalJSON(data []byte
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"kind",
+		"group",
+		"resourceGroup",
 		"type",
+		"label",
+		"description",
+		"steps",
 	}
 
 	allProperties := make(map[string]interface{})
