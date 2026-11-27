@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.860.0
+API version: 1.861.1
 Contact: support@zernio.com
 */
 
@@ -1814,6 +1814,180 @@ func (a *MessagesAPIService) GetInboxConversationMessagesExecute(r MessagesAPIGe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type MessagesAPIGetInboxUnreadCountRequest struct {
+	ctx        context.Context
+	ApiService *MessagesAPIService
+	profileId  *string
+	platform   *string
+	accountId  *string
+	status     *string
+}
+
+// Count only accounts in this profile
+func (r MessagesAPIGetInboxUnreadCountRequest) ProfileId(profileId string) MessagesAPIGetInboxUnreadCountRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Count only accounts on this platform
+func (r MessagesAPIGetInboxUnreadCountRequest) Platform(platform string) MessagesAPIGetInboxUnreadCountRequest {
+	r.platform = &platform
+	return r
+}
+
+// Count only this account
+func (r MessagesAPIGetInboxUnreadCountRequest) AccountId(accountId string) MessagesAPIGetInboxUnreadCountRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Count only conversations with this status. Both are counted when omitted, as GET /v1/inbox/conversations lists both.
+func (r MessagesAPIGetInboxUnreadCountRequest) Status(status string) MessagesAPIGetInboxUnreadCountRequest {
+	r.status = &status
+	return r
+}
+
+func (r MessagesAPIGetInboxUnreadCountRequest) Execute() (*GetInboxUnreadCount200Response, *http.Response, error) {
+	return r.ApiService.GetInboxUnreadCountExecute(r)
+}
+
+/*
+GetInboxUnreadCount Count unread conversations
+
+Count the conversations holding at least one unread incoming message, across the connected messaging accounts. Use it for an unread badge instead of paging GET /v1/inbox/conversations?unread=true, which lists the same conversations.
+
+Read state is kept by Zernio, not by the platform. An incoming message stays unread until its conversation is marked read, in one of two ways:
+
+- POST /v1/inbox/conversations/{conversationId}/read.
+- On Telegram, Slack, SMS, RCS, iMessage, email and TikTok, reading its messages with GET /v1/inbox/conversations/{conversationId}/messages.
+
+Messages you send never count, and replayed Meta history is stored as already read.
+
+- The count stops at 1000. `capped: true` means there are at least that many.
+- Read from a replica, so it can trail a conversation you just marked read by about a second.
+- On Bluesky and Reddit, a listed thread whose messages Zernio has not pulled yet has no local read state and is not counted.
+- In the shared WhatsApp and iMessage sandboxes, only your own test conversations count.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return MessagesAPIGetInboxUnreadCountRequest
+*/
+func (a *MessagesAPIService) GetInboxUnreadCount(ctx context.Context) MessagesAPIGetInboxUnreadCountRequest {
+	return MessagesAPIGetInboxUnreadCountRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetInboxUnreadCount200Response
+func (a *MessagesAPIService) GetInboxUnreadCountExecute(r MessagesAPIGetInboxUnreadCountRequest) (*GetInboxUnreadCount200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetInboxUnreadCount200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MessagesAPIService.GetInboxUnreadCount")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/unread-count"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.status != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type MessagesAPIGetMessageAttachmentRequest struct {
 	ctx            context.Context
 	ApiService     *MessagesAPIService
@@ -2154,6 +2328,7 @@ type MessagesAPIListInboxConversationsRequest struct {
 	cursor       *string
 	accountId    *string
 	tags         *string
+	unread       *bool
 }
 
 // Filter by profile ID
@@ -2213,6 +2388,12 @@ func (r MessagesAPIListInboxConversationsRequest) AccountId(accountId string) Me
 // Comma-separated contact tags. Returns only conversations whose contact has any of them. Cannot be combined with folder&#x3D;requests.
 func (r MessagesAPIListInboxConversationsRequest) Tags(tags string) MessagesAPIListInboxConversationsRequest {
 	r.tags = &tags
+	return r
+}
+
+// &#x60;true&#x60; returns only conversations holding at least one unread incoming message.  Read state is kept by Zernio, not by the platform. An incoming message stays unread until its conversation is marked read, in one of two ways:  - POST /v1/inbox/conversations/{conversationId}/read. - On Telegram, Slack, SMS, RCS, iMessage, email and TikTok, reading its messages with GET /v1/inbox/conversations/{conversationId}/messages.  Messages you send never count, and replayed Meta history is stored as already read.  - On Bluesky and Reddit, a listed thread whose messages Zernio has not pulled yet (it pulls them when the thread is opened or when background polling reaches it) has no local read state and is not returned. - Cannot be combined with &#x60;folder&#x3D;requests&#x60; or &#x60;updatedSince&#x60;.  To render a badge without paging, use GET /v1/inbox/unread-count.
+func (r MessagesAPIListInboxConversationsRequest) Unread(unread bool) MessagesAPIListInboxConversationsRequest {
+	r.unread = &unread
 	return r
 }
 
@@ -2329,6 +2510,9 @@ func (a *MessagesAPIService) ListInboxConversationsExecute(r MessagesAPIListInbo
 	}
 	if r.tags != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	if r.unread != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "unread", r.unread, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
