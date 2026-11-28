@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.873.0
+API version: 1.874.0
 Contact: support@zernio.com
 */
 
@@ -19,7 +19,7 @@ import (
 // checks if the InboxConversationAdMetadata type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &InboxConversationAdMetadata{}
 
-// InboxConversationAdMetadata Click attribution for a conversation that started from a Meta ad or a ref-tagged ig.me / m.me link, as Meta sent it. Absent when the conversation did not come from an attributable click. For the ad name, campaign and ad set, read `adAttribution`.  **First referral wins.** Values come from the referral Meta delivers for the click. If the same person later arrives through another ad or link, the original values are kept. For the fresh referral per click, read the `message.received` / `referral.received` webhooks.  On Instagram Click-to-Direct, Meta usually delivers the ad post first as an attachment-only `share` / `ig_post` message with no referral, then attaches the referral to the next message.  WhatsApp exception: when Meta omits `ctwa_clid` from the referral, a later Meta automatic event can supply it and refresh `ctwa_captured_at`. Treat `ctwa_captured_at` as when Zernio stored the value, not when the click happened.  **Two key families, one per surface, never together:**  - `ctwa_*`: WhatsApp Click-to-WhatsApp. The ad ID is `ctwa_source_id`. There is no `meta_ad_id` on WhatsApp. - `meta_ad_*`: Instagram Click-to-Direct, Facebook Messenger Click-to-Message, and ig.me / m.me ref links. The ad ID is `meta_ad_id` (ad clicks only; a link capture carries `meta_ad_ref` without it). `ctwa_clid` never appears here.  Every key is optional and only keys Meta supplied are returned, so read defensively. Meta sends no campaign or ad set ID; those are resolved from your synced ads in `adAttribution`. More keys may be added; treat unknown keys as opaque strings.  Key names differ from the `message.received` webhook on purpose. The webhook forwards Meta's referral verbatim (`ad_id`, `source`, `type`), while the stored conversation uses the prefixed names. Renaming either side would break existing integrations, so both spellings stay.
+// InboxConversationAdMetadata Click attribution for a conversation that started from a Meta ad or a ref-tagged ig.me / m.me link, as Meta sent it. Absent when the conversation did not come from an attributable click. For the ad name, campaign and ad set, read `adAttribution`.  **First referral wins.** Values come from the referral Meta delivers for the click. If the same person later arrives through another ad or link, the original values are kept. For the fresh referral per click, read the `message.received` / `referral.received` webhooks.  On Instagram Click-to-Direct, Meta usually delivers the ad post first as an attachment-only `share` / `ig_post` message with no referral, then attaches the referral to the next message.  WhatsApp exception: when Meta omits `ctwa_clid` from the referral, a later Meta automatic event can supply it; `ctwa_captured_at` keeps the time the referral was stored.  **Two key families, one per surface, never together:**  - `ctwa_*`: WhatsApp Click-to-WhatsApp. The ad ID is `ctwa_source_id`. There is no `meta_ad_id` on WhatsApp. - `meta_ad_*`: Instagram Click-to-Direct, Facebook Messenger Click-to-Message, and ig.me / m.me ref links. The ad ID is `meta_ad_id` (ad clicks only; a link capture carries `meta_ad_ref` without it). `ctwa_clid` never appears here.  Every key is optional and only keys Meta supplied are returned, so read defensively. Meta sends no campaign or ad set ID; those are resolved from your synced ads in `adAttribution`. More keys may be added; treat unknown keys as opaque strings.  Key names differ from the `message.received` webhook on purpose. The webhook forwards Meta's referral verbatim (`ad_id`, `source`, `type`), while the stored conversation uses the prefixed names. Renaming either side would break existing integrations, so both spellings stay.
 type InboxConversationAdMetadata struct {
 	// WhatsApp only. Meta's click identifier, the value to forward to the Meta Conversions API for Business Messaging. Meta omits it on some numbers, so a WhatsApp referral can arrive without it.
 	CtwaClid *string `json:"ctwa_clid,omitempty"`
@@ -43,6 +43,8 @@ type InboxConversationAdMetadata struct {
 	CtwaThumbnailUrl *string `json:"ctwa_thumbnail_url,omitempty"`
 	// WhatsApp only. When Zernio stored this referral. Always present when a WhatsApp referral was captured.
 	CtwaCapturedAt *time.Time `json:"ctwa_captured_at,omitempty"`
+	// WhatsApp only. The wamid of the inbound message the referral arrived on, the `id` of that message in the messages list. When only a Meta automatic event supplied the click id, the message Meta flagged.
+	CtwaMessageId *string `json:"ctwa_message_id,omitempty"`
 	// Instagram and Facebook only. The Meta ad ID the user clicked. Present for ad clicks; absent when the capture came from an ig.me / m.me ref link.
 	MetaAdId *string `json:"meta_ad_id,omitempty"`
 	// Instagram and Facebook only. Meta-supplied source identifier: ADS for ad clicks; SHORTLINK, SHORTLINKS or IGME-SOURCE-LINK for ref links (treat as opaque).
@@ -434,6 +436,38 @@ func (o *InboxConversationAdMetadata) HasCtwaCapturedAt() bool {
 // SetCtwaCapturedAt gets a reference to the given time.Time and assigns it to the CtwaCapturedAt field.
 func (o *InboxConversationAdMetadata) SetCtwaCapturedAt(v time.Time) {
 	o.CtwaCapturedAt = &v
+}
+
+// GetCtwaMessageId returns the CtwaMessageId field value if set, zero value otherwise.
+func (o *InboxConversationAdMetadata) GetCtwaMessageId() string {
+	if o == nil || IsNil(o.CtwaMessageId) {
+		var ret string
+		return ret
+	}
+	return *o.CtwaMessageId
+}
+
+// GetCtwaMessageIdOk returns a tuple with the CtwaMessageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InboxConversationAdMetadata) GetCtwaMessageIdOk() (*string, bool) {
+	if o == nil || IsNil(o.CtwaMessageId) {
+		return nil, false
+	}
+	return o.CtwaMessageId, true
+}
+
+// HasCtwaMessageId returns a boolean if a field has been set.
+func (o *InboxConversationAdMetadata) HasCtwaMessageId() bool {
+	if o != nil && !IsNil(o.CtwaMessageId) {
+		return true
+	}
+
+	return false
+}
+
+// SetCtwaMessageId gets a reference to the given string and assigns it to the CtwaMessageId field.
+func (o *InboxConversationAdMetadata) SetCtwaMessageId(v string) {
+	o.CtwaMessageId = &v
 }
 
 // GetMetaAdId returns the MetaAdId field value if set, zero value otherwise.
@@ -830,6 +864,9 @@ func (o InboxConversationAdMetadata) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CtwaCapturedAt) {
 		toSerialize["ctwa_captured_at"] = o.CtwaCapturedAt
+	}
+	if !IsNil(o.CtwaMessageId) {
+		toSerialize["ctwa_message_id"] = o.CtwaMessageId
 	}
 	if !IsNil(o.MetaAdId) {
 		toSerialize["meta_ad_id"] = o.MetaAdId

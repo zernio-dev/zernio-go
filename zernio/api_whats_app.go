@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.873.0
+API version: 1.874.0
 Contact: support@zernio.com
 */
 
@@ -4180,6 +4180,8 @@ It is sourced from delivery logs (Axiom `late` dataset), so the visible window i
 It mirrors the structured log we write on every successful send:
 
 - `eventName`
+- `eventId`
+- `hasClickId`
 - `conversationId`
 - `eventsReceived`
 - `eventsFailed`
@@ -5193,10 +5195,17 @@ type WhatsAppAPISendWhatsAppConversionRequest struct {
 	ctx                           context.Context
 	ApiService                    *WhatsAppAPIService
 	sendWhatsAppConversionRequest *SendWhatsAppConversionRequest
+	idempotencyKey                *string
 }
 
 func (r WhatsAppAPISendWhatsAppConversionRequest) SendWhatsAppConversionRequest(sendWhatsAppConversionRequest SendWhatsAppConversionRequest) WhatsAppAPISendWhatsAppConversionRequest {
 	r.sendWhatsAppConversionRequest = &sendWhatsAppConversionRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe.  - Same key + same body: replays the original response. - Same key + different body: 422. - Key still processing: 409.  A request cut off mid-handler (e.g. by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.  On the Ads create, boost and duplicate endpoints, a same-body retry runs again once the cut-off request started more than 15 minutes ago.
+func (r WhatsAppAPISendWhatsAppConversionRequest) IdempotencyKey(idempotencyKey string) WhatsAppAPISendWhatsAppConversionRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -5299,6 +5308,9 @@ func (a *WhatsAppAPIService) SendWhatsAppConversionExecute(r WhatsAppAPISendWhat
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.sendWhatsAppConversionRequest

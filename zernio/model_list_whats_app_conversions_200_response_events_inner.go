@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.873.0
+API version: 1.874.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,11 @@ type ListWhatsAppConversions200ResponseEventsInner struct {
 	// When the event was sent to Meta.
 	Timestamp *time.Time `json:"timestamp,omitempty"`
 	// One of LeadSubmitted, QualifiedLead, Purchase, AddToCart, InitiateCheckout, ViewContent, OrderCreated, OrderCanceled, OrderReturned.
-	EventName      *string        `json:"eventName,omitempty"`
+	EventName *string `json:"eventName,omitempty"`
+	// The eventId sent on the POST. Null for events sent before it was recorded.
+	EventId NullableString `json:"eventId,omitempty"`
+	// Whether the event carried a ctwa_clid. Null for events sent before it was recorded.
+	HasClickId     NullableBool   `json:"hasClickId,omitempty"`
 	ConversationId NullableString `json:"conversationId,omitempty"`
 	// Number of events Meta accepted on this send (usually 1).
 	EventsReceived NullableInt32 `json:"eventsReceived,omitempty"`
@@ -114,6 +118,92 @@ func (o *ListWhatsAppConversions200ResponseEventsInner) HasEventName() bool {
 // SetEventName gets a reference to the given string and assigns it to the EventName field.
 func (o *ListWhatsAppConversions200ResponseEventsInner) SetEventName(v string) {
 	o.EventName = &v
+}
+
+// GetEventId returns the EventId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListWhatsAppConversions200ResponseEventsInner) GetEventId() string {
+	if o == nil || IsNil(o.EventId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.EventId.Get()
+}
+
+// GetEventIdOk returns a tuple with the EventId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListWhatsAppConversions200ResponseEventsInner) GetEventIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.EventId.Get(), o.EventId.IsSet()
+}
+
+// HasEventId returns a boolean if a field has been set.
+func (o *ListWhatsAppConversions200ResponseEventsInner) HasEventId() bool {
+	if o != nil && o.EventId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEventId gets a reference to the given NullableString and assigns it to the EventId field.
+func (o *ListWhatsAppConversions200ResponseEventsInner) SetEventId(v string) {
+	o.EventId.Set(&v)
+}
+
+// SetEventIdNil sets the value for EventId to be an explicit nil
+func (o *ListWhatsAppConversions200ResponseEventsInner) SetEventIdNil() {
+	o.EventId.Set(nil)
+}
+
+// UnsetEventId ensures that no value is present for EventId, not even an explicit nil
+func (o *ListWhatsAppConversions200ResponseEventsInner) UnsetEventId() {
+	o.EventId.Unset()
+}
+
+// GetHasClickId returns the HasClickId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListWhatsAppConversions200ResponseEventsInner) GetHasClickId() bool {
+	if o == nil || IsNil(o.HasClickId.Get()) {
+		var ret bool
+		return ret
+	}
+	return *o.HasClickId.Get()
+}
+
+// GetHasClickIdOk returns a tuple with the HasClickId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListWhatsAppConversions200ResponseEventsInner) GetHasClickIdOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.HasClickId.Get(), o.HasClickId.IsSet()
+}
+
+// HasHasClickId returns a boolean if a field has been set.
+func (o *ListWhatsAppConversions200ResponseEventsInner) HasHasClickId() bool {
+	if o != nil && o.HasClickId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetHasClickId gets a reference to the given NullableBool and assigns it to the HasClickId field.
+func (o *ListWhatsAppConversions200ResponseEventsInner) SetHasClickId(v bool) {
+	o.HasClickId.Set(&v)
+}
+
+// SetHasClickIdNil sets the value for HasClickId to be an explicit nil
+func (o *ListWhatsAppConversions200ResponseEventsInner) SetHasClickIdNil() {
+	o.HasClickId.Set(nil)
+}
+
+// UnsetHasClickId ensures that no value is present for HasClickId, not even an explicit nil
+func (o *ListWhatsAppConversions200ResponseEventsInner) UnsetHasClickId() {
+	o.HasClickId.Unset()
 }
 
 // GetConversationId returns the ConversationId field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -346,6 +436,12 @@ func (o ListWhatsAppConversions200ResponseEventsInner) ToMap() (map[string]inter
 	}
 	if !IsNil(o.EventName) {
 		toSerialize["eventName"] = o.EventName
+	}
+	if o.EventId.IsSet() {
+		toSerialize["eventId"] = o.EventId.Get()
+	}
+	if o.HasClickId.IsSet() {
+		toSerialize["hasClickId"] = o.HasClickId.Get()
 	}
 	if o.ConversationId.IsSet() {
 		toSerialize["conversationId"] = o.ConversationId.Get()
