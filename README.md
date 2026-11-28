@@ -473,8 +473,10 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.AdAudiencesAPI.ListAdAudiences(ctx)` | List custom audiences |
+| `client.AdAudiencesAPI.ListMetaSavedAudiences(ctx)` | List Meta saved audiences |
 | `client.AdAudiencesAPI.CreateAdAudience(ctx)` | Create custom audience |
 | `client.AdAudiencesAPI.GetAdAudience(ctx)` | Get audience details |
+| `client.AdAudiencesAPI.GetMetaSavedAudience(ctx)` | Read a Meta saved audience |
 | `client.AdAudiencesAPI.UpdateAdAudience(ctx)` | Update an audience |
 | `client.AdAudiencesAPI.DeleteAdAudience(ctx)` | Delete custom audience |
 | `client.AdAudiencesAPI.AddUsersToAdAudience(ctx)` | Add users to audience |

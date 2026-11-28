@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.867.0
+API version: 1.868.0
 Contact: support@zernio.com
 */
 
@@ -657,6 +657,180 @@ func (a *AdAudiencesAPIService) GetAdAudienceExecute(r AdAudiencesAPIGetAdAudien
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdAudiencesAPIGetMetaSavedAudienceRequest struct {
+	ctx             context.Context
+	ApiService      *AdAudiencesAPIService
+	savedAudienceId string
+	accountId       *string
+	adAccountId     *string
+}
+
+// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+func (r AdAudiencesAPIGetMetaSavedAudienceRequest) AccountId(accountId string) AdAudiencesAPIGetMetaSavedAudienceRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account id (act_&lt;n&gt;) that holds the saved audience.
+func (r AdAudiencesAPIGetMetaSavedAudienceRequest) AdAccountId(adAccountId string) AdAudiencesAPIGetMetaSavedAudienceRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdAudiencesAPIGetMetaSavedAudienceRequest) Execute() (*GetMetaSavedAudience200Response, *http.Response, error) {
+	return r.ApiService.GetMetaSavedAudienceExecute(r)
+}
+
+/*
+GetMetaSavedAudience Read a Meta saved audience
+
+Reads one saved audience of a Meta ad account, including the targeting spec it holds.
+
+Meta's SavedAudience node does not say which ad account owns it, so the audience is
+looked up in the named ad account's `GET /act_X/saved_audiences` (up to 1,000 saved
+audiences). An id that is not on that ad account answers 404.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param savedAudienceId Meta saved audience id.
+	@return AdAudiencesAPIGetMetaSavedAudienceRequest
+*/
+func (a *AdAudiencesAPIService) GetMetaSavedAudience(ctx context.Context, savedAudienceId string) AdAudiencesAPIGetMetaSavedAudienceRequest {
+	return AdAudiencesAPIGetMetaSavedAudienceRequest{
+		ApiService:      a,
+		ctx:             ctx,
+		savedAudienceId: savedAudienceId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetMetaSavedAudience200Response
+func (a *AdAudiencesAPIService) GetMetaSavedAudienceExecute(r AdAudiencesAPIGetMetaSavedAudienceRequest) (*GetMetaSavedAudience200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetMetaSavedAudience200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAudiencesAPIService.GetMetaSavedAudience")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/saved-audiences/{savedAudienceId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"savedAudienceId"+"}", url.PathEscape(parameterValueToString(r.savedAudienceId, "savedAudienceId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdAudiencesAPIListAdAudiencesRequest struct {
 	ctx         context.Context
 	ApiService  *AdAudiencesAPIService
@@ -830,6 +1004,214 @@ func (a *AdAudiencesAPIService) ListAdAudiencesExecute(r AdAudiencesAPIListAdAud
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAudiencesAPIListMetaSavedAudiencesRequest struct {
+	ctx         context.Context
+	ApiService  *AdAudiencesAPIService
+	accountId   *string
+	adAccountId *string
+	limit       *int32
+	after       *string
+}
+
+// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+func (r AdAudiencesAPIListMetaSavedAudiencesRequest) AccountId(accountId string) AdAudiencesAPIListMetaSavedAudiencesRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account id (act_&lt;n&gt;).
+func (r AdAudiencesAPIListMetaSavedAudiencesRequest) AdAccountId(adAccountId string) AdAudiencesAPIListMetaSavedAudiencesRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Rows per page
+func (r AdAudiencesAPIListMetaSavedAudiencesRequest) Limit(limit int32) AdAudiencesAPIListMetaSavedAudiencesRequest {
+	r.limit = &limit
+	return r
+}
+
+// Cursor from paging.after of the previous page.
+func (r AdAudiencesAPIListMetaSavedAudiencesRequest) After(after string) AdAudiencesAPIListMetaSavedAudiencesRequest {
+	r.after = &after
+	return r
+}
+
+func (r AdAudiencesAPIListMetaSavedAudiencesRequest) Execute() (*ListMetaSavedAudiences200Response, *http.Response, error) {
+	return r.ApiService.ListMetaSavedAudiencesExecute(r)
+}
+
+/*
+ListMetaSavedAudiences List Meta saved audiences
+
+Lists the saved audiences of a Meta ad account, read live from Meta (`GET /act_X/saved_audiences`).
+
+These are Meta's own saved audiences, the ones made in Ads Manager, not the Zernio
+`saved_targeting` audiences of `/v1/ads/audiences`. Meta's Marketing API exposes saved
+audiences read-only: they are created, edited and deleted in Ads Manager.
+
+To target an ad set at a saved audience, send its `targeting` as `rawTargeting` on
+`POST /v1/ads/create`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdAudiencesAPIListMetaSavedAudiencesRequest
+*/
+func (a *AdAudiencesAPIService) ListMetaSavedAudiences(ctx context.Context) AdAudiencesAPIListMetaSavedAudiencesRequest {
+	return AdAudiencesAPIListMetaSavedAudiencesRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListMetaSavedAudiences200Response
+func (a *AdAudiencesAPIService) ListMetaSavedAudiencesExecute(r AdAudiencesAPIListMetaSavedAudiencesRequest) (*ListMetaSavedAudiences200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListMetaSavedAudiences200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAudiencesAPIService.ListMetaSavedAudiences")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/saved-audiences"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 25
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.after != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "after", r.after, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
