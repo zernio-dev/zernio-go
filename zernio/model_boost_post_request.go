@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.871.0
+API version: 1.872.0
 Contact: support@zernio.com
 */
 
@@ -79,6 +79,8 @@ type BoostPostRequest struct {
 	LocationTargetingType *GoogleLocationTargetingType `json:"locationTargetingType,omitempty"`
 	// Meta only. A Meta-native targeting spec (e.g. `{ \"geo_locations\": { \"cities\": [{ \"key\": \"...\", \"radius\": 15, \"distance_unit\": \"kilometer\" }] } }`). Sent alone, it is forwarded unchanged. Use it for advanced fields the structured object does not expose (flexible_spec, excluded audiences, business places, user_os, wireless_carrier).  **With `targeting`:** rawTargeting is the BASE layer and the built camelCase spec is merged on top, key by key (camelCase wins on collision).  - The merge goes one level deep inside `geo_locations` and `excluded_geo_locations` (built sub-keys win; raw-only sub-keys such as `location_types` survive). - Array values (`flexible_spec`, ...) are replaced as a whole key, never element-merged.  **`targeting_automation`.** When `rawTargeting` is present, Zernio no longer emits its usual `advantage_audience: 0` default, so it cannot clobber a `targeting_automation` in the raw spec. Meta requires `targeting_automation` on ad set creation: include it in the raw spec, or send `targeting.advantage_audience` (0/1 or false/true), merged over raw as `targeting_automation`.
 	RawTargeting map[string]interface{} `json:"rawTargeting,omitempty"`
+	// Meta only. The id of a Meta saved audience on `adAccountId` (made in Ads Manager, listed by `GET /v1/ads/saved-audiences`).  Its targeting is read live from Meta and used as `rawTargeting` for the ad set the boost creates, so `targeting` merges on top of it exactly as it does on `rawTargeting`. Also applied with `validateOnly`.  Returns 404 when the id is not on the ad account, 400 `mutually_exclusive_fields` with `rawTargeting`, and 400 with `adSetId` (an existing ad set keeps its targeting) or on another network. Meta requires `targeting_automation` on create: send `targeting.advantage_audience` when the saved audience does not carry it.
+	MetaSavedAudienceId *string `json:"metaSavedAudienceId,omitempty" validate:"regexp=^\\\\d+$"`
 	// Deprecated: send it inside `platformSpecificData` instead (Meta today; TikTok's nested shape is planned). The flat field keeps working during the deprecation window; sending both shapes returns a 400.  Meta bid strategy applied to the ad set. On TikTok, mapped to `bid_type` / `bid_price` / `deep_bid_type` automatically. On Reddit, applied to the new ad group (see the Reddit section above; 422 for LOWEST_COST_WITH_MIN_ROAS).
 	// Deprecated
 	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
@@ -1067,6 +1069,38 @@ func (o *BoostPostRequest) HasRawTargeting() bool {
 // SetRawTargeting gets a reference to the given map[string]interface{} and assigns it to the RawTargeting field.
 func (o *BoostPostRequest) SetRawTargeting(v map[string]interface{}) {
 	o.RawTargeting = v
+}
+
+// GetMetaSavedAudienceId returns the MetaSavedAudienceId field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetMetaSavedAudienceId() string {
+	if o == nil || IsNil(o.MetaSavedAudienceId) {
+		var ret string
+		return ret
+	}
+	return *o.MetaSavedAudienceId
+}
+
+// GetMetaSavedAudienceIdOk returns a tuple with the MetaSavedAudienceId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetMetaSavedAudienceIdOk() (*string, bool) {
+	if o == nil || IsNil(o.MetaSavedAudienceId) {
+		return nil, false
+	}
+	return o.MetaSavedAudienceId, true
+}
+
+// HasMetaSavedAudienceId returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasMetaSavedAudienceId() bool {
+	if o != nil && !IsNil(o.MetaSavedAudienceId) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetaSavedAudienceId gets a reference to the given string and assigns it to the MetaSavedAudienceId field.
+func (o *BoostPostRequest) SetMetaSavedAudienceId(v string) {
+	o.MetaSavedAudienceId = &v
 }
 
 // GetBidStrategy returns the BidStrategy field value if set, zero value otherwise.
@@ -2190,6 +2224,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RawTargeting) {
 		toSerialize["rawTargeting"] = o.RawTargeting
+	}
+	if !IsNil(o.MetaSavedAudienceId) {
+		toSerialize["metaSavedAudienceId"] = o.MetaSavedAudienceId
 	}
 	if !IsNil(o.BidStrategy) {
 		toSerialize["bidStrategy"] = o.BidStrategy
