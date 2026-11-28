@@ -368,6 +368,7 @@ func main() {
 ### Account Settings
 | Method | Description |
 |--------|-------------|
+| `client.AccountSettingsAPI.ListFacebookBlockedUsers(ctx)` | List the people blocked on a Facebook Page |
 | `client.AccountSettingsAPI.GetFacebookPageInfo(ctx)` | Get a Facebook Page's public info |
 | `client.AccountSettingsAPI.GetInstagramIceBreakers(ctx)` | Get IG ice breakers |
 | `client.AccountSettingsAPI.GetMessengerGetStarted(ctx)` | Get FB Get Started button |
@@ -383,12 +384,14 @@ func main() {
 | `client.AccountSettingsAPI.DeleteMessengerIceBreakers(ctx)` | Delete FB ice breakers |
 | `client.AccountSettingsAPI.DeleteMessengerMenu(ctx)` | Delete persistent menu |
 | `client.AccountSettingsAPI.DeleteTelegramCommands(ctx)` | Delete TG bot commands |
+| `client.AccountSettingsAPI.BlockFacebookUser(ctx)` | Block a person on a Facebook Page |
 | `client.AccountSettingsAPI.SetInstagramIceBreakers(ctx)` | Set IG ice breakers |
 | `client.AccountSettingsAPI.SetMessengerGetStarted(ctx)` | Set FB Get Started button |
 | `client.AccountSettingsAPI.SetMessengerGreeting(ctx)` | Set FB greeting text |
 | `client.AccountSettingsAPI.SetMessengerIceBreakers(ctx)` | Set FB ice breakers |
 | `client.AccountSettingsAPI.SetMessengerMenu(ctx)` | Set persistent menu |
 | `client.AccountSettingsAPI.SetTelegramCommands(ctx)` | Set TG bot commands |
+| `client.AccountSettingsAPI.UnblockFacebookUser(ctx)` | Unblock a person on a Facebook Page |
 
 ### Ad Accounts
 | Method | Description |
