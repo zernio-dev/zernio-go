@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.868.0
+API version: 1.869.0
 Contact: support@zernio.com
 */
 
@@ -158,6 +158,8 @@ type CreateStandaloneAdRequest struct {
 	Placements *CreateStandaloneAdRequestPlacements `json:"placements,omitempty"`
 	// ID of a `saved_targeting` audience (created via POST /v1/ads/audiences). When set, its stored TargetingSpec is expanded as the base targeting; inline fields on this body merge on top. Lets you reuse a named targeting preset without re-sending every field.
 	SavedTargetingId *string `json:"savedTargetingId,omitempty"`
+	// Meta only. The id of a Meta saved audience on `adAccountId` (made in Ads Manager, listed by `GET /v1/ads/saved-audiences`). Its targeting is read live from Meta and used as `rawTargeting` for the new ad set, so camelCase targeting fields merge on top of it exactly as they do on `rawTargeting`.  Returns 404 when the id is not on the ad account, 400 `mutually_exclusive_fields` with `rawTargeting` or `savedTargetingId`, and 400 on another network or with `adSetId` (an existing ad set keeps its targeting). Meta requires `targeting_automation` on create: send `advantageAudience` when the saved audience does not carry it.
+	MetaSavedAudienceId *string `json:"metaSavedAudienceId,omitempty" validate:"regexp=^\\\\d+$"`
 	// Meta only. A raw Meta-native targeting spec (snake_case: `geo_locations`, `age_min`, `excluded_custom_audiences`, `flexible_spec`, `targeting_automation`, `user_os`, `wireless_carrier`, business places, etc.), the exact shape `GET /v1/ads/{adId}` returns for external ads.  Sent alone, it reaches the ad set VERBATIM (the path for cloning a campaign's targeting exactly). Meta validates it and surfaces any errors.  **Combining with camelCase fields** (countries/regions/cities/interests/ageMin/..., `targeting`, `savedTargetingId`, `audienceId`): rawTargeting is the BASE layer and the built camelCase spec is merged on top, key by key, with camelCase winning on collision.  The camelCase precedence chain stays `savedTargetingId` < `targeting` < flat fields. Merge rules:  - Inside `geo_locations` and `excluded_geo_locations` the merge goes one level deep: built sub-keys win, and raw-only sub-keys such as `location_types` survive alongside built `countries`. - Array values (`flexible_spec`, ...) are replaced as a WHOLE key when the camelCase spec builds them, never element-merged. - With rawTargeting present, the defaults the camelCase builder normally injects (US geo, `targeting_automation.advantage_audience: 0`) are suppressed, so raw values are not clobbered.  Include `targeting_automation` in the raw spec (or send `advantageAudience`), as Meta requires it on create. When cloning an EU campaign, also pass `dsaBeneficiary` / `dsaPayor` (separate fields, not part of targeting).
 	RawTargeting map[string]interface{} `json:"rawTargeting,omitempty"`
 	// Declares the ad's special category, required for housing, employment, credit, or political/social-issue ads.  - Meta: every value. Setting a housing, employment or credit category disables income/zip   targeting on Meta. - TikTok: HOUSING, EMPLOYMENT and CREDIT, sent as the new campaign's `special_industries`   (TikTok requires one for these ads aimed at the US or Canada). Other values return 400. - TikTok targeting: the create (and `validateOnly`) returns 400 naming the field for ZIP codes   (`targeting.zips`), gender, ages under 18 (`targeting.ageMin`), interest keywords (`keyword:`   ids in `targeting.interests`) and hashtag behaviors. - TikTok also refuses Smart Targeting (`smartTargeting`) and lookalike audiences   (`targeting.audienceInclude` / `targeting.audienceExclude`). Without an age, the ad group   targets 18+. - TikTok sets the category when the campaign is created, so it is a 400 with `smartPlus`,   `existingCampaignId` or `adSetId`.
@@ -2589,6 +2591,38 @@ func (o *CreateStandaloneAdRequest) SetSavedTargetingId(v string) {
 	o.SavedTargetingId = &v
 }
 
+// GetMetaSavedAudienceId returns the MetaSavedAudienceId field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetMetaSavedAudienceId() string {
+	if o == nil || IsNil(o.MetaSavedAudienceId) {
+		var ret string
+		return ret
+	}
+	return *o.MetaSavedAudienceId
+}
+
+// GetMetaSavedAudienceIdOk returns a tuple with the MetaSavedAudienceId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetMetaSavedAudienceIdOk() (*string, bool) {
+	if o == nil || IsNil(o.MetaSavedAudienceId) {
+		return nil, false
+	}
+	return o.MetaSavedAudienceId, true
+}
+
+// HasMetaSavedAudienceId returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasMetaSavedAudienceId() bool {
+	if o != nil && !IsNil(o.MetaSavedAudienceId) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetaSavedAudienceId gets a reference to the given string and assigns it to the MetaSavedAudienceId field.
+func (o *CreateStandaloneAdRequest) SetMetaSavedAudienceId(v string) {
+	o.MetaSavedAudienceId = &v
+}
+
 // GetRawTargeting returns the RawTargeting field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetRawTargeting() map[string]interface{} {
 	if o == nil || IsNil(o.RawTargeting) {
@@ -4515,6 +4549,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SavedTargetingId) {
 		toSerialize["savedTargetingId"] = o.SavedTargetingId
+	}
+	if !IsNil(o.MetaSavedAudienceId) {
+		toSerialize["metaSavedAudienceId"] = o.MetaSavedAudienceId
 	}
 	if !IsNil(o.RawTargeting) {
 		toSerialize["rawTargeting"] = o.RawTargeting
