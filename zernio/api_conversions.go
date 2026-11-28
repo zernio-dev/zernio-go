@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.874.0
+API version: 1.875.0
 Contact: support@zernio.com
 */
 
@@ -7974,6 +7974,8 @@ Relays one or more events to the target ad platform's native Conversions API. Th
 - Campaign Manager 360 (`campaignmanager360`, coming soon: pending Google's verification of the `dfatrafficking` permission) via the Data Manager API `ingestEvents`, to a Floodlight activity
 - The Trade Desk (`tradedeskads`) via the Real-Time Conversions API (`POST https://insight.adsrvr.org/track/realtimeconversion`)
 - Amazon Ads (`amazonads`) via the Amazon Ads Conversions API (`POST /adsApi/v1/create/events`)
+- HubSpot (`hubspot`): the contact is found by email (created when new) and the conversion is logged as a note on it
+- Salesforce (`salesforce`): the Lead or Contact is found by email (a Lead is created when new) and the conversion is logged as a completed Task on it
 
 ### `destinationId` per platform
 
@@ -8001,6 +8003,9 @@ Relays one or more events to the target ad platform's native Conversions API. Th
 - Campaign Manager 360: `<floodlightConfigurationId>:<floodlightActivityId>`, e.g. `1234567:7654321`. Each event needs `clickIds.gclid` or `clickIds.dclid` (a hashed email or phone only enhances it); `eventId` is the transaction id Google dedups on. With `testCode`, events are only validated (`validateOnly`) and not recorded.
 - The Trade Desk: the connection's tracking tag id, e.g. `abc1234`. Each event needs `clickIds.tdid`, `clickIds.uid2` or `clickIds.uid2Token`; `eventId` is sent as `order_id`. TTD has no test mode, so an event with `testCode` is not sent (code `TEST_MODE_UNSUPPORTED`).
 - Amazon Ads: `<region>:<profileId>:<accountId>:<country>`, e.g. `EU:42:ENTITY1ABC:DE`. Each event needs an `email` or a `phone` (sent hashed); `eventId` is Amazon's dedup key; standard event names keep their name and custom ones are sent as `Custom` (Amazon caps conversion definitions at 100). No test mode: an event with `testCode` is not sent.
+- HubSpot: the connection's portal id (hub id). Each event needs an unhashed `email`; a new contact also takes `firstName`, `lastName` and `phone`, an existing one is left as it is.
+- Salesforce: the connection's org id. Each event needs an unhashed `email`, searched among Contacts and unconverted Leads; a new person is created the way the connection creates people (a Lead by default).
+- HubSpot and Salesforce never get back events whose source they are, and have no test mode: an event with `testCode` is not sent.
 
 Callers can list valid destinations via `GET /v1/ads/conversions/destinations`.
 
