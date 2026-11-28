@@ -88,6 +88,7 @@ func main() {
 | `client.LinkedInMentionsAPI.GetLinkedInMentions(ctx)` | Resolve LinkedIn mention |
 | `client.AccountsAPI.GetSalesforceSettings(ctx)` | Get Salesforce account settings |
 | `client.AccountsAPI.GetSlackSettings(ctx)` | Get Slack account settings |
+| `client.AccountsAPI.GetStoreSettings(ctx)` | Get Shopify or WooCommerce store settings |
 | `client.AccountsAPI.GetStripeSettings(ctx)` | Get Stripe account settings |
 | `client.AccountsAPI.GetTikTokCreatorInfo(ctx)` | Get TikTok creator info |
 | `client.AccountsAPI.UpdateAccount(ctx)` | Update account |
@@ -96,6 +97,7 @@ func main() {
 | `client.AccountsAPI.UpdateHubSpotSettings(ctx)` | Update HubSpot account settings |
 | `client.AccountsAPI.UpdateSalesforceSettings(ctx)` | Update Salesforce account settings |
 | `client.AccountsAPI.UpdateSlackSettings(ctx)` | Update Slack account settings |
+| `client.AccountsAPI.UpdateStoreSettings(ctx)` | Update Shopify or WooCommerce store settings |
 | `client.AccountsAPI.UpdateStripeSettings(ctx)` | Update Stripe account settings |
 | `client.AccountsAPI.DeleteAccount(ctx)` | Disconnect account |
 | `client.GMBReviewsAPI.DeleteGoogleBusinessReviewReply(ctx)` | Delete a review reply |
