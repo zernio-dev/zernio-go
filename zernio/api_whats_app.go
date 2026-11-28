@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.872.0
+API version: 1.873.0
 Contact: support@zernio.com
 */
 
@@ -5229,13 +5229,15 @@ On the WhatsApp account metadata:
 
 - `metaCapiDatasetId`: the Meta dataset ID linked to the WABA. Provision one with `POST /v1/whatsapp/dataset`.
 
-The WABA ID (already set automatically at connect time) is forwarded as `user_data.whatsapp_business_account_id`, the per-channel attribution identifier Meta requires for WhatsApp events. No Facebook Page ID is needed (that field is the Messenger-branch identifier).
+The WABA ID (already set automatically at connect time) is forwarded as `user_data.whatsapp_business_account_id`, the per-channel attribution identifier Meta requires for WhatsApp events. When the conversation has no `ctwa_clid`, send `pageId` (the Facebook Page linked to the WABA); it is forwarded as `user_data.page_id`.
 
 ### Identifying the conversation
 
 Identify the conversation by either `conversationId` (preferred) or `phoneE164` (digits only, no `+`). At least one is required.
 
-If the conversation has no captured `ctwa_clid`, the request returns 422 because there is nothing to attribute.
+If the conversation has no captured `ctwa_clid` and no `pageId` is sent, the request returns 422.
+
+With `pageId` the event is sent without a click id. Meta then matches on the hashed phone and may still not attribute it. With `phoneE164`, a missing CTWA conversation is also accepted when `pageId` is sent.
 
 ### Token and dataset coupling
 

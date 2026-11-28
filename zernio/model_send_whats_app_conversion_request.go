@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.872.0
+API version: 1.873.0
 Contact: support@zernio.com
 */
 
@@ -30,10 +30,12 @@ type SendWhatsAppConversionRequest struct {
 	EventTime *float32 `json:"eventTime,omitempty"`
 	// Stable dedup key. Reuse to suppress duplicate events (Meta dedupes against pixel events with the same id).
 	EventId string `json:"eventId"`
-	// Zernio Conversation `_id` (preferred lookup). The conversation must have a captured `ctwa_clid` in metadata (set automatically by the WhatsApp webhook on the first inbound message after a CTWA ad click).
+	// Zernio Conversation `_id` (preferred lookup). The conversation must have a captured `ctwa_clid` in metadata (set automatically by the WhatsApp webhook on the first inbound message after a CTWA ad click), unless `pageId` is sent.
 	ConversationId *string `json:"conversationId,omitempty"`
-	// Contact phone number, digits only with no '+'. When used in lieu of `conversationId`, the handler resolves to the most recent CTWA-attributed conversation for this phone on the supplied account.
+	// Contact phone number, digits only with no '+'. When used in lieu of `conversationId`, the handler resolves to the most recent CTWA-attributed conversation for this phone on the supplied account. When `pageId` is sent and no such conversation exists, the event is sent without a click id.
 	PhoneE164 *string `json:"phoneE164,omitempty"`
+	// Numeric id of the Facebook Page linked to the WABA. Needed when the conversation has no `ctwa_clid`, and sent to Meta only then.  Meta matches on the hashed phone or `email` (one is required, 422 otherwise) and may still not attribute the event. Zernio does not check that the Page is the one linked to the WABA.
+	PageId *string `json:"pageId,omitempty" validate:"regexp=^\\\\d+$"`
 	// Conversion value (e.g. order total).
 	Value *float32 `json:"value,omitempty"`
 	// ISO 4217 currency code (e.g. `USD`).
@@ -236,6 +238,38 @@ func (o *SendWhatsAppConversionRequest) HasPhoneE164() bool {
 // SetPhoneE164 gets a reference to the given string and assigns it to the PhoneE164 field.
 func (o *SendWhatsAppConversionRequest) SetPhoneE164(v string) {
 	o.PhoneE164 = &v
+}
+
+// GetPageId returns the PageId field value if set, zero value otherwise.
+func (o *SendWhatsAppConversionRequest) GetPageId() string {
+	if o == nil || IsNil(o.PageId) {
+		var ret string
+		return ret
+	}
+	return *o.PageId
+}
+
+// GetPageIdOk returns a tuple with the PageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendWhatsAppConversionRequest) GetPageIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PageId) {
+		return nil, false
+	}
+	return o.PageId, true
+}
+
+// HasPageId returns a boolean if a field has been set.
+func (o *SendWhatsAppConversionRequest) HasPageId() bool {
+	if o != nil && !IsNil(o.PageId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPageId gets a reference to the given string and assigns it to the PageId field.
+func (o *SendWhatsAppConversionRequest) SetPageId(v string) {
+	o.PageId = &v
 }
 
 // GetValue returns the Value field value if set, zero value otherwise.
@@ -451,6 +485,9 @@ func (o SendWhatsAppConversionRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PhoneE164) {
 		toSerialize["phoneE164"] = o.PhoneE164
+	}
+	if !IsNil(o.PageId) {
+		toSerialize["pageId"] = o.PageId
 	}
 	if !IsNil(o.Value) {
 		toSerialize["value"] = o.Value
