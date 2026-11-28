@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.869.0
+API version: 1.870.0
 Contact: support@zernio.com
 */
 
@@ -133,6 +133,8 @@ type CreateCallAdRequest struct {
 	Targeting *TargetingSpec `json:"targeting,omitempty"`
 	// Meta targeting spec sent as the BASE layer of the ad set's `targeting`, exactly as POST /v1/ads/create does. Use it for anything the flat fields cannot express, such as a layered `flexible_spec` (entries AND together, ids inside one entry OR).  Flat fields you also send are layered on top and win per key.  With rawTargeting present the US geo and `advantage_audience: 0` defaults are not injected, so include `targeting_automation` in it (or send `advantageAudience`), as Meta requires it on create.
 	RawTargeting map[string]interface{} `json:"rawTargeting,omitempty"`
+	// The id of a Meta saved audience on `adAccountId` (made in Ads Manager, listed by `GET /v1/ads/saved-audiences`). Its targeting is read live from Meta and used as `rawTargeting` for the new ad set, so flat targeting fields merge on top of it exactly as they do on `rawTargeting`.  Returns 404 when the id is not on the ad account, 400 `mutually_exclusive_fields` with `rawTargeting` or `savedTargetingId`, and 400 with `adSetId` (an existing ad set keeps its targeting). Meta requires `targeting_automation` on create: send `advantageAudience` when the saved audience does not carry it.
+	MetaSavedAudienceId *string `json:"metaSavedAudienceId,omitempty" validate:"regexp=^\\\\d+$"`
 	// Meta special ad categories on the new campaign.
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
 	// Countries the special ad category applies to. Requires specialAdCategories.
@@ -2095,6 +2097,38 @@ func (o *CreateCallAdRequest) SetRawTargeting(v map[string]interface{}) {
 	o.RawTargeting = v
 }
 
+// GetMetaSavedAudienceId returns the MetaSavedAudienceId field value if set, zero value otherwise.
+func (o *CreateCallAdRequest) GetMetaSavedAudienceId() string {
+	if o == nil || IsNil(o.MetaSavedAudienceId) {
+		var ret string
+		return ret
+	}
+	return *o.MetaSavedAudienceId
+}
+
+// GetMetaSavedAudienceIdOk returns a tuple with the MetaSavedAudienceId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCallAdRequest) GetMetaSavedAudienceIdOk() (*string, bool) {
+	if o == nil || IsNil(o.MetaSavedAudienceId) {
+		return nil, false
+	}
+	return o.MetaSavedAudienceId, true
+}
+
+// HasMetaSavedAudienceId returns a boolean if a field has been set.
+func (o *CreateCallAdRequest) HasMetaSavedAudienceId() bool {
+	if o != nil && !IsNil(o.MetaSavedAudienceId) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetaSavedAudienceId gets a reference to the given string and assigns it to the MetaSavedAudienceId field.
+func (o *CreateCallAdRequest) SetMetaSavedAudienceId(v string) {
+	o.MetaSavedAudienceId = &v
+}
+
 // GetSpecialAdCategories returns the SpecialAdCategories field value if set, zero value otherwise.
 func (o *CreateCallAdRequest) GetSpecialAdCategories() []string {
 	if o == nil || IsNil(o.SpecialAdCategories) {
@@ -2806,6 +2840,9 @@ func (o CreateCallAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RawTargeting) {
 		toSerialize["rawTargeting"] = o.RawTargeting
+	}
+	if !IsNil(o.MetaSavedAudienceId) {
+		toSerialize["metaSavedAudienceId"] = o.MetaSavedAudienceId
 	}
 	if !IsNil(o.SpecialAdCategories) {
 		toSerialize["specialAdCategories"] = o.SpecialAdCategories
