@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.875.0
+API version: 1.878.0
 Contact: support@zernio.com
 */
 
@@ -7976,6 +7976,7 @@ Relays one or more events to the target ad platform's native Conversions API. Th
 - Amazon Ads (`amazonads`) via the Amazon Ads Conversions API (`POST /adsApi/v1/create/events`)
 - HubSpot (`hubspot`): the contact is found by email (created when new) and the conversion is logged as a note on it
 - Salesforce (`salesforce`): the Lead or Contact is found by email (a Lead is created when new) and the conversion is logged as a completed Task on it
+- Mailchimp (`mailchimp`): the email is added to the audience as a transactional contact (an existing member keeps its status), tagged with the event name, and the conversion is recorded as a contact event
 
 ### `destinationId` per platform
 
@@ -8006,6 +8007,8 @@ Relays one or more events to the target ad platform's native Conversions API. Th
 - HubSpot: the connection's portal id (hub id). Each event needs an unhashed `email`; a new contact also takes `firstName`, `lastName` and `phone`, an existing one is left as it is.
 - Salesforce: the connection's org id. Each event needs an unhashed `email`, searched among Contacts and unconverted Leads; a new person is created the way the connection creates people (a Lead by default).
 - HubSpot and Salesforce never get back events whose source they are, and have no test mode: an event with `testCode` is not sent.
+- Mailchimp: an audience id (`GET /v1/ads/conversions/destinations` lists the key's audiences). Each event needs an unhashed `email`. No test mode: an event with `testCode` is not sent.
+- Mailchimp event names keep letters, digits, `-` and `_` (anything else becomes `_`), cut to 30 characters, with `value`, `currency`, `source` and `event_id` as properties.
 
 Callers can list valid destinations via `GET /v1/ads/conversions/destinations`.
 

@@ -326,6 +326,7 @@ func main() {
 | `client.ConnectAPI.ConnectImpactCredentials(ctx)` | Connect an Impact program |
 | `client.ConnectAPI.ConnectKlaviyoCredentials(ctx)` | Connect a Klaviyo account |
 | `client.ConnectAPI.ConnectLineCredentials(ctx)` | Connect LINE Official Account |
+| `client.ConnectAPI.ConnectMailchimpCredentials(ctx)` | Connect a Mailchimp account |
 | `client.ConnectAPI.ConnectOpenAIAdsCredentials(ctx)` | Connect an OpenAI Ads account |
 | `client.ConnectAPI.ConnectOutbrainAdsCredentials(ctx)` | Connect an Outbrain marketer |
 | `client.ConnectAPI.ConnectShopifyWithToken(ctx)` | Connect a Shopify store with a custom-app Admin token |

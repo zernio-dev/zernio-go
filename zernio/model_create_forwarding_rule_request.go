@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.875.0
+API version: 1.878.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ type CreateForwardingRuleRequest struct {
 	ProfileId string `json:"profileId"`
 	// Connected ads account ID that owns the destination.
 	AccountId string `json:"accountId"`
-	// The platform destination: a pixel, a conversion action, a conversion rule, a GA4 web stream measurement id (`G-…`), a HubSpot portal id or a Salesforce org id.
+	// The platform destination: a pixel, a conversion action, a conversion rule, a GA4 web stream measurement id (`G-…`), a HubSpot portal id, a Salesforce org id or a Mailchimp audience id.
 	DestinationId string   `json:"destinationId"`
 	EventNames    []string `json:"eventNames,omitempty"`
 	// Forward only events from these sources, such as only `web` for a tracked website. Leave it out to forward events from every source.
